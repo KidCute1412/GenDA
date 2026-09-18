@@ -68,15 +68,19 @@ export default function HomePage() {
             - Lệch trái vì hero căn giữa có pill badge là bố cục mặc định của mọi
               công cụ dựng trang, và căn giữa làm mọi dòng nặng ngang nhau nên
               không dẫn được mắt (design.md 4.9).
-            - Nền màu đậm vì đòn bẩy làm ấm số 2 ở 4.9.1 yêu cầu dùng màu thương
-              hiệu HÀO PHÓNG làm nền cả khối. Nền tint teal-50 sáng gần bằng nền
-              trắng nên không tạo ra nhịp màu nào. */}
-        <section className="band--brand-strong on-dark">
+            - Khối có nền riêng vì đòn bẩy làm ấm số 2 ở 4.9.1: hero là một
+              TẤM KEM BO GÓC LỚN nằm lọt trong panel trắng của trang, không
+              phải một dải màu chạy chạm mép màn hình. */}
+        <section className="band--brand-strong">
           <div className="container hero-editorial">
           <div>
             <p className="eyebrow">Dự án thật, trả công thật</p>
+            {/* Từ nhấn viết tay, có nét khoanh tròn vẽ tay bao quanh — chi tiết
+                đặc trưng nhất của phong cách này (design.md 4.9.1 đòn bẩy 3).
+                Nét khoanh nằm ở pseudo-element nên trình đọc màn hình chỉ nghe
+                đúng một câu liền mạch "From Learn to Earn". */}
             <h1 className="text-display hero-display" style={{ marginBlock: "var(--space-4) var(--space-5)" }}>
-              From Learn to Earn
+              From <span className="hand-accent">Learn</span> to Earn
             </h1>
             {/* Đoạn dẫn giữ trong ba dòng ở desktop: hero phải nằm trọn trong
                 một màn hình, người đọc không cần cuộn mới thấy nút hành động. */}
@@ -299,7 +303,7 @@ export default function HomePage() {
             sinh viên nhận được cuối hành trình là chỗ duy nhất xứng đáng được tô
             nguyên khối bằng màu đó. Dùng tiết chế thì nó mới còn là phần thưởng
             thị giác. */}
-        <section className="band band--achieve-strong on-dark">
+        <section className="band band--achieve-strong">
           <div className="container">
             <h2>Cuối cùng bạn nhận được gì</h2>
 

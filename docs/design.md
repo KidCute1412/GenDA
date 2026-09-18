@@ -235,11 +235,11 @@ Bốn nguyên lý cơ bản của thiết kế đồ họa được áp dụng t
 ```
 
 - **Contrast (Tương phản)**:
-  - Sử dụng màu thương hiệu **Deep Teal** (`#1F6F8E` — `color-primary-600`, lấy từ khối gradient của logo GenDA) làm nền nút hành động chính (Primary CTA) với chữ trắng, đạt tỷ lệ tương phản đo được **5.64:1** (vượt ngưỡng WCAG AA 4.5:1).
-  - Tỷ lệ tương phản chữ nội dung chính (`#16222B` trên nền `#F6F9FB`) đo được **15.31:1**, vượt xa chuẩn WCAG AAA ($\ge 7:1$).
+  - Sử dụng màu hành động **Navy** (`#1B3FD8` — `color-action-primary`) làm nền nút hành động chính (Primary CTA) với chữ trắng, đạt tỷ lệ tương phản đo được **7.64:1** (vượt ngưỡng WCAG AAA 7:1). Màu lạnh đặt giữa nền ấm là cách làm nút nhảy ra khỏi trang mà không cần phóng to — xem [Mục 4.4.2](#442-bảng-màu-nhận-diện--bốn-vai-trò).
+  - Tỷ lệ tương phản chữ nội dung chính (`#403B37` trên nền kem `#FDF3EC`) đo được **10.12:1**, vượt xa chuẩn WCAG AAA ($\ge 7:1$).
   - Toàn bộ số đo tương phản của từng cặp màu được kiểm định và ghi nhận tại [Mục 4.4.5](#445-bảng-token-ngữ-nghĩa--số-đo-tương-phản-đã-kiểm-định).
 - **Repetition (Lặp lại)**:
-  - Cấu trúc thẻ dự án (Project Card), thẻ mốc (Milestone Card) và thẻ ứng viên (Applicant Card) dùng chung một bán kính bo góc (`radius-xl` = 16px, xem [Mục 4.8.2](#482-bo-góc-border-radius--đính-chính-ký-hiệu)) và màu viền (`#D8E1E8` — `color-border-subtle`). Bề mặt để **phẳng, không đổ bóng** — lý do tại [Mục 4.9](#49-kỷ-luật-chống-giao-diện-khuôn-mẫu).
+  - Cấu trúc thẻ dự án (Project Card), thẻ mốc (Milestone Card) và thẻ ứng viên (Applicant Card) dùng chung một bán kính bo góc (`radius-lg` = 20px, xem [Mục 4.8.2](#482-bo-góc-border-radius)) và màu viền (`#DFD9D3` — `color-border-subtle`), kèm **một lớp bóng rất nhẹ** để mép thẻ trắng không cắt gắt vào tấm kem — ranh giới của việc dùng bóng ở [Mục 4.9](#49-kỷ-luật-chống-giao-diện-khuôn-mẫu).
 - **Alignment (Căn gióng)**:
   - Lưới 12 cột trên Desktop và lưới 1 cột trên Mobile.
   - Toàn bộ nhãn form, văn bản mô tả căn lề trái (Left-aligned) giúp mắt quét nhanh theo mô hình F-pattern; các con số ngân sách VNĐ căn lề phải (Right-aligned) trong bảng dữ liệu để dễ so sánh độ lớn.
@@ -248,13 +248,13 @@ Bốn nguyên lý cơ bản của thiết kế đồ họa được áp dụng t
 
 ### 4.2. Nguyên lý Tâm lý học Thị giác Gestalt (LN09)
 1. **Định luật Gần gũi (Law of Proximity)**: Nhóm các mốc bàn giao và kết quả nộp bài của mốc đó vào chung một khối viền thẻ để người dùng nhận biết ngay chúng thuộc về nhau.
-2. **Định luật Tương đồng (Law of Similarity)**: Mọi kỹ năng của sinh viên đều hiển thị dưới dạng viên thuốc (Tag Pills) bo tròn nền `color-neutral-100`; mọi kỹ năng đã trùng khớp với dự án đổi sang nền xanh lá nhạt `color-accent-50` (`#F2FAE9`) + chữ `color-accent-700` + **icon dấu tích**, để độ tương đồng không chỉ được mã hóa bằng màu sắc (xem quy tắc Redundant Coding tại [Mục 4.4.1](#441-quy-trình-chọn-màu-sáu-bước-color-selection-protocol)).
-3. **Định luật Đóng kín & Hình/Nền (Closure & Figure/Ground)**: Sử dụng các hộp thẻ màu trắng (`#FFFFFF`) nổi bật rõ trên nền xám lam nhạt (`#F6F9FB`) giúp mắt người dùng phân định tức thì vùng làm việc và khoảng đệm.
+2. **Định luật Tương đồng (Law of Similarity)**: Mọi kỹ năng của sinh viên đều hiển thị dưới dạng viên thuốc (Tag Pills) bo tròn hoàn toàn, nền `color-surface-subtle` (`#FDF3EC`); mọi kỹ năng đã trùng khớp với dự án đổi sang nền xanh lá nhạt `color-status-verified-bg` (`#E9F7EE`) + chữ `color-status-verified-text` (`#176034`) + **icon dấu tích**, để độ tương đồng không chỉ được mã hóa bằng màu sắc (xem quy tắc Redundant Coding tại [Mục 4.4.1](#441-quy-trình-chọn-màu-sáu-bước-color-selection-protocol)).
+3. **Định luật Đóng kín & Hình/Nền (Closure & Figure/Ground)**: Cấu trúc **tấm lồng tấm** (khung xanh nhạt → panel trắng → tấm kem → thẻ trắng) khiến mỗi tầng đều có mép rõ ở cả bốn phía. Mắt phân định tức thì vùng làm việc và khoảng đệm, và quan trọng hơn: ranh giới do **hình dạng** tạo ra nên không phụ thuộc vào độ chênh màu giữa hai nền.
 
 ### 4.3. Nhận thức Hành vi: Affordance, Signifiers & Visible Constraints (LN08)
 - **Perceived Affordance & Signifiers**:
   - Các nút bấm (Buttons) có hiệu ứng nổi nhẹ, bo góc, đổi màu và đổi con trỏ chuột sang dạng bàn tay (`pointer`) khi rê chuột, phát tín hiệu rõ ràng rằng "vật thể này bấm được".
-  - **Tín hiệu tương đương cho người dùng bàn phím**: mọi signifier dựa trên `:hover` đều bắt buộc có cặp song sinh dựa trên `:focus-visible` (vòng focus dày 2px, màu `color-primary-600`, cách viền 2px). Không có signifier nào chỉ tồn tại khi rê chuột — nếu không, người dùng bàn phím mất hoàn toàn khả năng nhận biết phần tử đang được chọn (đặc tả đầy đủ tại [Mục 4.6](#46-đặc-tả-tiếp-cận-bàn-phím--trình-đọc-màn-hình-nfr-ux-01)).
+  - **Tín hiệu tương đương cho người dùng bàn phím**: mọi signifier dựa trên `:hover` đều bắt buộc có cặp song sinh dựa trên `:focus-visible` (vòng focus dày 2px, màu `color-border-focus` = `#1B3FD8`, cách viền 2px). Không có signifier nào chỉ tồn tại khi rê chuột — nếu không, người dùng bàn phím mất hoàn toàn khả năng nhận biết phần tử đang được chọn (đặc tả đầy đủ tại [Mục 4.6](#46-đặc-tả-tiếp-cận-bàn-phím--trình-đọc-màn-hình-nfr-ux-01)).
   - Khu vực nộp bài (Deliverable Dropzone) có viền nét đứt (Dashed border), biểu tượng đám mây tải lên và dòng chữ "Kéo thả tệp vào đây hoặc Bấm để duyệt tệp", tạo tín hiệu nhận thức tức thì về hành vi kéo thả.
 - **Visible Constraints (Ràng buộc trực quan chống lỗi)**:
   - Ô nhập ngân sách bị giới hạn cứng từ 1.000.000 đến 5.000.000 VNĐ; nếu nhập ngoài khoảng, nút gửi duyệt bị vô hiệu hóa (Disabled state) và hiện thông báo giải thích.
@@ -272,112 +272,159 @@ Bảng màu GenDA **không được chọn theo cảm tính hay thị hiếu cá
 | :--- | :--- | :--- |
 | **1** | **Trích xuất từ nhận diện (Brand Extraction)** | Màu neo (anchor) được lấy trực tiếp bằng công cụ hút màu từ logo GenDA, không tự sáng tác. Điều này bảo đảm giao diện và nhận diện thương hiệu là một khối thống nhất. |
 | **2** | **Sinh thang màu giữ nguyên tông (Tonal Ramp)** | Từ mỗi màu neo, giữ nguyên **Hue**, chỉ biến thiên **Lightness/Saturation** theo bước đều để sinh thang 10 bậc `50 → 900`. Không trộn hue lạ vào giữa thang, tránh bảng màu bị "bẩn". |
-| **3** | **Ngữ nghĩa trước, hex sau (Semantic-First)** | Component **không bao giờ** gọi trực tiếp mã hex hay tên bậc màu (`#1F6F8E`, `teal-600`). Component chỉ gọi token ngữ nghĩa (`color-action-primary`, `color-status-verified`). Nhờ đó đổi thương hiệu về sau chỉ cần sửa một lớp ánh xạ. |
+| **3** | **Ngữ nghĩa trước, hex sau (Semantic-First)** | Component **không bao giờ** gọi trực tiếp mã hex hay tên bậc màu (`#1B3FD8`, `blue-600`). Component chỉ gọi token ngữ nghĩa (`color-action-primary`, `color-status-verified`). Nhờ đó đổi thương hiệu về sau chỉ cần sửa một lớp ánh xạ. |
 | **4** | **Cổng kiểm định tương phản (Contrast Gate)** | Mọi cặp *chữ / nền* phải được đo bằng công thức tỷ lệ tương phản WCAG 2.1 **trước khi** được đưa vào hệ thống, và số đo phải được ghi vào bảng tại Mục 4.4.5. Ngưỡng bắt buộc: **4.5:1** cho chữ thường, **3:1** cho chữ lớn ($\ge$ 24px thường hoặc $\ge$ 18.66px in đậm) và cho đường viền của phần tử giao diện. Cặp màu không đạt ngưỡng bị loại, không có ngoại lệ vì lý do thẩm mỹ. |
 | **5** | **Không dùng màu làm kênh thông tin duy nhất (Redundant Coding)** | Khoảng 8% nam giới bị rối loạn phân biệt màu (chủ yếu đỏ–lục). Vì vậy mọi trạng thái trên GenDA đều được mã hóa **ba lớp**: màu sắc + biểu tượng (icon) + nhãn chữ. Người dùng không phân biệt được đỏ/lục vẫn đọc được trạng thái mốc bàn giao. |
 | **6** | **Phân bổ theo tỷ lệ 60-30-10** | Giữ cân bằng thị giác: 60% nền trung tính, 30% cấu trúc/chữ, 10% màu nhấn. Màu nhấn khan hiếm thì mới thực sự "nhấn" được. |
 
-#### 4.4.2. Ba màu neo trích xuất từ logo GenDA
+#### 4.4.2. Bảng màu nhận diện & bốn vai trò
+
+Bảng màu GenDA được công bố dưới dạng **sáu mã màu**, không hơn:
 
 ```text
-             LOGO GenDA
+        BẢNG MÀU NHẬN DIỆN GenDA
  ┌──────────────────────────────────────────────────────────────┐
- │ Khối gradient xanh mòng két   ──> PRIMARY (Teal)             │
- │   #7FC3D9 (sáng) → #2C89AB (đậm)   Hạ tầng, quy trình,       │
- │                                     Trust Layer đang vận hành │
+ │ #E8F1FD   Pale Blue     ──> KHUNG TRANG                      │
+ │                             Viền mỏng bao quanh panel trắng   │
  │                                                              │
- │ Chữ "DA" xanh lá              ──> ACCENT (Green)             │
- │   #7DC242                           Thành quả ĐÃ xác thực     │
+ │ #FFFFFF   White         ──> PANEL & THẺ                      │
+ │                             Nền tấm panel chính, nền thẻ      │
  │                                                              │
- │ Chữ "Gen" xám lam             ──> NEUTRAL (Slate)            │
- │   #6B7F8C                           Nền, chữ, cấu trúc        │
+ │ #FDF3EC   Cream         ──> KHỐI NỘI DUNG                    │
+ │                             Nền các tấm bo góc lớn            │
+ │                                                              │
+ │ #1B3FD8   Navy          ──> HÀNH ĐỘNG                        │
+ │                             Nút chính, liên kết, vòng focus   │
+ │                                                              │
+ │ #E85D2C   Coral         ──> NHẤN & CHÚ THÍCH                 │
+ │                             Nét vẽ tay, chữ viết tay, icon    │
+ │                                                              │
+ │ #1A1A1A   Ink           ──> CHỮ                              │
+ │                             Tiêu đề và nội dung               │
  └──────────────────────────────────────────────────────────────┘
 ```
 
-**Ánh xạ ngữ nghĩa (vì sao là hai màu này, không phải màu khác)**: logo GenDA đã tự mang sẵn cấu trúc kể chuyện của sản phẩm — khối teal là *quá trình*, chữ xanh lá là *kết quả*. Hệ thiết kế chỉ việc tôn trọng đúng cấu trúc đó:
+**Điều đầu tiên phải hiểu: nền không phải một giá trị cố định, mà là một BỘ BỐN KIỂU KHỐI.**
 
-- **Teal = "Learn" / quá trình**: dùng cho mọi thứ đang vận hành — nút hành động, thanh tiến độ milestone, điều hướng, Match Score. Xanh mòng két là màu lạnh, mang liên tưởng tới sự điềm tĩnh, hạ tầng kỹ thuật và độ tin cậy thể chế — đúng vai trò **Lớp Niềm Tin**.
-- **Xanh lá = "Earn" / thành quả**: chỉ dùng cho những gì đã hoàn tất và được xác thực — huy hiệu `VERIFIED`, mốc `ACCEPTED`, thẻ Portfolio xác thực, quỹ `RELEASED`. Vì được dùng tiết chế, màu xanh lá trở thành **phần thưởng thị giác** trên hành trình của sinh viên.
-- **Slate = khung đỡ**: không mang ngữ nghĩa trạng thái, chỉ làm nền và chữ để hai màu trên nổi bật.
+Bản đầu của phong cách này lồng ba tầng nền vào nhau — khung xanh → panel trắng bo góc → tấm kem bo góc — và cho **mọi** khối nội dung dùng chung một kiểu. Từng khối trông ổn, nhưng cả trang đọc ra đều đều: cuộn từ đầu tới cuối chỉ thấy đúng một hình lặp lại. Đó chính là lỗi mà [Mục 4.9](#49-kỷ-luật-chống-giao-diện-khuôn-mẫu) đã gọi tên từ đầu — *"mọi khối lặp đúng một nhịp"* — và nó lọt lưới vì người dựng mải nhìn từng khối một.
 
-> **Quy tắc khan hiếm**: xanh lá **không** được dùng cho nút "Gửi", "Lưu" hay bất kỳ hành động thông thường nào. Nếu xanh lá xuất hiện ở khắp nơi, huy hiệu xác thực — tài sản cốt lõi của GenDA — sẽ mất hoàn toàn sức nặng.
+Cách sửa không phải bỏ hết nền đi, mà là **dùng nhiều kiểu xen kẽ nhau**. Nền rút còn hai tầng, và sự đa dạng chuyển sang hình dạng của khối:
+
+```text
+   NỀN TRANG  #FFFFFF
+     └─ KHỐI   nền + hình dạng thay đổi theo BỐN KIỂU (Mục 4.9.3)
+          └─ THẺ  #FFFFFF   nổi trên khối có nền màu
+```
+
+Bốn kiểu phân biệt nhau bằng **góc nào được bo** và **mép nào được chạm**, không chỉ bằng màu — nên hai khối cạnh nhau vẫn phân biệt được khi in đen trắng. Chi tiết và luật đếm được ở [Mục 4.9.3](#493-bốn-kiểu-khối--luật-xen-kẽ).
+
+**Ánh xạ ngữ nghĩa (vì sao màu nào vào vai nào):**
+
+- **Navy = hành động.** Màu lạnh, đậm, nghiêm túc. Nó gánh mọi thứ người dùng phải bấm: nút chính, liên kết, tab đang chọn, vòng focus. Đặt màu lạnh vào vai hành động giữa một nền ấm là cách làm nút **nhảy hẳn ra** khỏi trang mà không cần phóng to hay tô đậm thêm.
+- **Coral = giọng nói.** Đây là màu của **nét vẽ tay**: dòng nhãn viết tay phía trên tiêu đề, nét khoanh tròn quanh từ nhấn, icon vùng kéo thả, vạch trích dẫn. Nó gần như không bao giờ là nền của một khối đặc.
+- **Kem = nhịp.** Trang được chia nhịp bằng các tấm kem xen kẽ nền trắng, thay cho việc kẻ vạch ngang.
+- **Xanh nhạt = mép.** Vai trò duy nhất là cho người dùng biết trang có giới hạn.
+
+> **Coral là màu đẹp nhất của bảng và cũng là cái bẫy nguy hiểm nhất.** `#E85D2C` trên nền kem chỉ đạt **3.18:1**. Nghĩa là nó đủ cho phần tử phi văn bản và cho **chữ cỡ lớn** ($\ge$ 24px), nhưng **không đủ cho chữ thường**, và tuyệt đối không được làm nền nút có chữ trắng (trắng trên coral chỉ 3.48:1). Muốn viết chữ cam cỡ nhỏ thì phải dùng `color-accent-text` (coral-700, 6.05:1). Đây chính xác là vai trò mà `color-brand-decorative` đã giữ ở cả hai bản trước của tài liệu — bảng màu đổi ba lần nhưng cái bẫy thì không đổi, nên quy tắc dưới đây cũng không đổi.
 
 #### 4.4.3. Quy tắc Bậc màu (Tier Rule) — chống lỗi tương phản ngay từ gốc
 
-Đây là quy tắc quan trọng nhất của hệ màu, sinh ra để ngăn lỗi phổ biến nhất khi triển khai: lấy màu thương hiệu ở bậc sáng (thường là bậc 400–500 vì "nhìn đẹp nhất") đặt làm nền nút rồi viết chữ trắng lên — tạo ra nút chỉ đạt khoảng 3:1 và **trượt chuẩn WCAG AA**.
+Nền sáng nên quy tắc quay về đúng chiều quen thuộc, sau một bản nền tối đảo chiều nó (xem [DD-08](#quyết-định-thiết-kế-dd-08-chuyển-sang-phong-cách-ấm-sáng-thân-thiện)). Đây là quy tắc sinh ra để ngăn lỗi phổ biến nhất khi triển khai: lấy màu thương hiệu ở bậc sáng vì "nhìn đẹp nhất", đặt làm nền nút rồi viết chữ trắng lên.
 
 | Bậc màu | ĐƯỢC PHÉP dùng cho | TUYỆT ĐỐI KHÔNG dùng cho |
 | :--- | :--- | :--- |
-| **50 – 200** | Nền tint của banner/badge/hàng bảng được chọn; nền vùng kéo thả. | Chữ, icon nhỏ, đường viền mang thông tin. |
-| **300 – 500** | Đường viền trang trí, icon cỡ lớn ($\ge$ 24px), fill biểu đồ, thanh tiến độ, hình minh họa, trạng thái `disabled`. | **Chữ trên nền sáng** và **nền nút có chữ trắng** — các bậc này chỉ đạt khoảng 2:1–4:1. |
+| **50 – 200** | Nền tint của banner/badge/hàng bảng được chọn; nền vùng kéo thả; chữ số trang trí cỡ lớn. | Chữ, icon nhỏ, đường viền mang thông tin. |
+| **300 – 500** | Đường viền trang trí, icon cỡ lớn ($\ge$ 24px), nét vẽ tay, thanh tiến độ, hình minh họa, trạng thái `disabled`, **chữ cỡ $\ge$ 24px**. | **Chữ thường trên nền sáng** và **nền nút có chữ trắng** — các bậc này chỉ đạt khoảng 3:1–4:1. |
 | **600 – 900** | Chữ trên nền sáng; nền nút/badge có chữ trắng; tiêu đề; đường viền ô nhập liệu. | (Không hạn chế.) |
 
-> **Câu ghi nhớ một dòng cho toàn đội**: ***"Chữ chỉ sống ở bậc $\ge$ 600."***
+> **Câu ghi nhớ một dòng cho toàn đội**: ***"Chữ thường chỉ sống ở bậc $\ge$ 600."***
+
+Thang trung tính đi theo chiều ngược với bản nền tối: bề mặt càng được **nâng cao** thì càng **sáng** lên theo hướng trắng, và độ cao được diễn đạt bằng **bóng mềm** chứ không bằng ánh sáng.
 
 #### 4.4.4. Thang màu đầy đủ (Tonal Ramps)
 
 ```text
-PRIMARY — Teal (Hue ≈ 196°, neo từ khối logo)
-50 #EFF7FA │ 100 #D7ECF3 │ 200 #AEDAE7 │ 300 #7FC3D9* │ 400 #4FA6C4
-500 #2C89AB* │ 600 #1F6F8E │ 700 #1A5A73 │ 800 #154A5F │ 900 #103A4B
+ACTION — Blue (Hue ≈ 228°)
+50 #EDF1FE │ 100 #E8F1FD* │ 200 #C7D5FA │ 300 #9AB0F5 │ 400 #5C7BEA
+500 #2F52E0 │ 600 #1B3FD8* │ 700 #1631AC │ 800 #122782 │ 900 #0D1C5C
 
-ACCENT — Green (Hue ≈ 92°, neo từ chữ "DA")
-50 #F2FAE9 │ 100 #E2F5CC │ 200 #C8EBA0 │ 300 #A8DC6E │ 400 #7DC242*
-500 #63A22E │ 600 #4A7F1F │ 700 #396317 │ 800 #2C4D12 │ 900 #21390E
+ACCENT — Coral (Hue ≈ 18°)
+50 #FDF3EC* │ 100 #FBE4D6 │ 200 #F7C7AE │ 300 #F2A37C │ 400 #ED7E4F
+500 #E85D2C* │ 600 #C94A1E │ 700 #A33A16 │ 800 #7D2C11 │ 900 #58200C
 
-NEUTRAL — Slate (Hue ≈ 205°, neo từ chữ "Gen")
-0 #FFFFFF │ 50 #F6F9FB │ 100 #ECF1F5 │ 200 #D8E1E8 │ 300 #B9C7D1
-400 #8CA0AD │ 500 #6B7F8C* │ 600 #52646F │ 700 #3C4A54 │ 900 #16222B
+NEUTRAL — Ink (trung tính ẤM)
+0 #FFFFFF* │ 50 #FAF8F6 │ 100 #EFEBE7 │ 200 #DFD9D3 │ 300 #C3BBB3
+400 #8C837B │ 500 #6E655E │ 700 #403B37 │ 900 #1A1A1A*
 
-(*) = màu neo lấy trực tiếp từ logo.
+(*) = màu lấy trực tiếp từ bảng màu nhận diện.
 ```
 
-Hai màu trạng thái còn lại (`warning`, `danger`) **không** nằm trong nhận diện thương hiệu. Chúng được chọn theo quy ước văn hóa phổ quát (hổ phách = lưu ý, đỏ = cảnh báo) vì đây là ngữ nghĩa người dùng đã biết sẵn, và được kéo về cùng độ bão hòa với hệ màu chính để không phá vỡ tổng thể.
+Hai điểm cần đọc kỹ:
+
+1. **Nền kem `#FDF3EC` nằm trong thang CORAL, không nằm trong thang trung tính.** Nó là một màu trung tính ấm có hue rất gần coral, nên đặt nó vào chính thang đó bảo đảm nền kem và màu nhấn luôn cùng một tông. Nếu tách nó ra thành một màu riêng, mỗi lần chỉnh sắc màu nhấn là một lần phải nhớ chỉnh nền kem theo — và chắc chắn có lần quên.
+2. **Thang trung tính ám ẤM, không phải xám trung tính.** Một thang xám lạnh đặt cạnh `#FDF3EC` sẽ đọc ra như hai hệ màu khác nhau bị ghép nhầm: chữ xám xanh trên nền kem trông như chữ bị bạc màu.
+
+Hai màu trạng thái còn lại (`warning`, `danger`) và màu `verified` **không** nằm trong nhận diện. Chúng theo quy ước văn hóa phổ quát (lục = đã xong, hổ phách = lưu ý, đỏ = cảnh báo) và được kéo về cùng độ bão hòa với hệ màu chính:
+
+```text
+VERIFIED — Green       50 #E9F7EE │ 700 #1F7A43 │ 800 #176034
+WARNING  — Amber       50 #FDF3E0 │ 700 #9A5B06 │ 800 #7A4705
+DANGER   — Red         50 #FDEEED │ 700 #B3261E
+```
 
 #### 4.4.5. Bảng Token Ngữ nghĩa & Số đo Tương phản đã Kiểm định
 
-Cột cuối là **số đo thực tế** theo công thức WCAG 2.1 (không phải ước lượng). Đây chính là kết quả của Bước 4 — Contrast Gate.
+Cột cuối là **số đo thực tế** theo công thức WCAG 2.1 (không phải ước lượng). Đây chính là kết quả của Bước 4 — Contrast Gate. Nền kem là `#FDF3EC`, nền thẻ/panel là `#FFFFFF`.
 
 | Token ngữ nghĩa | Bậc màu | Hex | Ứng dụng & Ý nghĩa tâm lý | Cặp tương phản đã đo |
 | :--- | :--- | :--- | :--- | :--- |
-| `color-action-primary` | primary-600 | `#1F6F8E` | **Deep Teal** — nền nút hành động chính, tab đang chọn, vòng focus. Xanh lạnh tạo cảm giác điềm tĩnh, đáng tin. | Chữ trắng trên nền này: **5.64:1** ✅ AA |
-| `color-action-primary-hover` | primary-700 | `#1A5A73` | Trạng thái hover/active của nút chính. | Chữ trắng: **7.63:1** ✅ AAA |
-| `color-action-link` | primary-600 | `#1F6F8E` | Liên kết văn bản trên nền trang. | Trên nền `#F6F9FB`: **5.34:1** ✅ AA |
-| `color-brand-decorative` | primary-500 | `#2C89AB` | Màu thương hiệu cho **phần tử phi văn bản**: icon lớn, thanh tiến độ milestone, đường viền vùng kéo thả, hình minh họa. | Trên nền trắng: **3.98:1** — đạt ngưỡng 3:1 cho phần tử giao diện, **cấm dùng làm nền nút có chữ trắng** |
-| `color-status-verified` | accent-600 | `#4A7F1F` | **Verified Green** — nền huy hiệu `VERIFIED`, mốc `ACCEPTED`, quỹ `RELEASED`, tích xanh Portfolio. Màu của thành quả đã được bảo chứng. | Chữ trắng trên nền này: **4.83:1** ✅ AA |
-| `color-status-verified-text` | accent-700 | `#396317` | Chữ trong badge xác thực nền nhạt. | Trên nền `#F2FAE9`: **6.60:1** ✅ AA |
-| `color-status-verified-bg` | accent-50 | `#F2FAE9` | Nền banner/badge trạng thái đã xác thực. | (Nền — xem cặp trên) |
-| `color-status-warning` | warning-700 | `#A15C07` | **Warm Amber** — huy hiệu Ký quỹ mô phỏng, `CHANGES_REQUESTED`, dự án `PENDING_REVIEW`. Sắc ấm gây chú ý mà không gây hoảng sợ như đỏ. | Chữ trắng trên nền này: **5.19:1** ✅ AA |
-| `color-status-warning-text` | warning-800 | `#7A4A05` | Chữ trong banner lưu ý nền nhạt. | Trên nền `#FDF4E3`: **6.84:1** ✅ AA |
-| `color-status-warning-bg` | warning-50 | `#FDF4E3` | Nền banner Ký quỹ mô phỏng, banner chờ duyệt. | (Nền — xem cặp trên) |
-| `color-status-danger` | danger-700 | `#B42318` | **Crimson Red** — từ chối dự án/minh chứng, hủy dự án, lỗi hệ thống. | Chữ trắng trên nền này: **6.57:1** ✅ AA |
-| `color-status-danger-text` | danger-700 | `#B42318` | Chữ thông báo lỗi dưới ô nhập liệu. | Trên nền `#FDF0EF`: **5.91:1** ✅ AA |
-| `color-status-danger-bg` | danger-50 | `#FDF0EF` | Nền banner lỗi, banner minh chứng bị từ chối. | (Nền — xem cặp trên) |
-| `color-text-heading` | neutral-900 | `#16222B` | Tiêu đề H1/H2, nền thanh Header. Slate đậm gần như đen, giữ độ trang trọng doanh nghiệp. | Trên nền `#F6F9FB`: **15.31:1** ✅ AAA |
-| `color-text-body` | neutral-700 | `#3C4A54` | Nội dung, mô tả dự án, tiêu chí nghiệm thu. | Trên nền `#F6F9FB`: **8.64:1** ✅ AAA |
-| `color-text-muted` | neutral-600 | `#52646F` | Chữ phụ: nhãn thời gian, chú thích, placeholder. | Trên nền trắng: **6.16:1** ✅ AA |
-| `color-border-input` | neutral-500 | `#6B7F8C` | **Viền ô nhập liệu, checkbox, radio** — ranh giới mang thông tin, bắt buộc $\ge$ 3:1 theo WCAG 1.4.11. | Trên nền trắng: **4.17:1** ✅ |
-| `color-border-subtle` | neutral-200 | `#D8E1E8` | Viền thẻ, đường kẻ phân cách — **thuần trang trí**, không phải ranh giới mang thông tin nên không chịu ngưỡng 3:1. | 1.32:1 (chấp nhận được vì trang trí) |
-| `color-surface-page` | neutral-50 | `#F6F9FB` | Nền toàn trang (Cool Paper): dịu mắt hơn trắng tinh, ăn tông lạnh với logo. | (Nền nhận mọi cặp chữ ở trên) |
-| `color-surface-card` | neutral-0 | `#FFFFFF` | Nền thẻ làm việc, hộp thoại modal. | (Nền) |
-| `color-surface-brand-strong` | primary-800 | `#154A5F` | **Vùng màu đậm chiếm trọn bề ngang**: hero trang chủ, đầu trang hồ sơ công khai. Đây là nhịp màu chính của sản phẩm. | Chữ trắng trên nền này: **9.65:1** ✅ AAA |
-| `color-surface-achieve-strong` | accent-800 | `#2C4D12` | Vùng màu đậm cho khối nói về **thành quả** (portfolio, thứ sinh viên nhận được cuối hành trình). | Chữ trắng trên nền này: **9.64:1** ✅ AAA |
-| *(chữ phụ trên nền đậm)* | primary-100 | `#D7ECF3` | Nội dung và đoạn dẫn đặt trên vùng màu đậm. | Trên `#154A5F`: **7.89:1** ✅ AAA |
-| *(chữ mờ trên nền đậm)* | primary-200 | `#AEDAE7` | Nhãn phụ, chú thích trên vùng màu đậm. | Trên `#154A5F`: **6.42:1** ✅ AA |
-| *(liên kết trên nền đậm)* | accent-300 | `#A8DC6E` | Liên kết và chữ nhấn trên vùng màu đậm. | Trên `#154A5F`: **6.03:1** ✅ AA |
+| `color-action-primary` | action-600 | `#1B3FD8` | **Navy** — nền nút hành động chính, tab đang chọn, chip đang bật, vòng focus. Màu lạnh giữa nền ấm: nút nhảy ra khỏi trang mà không cần phóng to. | Chữ trắng trên nền này: **7.64:1** ✅ AAA |
+| `color-action-primary-hover` | action-700 | `#1631AC` | Trạng thái hover của nút chính. | Chữ trắng: **10.15:1** ✅ AAA |
+| `color-action-primary-active` | action-800 | `#122782` | Trạng thái đang bấm giữ. | Chữ trắng: **12.60:1** ✅ AAA |
+| `color-action-link` | action-600 | `#1B3FD8` | Liên kết văn bản. | Trên nền kem: **6.99:1** ✅ AA — trên nền trắng: **7.64:1** ✅ AAA |
+| `color-brand-decorative` | accent-500 | `#E85D2C` | **Coral** cho **phần tử phi văn bản và chữ cỡ lớn**: nét khoanh vẽ tay, icon vùng kéo thả, vạch trích dẫn, thanh tiến độ, hình minh họa. | Trên nền kem: **3.18:1** — đạt ngưỡng 3:1 cho phần tử giao diện và chữ $\ge$ 24px. **Cấm làm nền nút có chữ trắng** |
+| `color-accent-text` | accent-700 | `#A33A16` | Coral dùng làm **chữ cỡ nhỏ**: nhãn viết tay, từ nhấn trong tiêu đề, dòng ghi công. | Trên nền kem: **6.05:1** ✅ AA |
+| `color-accent-strong` | accent-600 | `#C94A1E` | Coral đủ đậm để làm nền có chữ trắng, khi thật sự cần một khối cam đặc. | Chữ trắng: **4.69:1** ✅ AA |
+| `color-status-verified` | green-700 | `#1F7A43` | Nền huy hiệu `VERIFIED`, mốc `ACCEPTED`, quỹ `RELEASED`, tích xanh Portfolio. | Chữ trắng trên nền này: **5.35:1** ✅ AA |
+| `color-status-verified-text` | green-800 | `#176034` | Chữ trong badge xác thực nền tint. | Trên nền `#E9F7EE`: **6.89:1** ✅ AA |
+| `color-status-verified-bg` | green-50 | `#E9F7EE` | Nền banner/badge trạng thái đã xác thực. | (Nền — xem cặp trên) |
+| `color-status-warning` | amber-700 | `#9A5B06` | **Warm Amber** — huy hiệu Ký quỹ mô phỏng, `CHANGES_REQUESTED`, dự án `PENDING_REVIEW`. | Chữ trắng trên nền này: **5.42:1** ✅ AA |
+| `color-status-warning-text` | amber-800 | `#7A4705` | Chữ trong banner lưu ý nền tint. | Trên nền `#FDF3E0`: **6.98:1** ✅ AA |
+| `color-status-warning-bg` | amber-50 | `#FDF3E0` | Nền banner Ký quỹ mô phỏng, banner chờ duyệt. | (Nền — xem cặp trên) |
+| `color-status-danger` | red-700 | `#B3261E` | **Crimson Red** — từ chối dự án/minh chứng, hủy dự án, lỗi hệ thống. | Chữ trắng trên nền này: **6.54:1** ✅ AA |
+| `color-status-danger-text` | red-700 | `#B3261E` | Chữ thông báo lỗi dưới ô nhập liệu. | Trên nền `#FDEEED`: **5.80:1** ✅ AA |
+| `color-status-danger-bg` | red-50 | `#FDEEED` | Nền banner lỗi, banner minh chứng bị từ chối. | (Nền — xem cặp trên) |
+| `color-status-progress` | action-700 | `#1631AC` | Trạng thái `SUBMITTED` / `IN_PROGRESS`. | Trên nền `#EDF1FE`: **9.00:1** ✅ AAA |
+| `color-status-progress-bg` | action-50 | `#EDF1FE` | Nền badge/alert thông tin, nền thẻ đang được chọn. | (Nền — xem cặp trên) |
+| `color-text-heading` | neutral-900 | `#1A1A1A` | Tiêu đề H1/H2, số tiền, chữ nhấn mạnh. | Trên nền kem: **15.92:1** ✅ AAA — trên trắng: **17.40:1** ✅ AAA |
+| `color-text-body` | neutral-700 | `#403B37` | Nội dung, mô tả dự án, tiêu chí nghiệm thu. Hạ một bậc khỏi đen tuyền để khối chữ dài bớt gắt trên nền ấm. | Trên nền kem: **10.12:1** ✅ AAA |
+| `color-text-muted` | neutral-500 | `#6E655E` | Chữ phụ: nhãn thời gian, chú thích, gợi ý mờ. | Trên nền kem: **5.21:1** ✅ AA — trên trắng: **5.70:1** ✅ AA |
+| `color-text-on-dark` | neutral-0 | `#FFFFFF` | Chữ đặt trên **bề mặt tối đặc**: nhãn nút chính, chip đang bật, tab đang chọn, số trong vòng tròn stepper. | Trên navy: **7.64:1** ✅ AAA |
+| `color-text-on-accent` | neutral-0 | `#FFFFFF` | Chữ đặt trên **khối màu nhấn**. Ở bảng màu này nó trùng giá trị với token trên, nhưng vẫn giữ riêng vì hai token trả lời hai câu hỏi khác nhau — và bảng màu đã đổi ba lần, lần nào cũng có lần chúng tách ra. | (Xem cặp trên) |
+| `color-text-ghost` | accent-200 | `#F7C7AE` | Số thứ tự cỡ lớn làm nền trang trí. **Thuần trang trí**, luôn đi kèm `aria-hidden`, không chịu ngưỡng tương phản. | 1.40:1 (chấp nhận được vì trang trí) |
+| `color-border-input` | neutral-400 | `#8C837B` | **Viền ô nhập liệu, checkbox, radio** — ranh giới mang thông tin, bắt buộc $\ge$ 3:1 theo WCAG 1.4.11. | Trên nền trắng: **3.72:1** ✅ — trên nền kem: **3.40:1** ✅ |
+| `color-border-subtle` | neutral-200 | `#DFD9D3` | Viền thẻ, đường kẻ phân cách — **thuần trang trí**, không chịu ngưỡng 3:1. | 1.40:1 (chấp nhận được vì trang trí) |
+| `color-surface-page` | neutral-0 | `#FFFFFF` | Nền trang. Cũng là nền của khối **không mang kiểu nào** — khoảng thở giữa các khối có nền màu. | (Nền) |
+| `color-surface-card` | neutral-0 | `#FFFFFF` | Nền thẻ làm việc, hộp thoại modal, ô nhập liệu. | (Nền) |
+| `color-surface-subtle` | accent-50 | `#FDF3EC` | Nền nút phụ, thẻ kỹ năng, vùng kéo thả, và **KIỂU D** ở chân trang. | Chữ nội dung trên nền này: **10.12:1** ✅ AAA |
+| `color-surface-brand`, `color-surface-brand-strong` | accent-50 | `#FDF3EC` | Nền của **KIỂU A và B** — khối tràn mép và khối mở đầu. | Xem cặp ở trên |
+| `color-surface-achieve`, `color-surface-achieve-strong` | action-100 | `#E8F1FD` | Nền của **KIỂU C — tấm rời**: khối nhấn mạnh, bo cả bốn góc, thụt vào hai bên. Màu này gắn chặt với một kiểu hình, nên người đọc phân biệt nó bằng cả màu lẫn dáng. | Chữ nội dung trên nền này: **9.71:1** ✅ AAA |
 
-> **Ghi chú cách đọc bảng**: `color-brand-decorative` (primary-500) là màu thương hiệu "đẹp nhất" và cũng là **cái bẫy nguy hiểm nhất**. Nó đạt 3.98:1 — đủ cho icon và đường viền, nhưng **không đủ** cho chữ thường. Tài liệu ghi rõ số đo này để lập trình viên không vô tình dùng nó làm nền nút.
+> **Ghi chú cách đọc bảng**: `color-brand-decorative` (coral-500) là màu đẹp nhất của hệ và cũng là **cái bẫy nguy hiểm nhất**. Nó đạt 3.18:1 — đủ cho nét vẽ, icon và chữ cỡ lớn, nhưng **không đủ** cho chữ thường. Tài liệu ghi rõ số đo này để lập trình viên không vô tình dùng nó làm nền nút hay màu chữ nội dung. Khi cần chữ cam nhỏ, `color-accent-text` đã chờ sẵn.
 
 #### 4.4.6. Phân bổ 60-30-10 trên giao diện thực tế
 
 ```text
-[ 60% Nền Neutral ]        --> Cool Paper (#F6F9FB) + Card Surface (#FFFFFF)
-[ 30% Cấu trúc & Chữ ]     --> Slate (#16222B, #3C4A54, #52646F, #D8E1E8)
-[ 10% Nhấn Brand & Trạng thái ] --> Teal (#1F6F8E) ~7%
+[ 60% Nền ấm & trắng ]     --> Cream (#FDF3EC) + Panel/Card (#FFFFFF)
+[ 30% Cấu trúc & Chữ ]     --> #1A1A1A, #403B37, #6E655E, #DFD9D3
+[ 10% Nhấn Brand & Trạng thái ] --> Navy (#1B3FD8) ~5%
+                                    + Coral (#E85D2C) ~2%
                                     + Green/Amber/Red trạng thái ~3%
 ```
 
-Kiểm chứng nhanh khi review một màn hình: **nheo mắt nhìn tổng thể — nếu thấy quá hai vùng màu teal đậm cạnh nhau, tức là đã lạm dụng màu nhấn.** Mỗi màn hình chỉ nên có đúng **một** nút hành động chính (Primary CTA).
+Kiểm chứng nhanh khi review một màn hình: **nheo mắt nhìn tổng thể — nếu thấy quá hai khối navy đặc cạnh nhau, tức là đã lạm dụng màu nhấn.** Mỗi màn hình chỉ nên có đúng **một** nút hành động chính (Primary CTA).
+
+> **Coral chịu hạn mức NGẶT hơn navy, và đây là điều dễ vi phạm nhất.** Coral là màu vui mắt nên rất dễ bị rải thêm: thêm một dòng viết tay, thêm một nét khoanh, thêm một icon cam. Mỗi lần thêm là một lần nó bớt nghĩa. Coral chỉ nên xuất hiện **tối đa hai lần trên một màn hình**, và một trong hai nên là dòng nhãn viết tay trên tiêu đề. Đây là luật đếm được, xem [Mục 4.9.2](#492-luật-kiểm-đếm-được-countable-rules).
 
 ### 4.5. Sử dụng Màu trong Mã hóa Trạng thái (Redundant Coding)
 
@@ -389,7 +436,7 @@ Hiện thực hóa Bước 5 của quy trình chọn màu. Mọi trạng thái m
 | `PENDING` / `PENDING_REVIEW` | `color-status-warning-bg` | Đồng hồ | "Đang chờ duyệt" |
 | `CHANGES_REQUESTED` | `color-status-warning-bg` | Mũi tên quay lại | "Yêu cầu chỉnh sửa" |
 | `REJECTED` / `CANCELLED` | `color-status-danger-bg` | Dấu X | "Bị từ chối" / "Đã hủy" |
-| `SUBMITTED` / `IN_PROGRESS` | `color-primary-50` (`#EFF7FA`) | Vòng tròn tiến độ | "Đang thực hiện" |
+| `SUBMITTED` / `IN_PROGRESS` | `color-status-progress-bg` (`#EDF1FE`) | Vòng tròn tiến độ | "Đang thực hiện" |
 
 Hệ quả kiểm thử: chụp màn hình chuyển sang ảnh xám (grayscale) — nếu vẫn đọc được đầy đủ trạng thái thì thiết kế đạt yêu cầu.
 
@@ -402,7 +449,7 @@ Hệ quả kiểm thử: chụp màn hình chuyển sang ảnh xám (grayscale) 
 > Công thức tính tỷ lệ tương phản **không đổi** giữa 2.1 và 2.2, nên toàn bộ số đo đã kiểm định ở [Mục 4.4.5](#445-bảng-token-ngữ-nghĩa--số-đo-tương-phản-đã-kiểm-định) vẫn giữ nguyên hiệu lực.
 
 **a. Vòng focus hiển thị (WCAG 2.4.7 Focus Visible)**
-- Mọi phần tử tương tác được (nút, liên kết, ô nhập, checkbox, tab, thẻ dự án bấm được) phải có vòng focus: viền ngoài **2px** màu `color-action-primary` (`#1F6F8E`), cách phần tử **2px**, bo góc theo phần tử.
+- Mọi phần tử tương tác được (nút, liên kết, ô nhập, checkbox, tab, thẻ dự án bấm được) phải có vòng focus: viền ngoài **2px** màu `color-action-primary` (`#1B3FD8`), cách phần tử **2px**, bo góc theo phần tử.
 - Tương phản vòng focus trên nền trang đo được **5.34:1**, vượt ngưỡng 3:1 của WCAG 1.4.11.
 - **Cấm tuyệt đối** khai báo `outline: none` mà không cấp ngay một chỉ báo focus thay thế.
 
@@ -487,17 +534,27 @@ Ba hệ quả bắt buộc:
 
 | Vai trò | Phông | Lý do chọn |
 | :--- | :--- | :--- |
-| **Tiêu đề** | **IBM Plex Sans** (500, 600, 700) | Chữ của một hãng kỹ thuật: dáng hơi vuông, có đặc điểm riêng nhận ra được, mang sắc thái nghiêm túc đúng với một nền tảng nói chuyện tiền bạc và cam kết. Bộ ký tự Vietnamese là bản chính thức của IBM, dấu phụ dựng chuẩn (đã kiểm chứng bằng ảnh chụp màn hình thật, không suy đoán). |
+| **Toàn bộ giao diện** | **Be Vietnam Pro** (400, 500, 600, 700) | Geometric sans: bụng chữ tròn, khẩu độ mở, dáng chữ thân thiện — đúng giọng nói của phong cách này. Dựng dấu tiếng Việt **nguyên bản** chứ không phải bản mở rộng chắp vá, vì đây là phông làm ra cho tiếng Việt trước. |
+| **Giọng viết tay** | **Playpen Sans** (600) | Chữ tay viết bằng bút dạ, nét đều, hình chữ bất quy tắc vừa đủ. Đây là phông viết tay hiếm hoi có subset `vietnamese` đầy đủ. |
 
-> **Vì sao đổi khỏi Be Vietnam Pro.** Bản trước chọn Be Vietnam Pro vì nó dựng dấu tiếng Việt rất tốt — lý do đó vẫn đúng. Nhưng khi dựng ra màn hình thật thì lộ ra một vấn đề khác: Be Vietnam Pro là **geometric sans**, cùng họ hình với Poppins và Montserrat. Ở trọng lượng 700 cỡ lớn, đó chính là kiểu chữ mà gần như mọi trang do máy sinh đều dùng, nên chữ đọc ra "mẫu có sẵn" chứ không ra "sản phẩm có người thiết kế".
->
-> Ràng buộc dấu phụ ở [Mục 4.7.1](#471-ràng-buộc-quyết-định-dấu-phụ-tiếng-việt) **không được nới lỏng** khi đổi: IBM Plex Sans được chọn vì nó thỏa cả hai vế, chứ không phải đánh đổi vế dấu phụ lấy vế thẩm mỹ. Mọi phông thay thế về sau phải qua đúng hai cửa đó, và phải kiểm bằng ảnh chụp tiếng Việt thật trước khi chốt.
-| **Nội dung & giao diện** | **Inter** (400, 500, 600) | Chiều cao chữ thường (x-height) lớn và khoảng chữ được tinh chỉnh cho màn hình, dễ đọc nhất ở cỡ nhỏ 12–16px — nơi phần lớn giao diện GenDA sinh sống. Hỗ trợ Vietnamese đầy đủ. |
+**Vì sao đảo ngược quyết định cũ về Be Vietnam Pro.** Bản trước của tài liệu **loại** chính phông này, với lập luận: *"Be Vietnam Pro là geometric sans, cùng họ hình với Poppins và Montserrat; ở trọng lượng 700 cỡ lớn nó chính là kiểu chữ mà gần như mọi trang do máy sinh đều dùng."*
 
-**Vì sao ghép hai phông chứ không dùng một?** Lý do chức năng, không phải trang trí: tiêu đề cỡ lớn và thưa cần **bản sắc**, còn nội dung cỡ nhỏ và dày đặc cần **độ dễ đọc**. Hai yêu cầu này tối ưu ngược chiều nhau.
+Lập luận đó **không sai**, nhưng nó gắn chặt với một đích đến khác. Khi ấy sản phẩm nhắm tới vẻ *công cụ kỹ thuật nghiêm túc*, và một dáng chữ tròn trịa kéo ngược lại đích đó. Phong cách mới nhắm tới vẻ **ấm và dễ gần**, và geometric sans chính là dáng chữ của vẻ đó. Cùng một phông, cùng một đặc điểm hình học, nhưng đổi đích đến thì từ điểm trừ thành điểm cộng.
+
+Điều này nói lên một chuyện đáng ghi lại: **"kiểu chữ mà trang do máy sinh hay dùng" không phải một khuyết tật của phông.** Vấn đề của giao diện khuôn mẫu chưa bao giờ nằm ở một phông cụ thể, mà nằm ở việc mọi thứ khác cũng đều là mặc định. Một geometric sans đặt trong hệ màu riêng, bố cục bất đối xứng và giọng viết tay riêng thì không đọc ra "mặc định".
+
+**Vì sao không dùng đúng phông trong ảnh tham chiếu.** Poppins và Outfit — hai phông gần nhất về dáng — cùng Caveat (phông viết tay phổ biến nhất) đều **không có subset `vietnamese`** (đã kiểm trong `next/dist/compiled/@next/font/dist/google/font-data.json`, không suy đoán). Với một giao diện toàn tiếng Việt thì đó là **điều kiện loại**, không phải điểm trừ có thể bỏ qua: ràng buộc dấu phụ ở [Mục 4.7.1](#471-ràng-buộc-quyết-định-dấu-phụ-tiếng-việt) đứng trên mọi lựa chọn thẩm mỹ.
+
+**Ba ràng buộc cứng khi dùng phông viết tay.** Đây là thứ dễ bị lạm dụng nhất trong cả hệ thiết kế, vì nó vui mắt và viết thêm một dòng thì quá dễ:
+
+1. **Chỉ cho nhãn NGẮN và PHỤ**: dòng `eyebrow` trên tiêu đề, từ nhấn được khoanh tròn trong tiêu đề hero, dòng ghi công dưới trích dẫn. **Không bao giờ** cho nội dung, nhãn trường, chữ trong nút, chữ trong badge, hay bất cứ thứ gì người dùng phải đọc để thao tác.
+2. **Không bao giờ dưới 14px.** Phông viết tay có nét mảnh và hình chữ bất quy tắc nên mất độ rõ nhanh hơn phông thường khi thu nhỏ.
+3. **Không viết hoa toàn phần.** Dấu phụ tiếng Việt trên phông tay vốn đã cao; viết hoa nữa thì dấu đè vào dòng trên. Đây là hệ quả trực tiếp của [Mục 4.7.1](#471-ràng-buộc-quyết-định-dấu-phụ-tiếng-việt).
+
+**Vì sao ghép hai phông chứ không dùng một?** Lý do ở đây **không phải** "tiêu đề cần bản sắc, nội dung cần dễ đọc" như cách ghép phông thông thường — Be Vietnam Pro làm tốt cả hai vai. Phông thứ hai vào đây vì một lý do khác hẳn: nó là **giọng nói**, không phải cấp bậc. Một dòng chữ tay giữa trang nói rằng *có người đứng sau sản phẩm này*, và đó là thứ một nền tảng đang xin người dùng tin tưởng rất cần nói. Vì nó là giọng nói chứ không phải cấp bậc, nó chỉ được xuất hiện vài lần — giọng nói lặp quá nhiều thì thành tiếng ồn.
 
 **Chi phí và cách bù.** Tải hai họ phông tốn băng thông, trong khi 85% sinh viên dùng smartphone (có thể đang dùng 3G/4G). Bù bằng ba biện pháp bắt buộc:
-- Chỉ tải các trọng lượng thực sự dùng (Be Vietnam Pro: 600/700 — Inter: 400/500/600), không tải cả họ.
+- Chỉ tải các trọng lượng thực sự dùng (Be Vietnam Pro: 400/500/600/700 — Playpen Sans: **chỉ 600**, vì nó chỉ xuất hiện ở vài dòng), không tải cả họ.
 - Chỉ nhúng subset `latin` + `vietnamese`, bỏ Cyrillic/Greek.
 - Dùng cơ chế tự host của Next.js (`next/font`) để phông đi cùng domain, có `size-adjust` khử hiện tượng giật bố cục khi đổi phông — nhất quán với cam kết chống CLS tại [Mục 8.1](#81-trạng-thái-đang-tải-loading-state--skeleton-shimmer-pattern).
 
@@ -507,15 +564,16 @@ Cơ số 16px, tỷ lệ ~1.25 (Major Third). Cột *Mobile* là giá trị thay
 
 | Token vai trò | Desktop | Mobile | Giãn dòng | Trọng lượng | Phông | Dùng ở đâu |
 | :--- | ---: | ---: | ---: | ---: | :--- | :--- |
-| `text-display` | 48px | 32px | 1.20 | 700 | Be Vietnam Pro | Tiêu đề Hero trang chủ ("FROM LEARN TO EARN") |
-| `text-h1` | 36px | 28px | 1.25 | 700 | Be Vietnam Pro | Tiêu đề trang |
-| `text-h2` | 30px | 24px | 1.30 | 600 | Be Vietnam Pro | Tiêu đề khối lớn |
+| `text-display` | 68px | 40px | 1.12 | 700 | Be Vietnam Pro | Tiêu đề Hero trang chủ ("FROM LEARN TO EARN") |
+| `text-h1` | 40px | 30px | 1.20 | 700 | Be Vietnam Pro | Tiêu đề trang |
+| `text-h2` | 30px | 24px | 1.30 | 700 | Be Vietnam Pro | Tiêu đề khối lớn |
 | `text-h3` | 24px | 20px | 1.35 | 600 | Be Vietnam Pro | Tiêu đề thẻ dự án, tiêu đề mốc |
 | `text-h4` | 20px | 18px | 1.40 | 600 | Be Vietnam Pro | Tiêu đề phụ, tiêu đề hộp thoại |
-| `text-body-lg` | 18px | 17px | 1.60 | 400 | Inter | Đoạn dẫn, mô tả UVP |
-| `text-body` | 16px | 16px | 1.65 | 400 | Inter | Nội dung chính, mô tả dự án, tiêu chí nghiệm thu |
-| `text-body-sm` | 14px | 14px | 1.60 | 400 | Inter | Nhãn phụ, nội dung thẻ, ô nhập liệu |
-| `text-caption` | 12px | 12px | 1.50 | 500 | Inter | Chú thích, mốc thời gian, chữ trong badge |
+| `text-body-lg` | 18px | 17px | 1.60 | 400 | Be Vietnam Pro | Đoạn dẫn, mô tả UVP |
+| `text-body` | 16px | 16px | 1.65 | 400 | Be Vietnam Pro | Nội dung chính, mô tả dự án, tiêu chí nghiệm thu |
+| `text-body-sm` | 14px | 14px | 1.60 | 400 | Be Vietnam Pro | Nhãn phụ, nội dung thẻ, ô nhập liệu |
+| `text-caption` | 12px | 12px | 1.50 | 500 | Be Vietnam Pro | Chú thích, mốc thời gian, chữ trong badge |
+| `eyebrow` *(giọng viết tay)* | 18px | 17px | 1.30 | 600 | **Playpen Sans** | Nhãn phụ trên tiêu đề, từ nhấn được khoanh tròn, dòng ghi công dưới trích dẫn. **Không bao giờ** dùng cho nội dung hay nhãn thao tác |
 
 **Hai quy tắc cứng của thang chữ:**
 
@@ -550,19 +608,26 @@ Thang này **kế thừa nguyên vẹn** hai quyết định đã có ở [Mục
 | `space-card-gap` | 16px | Giữa các thẻ trong danh sách/lưới |
 | `space-section` | 48px (mobile) / 80px (desktop) | Giữa các khối lớn của trang |
 
-#### 4.8.2. Bo góc (Border Radius) — đính chính ký hiệu
+#### 4.8.2. Bo góc (Border Radius)
 
-> **Đính chính so với bản trước của tài liệu.** Mục 4.1 trước đây ghi thẻ dùng `rounded-lg: 16px`. Ký hiệu này gây hiểu nhầm vì trong quy ước Tailwind, `rounded-lg` là **8px**, không phải 16px — lập trình viên đọc theo sẽ dựng thẻ sai một nửa độ bo. Dự án **không dùng Tailwind** (xem `apps/web`), nên hệ thống định nghĩa thang bo góc riêng dưới đây, và giá trị 16px của thẻ mang tên `radius-xl`.
+Bo góc ở bản này **rộng hơn hẳn** hai bản trước, và đó là một trong những thứ đầu tiên mắt đọc ra ở phong cách này. Hình tròn và góc mềm là tín hiệu "an toàn, dễ gần" mạnh nhất mà giao diện có, và nó **không tốn gì** về mặt khả dụng — không làm giảm tương phản, không thu nhỏ vùng chạm.
 
 | Token | Giá trị | Áp dụng |
 | :--- | ---: | :--- |
-| `radius-sm` | 6px | Badge, chip lọc, thẻ kỹ năng |
-| `radius-md` | 8px | **Nút bấm**, ô nhập liệu, select |
-| `radius-lg` | 12px | **Thẻ dự án, thẻ mốc, thẻ ứng viên**, banner thông báo, vùng Dropzone |
-| `radius-xl` | 16px | Hộp thoại modal |
-| `radius-full` | 9999px | Ảnh đại diện, thanh tiến độ, chip lọc |
+| `radius-sm` | 8px | Vòng focus, skeleton |
+| `radius-md` | 12px | **Ô nhập liệu**, textarea, select |
+| `radius-lg` | 20px | **Thẻ dự án, thẻ mốc, thẻ ứng viên**, banner thông báo, vùng Dropzone |
+| `radius-xl` | 28px | **Tấm panel trắng của trang**, hộp thoại modal |
+| `radius-2xl` | 36px | **Tấm kem của khối nội dung**, chân trang, khối trạng thái trống |
+| `radius-full` | 9999px | **Nút bấm**, badge, chip lọc, thẻ kỹ năng, tab, ảnh đại diện, thanh tiến độ |
 
-> **Đính chính: nút KHÔNG còn bo tròn hoàn toàn.** Bản trước đặt nút ở `radius-full` với lập luận *"bo tròn là tín hiệu thân thiện mạnh nhất mà không tốn gì về độ rõ"*. Vế đó đúng, nhưng thiếu một vế: viên thuốc bo tròn hoàn toàn là **hình nút mặc định của mọi mẫu SaaS dựng sẵn**, nên nó đọc ra "vui vẻ, đại trà" chứ không ra "đáng tin, chuyên nghiệp". Với nền tảng mà người dùng phải giao tiền và thời gian cho người lạ, vế thứ hai quan trọng hơn. Thẻ cũng hạ từ 16px xuống 12px theo cùng lý do: khối bo càng lớn càng đọc ra sản phẩm tiêu dùng, bo vừa đọc ra công cụ làm việc.
+> **Đính chính: nút quay lại BO TRÒN HOÀN TOÀN.** Đây là lần đảo chiều thứ hai của cùng một quyết định, nên cần ghi lại cho đủ.
+>
+> Bản đầu đặt nút ở `radius-full`, lập luận: *"bo tròn là tín hiệu thân thiện mạnh nhất mà không tốn gì về độ rõ"*. Bản sau hạ xuống 8px, lập luận: *"viên thuốc bo tròn hoàn toàn là hình nút mặc định của mọi mẫu SaaS dựng sẵn, nên nó đọc ra vui vẻ, đại trà chứ không ra đáng tin, chuyên nghiệp"*.
+>
+> **Cả hai lập luận đều đúng — chúng chỉ đang phục vụ hai đích đến khác nhau.** Khi sản phẩm nhắm tới vẻ chứng từ tài chính, "đại trà" là lỗi nặng và góc 8px là đúng. Khi sản phẩm nhắm tới vẻ ấm và dễ gần, "vui vẻ" chính là đích, và viên thuốc là hình đúng. Bài học rút ra không phải "bo tròn tốt hay xấu" mà là: **một quyết định hình khối chỉ đánh giá được khi đã chốt sản phẩm muốn đọc ra như cái gì.** Tách khỏi đích đến thì mọi lập luận về bo góc đều nghe hợp lý ngang nhau.
+
+> **Ô nhập liệu KHÔNG bo tròn hoàn toàn** — giữ ở 12px. Khi nút đã bo tròn hết cỡ, hình dạng góc trở lại thành một tín hiệu phân biệt có ích: **viên thuốc là chỗ bấm, hộp là chỗ gõ.** Ở bản trước nút và ô nhập cùng bán kính nên hình dạng không còn phân biệt được gì, và việc phân biệt phải dồn hết cho nền đặc và nhãn chữ. Nay hình dạng gánh lại được một phần việc đó.
 
 #### 4.8.3. Breakpoint & Lưới bố cục
 
@@ -593,13 +658,13 @@ Một hệ thiết kế đúng chuẩn khả dụng vẫn có thể cho ra giao 
 
 | Dấu hiệu khuôn mẫu | Vì sao hỏng | GenDA làm thay thế |
 | :--- | :--- | :--- |
-| Hero căn giữa, có "pill badge" nhỏ phía trên tiêu đề | Bố cục mặc định của mọi công cụ dựng trang. Căn giữa làm mọi dòng có sức nặng ngang nhau nên không dẫn được mắt. | Hero **lệch trái, lưới bất đối xứng** 1.35fr / 1fr, đặt trên vùng màu đậm. Nhãn `eyebrow` chữ nhỏ thay cho pill. Cột phải là **một dự án thật đang tuyển**. |
+| Hero căn giữa, có "pill badge" nhỏ phía trên tiêu đề | Bố cục mặc định của mọi công cụ dựng trang. Căn giữa làm mọi dòng có sức nặng ngang nhau nên không dẫn được mắt. | Hero **lệch trái, lưới bất đối xứng** 1.15fr / 1fr, đặt trên tấm kem bo góc lớn. Nhãn `eyebrow` **viết tay màu coral** thay cho pill. Cột phải là **một dự án thật đang tuyển**. |
 | Hero khoe con số cỡ lớn về chính nền tảng | Lưới 2x2 bốn con số khổng lồ là khối bị dùng lại nhiều nhất trên các trang do máy sinh. Tệ hơn: nó **nói về** sản phẩm thay vì **cho xem** sản phẩm. | Cột phải hero đặt một **thẻ dự án thật**, dựng bằng đúng component mà trang `/projects` dùng. Nó trả lời ngay câu hỏi đầu tiên của người mới vào ("trên này có việc gì?") và chứng minh sản phẩm tồn tại. Bốn con số cam kết chuyển xuống thành một **dải ngang gọn** bên dưới, cỡ vừa phải, để chúng là thông tin chứ không phải khẩu hiệu. |
-| Tiêu đề hero cỡ áp phích (trên 64px) | Chữ cỡ đó là ngôn ngữ quảng cáo. Đi kèm hai nút lớn thì thành đúng khuôn mẫu trang bán hàng dựng sẵn, và với sản phẩm tài chính nó làm giảm cảm giác đáng tin. | Giới hạn `clamp(2.25rem, 4.2vw, 3.5rem)` — tối đa 56px. Thứ bậc tạo bằng khoảng cách, màu và mật độ, không chỉ bằng cỡ chữ. |
+| Tiêu đề hero cỡ áp phích, đứng trơ trọi | Chữ cỡ lớn **tự nó** không phải lỗi. Lỗi là khi nó đứng giữa nền trắng trơn với hai cái nút bên dưới và không có gì khác — đó mới là khuôn mẫu trang bán hàng. | Giữ chữ lớn (`clamp(2.5rem, 5.4vw, 4.5rem)`, tối đa 72px) nhưng đặt nó trong một ngữ cảnh: tấm kem bo góc, một dòng **nhãn viết tay** phía trên, một **từ được khoanh tròn** bằng nét vẽ tay, và một thẻ dự án thật nghiêng nhẹ bên cạnh. Chữ lớn khi ấy đọc ra như giọng nói gần gũi, không như khẩu hiệu. |
 | Mọi nội dung bọc trong thẻ giống hệt nhau, xếp lưới đều | Khi mọi thứ trông quan trọng như nhau thì không gì quan trọng cả. Lưới đều triệt tiêu thứ bậc. | Trust Layer là **danh sách đánh số có kẻ ngang**, số cỡ lớn chìm màu làm nhịp. Lưới thẻ chỉ dùng khi các mục thật sự ngang hàng. |
-| Đổ bóng mềm trên mọi bề mặt | Bóng là tín hiệu **độ cao** — "vật này nhấc lên được". Rải khắp nơi thì tín hiệu mất nghĩa. | Bề mặt **gần phẳng, viền kẻ mảnh** như chứng từ tài chính, kèm **một lớp bóng gần như không thấy được** (`0 1px 2px rgb(22 34 43 / 0.04)`). Bóng thật sự nâng lên chỉ xuất hiện khi rê chuột lên thẻ bấm được. *Đính chính so với bản trước:* bản trước quy định phẳng tuyệt đối; dựng ra màn hình thật thì bề mặt chỉ có viền 1px đọc ra như bản vẽ khung, nên cần đúng một lớp bóng mảnh để tách thẻ khỏi nền mà không giả vờ rằng nó nhấc lên được. |
+| Đổ bóng mềm dày trên mọi bề mặt | Bóng là tín hiệu **độ cao** — "vật này nhấc lên được". Rải khắp nơi thì tín hiệu mất nghĩa. | Bóng mặc định **rất nhẹ** (`shadow-sm`), chỉ đủ để mép thẻ trắng không cắt gắt vào tấm kem. Bóng rõ (`shadow-md`, `shadow-lg`) dành riêng cho phần tử **thật sự nổi**: thẻ đang rê chuột, thẻ nổi bật ở hero, hộp thoại modal. Độ cao chủ yếu vẫn do **tầng nền** diễn đạt (tấm kem → thẻ trắng), không do bóng. |
 | Mọi khối lặp đúng một nhịp: tiêu đề → đoạn xám → lưới | Trang dài thành ra đều đều, không có cao trào. | Biến thiên mật độ: khu marketing thoáng, khu dữ liệu (Workspace, Admin) chặt. Xen kẽ `section-head` có kẻ ngang, đoạn `lede`, và trích dẫn nổi. |
-| Tiêu đề lớn nhất chỉ nhỉnh hơn tiêu đề khối một chút | Không có bậc thang thị giác thì không có điểm vào. | Khoảng nhảy dứt khoát: `display` 64px so với `h1` 36px, kèm siết `letter-spacing` −0.03em cho chặt chữ. |
+| Tiêu đề lớn nhất chỉ nhỉnh hơn tiêu đề khối một chút | Không có bậc thang thị giác thì không có điểm vào. | Khoảng nhảy dứt khoát: `display` 68px so với `h1` 40px, kèm siết `letter-spacing` −0.025em cho chặt chữ. |
 | Icon trang trí rải khắp nơi | Icon không mang thông tin chỉ thêm nhiễu thị giác. | Icon chỉ dùng khi **mã hóa trạng thái** (lớp 2 của quy tắc Redundant Coding) hoặc làm affordance. Không đính icon vào tiêu đề cho đẹp. |
 | Con số trình bày như văn bản thường | Sản phẩm này nói về tiền và tiến độ — con số chính là nội dung. | Mọi số tiền, điểm phù hợp và số thứ tự mốc dùng **chữ số bảng** (`tabular-nums`), cỡ lớn, và **căn phải khi cần so sánh**. |
 | Danh sách để so sánh lại trình bày thành lưới thẻ | Mắt phải nhảy zigzag giữa các thẻ nên không so được ngân sách với nhau. | Trang `/projects` dùng **danh sách có cột thẳng hàng**, tiền căn phải trên một trục dọc duy nhất. |
@@ -609,22 +674,26 @@ Một hệ thiết kế đúng chuẩn khả dụng vẫn có thể cho ra giao 
 
 #### 4.9.1. Làm ấm mà không rơi lại vào khuôn mẫu
 
-Kỷ luật editorial ở trên, nếu đẩy quá tay, sẽ cho ra giao diện **lạnh và xa cách** — hỏng đúng mục tiêu của một sản phẩm cần sinh viên năm ba dám bấm nút ứng tuyển. Nhưng cái bẫy lớn hơn là làm ấm bằng những thứ mặc định: gradient, đổ bóng dày, bo tròn khắp nơi, emoji. Đó chính là con đường quay ngược về vẻ AI.
+Kỷ luật editorial ở trên, nếu đẩy quá tay, sẽ cho ra giao diện **lạnh và xa cách** — hỏng đúng mục tiêu của một sản phẩm cần sinh viên năm ba dám bấm nút ứng tuyển. Nhưng cái bẫy lớn hơn là làm ấm bằng những thứ mặc định: gradient bảy sắc, đổ bóng dày, emoji. Đó chính là con đường quay ngược về vẻ AI.
 
 Tham chiếu hữu ích là các sản phẩm tài chính vẫn giữ được vẻ thân thiện — [Monzo](https://monzo.com) (Hot Coral làm nền cả khối, hình minh họa riêng, nút cỡ lớn) và [Wise](https://wise.com). Bài học rút ra: **hơi ấm đến từ sự hào phóng, hình khối và giọng văn — không đến từ hiệu ứng.** Kèm theo một cảnh báo đáng giá của giới thiết kế fintech: đừng đánh đổi sự rõ ràng để lấy vẻ thân thiện.
 
-> **Đính chính sau lần dựng đầu tiên.** Bản trước của mục này quy định đòn bẩy 2 dùng hai nền tint `teal-50` và `green-50`. Khi dựng ra màn hình thật thì hỏng: hai màu đó sáng tới mức gần như không phân biệt được với nền trắng, nên toàn trang thành một dải trắng viền xám và đọc ra như bản vẽ khung chứ không phải sản phẩm. Chữ *"hào phóng"* trong đòn bẩy 2 phải hiểu đúng nghĩa của nó — **nền đậm, chữ trắng, chiếm trọn bề ngang** — thì mới tạo được nhịp màu. Bảng dưới đây đã sửa theo.
+> **Đính chính qua ba lần dựng — đòn bẩy 2 đã đổi hình dạng ba lần.** Bản đầu quy định dùng hai nền tint rất nhạt; dựng ra thì hỏng vì chúng gần như không phân biệt được với nền trắng, nên toàn trang thành một dải trắng viền xám. Bản hai sửa thành nền đậm chữ trắng chiếm trọn bề ngang. Bản nền tối ([DD-07](#quyết-định-thiết-kế-dd-07-chuyển-toàn-sản-phẩm-sang-nền-tối-theo-bảng-màu-nhận-diện-mới)) lại phải đổi tiếp, vì đổ một mảng tối lên nền đen thì không ai thấy ranh giới.
+>
+> Bản này ([DD-08](#quyết-định-thiết-kế-dd-08-chuyển-sang-phong-cách-ấm-sáng-thân-thiện)) giải quyết vấn đề theo một cách khác hẳn: **không dùng dải màu nữa, mà dùng TẤM.** Mỗi khối nội dung là một tấm kem bo 36px nằm lọt trong panel trắng, có mép rõ ràng ở cả bốn phía. Cách này miễn nhiễm với vấn đề đã làm hỏng ba bản trước — nó không phụ thuộc vào việc hai màu nền có đủ khác nhau hay không, vì ranh giới do **hình dạng** tạo ra chứ không do độ chênh màu.
 
 Bốn đòn bẩy GenDA dùng, xếp theo mức hiệu quả trên rủi ro:
 
 | Đòn bẩy | Cách làm | Vì sao an toàn |
 | :--- | :--- | :--- |
-| **1. Giọng văn** | Xưng hô ngôi thứ hai, câu ngắn, thừa nhận cả giới hạn của sản phẩm. *"Chúng tôi đang xem minh chứng của bạn — thường mất dưới 24 giờ"* thay cho *"Minh chứng đang được xét duyệt"*. | Không tốn gì về mặt kỹ thuật, không ảnh hưởng tương phản, và là thứ người dùng cảm nhận rõ nhất. |
-| **2. Vùng tô màu diện rộng** | Dùng **vùng màu ĐẬM chiếm trọn bề ngang**: `--color-surface-brand-strong` (teal-800) cho hero, `--color-surface-achieve-strong` (green-800) cho khối thành quả, chữ trắng trên nền đó. Các nền tint nhạt (teal-50, green-50) chỉ dùng cho banner và badge, **không** dùng làm nhịp màu của trang. | Chữ trắng đạt 9.65:1 trên teal-800 và 9.64:1 trên green-800 — cả hai đều AAA. Chi tiết từng cặp tại [Mục 4.4.5](#445-bảng-token-ngữ-nghĩa--số-đo-tương-phản-đã-kiểm-định). |
-| **3. Hình khối rộng rãi** | Nút **bo tròn hoàn toàn**, đệm ngang rộng hơn mức tối thiểu; khối tô màu bo `--radius-2xl` (24px). | Bo tròn và đệm rộng chỉ làm tăng vùng chạm, không giảm. |
-| **4. Hình minh họa riêng** | Vẽ từ **mô-típ khối nghiêng của chính logo GenDA**, tô bằng token màu. | Vì dựng từ nhận diện riêng nên không đụng hàng bộ hình stock nào; vì dùng token nên đổi thương hiệu là hình đổi theo. Luôn `aria-hidden` vì thuần trang trí. |
+| **1. Giọng văn** | Xưng hô ngôi thứ hai, câu ngắn, thừa nhận cả giới hạn của sản phẩm. *"Chúng tôi đang xem minh chứng của bạn, thường mất dưới 24 giờ"* thay cho *"Minh chứng đang được xét duyệt"*. | Không tốn gì về mặt kỹ thuật, không ảnh hưởng tương phản, và là thứ người dùng cảm nhận rõ nhất. |
+| **2. BỐN KIỂU KHỐI xen kẽ** | Bốn dáng khối khác nhau về góc bo và mép chạm, không khối liền nhau nào dùng chung một kiểu — [Mục 4.9.3](#493-bốn-kiểu-khối--luật-xen-kẽ). | Ranh giới do **hình dạng** tạo ra nên không phụ thuộc vào độ chênh màu giữa hai nền — đúng chỗ đã làm hỏng ba bản trước. Mọi cặp chữ/nền vẫn giữ nguyên số đo ở [Mục 4.4.5](#445-bảng-token-ngữ-nghĩa--số-đo-tương-phản-đã-kiểm-định). |
+| **3. Giọng viết tay** | Nhãn `eyebrow` viết tay màu coral nghiêng 1.5°, và **nét khoanh tròn vẽ tay** quanh một từ trong tiêu đề hero. Nét khoanh là ảnh SVG hở đầu, không đều — không phải viền CSS bo tròn. | Thuần trang trí, nằm ở pseudo-element nên trình đọc màn hình chỉ nghe đúng câu tiêu đề liền mạch. Chịu hạn mức đếm được ở [Mục 4.9.2](#492-luật-kiểm-đếm-được-countable-rules). |
+| **4. Hình khối rộng rãi** | Nút **bo tròn hoàn toàn**, cao 48px, đệm ngang rộng hơn mức tối thiểu. Thẻ nổi bật ở hero **nghiêng 1.2°** và thẳng lại khi rê chuột. | Bo tròn và đệm rộng chỉ làm tăng vùng chạm, không giảm. Độ nghiêng nhỏ tới mức không đọc ra là "hiệu ứng", nhưng đủ để thẻ thôi trông như ô vuông dán phẳng. |
 
-> **Điều KHÔNG được làm để lấy vẻ thân thiện**: gradient nhiều màu, đổ bóng mềm rải khắp bề mặt, emoji thay icon, chữ phóng to kèm nhiều dấu chấm than, hay minh họa người kiểu 3D bong bóng. Tất cả đều là tín hiệu khuôn mẫu, và ba thứ đầu còn phá luôn các quy tắc ở Mục 4.4.
+> **Vì sao bóng mềm KHÔNG còn bị cấm — nhưng vẫn bị giới hạn.** Hai bản trước cấm rải bóng mềm, với lập luận đúng: *bóng là tín hiệu độ cao, rải khắp nơi thì tín hiệu mất nghĩa.* Lập luận đó vẫn giữ nguyên hiệu lực, chỉ có ngưỡng đổi. Ở phong cách này, thẻ trắng nổi trên tấm kem **cần một lớp bóng mềm** để mép thẻ không cắt gắt vào nền — đó là lý do thị giác thật, không phải trang trí. Ranh giới giữ nguyên: bóng ở trạng thái mặc định phải **rất nhẹ** (`shadow-sm`), bóng rõ (`shadow-md`, `shadow-lg`) chỉ dành cho phần tử **thật sự nổi**: thẻ đang rê chuột, thẻ nổi bật ở hero, hộp thoại modal.
+
+> **Điều KHÔNG được làm để lấy vẻ thân thiện**: gradient nhiều màu, đổ bóng dày trên mọi bề mặt, emoji thay icon, chữ phóng to kèm nhiều dấu chấm than, minh họa người kiểu 3D bong bóng, và — riêng ở phong cách này — **chữ viết tay dùng quá tay**. Ba thứ đầu là tín hiệu khuôn mẫu; thứ cuối là rủi ro đặc trưng của chính phong cách này và là thứ dễ vi phạm nhất, vì thêm một dòng viết tay thì quá dễ.
 
 #### 4.9.2. Luật kiểm đếm được (Countable Rules)
 
@@ -695,6 +764,34 @@ Một trang đạt yêu cầu phải thỏa **ít nhất ba** trong năm điều
 **G. Ảnh và chi tiết trang trí**
 
 Cấm: dán nhãn hay viên thuốc đè lên ảnh; chú thích ảnh kiểu ghi công giả (`Ảnh: Nghiên cứu thực địa số 12`); chấm tròn màu thuần trang trí (chấm màu chỉ được dùng khi mã hóa một trạng thái có thật, theo [Mục 4.5](#45-sử-dụng-màu-trong-mã-hóa-trạng-thái-redundant-coding)); dải địa danh, giờ địa phương hoặc thời tiết trên thanh điều hướng; chân trang kiểu `v1.4.2 · build 0048` trên trang giới thiệu; và **dựng ảnh chụp màn hình sản phẩm giả bằng các khối `div`**. Cái cuối là dấu hiệu dễ nhận nhất của giao diện do máy sinh: nếu cần cho xem sản phẩm, hãy dùng ảnh thật, ảnh dựng bằng công cụ tạo ảnh, hoặc một bản thu nhỏ chạy được của chính component đó.
+
+---
+
+#### 4.9.3. Bốn kiểu khối & luật xen kẽ
+
+Đây là mục sinh ra từ một lỗi có thật, nên đáng ghi lại cả lỗi lẫn cách sửa.
+
+**Lỗi.** Bản đầu của phong cách ấm cho mọi khối nội dung dùng chung một kiểu: tấm kem bo 36px thụt vào hai bên, lồng trong panel trắng bo 28px, lồng trong khung xanh nhạt. Ba tầng lồng nhau, lặp y hệt từ đầu tới cuối trang. Từng khối đạt mọi tiêu chí ở Mục 4.4 và 4.6; cả trang vẫn hỏng. **Danh sách kiểm tra theo component không bắt được lỗi này**, vì nó chỉ lộ ra khi nhìn toàn trang cuộn hết một lượt.
+
+**Cách sửa.** Không bỏ nền đi, mà dựng một **bộ bốn kiểu** và bắt chúng xen kẽ. Bốn kiểu khác nhau ở hai trục hình học — *góc nào được bo* và *mép nào được chạm* — chứ không chỉ khác màu:
+
+| Kiểu | Hình dạng | Nền | Dùng cho | Class |
+| :--- | :--- | :--- | :--- | :--- |
+| **A — Tràn mép** | Chạm cả hai mép, **vuông góc hoàn toàn** | Kem | Khối cắt ngang mạch đọc, báo sang phần khác hẳn | `band--subtle` |
+| **B — Tấm mở đầu** | Chạm mép trên và hai bên, **bo hai góc dưới** | Kem | Hero, đầu trang hồ sơ công khai | `band--brand-strong` |
+| **C — Tấm rời** | **Bo cả bốn góc**, thụt vào, không chạm mép nào | Xanh nhạt | Khối nhấn mạnh duy nhất của trang | `band--achieve-strong` |
+| **D — Tấm kết** | Chạm mép đáy và hai bên, **bo hai góc trên** | Kem | Chân trang | `site-footer` |
+
+Khối **không mang kiểu nào** (nền trắng, không viền) là kiểu thứ năm trên thực tế: nó là khoảng thở, và cũng là thứ làm bốn kiểu kia nổi lên.
+
+> **B và D soi gương nhau.** Khối mở đầu bo hai góc dưới, chân trang bo hai góc trên. Hai dấu ngoặc ôm lấy cả trang. Đây không phải trùng hợp — nó là cách nói "trang bắt đầu ở đây và kết thúc ở đây" bằng hình thay vì bằng chữ.
+
+**Hai luật đếm được** (đếm được nên không tranh luận được, theo đúng tinh thần [Mục 4.9.2](#492-luật-kiểm-đếm-được-countable-rules)):
+
+- **Hai khối LIỀN NHAU không bao giờ dùng cùng một kiểu.** Kể cả kiểu "không nền" — ba khối trắng liên tiếp cũng là lặp.
+- **Kiểu C tối đa MỘT lần mỗi trang.** Nó là kiểu duy nhất không chạm mép nào nên đọc ra như một vật rời đặt lên trang; dùng hai lần là nó hết nhấn và trang quay về đúng lỗi cũ.
+
+**Cách kiểm.** Thu nhỏ trang chủ xuống 25% rồi nhìn: phải thấy ít nhất **ba dáng khối khác nhau** trong một màn hình. Nếu chỉ thấy một dáng lặp lại thì bố cục đã hỏng, bất kể từng khối đạt bao nhiêu tiêu chí.
 
 ---
 
@@ -924,7 +1021,7 @@ GenDA Web Platform
 - **Mục tiêu**: Thu thập hồ sơ năng lực (FR-USR-01) và xác minh sinh viên chính quy (FR-USR-02, FR-USR-03) để đảm bảo luật BR-03.
 - **Thành phần giao diện**:
   - **Visual Verification Banner** (mỗi trạng thái mã hóa đủ ba lớp màu + icon + nhãn chữ theo [Mục 4.5](#45-sử-dụng-màu-trong-mã-hóa-trạng-thái-redundant-coding)):
-    - Nếu `UNVERIFIED`: Thẻ nền `color-neutral-100` + icon thông tin: *"Bạn cần xác thực tài khoản sinh viên để có thể nộp đơn ứng tuyển dự án."*
+    - Nếu `UNVERIFIED`: Thẻ nền `color-surface-subtle` + icon thông tin: *"Bạn cần xác thực tài khoản sinh viên để có thể nộp đơn ứng tuyển dự án."*
     - Nếu `PENDING`: Thẻ nền `color-status-warning-bg` + icon đồng hồ, chữ `color-status-warning-text`: *"Minh chứng đang được BQT xét duyệt trong 24 giờ."*
     - Nếu `VERIFIED`: Thẻ nền `color-status-verified-bg` + icon dấu tích, chữ `color-status-verified-text`: *"Đã xác thực sinh viên chính quy — Sẵn sàng nhận dự án."*
     - Nếu `REJECTED`: Thẻ nền `color-status-danger-bg` + icon dấu X, chữ `color-status-danger-text`: *"Minh chứng bị từ chối: [Lý do từ Admin]"* kèm nút tải lại ảnh mới.
@@ -1093,7 +1190,7 @@ stateDiagram-v2
 
 ### 8.1. Trạng thái Đang tải (Loading State — Skeleton Shimmer Pattern)
 - **Quy tắc**: Tuyệt đối không dùng vòng quay spinner đơn điệu giữa trang trắng.
-- **Hiện thực**: Sử dụng khung xương `color-border-subtle` (`#D8E1E8`) có hiệu ứng quét sáng (Shimmer) mô phỏng chính xác hình khối của thẻ dự án sắp hiển thị. Giúp loại bỏ hoàn toàn hiện tượng giật bố cục (CLS - Cumulative Layout Shift).
+- **Hiện thực**: Sử dụng khung xương `color-surface-subtle` (`#FDF3EC`) có hiệu ứng quét sáng (Shimmer) đi từ nền kem lên trắng, mô phỏng chính xác hình khối của thẻ dự án sắp hiển thị. Giúp loại bỏ hoàn toàn hiện tượng giật bố cục (CLS - Cumulative Layout Shift).
 
 ### 8.2. Trạng thái Trống (Empty State — Helpful Guidance Pattern)
 - **Quy tắc**: Không để màn hình trắng trơn gây hoang mang.
@@ -1105,7 +1202,7 @@ stateDiagram-v2
 
 ### 8.4. Trạng thái Thành công (Success State — Closure & Next Step Pattern)
 - **Quy tắc**: Mang lại cảm giác hoàn tất tác vụ (Closure) và hướng dẫn bước tiếp theo.
-- **Hiện thực**: Toast xanh lá báo thành công kèm thông điệp rõ ràng, cập nhật giao diện ngay lập tức và gợi ý bước tiếp theo trong vòng đời dự án.
+- **Hiện thực**: Toast nền `color-status-verified-bg` + icon dấu tích + nhãn chữ báo thành công, kèm thông điệp rõ ràng, cập nhật giao diện ngay lập tức và gợi ý bước tiếp theo trong vòng đời dự án. Đủ ba lớp mã hóa theo [Mục 4.5](#45-sử-dụng-màu-trong-mã-hóa-trạng-thái-redundant-coding), không bao giờ chỉ dựa vào màu.
 
 ### 8.5. Trạng thái Bị chặn (Blocked State — Explain & Unblock Pattern)
 
@@ -1212,9 +1309,11 @@ Thử nghiệm trên nhóm mẫu thử nghiệm giai đoạn Soft-launch (15–2
 
 ## 11. Quyết định Thiết kế chốt trong quá trình hiện thực
 
-Ba quyết định dưới đây phát sinh khi dựng mã nguồn, không có trong bản phác ban đầu. Ghi lại ở đây vì cả ba đều là chỗ mà người đọc tài liệu **sẽ hỏi "vì sao không làm X"**, và vì cả ba đều có điều kiện để mở lại.
+Các quyết định dưới đây phát sinh khi dựng mã nguồn, không có trong bản phác ban đầu. Ghi lại ở đây vì mỗi quyết định đều là chỗ mà người đọc tài liệu **sẽ hỏi "vì sao không làm X"**, và vì mỗi quyết định đều có điều kiện để mở lại. Quyết định bị thay thế **không bị xóa** — giữ nguyên văn để đọc được lý do cũ và điều kiện đã mở.
 
 > #### Quyết định thiết kế DD-03: Bản MVP chỉ có chế độ sáng
+>
+> **⚠️ ĐÃ BỊ THAY THẾ BỞI [DD-07](#quyết-định-thiết-kế-dd-07-chuyển-toàn-sản-phẩm-sang-nền-tối-theo-bảng-màu-nhận-diện-mới).** Giữ lại nguyên văn bên dưới vì nó ghi đúng **điều kiện để mở**, và điều kiện đó nay đã được đáp ứng đủ. Xóa đi thì mất luôn bằng chứng rằng chế độ tối được mở đúng cửa chứ không phải mở ẩu.
 >
 > **Bối cảnh.** Chế độ tối là thực hành mặc định của phần lớn sản phẩm hiện nay, và [`design-tokens.md`](./design-tokens.md) Mục 1 còn mô tả lớp semantic là *"lớp đổi khi làm dark mode / đổi thương hiệu"*, tức có hàm ý sẽ làm.
 >
@@ -1257,6 +1356,64 @@ Ba quyết định dưới đây phát sinh khi dựng mã nguồn, không có t
 >
 > **Ranh giới giữ nguyên.** Bảng màu neo từ logo, quy trình chọn màu sáu bước, mọi ngưỡng tương phản và toàn bộ [Mục 4.6](#46-đặc-tả-tiếp-cận-bàn-phím--trình-đọc-màn-hình-nfr-ux-01) **không đổi**. Ràng buộc dấu phụ tiếng Việt cũng không được nới: phông mới phải qua đúng cửa đó và đã được kiểm bằng ảnh chụp thật.
 
+> #### Quyết định thiết kế DD-07: Chuyển toàn sản phẩm sang nền tối theo bảng màu nhận diện mới
+>
+> **⚠️ ĐÃ BỊ THAY THẾ BỞI [DD-08](#quyết-định-thiết-kế-dd-08-chuyển-sang-phong-cách-ấm-sáng-thân-thiện).** Giữ lại nguyên văn vì nó ghi đúng **cái giá** của hướng nền tối, và vì nó là bằng chứng thứ hai cho cùng một kết luận: đổi trọn nhận diện mà không màn hình nào phải dựng lại.
+>
+> **Bối cảnh.** Bảng nhận diện thương hiệu được chốt lại với **năm mã màu** (`#3EE97D`, `#49DC7A`, `#22F2EF`, `#040A0A`, `#FFFFFF`) và **một họ phông** (PP Neue Montreal, ba trọng lượng Regular/Medium/Semibold). Bảng màu cũ neo từ logo — teal, xanh lá vàng, slate — không còn hiệu lực.
+>
+> **Quyết định: sản phẩm chạy một chế độ duy nhất là nền tối, và dùng một họ phông duy nhất.**
+>
+> **Vì sao nền tối là hệ quả bắt buộc, không phải lựa chọn thẩm mỹ.** Bảng màu mới có đúng **một** màu nền và nó là `#040A0A`. Ba màu nhấn đều nằm ở vùng rất sáng: `#3EE97D` trên nền trắng chỉ đạt **1.60:1**, tức không dùng được cho chữ lẫn cho nút ở bất kỳ ngưỡng nào. Giữ nền sáng thì buộc phải tự sinh ra các bậc tối của neon để chữ và nút đạt tương phản — tức là **không còn dùng bảng màu được giao nữa**. Trên nền `#040A0A`, chính ba màu đó đạt 11.21:1 – 14.26:1.
+>
+> **Điều kiện mở của [DD-03](#quyết-định-thiết-kế-dd-03-bản-mvp-chỉ-có-chế-độ-sáng) đã được đáp ứng.** DD-03 hoãn chế độ tối với đúng một điều kiện: *"đo đủ và ghi đủ số đo tương phản của từng cặp màu tối vào bảng 4.4.5"*. Điều kiện đó nay đã làm xong — [Mục 4.4.5](#445-bảng-token-ngữ-nghĩa--số-đo-tương-phản-đã-kiểm-định) là bảng số đo thực tế của bảng màu tối, không phải bảng ước lượng. Và dự báo của DD-03 đúng: kiến trúc token ba lớp khiến việc đổi chỉ đụng tới **lớp primitive + semantic**, không component nào phải sửa.
+>
+> **Bốn thay đổi, mỗi thay đổi sửa một điều:**
+>
+> | Đổi từ | Sang | Vì sao |
+> | :--- | :--- | :--- |
+> | Bảng màu teal/green/slate nền sáng | Bảng màu neon/cyan/ink nền tối | Bảng nhận diện mới; nền tối là điều kiện để dùng được nó |
+> | Hai họ phông (IBM Plex Sans + Inter) | Một họ (PP Neue Montreal → Hanken Grotesk) | Nhận diện chỉ công bố một họ; còn cắt được một lượt tải phông |
+> | Trọng lượng tối đa 700 | Tối đa 600 | Nhận diện dừng ở Semibold; chữ sáng trên nền tối vốn trông dày hơn thực tế |
+> | Chữ trắng trên nút chính | Chữ mực `#040A0A` | Chữ trắng trên neon chỉ đạt 1.60:1 — xem ghi chú tại [Mục 4.4.2](#442-bảng-màu-nhận-diện--bốn-vai-trò) |
+>
+> **Chỗ cố ý đi khác ảnh tham chiếu.** Ảnh thiết kế được giao đặt chữ trắng lên nút xanh neon. Bước 4 của [quy trình sáu bước](#441-quy-trình-chọn-màu-sáu-bước-color-selection-protocol) ghi rõ *"cặp màu không đạt ngưỡng bị loại, không có ngoại lệ vì lý do thẩm mỹ"*, và cặp đó đạt 1.60:1. Hệ thiết kế giữ đúng bảng màu và đúng hình khối của ảnh, chỉ đổi màu chữ trên nút.
+>
+> **Phông thật chưa được dùng.** PP Neue Montreal là phông thương mại và bản gốc không dựng đủ dấu phụ tiếng Việt, nên đang chạy bản thay thế Hanken Grotesk. Tên phông thật đứng đầu chuỗi phông, đường nâng cấp ghi tại [Mục 4.7.2](#472-cặp-phông-chữ-font-pairing). **Điều kiện để chốt bản gốc:** có file bản quyền và kiểm bằng ảnh chụp chuỗi tiếng Việt thật, đúng cửa mà [Mục 4.7.1](#471-ràng-buộc-quyết-định-dấu-phụ-tiếng-việt) đặt ra.
+>
+> **Ranh giới giữ nguyên.** Quy trình chọn màu sáu bước, cổng kiểm định tương phản, quy tắc mã hóa ba lớp ở [Mục 4.5](#45-sử-dụng-màu-trong-mã-hóa-trạng-thái-redundant-coding), toàn bộ [Mục 4.6](#46-đặc-tả-tiếp-cận-bàn-phím--trình-đọc-màn-hình-nfr-ux-01), thang khoảng cách và thang bo góc **không đổi**. Ràng buộc dấu phụ tiếng Việt không được nới. Riêng quy tắc bậc màu ở Mục 4.4.3 đảo chiều trên nền tối — nay đã quay về chiều thường theo [DD-08](#quyết-định-thiết-kế-dd-08-chuyển-sang-phong-cách-ấm-sáng-thân-thiện).
+
+> #### Quyết định thiết kế DD-08: Chuyển sang phong cách ấm, sáng, thân thiện
+>
+> **Bối cảnh.** Nhận diện được chốt lại lần nữa, lần này theo một **ảnh thiết kế tham chiếu** thay vì một bảng màu rời: nền kem, khối bo góc rất lớn, nút navy bo tròn hoàn toàn, chữ viết tay và nét vẽ tay làm điểm nhấn. Bảng màu neon nền tối của [DD-07](#quyết-định-thiết-kế-dd-07-chuyển-toàn-sản-phẩm-sang-nền-tối-theo-bảng-màu-nhận-diện-mới) không còn hiệu lực.
+>
+> **Quyết định: chuyển toàn sản phẩm sang phong cách ấm, sáng, thân thiện. DD-07 bị thay thế.**
+>
+> **Đây là lần đổi hướng thứ ba, nên phải nói thẳng một điều.** Tài liệu này nay chứa ba bản ghi quyết định mà mỗi bản đều lập luận chặt chẽ cho một hướng khác nhau, và hai trong ba đã bị chính nó bác bỏ. Điều đó **không** có nghĩa là các lập luận cũ sai. Nó có nghĩa là: **phần lớn quyết định thị giác không có đúng/sai tuyệt đối — chúng chỉ đúng khi đã chốt sản phẩm muốn đọc ra như cái gì.** Bo góc 8px đúng cho một công cụ tài chính nghiêm túc; bo tròn hoàn toàn đúng cho một sản phẩm dễ gần. Geometric sans là điểm trừ cho cái thứ nhất và điểm cộng cho cái thứ hai. Giữ lại cả ba bản ghi, nguyên văn, chính là để lần sau ai đó muốn đổi hướng thì đọc được **cái giá** của mỗi hướng trước khi quyết.
+>
+> **Sáu thay đổi, mỗi thay đổi sửa một điều:**
+>
+> | Đổi từ | Sang | Vì sao |
+> | :--- | :--- | :--- |
+> | Bảng neon/cyan/ink nền tối | Kem + navy + coral nền sáng | Ảnh nhận diện mới |
+> | Dải màu chạy chạm mép | **BỐN KIỂU KHỐI xen kẽ** — khác nhau về góc bo và mép chạm | Ranh giới do hình dạng tạo ra, không phụ thuộc độ chênh màu — miễn nhiễm với lỗi đã làm hỏng ba bản trước |
+> | Nút bo 8px | Nút bo tròn hoàn toàn | Đích đến đổi từ "đáng tin nghiêm túc" sang "dễ gần"; xem [Mục 4.8.2](#482-bo-góc-border-radius) |
+> | Một họ phông | Be Vietnam Pro + **Playpen Sans** viết tay | Chữ tay là **giọng nói**, không phải cấp bậc — xem [Mục 4.7.2](#472-cặp-phông-chữ-font-pairing) |
+> | Cấm bóng mềm | Cho phép bóng rất nhẹ, giới hạn bóng rõ | Thẻ trắng trên tấm kem cần bóng để mép không cắt gắt; ngưỡng giữ nguyên tinh thần cũ |
+> | Chữ mực trên nút neon | Chữ trắng trên nút navy | Navy là bậc đậm nên chữ trắng đạt 7.64:1 |
+>
+> **Be Vietnam Pro được nhận lại sau khi từng bị loại.** Bản trước loại nó vì "geometric sans, cùng họ hình với Poppins, đọc ra mẫu có sẵn". Lập luận đó phục vụ một đích đến đã không còn. Chi tiết tại [Mục 4.7.2](#472-cặp-phông-chữ-font-pairing).
+>
+> **Chỗ cố ý đi khác ảnh tham chiếu.** Ảnh dùng Poppins-hoặc-tương-đương cho tiêu đề và một phông viết tay kiểu Caveat. Cả Poppins, Outfit lẫn Caveat đều **không có subset `vietnamese`**. Ràng buộc dấu phụ ở [Mục 4.7.1](#471-ràng-buộc-quyết-định-dấu-phụ-tiếng-việt) đứng trên lựa chọn thẩm mỹ, nên hệ thiết kế thay bằng hai phông cùng dáng có dấu đầy đủ. Đây là cùng một nguyên tắc đã áp dụng ở DD-07 khi ảnh tham chiếu đặt chữ trắng lên nút không đủ tương phản: **giữ đúng ngôn ngữ của ảnh, sửa đúng chỗ ảnh vi phạm ràng buộc cứng.**
+>
+> **Chi phí thật sự đã trả.** Toàn bộ thay đổi gói trong `globals.css`, `components.css` và `layout.tsx`. **Không một màn hình nào trong tám màn hình phải dựng lại**, và không một tên class nào bị đổi — `components.css` được viết lại hoàn toàn về mặt thị giác nhưng giữ nguyên hợp đồng tên class với các trang. Ba lần đổi nhận diện liên tiếp, không lần nào phải sửa logic màn hình: đó là khoản lãi cụ thể của kiến trúc token ba lớp ở [`design-tokens.md`](./design-tokens.md) Mục 1.
+>
+> Dọn kèm theo: class `on-dark` bị **xóa hẳn** khỏi cả CSS lẫn bốn chỗ dùng trong trang. Giữ lại một class tên "on-dark" không làm gì trên nền sáng đúng là kiểu bẫy âm thầm mà tài liệu này vẫn cảnh báo.
+>
+> **Đính chính ngay trong chính DD này.** Bản đầu của phong cách ấm lồng ba tầng nền và cho **mọi** khối dùng chung một kiểu tấm bo góc. Từng khối đạt mọi tiêu chí, nhưng cả trang đọc ra đều đều — đúng lỗi *"mọi khối lặp đúng một nhịp"* mà Mục 4.9 đã gọi tên từ đầu. Đã sửa: nền rút còn hai tầng, và sự đa dạng chuyển sang **bốn kiểu khối xen kẽ** ở [Mục 4.9.3](#493-bốn-kiểu-khối--luật-xen-kẽ), kèm hai luật đếm được. Bài học đáng ghi: **danh sách kiểm tra theo component không bắt được lỗi này**, vì nó chỉ lộ ra khi nhìn toàn trang cuộn hết một lượt.
+>
+> **Ranh giới giữ nguyên.** Quy trình chọn màu sáu bước, cổng kiểm định tương phản, quy tắc mã hóa ba lớp ở [Mục 4.5](#45-sử-dụng-màu-trong-mã-hóa-trạng-thái-redundant-coding), toàn bộ [Mục 4.6](#46-đặc-tả-tiếp-cận-bàn-phím--trình-đọc-màn-hình-nfr-ux-01), thang khoảng cách cơ số 4px, và ràng buộc dấu phụ tiếng Việt — **không đổi**.
+
 > #### Quyết định thiết kế DD-05: Trang văn bản pháp lý bàn giao ở dạng khung rỗng
 >
 > **Quyết định.** `/phap-ly/*` và `/ho-tro/*` dựng sẵn khung trang, tiêu đề, đường dẫn và phần tóm tắt phạm vi, nhưng **cố ý không có nội dung pháp lý**; thay vào đó nói thẳng rằng văn bản đang chờ ban hành.
@@ -1273,7 +1430,7 @@ Bảng này trả lời câu hỏi *"quy định ở mục nào thì nằm ở t
 | :--- | :--- |
 | Mục 4.4 (màu), 4.7.3 (thang chữ), 4.8 (khoảng cách, bo góc, lưới) | `apps/web/app/globals.css` |
 | Lớp component của hệ token | `apps/web/app/components.css` |
-| Mục 4.7.2 — cặp phông và cách tải | `apps/web/app/layout.tsx` |
+| Mục 4.7.2 — cặp phông và cách tải; tấm panel trắng của trang | `apps/web/app/layout.tsx` |
 | Mục 4.10 — hệ thống biểu tượng | `apps/web/components/ui/icons.tsx` |
 | Mục 4.11 + 4.12 — token thời lượng, chuyển động hộp thoại | `apps/web/app/globals.css`, `apps/web/app/components.css` |
 | Mục 4.6h — `scroll-padding` bù hai thanh điều hướng | `apps/web/app/globals.css` |
@@ -1305,7 +1462,9 @@ Chạy hết danh sách này trước khi coi một màn hình là xong. Mọi m
 **Màu và tương phản**
 - [ ] Không có mã hex thô trong tệp component; không component nào gọi thẳng token lớp primitive.
 - [ ] Mọi cặp chữ/nền dùng trên màn hình đã có số đo trong bảng [4.4.5](#445-bảng-token-ngữ-nghĩa--số-đo-tương-phản-đã-kiểm-định).
-- [ ] Không dùng bậc màu 300-500 làm nền nút có chữ trắng (*"chữ chỉ sống ở bậc $\ge$ 600"*).
+- [ ] Không dùng bậc màu 300-500 làm màu chữ thường hay nền nút có chữ trắng (*"chữ thường chỉ sống ở bậc $\ge$ 600"*).
+- [ ] Coral xuất hiện **tối đa hai lần** trên màn hình; chữ coral cỡ nhỏ dùng `color-accent-text`, không dùng `color-brand-decorative`.
+- [ ] Chữ viết tay chỉ ở nhãn phụ, $\ge$ 14px, không viết hoa toàn phần, không dùng cho nội dung hay nhãn thao tác.
 - [ ] Đúng **một** nút hành động chính trên màn hình.
 - [ ] Ảnh chụp màn hình chuyển sang ảnh xám vẫn đọc được đầy đủ mọi trạng thái.
 

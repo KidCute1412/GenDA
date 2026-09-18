@@ -1,15 +1,18 @@
 /* ==========================================================================
-   GenDA Component Layer
+   GenDA Component Layer — BẢN ẤM, SÁNG, THÂN THIỆN
    Hợp đồng triển khai: docs/design-tokens.md Mục 3
    Kỷ luật thị giác:    docs/design.md Mục 4.9
 
    Quy tắc: file này CHỈ gọi token lớp semantic (--color-*) và lớp component
-   (--btn-*, --card-*). Không có mã hex thô, không gọi primitive (--teal-600).
+   (--btn-*, --card-*). Không có mã hex thô, không gọi primitive (--blue-600).
+
+   Tên class là HỢP ĐỒNG với 8 màn hình đã dựng: file này được viết lại hoàn
+   toàn về mặt thị giác nhưng KHÔNG được đổi/bỏ bất kỳ tên class nào, nếu
+   không trang sẽ vỡ.
    ========================================================================== */
 
 /* ==========================================================================
    NGUYÊN THỦY BỐ CỤC
-   Bốn lớp tiện ích dưới đây thay cho việc rải inline style khắp nơi.
    ========================================================================== */
 
 /* Xếp dọc, khoảng cách đều */
@@ -32,7 +35,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-3);
 }
 
 .cluster--between {
@@ -43,8 +46,6 @@
   justify-content: flex-end;
 }
 
-/* Khối lớn của trang. Mật độ ở đây THOÁNG (khu marketing) — khu dữ liệu
-   (Workspace, Admin) siết lại bằng .section--tight. design.md 4.9 */
 .section {
   padding-block: var(--space-section);
 }
@@ -53,161 +54,75 @@
   padding-block: var(--space-8);
 }
 
-/* Tiêu đề khối, có kẻ ngang phía trên làm nhịp thị giác */
+/* Tiêu đề khối. Không kẻ ngang phía trên: nhịp của trang do BỐN KIỂU KHỐI ở
+   trên tạo ra, thêm một đường kẻ nữa chỉ làm trang vụn. */
 .section-head {
-  border-top: 1px solid var(--color-border-subtle);
-  padding-top: var(--space-4);
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-8);
 }
 
-/* Dải nền tô màu diện rộng — đòn bẩy làm ấm số 2 (design.md 4.9.1).
-   Màu thương hiệu dùng hào phóng làm nền cả khối, không nhỏ giọt trên vài cái nút. */
+/* ==========================================================================
+   BỐN KIỂU KHỐI — cấu trúc thị giác chính của phong cách này
+
+   Bản trước cho MỌI khối cùng một kiểu: tấm kem bo góc thụt vào, lồng trong
+   panel trắng, lồng trong khung xanh. Đủ ba tầng và lặp y hệt nhau từ đầu tới
+   cuối trang, nên dù từng khối trông ổn thì cả trang vẫn đọc ra đều đều — đúng
+   cái lỗi mà design.md 4.9 gọi tên: "mọi khối lặp đúng một nhịp".
+
+   Cách sửa không phải bỏ hết nền đi, mà là DÙNG NHIỀU KIỂU XEN KẼ. Bốn kiểu
+   dưới đây phân biệt nhau bằng GÓC NÀO ĐƯỢC BO và MÉP NÀO ĐƯỢC CHẠM, chứ không
+   chỉ bằng màu — nên hai khối cạnh nhau vẫn phân biệt được khi in đen trắng.
+
+     A. TRÀN MÉP     nền kem, chạm hai mép, vuông góc hoàn toàn
+     B. TẤM MỞ ĐẦU   nền kem, chạm mép trên, bo hai góc dưới
+     C. TẤM RỜI      nền xanh nhạt, bo cả bốn góc, thụt vào, không chạm mép nào
+     D. TẤM KẾT      nền kem, bo hai góc trên, chạm mép đáy (chân trang)
+
+   Luật đếm được đi kèm, xem design.md 4.9.3:
+     - Hai khối LIỀN NHAU không bao giờ dùng cùng một kiểu.
+     - Kiểu C tối đa MỘT lần mỗi trang; dùng hai lần là nó hết nhấn.
+   ========================================================================== */
+
 .band {
   padding-block: var(--space-section);
 }
 
-.band--brand {
-  background-color: var(--color-surface-brand);
-}
-
-.band--achieve {
-  background-color: var(--color-surface-achieve);
-}
-
-.band--subtle {
-  background-color: var(--color-surface-subtle);
-}
-
-/* --- Vùng tô màu ĐẬM ---
-   Khối chiếm trọn bề ngang, nền màu thương hiệu đậm, chữ trắng. Đây là nhịp màu
-   chính của trang: nếu bỏ chúng đi, mọi khối đều là nền trắng viền xám và trang
-   đọc ra như bản vẽ khung chứ không phải sản phẩm hoàn chỉnh. */
+/* --- KIỂU B: TẤM MỞ ĐẦU ---
+   Nền kem, chạm mép TRÊN và hai bên, bo hai góc DƯỚI. Hình dạng này nói đúng
+   một điều: "khối này nối liền với thanh đầu trang, và nó kết thúc ở đây".
+   Dùng cho hero và đầu trang hồ sơ công khai.
+   Nó soi gương với KIỂU D ở chân trang — mở đầu bo góc dưới, kết thúc bo góc
+   trên. Hai dấu ngoặc ôm lấy cả trang. */
+.band--brand,
 .band--brand-strong {
-  background-color: var(--color-surface-brand-strong);
-  /* position + isolation để mô-típ nền và thẻ tràn ra ngoài xếp lớp đúng */
+  background-color: var(--color-surface-brand);
+  border-radius: 0 0 var(--radius-2xl) var(--radius-2xl);
+  padding-block: var(--space-section);
   position: relative;
   isolation: isolate;
 }
 
-/* Mô-típ nền: các vạch nghiêng lặp lại, lấy từ đúng góc nghiêng của khối trong
-   logo GenDA. Rất mờ (5%), nên nó không đọc ra như hoa văn trang trí mà chỉ phá
-   đi cảm giác "mảng màu phẳng chết". Vì dựng từ nhận diện riêng nên không đụng
-   hàng bất kỳ mẫu nền có sẵn nào.
-   z-index âm + pointer-events none để không chắn nội dung hay thao tác. */
-.band--brand-strong::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background-image: repeating-linear-gradient(
-    115deg,
-    rgb(255 255 255 / 0.05) 0 2px,
-    transparent 2px 22px
-  );
+/* --- KIỂU A: TRÀN MÉP ---
+   Nền kem, chạm cả hai mép, VUÔNG GÓC hoàn toàn. Đây là kiểu "nặng" nhất và
+   cũng là kiểu duy nhất không có góc bo nào — đặt giữa trang, nó cắt ngang
+   mạch đọc và báo rằng sang một phần khác hẳn. */
+.band--subtle {
+  background-color: var(--color-surface-brand);
+  padding-block: var(--space-section);
 }
 
+/* --- KIỂU C: TẤM BO GÓC THỤT VÀO ---
+   Nền xanh nhạt, bo 36px cả bốn góc, thụt vào hai bên để lộ nền trang. Đây là
+   kiểu duy nhất KHÔNG chạm mép nào, nên nó đọc ra như một vật rời đặt lên
+   trang. Chính vì chỉ còn một kiểu như vậy nên nó mới nhấn được — dùng hai lần
+   trên một trang là nó hết nhấn. */
+.band--achieve,
 .band--achieve-strong {
-  background-color: var(--color-surface-achieve-strong);
-}
-
-/* --- Đảo tông cho vùng nền đậm ---
-   Thay vì ghi đè màu cho từng component bên trong (cách này sẽ sót, và sẽ sót
-   thêm mỗi lần có component mới), ta TRỎ LẠI chính các token ngữ nghĩa trong
-   phạm vi khối. Mọi component con vốn đã chỉ gọi token ngữ nghĩa nên tự động
-   đổi theo — đúng tinh thần kiến trúc ba lớp ở design-tokens.md Mục 1.
-
-   Mọi cặp màu dưới đây đều đã đo trên nền teal-800 / green-800:
-     trắng     : 9.65:1  AAA
-     teal-100  : 7.89:1  AAA
-     teal-200  : 6.42:1  AA
-     green-300 : 6.03:1  AA  (dùng cho chữ nhấn) */
-.on-dark {
-  --color-text-heading: var(--slate-0);
-  --color-text-body: var(--teal-100);
-  --color-text-muted: var(--teal-200);
-  --color-action-link: var(--green-300);
-  --color-border-subtle: rgb(255 255 255 / 0.22);
-  --color-border-input: rgb(255 255 255 / 0.55);
-
-  color: var(--color-text-body);
-}
-
-/* Nút chính trên nền đậm phải đảo ngược: nền teal-600 đặt trên nền teal-800 gần
-   như biến mất. Nút trắng chữ teal đậm đạt 9.65:1 và là hình khối nổi bật nhất
-   có thể có trên nền này. */
-.on-dark .btn--primary {
-  background-color: var(--slate-0);
-  color: var(--color-surface-brand-strong);
-}
-
-.on-dark .btn--primary:hover {
-  background-color: var(--teal-50);
-}
-
-.on-dark .btn--outline {
-  border-color: rgb(255 255 255 / 0.55);
-  color: var(--slate-0);
-}
-
-.on-dark .btn--outline:hover {
-  background-color: rgb(255 255 255 / 0.12);
-}
-
-/* Vòng focus trên nền đậm phải đổi sang trắng: vòng teal-600 trên nền teal-800
-   không đủ tương phản để nhìn thấy. */
-.on-dark :focus-visible {
-  outline-color: var(--slate-0);
-}
-
-/* --- Đảo tông NGƯỢC LẠI bên trong thẻ nền trắng ---
-   Thẻ vẫn giữ nền trắng khi nằm trong vùng đậm. Nếu không trỏ token về lại bản
-   sáng ở đây, chữ trắng do .on-dark đặt sẽ nằm trên nền thẻ trắng và biến mất
-   hoàn toàn. Đây là cái giá của cơ chế trỏ lại token theo phạm vi, và là chỗ
-   duy nhất phải trả giá đó. */
-.on-dark .card {
-  --color-text-heading: var(--slate-900);
-  --color-text-body: var(--slate-700);
-  --color-text-muted: var(--slate-600);
-  --color-action-link: var(--teal-600);
-  --color-border-subtle: var(--slate-200);
-  --color-border-input: var(--slate-500);
-
-  color: var(--color-text-body);
-}
-
-.on-dark .card :focus-visible {
-  outline-color: var(--color-border-focus);
-}
-
-.on-dark .card .btn--primary {
-  background-color: var(--color-action-primary);
-  color: var(--color-text-on-dark);
-}
-
-.on-dark .card .btn--primary:hover {
-  background-color: var(--color-action-primary-hover);
-}
-
-.on-dark .card .btn--outline {
-  border-color: var(--color-border-input);
-  color: var(--color-text-heading);
-}
-
-/* Vạch trích dẫn trên nền đậm: màu teal-500 không đủ nổi trên nền đậm */
-.on-dark .pull-quote {
-  border-left-color: rgb(255 255 255 / 0.45);
-}
-
-/* Cùng lý do với thẻ: những phần tử TỰ MANG nền sáng của riêng chúng phải trỏ
-   token chữ về bản sáng, nếu không chữ trắng sẽ nằm trên nền sáng và biến mất.
-   Badge trạng thái không cần xử lý vì nó tự đặt cả nền lẫn màu chữ. */
-.on-dark .skill-pill,
-.on-dark .badge--neutral {
-  --color-text-body: var(--slate-700);
-  --color-text-muted: var(--slate-600);
-
-  color: var(--color-text-body);
+  background-color: var(--color-surface-achieve);
+  border-radius: var(--radius-2xl);
+  margin-inline: var(--layout-panel-inset);
+  padding-block: var(--space-section);
+  position: relative;
+  isolation: isolate;
 }
 
 /* Lưới thẻ: 1 cột mobile -> 2 cột tablet -> 3 cột desktop (design.md 4.8.3) */
@@ -253,14 +168,12 @@
 
   /* Thẻ lớn cao bằng hai thẻ nhỏ cộng lại, nhưng nội dung của nó thường không
      cao tới vậy — để nguyên thì đáy thẻ hở một mảng trống trông như lỗi. Đẩy
-     khối nút xuống đáy để khoảng trống nằm GIỮA nội dung và nút, tức là đọc ra
-     như khoảng thở có chủ đích. */
+     khối nút xuống đáy để khoảng trống nằm GIỮA nội dung và nút. */
   .feature-grid > :first-child .card__footer {
     margin-top: auto;
   }
 }
 
-/* Hai cột không đều — dùng cho khối nội dung + thẻ minh họa */
 .split {
   display: grid;
   grid-template-columns: 1fr;
@@ -275,7 +188,6 @@
   }
 }
 
-/* Bố cục hai cột nội dung chính / cột phụ — Workspace, trang chi tiết dự án */
 .layout-aside {
   display: grid;
   grid-template-columns: 1fr;
@@ -314,7 +226,7 @@
 .lede {
   font-size: var(--text-body-lg-size);
   line-height: var(--text-body-lg-height);
-  max-width: 62ch;
+  max-width: 56ch;
 }
 
 .text-muted {
@@ -330,25 +242,68 @@
   font-weight: var(--weight-medium);
 }
 
-/* Nhãn nhỏ phía trên tiêu đề. KHÔNG dùng uppercase cho chữ có dấu tiếng Việt
-   (design.md 4.7.1 hệ quả 3) — dùng letter-spacing + màu để tách khỏi tiêu đề. */
+/* --- GIỌNG VIẾT TAY ---
+   Nhãn nhỏ phía trên tiêu đề, viết bằng phông tay màu cam và nghiêng nhẹ. Đây
+   là chi tiết đặc trưng nhất của phong cách này: nó làm cả trang bớt vẻ "tài
+   liệu do máy in ra" chỉ bằng vài chữ.
+
+   Ba ràng buộc bắt buộc đi kèm:
+   1. Chỉ dùng cho nhãn NGẮN và PHỤ. Không bao giờ dùng cho nội dung, nhãn
+      trường, chữ trong nút hay bất cứ thứ gì người dùng phải đọc để thao tác.
+   2. Cỡ chữ không bao giờ dưới 14px. Phông viết tay có nét mảnh và hình chữ
+      bất quy tắc nên mất độ rõ nhanh hơn phông thường khi thu nhỏ.
+   3. KHÔNG viết hoa toàn phần (design.md 4.7.1) — dấu phụ tiếng Việt trên
+      phông tay vốn đã cao, viết hoa nữa thì đè vào dòng trên. */
 .eyebrow {
-  font-size: var(--text-caption-size);
-  line-height: var(--text-caption-height);
+  font-family: var(--font-hand);
+  font-size: var(--text-body-lg-size);
+  line-height: 1.3;
   font-weight: var(--weight-semibold);
-  letter-spacing: var(--tracking-label);
-  color: var(--color-text-muted);
-  margin: 0;
+  letter-spacing: var(--tracking-normal);
+  color: var(--color-accent-text);
+  margin: 0 0 var(--space-2);
+  transform: rotate(-1.5deg);
+  transform-origin: left center;
 }
 
-/* Số tiền, điểm số, số thứ tự: chữ số bảng để các cột số thẳng hàng nhau.
-   design.md 4.9 — "con số chính là nội dung" của sản phẩm này. */
+/* Từ nhấn trong tiêu đề lớn, có NÉT KHOANH TRÒN vẽ tay bao quanh.
+   Nét khoanh là ảnh SVG nội tuyến chứ không phải viền CSS: một viền bo tròn
+   đều tăm tắp sẽ đọc ra như khối giao diện, còn nét vẽ tay hở đầu và không đều
+   mới đọc ra như có người cầm bút khoanh vào.
+   Thuần trang trí -> nằm ở pseudo-element, trình đọc màn hình không thấy. */
+.hand-accent {
+  font-family: var(--font-hand);
+  font-weight: var(--weight-semibold);
+  font-style: normal;
+  color: var(--color-accent-text);
+  position: relative;
+  white-space: nowrap;
+  padding-inline: 0.12em;
+}
+
+.hand-accent::after {
+  content: "";
+  position: absolute;
+  left: -0.14em;
+  right: -0.14em;
+  top: 0.04em;
+  bottom: 0.04em;
+  z-index: -1;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 100' fill='none' stroke='%23e85d2c' stroke-width='3.5' stroke-linecap='round'%3E%3Cpath d='M152 7C88 4 24 23 13 49c-9 23 45 44 129 42 76-2 141-21 148-45 7-20-38-35-104-39'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+/* Số tiền, điểm số, số thứ tự: chữ số bảng để các cột số thẳng hàng nhau. */
 .num {
   font-variant-numeric: tabular-nums;
 }
 
 /* ==========================================================================
    BUTTON — design-tokens.md 3.1
+   Hình VIÊN THUỐC bo tròn hoàn toàn. Xem design.md 4.8.2 để biết vì sao quyết
+   định cũ ("bo 8px") bị đảo ngược.
    ========================================================================== */
 
 .btn {
@@ -370,6 +325,7 @@
   transition:
     background-color var(--duration-fast) ease,
     border-color var(--duration-fast) ease,
+    box-shadow var(--duration-fast) ease,
     transform var(--duration-fast) ease;
 }
 
@@ -398,10 +354,12 @@
 
 .btn--primary:hover {
   background-color: var(--btn-primary-bg-hover);
+  box-shadow: var(--shadow-md);
 }
 
 .btn--primary:active {
   background-color: var(--btn-primary-bg-active);
+  box-shadow: none;
 }
 
 .btn--secondary {
@@ -443,8 +401,7 @@
 
 /* --- Trạng thái ---
    `hover` và `focus-visible` là hai trạng thái ĐỘC LẬP, không gộp: người dùng
-   bàn phím chỉ nhận được focus-visible (design.md 4.3). Vòng focus kế thừa từ
-   quy tắc :focus-visible toàn cục, chỉ cần chỉnh bo góc cho khớp nút. */
+   bàn phím chỉ nhận được focus-visible (design.md 4.3). */
 .btn:focus-visible {
   border-radius: var(--btn-radius);
 }
@@ -494,8 +451,8 @@
 
 /* ==========================================================================
    CARD — design-tokens.md 3.3
-   Bề mặt PHẲNG, viền kẻ mảnh, như chứng từ tài chính. Bóng chỉ dành cho
-   card--interactive khi rê chuột — đúng lúc tín hiệu "nhấc lên được" có nghĩa.
+   Thẻ TRẮNG bo góc lớn, viền mảnh, bóng rất nhẹ. Trên nền kem, thẻ trắng tự nó
+   đã tách ra rõ, nên bóng ở đây chỉ để mềm mép chứ không giả vờ độ cao.
    ========================================================================== */
 
 .card {
@@ -510,12 +467,14 @@
   cursor: pointer;
   transition:
     box-shadow var(--duration-normal) ease,
+    transform var(--duration-normal) ease,
     border-color var(--duration-normal) ease;
 }
 
 .card--interactive:hover {
   box-shadow: var(--card-shadow-hover);
   border-color: var(--color-border-input);
+  transform: translateY(-2px);
 }
 
 /* Thẻ bấm được bắt buộc có focus-visible riêng vì nó là phần tử tương tác.
@@ -531,8 +490,8 @@
 }
 
 .card__footer {
-  margin-top: var(--space-4);
-  padding-top: var(--space-4);
+  margin-top: var(--space-5);
+  padding-top: var(--space-5);
   border-top: 1px solid var(--color-border-subtle);
 }
 
@@ -550,7 +509,7 @@
   border-radius: var(--badge-radius);
   font-size: var(--text-caption-size);
   line-height: var(--text-caption-height);
-  font-weight: var(--weight-medium);
+  font-weight: var(--weight-semibold);
   white-space: nowrap;
 }
 
@@ -615,7 +574,7 @@
 .alert--info {
   background-color: var(--color-status-progress-bg);
   color: var(--color-text-body);
-  border-left-color: var(--color-brand-decorative);
+  border-left-color: var(--color-action-primary);
 }
 
 .alert--warning {
@@ -649,7 +608,7 @@
 
 .field__label {
   font-size: var(--text-body-sm-size);
-  font-weight: var(--weight-medium);
+  font-weight: var(--weight-semibold);
   color: var(--color-text-heading);
   margin-bottom: var(--space-field-label);
 }
@@ -672,7 +631,9 @@
   /* 16px — dưới ngưỡng này iOS Safari tự phóng to trang giữa lúc điền form */
   font-size: var(--text-body-size);
   line-height: var(--text-body-height);
-  transition: border-color var(--duration-fast) ease;
+  transition:
+    border-color var(--duration-fast) ease,
+    box-shadow var(--duration-fast) ease;
 }
 
 .textarea {
@@ -745,19 +706,19 @@
 }
 
 .input-affix .input {
-  padding-right: 48px;
+  padding-right: 52px;
 }
 
 .input-affix__btn {
   position: absolute;
-  right: 0;
+  right: 2px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 44px;
   height: 44px;
   border: 0;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-full);
   background: none;
   color: var(--color-text-muted);
   cursor: pointer;
@@ -765,6 +726,7 @@
 
 .input-affix__btn:hover {
   color: var(--color-text-heading);
+  background-color: var(--color-surface-subtle);
 }
 
 .input-affix__btn svg {
@@ -873,13 +835,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   flex-shrink: 0;
   border-radius: var(--radius-full);
   border: 1px solid var(--color-border-input);
   font-size: var(--text-caption-size);
-  font-weight: var(--weight-semibold);
+  font-weight: var(--weight-bold);
   font-variant-numeric: tabular-nums;
   color: var(--color-text-muted);
 }
@@ -922,13 +884,13 @@
    ========================================================================== */
 
 .skeleton {
-  background-color: var(--color-border-subtle);
+  background-color: var(--color-surface-subtle);
   border-radius: var(--radius-sm);
   background-image: linear-gradient(
     90deg,
-    var(--color-border-subtle) 0%,
+    var(--color-surface-subtle) 0%,
     var(--color-surface-card) 50%,
-    var(--color-border-subtle) 100%
+    var(--color-surface-subtle) 100%
   );
   background-size: 200% 100%;
   animation: skeleton-shimmer 1.5s ease-in-out infinite;
@@ -971,9 +933,9 @@
   text-align: center;
   gap: var(--space-3);
   padding: var(--space-12) var(--space-6);
-  background-color: var(--color-surface-card);
+  background-color: var(--color-surface-subtle);
   border: 1px solid var(--color-border-subtle);
-  border-radius: var(--card-radius);
+  border-radius: var(--radius-2xl);
 }
 
 .state-block svg {
@@ -995,8 +957,9 @@
   width: min(calc(100vw - 2 * var(--space-4)), var(--dialog-width-md));
   padding: var(--dialog-padding);
   background-color: var(--dialog-bg);
-  border: 1px solid var(--color-border-subtle);
+  border: 0;
   border-radius: var(--dialog-radius);
+  box-shadow: var(--shadow-lg);
   color: var(--color-text-body);
 }
 
@@ -1016,10 +979,6 @@
    Hộp thoại bật ra tức thì khiến người dùng mất dấu: họ không biết thứ vừa hiện
    ra đến từ đâu và che mất cái gì. Một chuyển động ngắn nói rõ "lớp này nằm ĐÈ
    LÊN trang, không thay thế trang".
-
-   Trên desktop: phóng nhẹ kèm mờ dần, đúng mẫu ở design-tokens.md 3.6.
-   Trên mobile: trượt lên từ đáy, vì hộp thoại chiếm trọn bề ngang và neo vào
-   cạnh dưới — hướng chuyển động phải khớp với cạnh nó xuất phát.
 
    Khối @media (prefers-reduced-motion: reduce) toàn cục trong globals.css đã rút
    mọi animation xuống gần như tức thời, nên không cần lặp lại quy tắc đó ở đây. */
@@ -1086,12 +1045,14 @@
    ĐIỀU HƯỚNG
    ========================================================================== */
 
+/* Thanh đầu trang không có viền dưới: ranh giới giữa nó và nội dung do chính
+   khối đầu tiên tạo ra — khối hero là KIỂU A nền kem, nên mép của nó đã là một
+   đường phân cách rõ. Kẻ thêm một đường nữa là thừa. */
 .site-header {
   position: sticky;
   top: 0;
   z-index: var(--z-sticky);
-  background-color: var(--color-surface-card);
-  border-bottom: 1px solid var(--color-border-subtle);
+  background-color: var(--color-surface-page);
 }
 
 .site-header__inner {
@@ -1107,7 +1068,7 @@
 
 .site-header__nav {
   display: none;
-  gap: var(--space-5);
+  gap: var(--space-6);
 }
 
 /* Điều hướng chữ chỉ hiện từ md; dưới ngưỡng đó dùng Bottom Navigation */
@@ -1123,18 +1084,20 @@
   text-decoration: none;
   font-size: var(--text-body-sm-size);
   font-weight: var(--weight-medium);
-  padding-block: var(--space-2);
-  border-bottom: 2px solid transparent;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-full);
 }
 
 .nav-link:hover {
   color: var(--color-text-heading);
+  background-color: var(--color-surface-subtle);
 }
 
-/* Chỉ báo tab đang chọn: KHÔNG chỉ bằng màu — có thêm gạch chân đậm */
+/* Chỉ báo tab đang chọn: KHÔNG chỉ bằng màu — có thêm nền viên thuốc đặc */
 .nav-link[aria-current="page"] {
-  color: var(--color-action-primary);
-  border-bottom-color: var(--color-action-primary);
+  color: var(--color-text-heading);
+  background-color: var(--color-surface-subtle);
+  font-weight: var(--weight-semibold);
 }
 
 .brand {
@@ -1163,7 +1126,7 @@
   z-index: var(--z-sticky);
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  background-color: var(--color-surface-card);
+  background-color: var(--color-surface-page);
   border-top: 1px solid var(--color-border-subtle);
   padding-bottom: env(safe-area-inset-bottom);
 }
@@ -1180,7 +1143,7 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-1);
-  /* Sàn bắt buộc của WCAG 2.2 AA (2.5.8) cho web là 24px; GenDA chọn hẳn 56px
+  /* Sàn bắt buộc của WCAG 2.2 AA (2.5.8) cho web là 24px; GenDA chọn hẳn 60px
      vì đây là bề mặt điều hướng chính của sinh viên, thao tác bằng ngón cái
      khi đang di chuyển. Xem lập luận ở design.md 4.6f. */
   min-height: var(--layout-bottom-nav-height);
@@ -1198,6 +1161,7 @@
 
 .bottom-nav__item[aria-current="page"] {
   color: var(--color-action-primary);
+  font-weight: var(--weight-semibold);
 }
 
 /* Chừa chỗ cho bottom nav để nội dung cuối trang không bị che khuất */
@@ -1215,7 +1179,7 @@
   gap: var(--space-2);
   list-style: none;
   margin: 0;
-  padding: var(--space-4) 0 0;
+  padding: var(--space-5) 0 0;
   font-size: var(--text-caption-size);
   color: var(--color-text-muted);
 }
@@ -1224,11 +1188,14 @@
   color: var(--color-text-muted);
 }
 
-/* --- Fat Footer --- */
+/* --- Fat Footer = KIỂU D: TẤM BO MÉP ---
+   Nền kem, bo hai góc TRÊN, chạm mép đáy. Hai góc bo nói "đây là một tấm";
+   mép đáy chạm nói "hết trang rồi, không còn gì bên dưới". Đây là kiểu duy
+   nhất trong bốn kiểu mà vị trí trên trang là cố định. */
 .site-footer {
-  background-color: var(--color-surface-card);
-  border-top: 1px solid var(--color-border-subtle);
-  padding-block: var(--space-12);
+  background-color: var(--color-surface-subtle);
+  border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+  padding-block: var(--space-16) var(--space-12);
   margin-top: var(--space-section);
 }
 
@@ -1246,7 +1213,7 @@
 
 .site-footer h2 {
   font-size: var(--text-body-sm-size);
-  font-weight: var(--weight-semibold);
+  font-weight: var(--weight-bold);
   margin-bottom: var(--space-3);
 }
 
@@ -1262,14 +1229,14 @@
 
 /* ==========================================================================
    TAB (SME theo trạng thái dự án, Admin ba hàng đợi)
+   Viên thuốc đặc thay cho gạch chân — cùng ngôn ngữ hình với nút và badge.
    ========================================================================== */
 
 .tabs {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-1);
-  border-bottom: 1px solid var(--color-border-subtle);
-  margin-bottom: var(--space-6);
+  gap: var(--space-2);
+  margin-bottom: var(--space-8);
 }
 
 .tab {
@@ -1277,9 +1244,9 @@
   align-items: center;
   gap: var(--space-2);
   min-height: 44px;
-  padding: var(--space-2) var(--space-4);
-  border: 0;
-  border-bottom: 2px solid transparent;
+  padding: var(--space-2) var(--space-5);
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
   background: none;
   color: var(--color-text-muted);
   font-size: var(--text-body-sm-size);
@@ -1290,19 +1257,19 @@
 
 .tab:hover {
   color: var(--color-text-heading);
+  background-color: var(--color-surface-subtle);
 }
 
 .tab[aria-selected="true"],
 .tab[aria-current="page"] {
-  color: var(--color-action-primary);
-  border-bottom-color: var(--color-action-primary);
+  background-color: var(--color-action-primary);
+  color: var(--color-text-on-dark);
   font-weight: var(--weight-semibold);
 }
 
 /* --- Hàng tìm kiếm ---
    Giới hạn bề rộng: một ô nhập kéo dài hết 1200px trông như lỗi bố cục, và mắt
-   phải đi quá xa từ chỗ gõ tới nút gửi. Trên mobile nút xuống hàng riêng thay
-   vì bóp ô nhập lại tới mức gợi ý mờ bị cắt cụt. */
+   phải đi quá xa từ chỗ gõ tới nút gửi. */
 .search-row {
   display: flex;
   flex-wrap: wrap;
@@ -1332,7 +1299,7 @@
   align-items: center;
   gap: var(--space-1);
   min-height: 44px; /* vùng chạm WCAG 2.5.8 */
-  padding: var(--space-2) var(--space-4);
+  padding: var(--space-2) var(--space-5);
   border: 1px solid var(--color-border-input);
   border-radius: var(--radius-full);
   background-color: var(--color-surface-card);
@@ -1346,12 +1313,12 @@
   background-color: var(--color-surface-subtle);
 }
 
-/* Chip đang bật: nền đậm + dấu tích, không chỉ mã hóa bằng màu */
+/* Chip đang bật: nền đặc + dấu tích, không chỉ mã hóa bằng màu */
 .chip[aria-pressed="true"] {
   background-color: var(--color-action-primary);
   border-color: var(--color-action-primary);
   color: var(--color-text-on-dark);
-  font-weight: var(--weight-medium);
+  font-weight: var(--weight-semibold);
 }
 
 .chip svg {
@@ -1370,7 +1337,7 @@
   align-items: center;
   gap: var(--space-1);
   padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-full);
   background-color: var(--color-surface-subtle);
   color: var(--color-text-body);
   font-size: var(--text-caption-size);
@@ -1380,7 +1347,7 @@
 .skill-pill--matched {
   background-color: var(--color-status-verified-bg);
   color: var(--color-status-verified-text);
-  font-weight: var(--weight-medium);
+  font-weight: var(--weight-semibold);
 }
 
 .skill-pill svg {
@@ -1401,73 +1368,61 @@
    KHỐI ĐẶC THÙ TRANG CHỦ — design.md 4.9
    ========================================================================== */
 
-/* Hero LỆCH TRÁI, lưới bất đối xứng 1.35fr / 1fr. Không phải hero căn giữa có
-   pill badge — đó là bố cục mặc định của mọi công cụ dựng trang. */
+/* Hero LỆCH TRÁI, lưới bất đối xứng. Không phải hero căn giữa có pill badge —
+   đó là bố cục mặc định của mọi công cụ dựng trang. */
 .hero-editorial {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--space-8);
   align-items: center;
-  /* Trần đệm trên: hero không được trôi xuống giữa viewport */
-  padding-block: var(--space-10) var(--space-section);
+  padding-block: var(--space-10) var(--space-12);
 }
 
 @media (min-width: 1024px) {
   .hero-editorial {
-    grid-template-columns: 1.35fr 1fr;
+    grid-template-columns: 1.15fr 1fr;
     gap: var(--space-12);
-    /* Đệm dưới rút ngắn có chủ đích: phần còn lại do thẻ tràn ra chiếm chỗ */
-    padding-block: var(--space-16) var(--space-12);
-    align-items: end;
+    padding-block: var(--space-16) var(--space-16);
+    align-items: center;
   }
 }
 
-/* --- Thẻ dự án TRÀN QUA mép dưới của vùng màu ---
-   Đây là thay đổi bố cục quan trọng nhất của trang chủ. Khi mọi khối đều là một
-   dải ngang khép kín xếp chồng lên nhau, trang đọc ra như một chồng hình chữ
-   nhật — không có gì dẫn mắt, không có lớp, không có điểm neo. Một phần tử cắt
-   qua ranh giới giữa hai khối lập tức tạo ra chiều sâu và nói rằng bố cục này
-   do người sắp đặt.
-
-   Cách làm: thẻ có margin âm nên nó thò xuống dưới mép vùng màu; khối kế tiếp
-   chừa sẵn đệm trên để không bị đè lên.
-
-   CHỈ áp dụng từ lg trở lên: trên mobile bố cục là một cột, thẻ tràn ra sẽ đè
-   lên nội dung phía dưới và thành lỗi chứ không thành thủ pháp. */
+/* Thẻ nổi bật trong hero: nổi hẳn lên khỏi tấm kem bằng bóng mềm và nghiêng
+   rất nhẹ. Độ nghiêng nhỏ tới mức không ai đọc ra là "hiệu ứng", nhưng đủ để
+   thẻ thôi trông như một ô vuông dán phẳng lên nền. */
 @media (min-width: 1024px) {
   .hero-feature {
-    margin-bottom: calc(-1 * var(--space-20));
-    position: relative;
-    z-index: 1;
-    /* Bóng rõ hơn thẻ thường: thẻ này thật sự đang nổi trên hai nền khác nhau */
     box-shadow: var(--shadow-lg);
+    transform: rotate(-1.2deg);
   }
 
-  .hero-spill {
-    padding-top: var(--space-24);
+  .hero-feature:hover {
+    transform: rotate(0deg);
   }
 }
 
-/* Cỡ chữ tiêu đề hero — KIỀM CHẾ.
-   Bản trước đặt tới 84px. Chữ cỡ đó là ngôn ngữ của áp phích quảng cáo, và đi
-   kèm hai cái nút lớn thì thành đúng khuôn mẫu trang bán hàng do máy sinh. Sản
-   phẩm mà người dùng phải giao tiền cho người lạ cần đọc ra ĐIỀM TĨNH: cỡ chữ
-   vừa phải, thứ bậc tạo bằng khoảng cách và màu, phần diện tích còn lại dành cho
-   nội dung thật. 40-56px vẫn đủ làm điểm vào cho mắt. */
+.hero-spill {
+  padding-top: var(--space-section);
+}
+
+/* Cỡ chữ tiêu đề hero: LỚN và đậm. Ở phong cách này, chữ lớn không đọc ra như
+   áp phích quảng cáo mà đọc ra như giọng nói gần gũi — vì nó đi cùng nền ấm,
+   hình khối tròn và một dòng viết tay phía trên, chứ không đi cùng hai cái nút
+   lớn trên nền trắng trơn. */
 .hero-display {
-  font-size: clamp(2.25rem, 4.2vw, 3.5rem);
-  line-height: 1.08;
-  letter-spacing: -0.02em;
+  font-size: clamp(2.5rem, 5.4vw, 4.5rem);
+  line-height: 1.06;
+  letter-spacing: -0.028em;
 }
 
-/* Bốn con số cam kết. Kẻ ngang phía trên làm trục căn gióng chung. */
+/* Bốn con số cam kết. */
 .stat-strip {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: var(--space-6);
   margin: 0;
-  padding-top: var(--space-5);
-  border-top: 2px solid var(--color-border-subtle);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border-subtle);
 }
 
 @media (min-width: 768px) {
@@ -1476,9 +1431,8 @@
   }
 }
 
-/* Trong hero, dải số nằm ở CỘT PHẢI hẹp (1fr của lưới 1.35fr/1fr), nên phải
-   quay lại 2x2. Bốn cột trong một cột hẹp sẽ ép mỗi con số xuống còn vài chục
-   pixel và nhãn bên dưới vỡ thành từng chữ một. */
+/* Trong hero, dải số nằm ở CỘT PHẢI hẹp nên phải quay lại 2x2. Bốn cột trong
+   một cột hẹp sẽ ép mỗi con số xuống còn vài chục pixel. */
 @media (min-width: 1024px) {
   .hero-editorial .stat-strip {
     grid-template-columns: repeat(2, 1fr);
@@ -1523,8 +1477,6 @@
 
 @media (min-width: 1024px) {
   .editorial-list__item {
-    /* Cột số rộng hẳn 160px để con số cỡ lớn có chỗ thở và tạo ra một trục dọc
-       thứ hai cho mắt bám vào, khác với trục lề trái của mọi khối còn lại. */
     grid-template-columns: 160px 1fr 1.1fr;
     gap: var(--space-8);
     align-items: start;
@@ -1532,12 +1484,7 @@
   }
 }
 
-/* Số CỠ RẤT LỚN làm nhịp thị giác.
-   Bản trước để số ở cỡ h2 (~30px) nên nó chỉ là một chi tiết nhỏ, không tạo ra
-   tương phản tỷ lệ nào. Trang thiếu tương phản tỷ lệ chính là trang đọc ra
-   "đều đều, do máy dựng". Ở cỡ 88px, con số trở thành phần tử neo của cả khối,
-   và vì nó chìm màu nên nó dẫn mắt mà không tranh chấp với tiêu đề.
-
+/* Số CỠ RẤT LỚN làm nhịp thị giác, tô màu cam nhạt.
    Thuần trang trí -> luôn aria-hidden, không bao giờ là nguồn thông tin duy
    nhất (design.md 4.9 "Ranh giới cần giữ"). */
 .editorial-list__num {
@@ -1545,7 +1492,7 @@
   font-size: var(--text-h2-size);
   font-weight: var(--weight-bold);
   font-variant-numeric: tabular-nums;
-  color: var(--color-border-subtle);
+  color: var(--color-text-ghost);
   line-height: 1;
 }
 
@@ -1570,14 +1517,14 @@
 .pull-quote cite {
   display: block;
   margin-top: var(--space-3);
-  font-size: var(--text-body-sm-size);
+  font-family: var(--font-hand);
+  font-size: var(--text-body-size);
   font-style: normal;
-  color: var(--color-text-muted);
+  color: var(--color-accent-text);
 }
 
 /* Hai nút chọn vai trò ở hero. Nhãn của chúng dài ngắn khác nhau nên khi xếp
-   chồng trên mobile, hai nút rộng lệch nhau trông như lỗi căn lề. Kéo bằng
-   nhau bằng cách cho cả hai chiếm trọn bề ngang. */
+   chồng trên mobile, hai nút rộng lệch nhau trông như lỗi căn lề. */
 @media (max-width: 639px) {
   .hero-cta .btn {
     width: 100%;
@@ -1585,14 +1532,10 @@
 }
 
 /* Hình minh họa dựng từ mô-típ khối nghiêng của logo, tô bằng token màu.
-   Luôn aria-hidden vì thuần trang trí (design.md 4.9.1 đòn bẩy 4).
-
-   Giới hạn 260px chứ không để lớn hơn: hình cao quá sẽ kéo giãn cả khối hai cột
-   (vì hai cột căn giữa theo nhau), đẩy tiêu đề khối trôi xuống và tạo ra một
-   vùng trống lớn ngay dưới hero. */
+   Luôn aria-hidden vì thuần trang trí (design.md 4.9.1 đòn bẩy 4). */
 .spot {
   width: 100%;
-  max-width: 260px;
+  max-width: 280px;
   height: auto;
 }
 
@@ -1621,7 +1564,7 @@
 .project-row__money {
   font-family: var(--font-heading);
   font-size: var(--text-h4-size);
-  font-weight: var(--weight-semibold);
+  font-weight: var(--weight-bold);
   font-variant-numeric: tabular-nums;
   color: var(--color-text-heading);
   margin: 0;
@@ -1650,7 +1593,7 @@
 .milestone-row__badge {
   display: inline-flex;
   justify-content: flex-start;
-  min-width: 156px;
+  min-width: 166px;
 }
 
 @media (max-width: 767px) {
@@ -1678,7 +1621,7 @@
 
 /* Thanh tiến độ: phần tử phi văn bản nên được dùng màu brand-decorative */
 .meter {
-  height: 6px;
+  height: 8px;
   border-radius: var(--radius-full);
   background-color: var(--color-surface-subtle);
   overflow: hidden;
@@ -1751,7 +1694,7 @@
 .data-table th {
   color: var(--color-text-muted);
   font-size: var(--text-caption-size);
-  font-weight: var(--weight-semibold);
+  font-weight: var(--weight-bold);
   letter-spacing: var(--tracking-label);
 }
 

@@ -269,7 +269,7 @@ export default async function WorkspacePage({ params }: { params: Promise<{ id: 
                           ? {
                               backgroundColor: "var(--color-action-primary)",
                               borderColor: "var(--color-action-primary)",
-                              color: "var(--color-text-on-dark)"
+                              color: "var(--color-text-on-accent)"
                             }
                           : undefined
                       }
