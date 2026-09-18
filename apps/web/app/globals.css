@@ -1,4 +1,363 @@
-* {
+/* ==========================================================================
+   GenDA Design Tokens
+   Nguồn chân lý: docs/design.md (Mục 4.4 màu, 4.7 chữ, 4.8 khoảng cách)
+   Đặc tả component:  docs/design-tokens.md
+
+   Kiến trúc ba lớp: PRIMITIVE -> SEMANTIC -> COMPONENT
+   Component chỉ được gọi lớp SEMANTIC trở lên. Không dùng hex thô.
+   ========================================================================== */
+
+/* ==========================================================================
+   LỚP 1 — PRIMITIVE
+   Giá trị thô, không mang ý nghĩa. Gần như không bao giờ sửa.
+   ========================================================================== */
+
+:root {
+  /* --- Màu: Teal (neo từ khối gradient logo GenDA) --- */
+  --teal-50: #eff7fa;
+  --teal-100: #d7ecf3;
+  --teal-200: #aedae7;
+  --teal-300: #7fc3d9; /* neo logo (phần sáng) */
+  --teal-400: #4fa6c4;
+  --teal-500: #2c89ab; /* neo logo (phần đậm) */
+  --teal-600: #1f6f8e;
+  --teal-700: #1a5a73;
+  --teal-800: #154a5f;
+  --teal-900: #103a4b;
+
+  /* --- Màu: Green (neo từ chữ "DA" trong logo) --- */
+  --green-50: #f2fae9;
+  --green-100: #e2f5cc;
+  --green-200: #c8eba0;
+  --green-300: #a8dc6e;
+  --green-400: #7dc242; /* neo logo */
+  --green-500: #63a22e;
+  --green-600: #4a7f1f;
+  --green-700: #396317;
+  --green-800: #2c4d12;
+  --green-900: #21390e;
+
+  /* --- Màu: Slate (neo từ chữ "Gen" trong logo) --- */
+  --slate-0: #ffffff;
+  --slate-50: #f6f9fb;
+  --slate-100: #ecf1f5;
+  --slate-200: #d8e1e8;
+  --slate-300: #b9c7d1;
+  --slate-400: #8ca0ad;
+  --slate-500: #6b7f8c; /* neo logo */
+  --slate-600: #52646f;
+  --slate-700: #3c4a54;
+  --slate-900: #16222b;
+
+  /* --- Màu trạng thái (ngoài nhận diện thương hiệu, theo quy ước phổ quát) --- */
+  --amber-50: #fdf4e3;
+  --amber-700: #a15c07;
+  --amber-800: #7a4a05;
+
+  --red-50: #fdf0ef;
+  --red-700: #b42318;
+
+  /* --- Khoảng cách: cơ số 4px (design.md 4.8.1) --- */
+  --space-0: 0;
+  --space-1: 0.25rem; /* 4px */
+  --space-1-5: 0.375rem; /* 6px */
+  --space-2: 0.5rem; /* 8px */
+  --space-3: 0.75rem; /* 12px */
+  --space-4: 1rem; /* 16px */
+  --space-5: 1.25rem; /* 20px */
+  --space-6: 1.5rem; /* 24px */
+  --space-8: 2rem; /* 32px */
+  --space-10: 2.5rem; /* 40px */
+  --space-12: 3rem; /* 48px */
+  --space-16: 4rem; /* 64px */
+  --space-20: 5rem; /* 80px */
+  --space-24: 6rem; /* 96px */
+
+  /* --- Bo góc (design.md 4.8.2) --- */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px; /* khối lớn: vùng tô màu, ô nổi bật */
+  --radius-full: 9999px;
+
+  /* --- Đổ bóng: chỉ dùng cho bề mặt THẬT SỰ nhấc lên được (4.9) --- */
+  --shadow-sm: 0 1px 2px 0 rgb(22 34 43 / 0.06);
+  --shadow-md: 0 4px 6px -1px rgb(22 34 43 / 0.08), 0 2px 4px -2px rgb(22 34 43 / 0.06);
+  --shadow-lg: 0 10px 15px -3px rgb(22 34 43 / 0.1), 0 4px 6px -4px rgb(22 34 43 / 0.06);
+
+  /* --- Thời lượng chuyển động --- */
+  --duration-fast: 150ms;
+  --duration-normal: 200ms;
+  --duration-slow: 300ms;
+
+  /* --- Tầng chồng (z-index) — dùng thang này, không rải số tùy hứng --- */
+  --z-dropdown: 1000;
+  --z-sticky: 1100;
+  --z-modal: 1200;
+  --z-toast: 1400;
+
+  /* --- Họ phông chữ ---
+     Biến --font-be-vietnam-pro / --font-inter do next/font cấp ở layout.tsx.
+     Chuỗi dự phòng bảo đảm giao diện vẫn đọc được nếu phông chưa tải xong. */
+  --font-heading: var(--font-heading-family), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-body: var(--font-inter), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  /* --- Trọng lượng chữ --- */
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* --- Giãn chữ (letter-spacing) ---
+     Chữ càng lớn thì khoảng cách giữa các con chữ càng phải siết lại, nếu không
+     tiêu đề cỡ lớn sẽ trông rời rạc và "mặc định". Đây là thứ tạo ra độ chặt của
+     chữ in editorial, thay cho việc siết giãn dòng — vì giãn dòng còn phải chừa
+     chỗ cho dấu phụ tiếng Việt (design.md 4.7.1). */
+  --tracking-display: -0.03em;
+  --tracking-heading: -0.015em;
+  --tracking-normal: 0;
+  --tracking-label: 0.08em; /* chữ nhãn viết hoa nhỏ, cần nới ra mới đọc được */
+}
+
+/* ==========================================================================
+   LỚP 2 — SEMANTIC
+   Gán ý nghĩa cho primitive. Đây là lớp cần sửa khi đổi thương hiệu / theme.
+   Số đo tương phản đã kiểm định: xem docs/design.md Mục 4.4.5
+   ========================================================================== */
+
+:root {
+  /* --- Hành động --- */
+  --color-action-primary: var(--teal-600); /* chữ trắng: 5.64:1 AA */
+  --color-action-primary-hover: var(--teal-700); /* chữ trắng: 7.63:1 AAA */
+  --color-action-primary-active: var(--teal-800);
+  --color-action-link: var(--teal-600); /* trên nền trang: 5.34:1 AA */
+
+  /* --- Thương hiệu, CHỈ dùng cho phần tử phi văn bản (3.98:1) ---
+     Cái bẫy nguy hiểm nhất của hệ màu: đẹp nhất nhưng KHÔNG đủ tương phản
+     cho chữ. Cấm dùng làm nền nút có chữ trắng (design.md 4.4.3). */
+  --color-brand-decorative: var(--teal-500);
+
+  /* --- Trạng thái: đã xác thực / thành quả --- */
+  --color-status-verified: var(--green-600); /* chữ trắng: 4.83:1 AA */
+  --color-status-verified-text: var(--green-700); /* trên nền tint: 6.60:1 AA */
+  --color-status-verified-bg: var(--green-50);
+
+  /* --- Trạng thái: lưu ý --- */
+  --color-status-warning: var(--amber-700); /* chữ trắng: 5.19:1 AA */
+  --color-status-warning-text: var(--amber-800); /* trên nền tint: 6.84:1 AA */
+  --color-status-warning-bg: var(--amber-50);
+
+  /* --- Trạng thái: lỗi / từ chối --- */
+  --color-status-danger: var(--red-700); /* chữ trắng: 6.57:1 AA */
+  --color-status-danger-text: var(--red-700); /* trên nền tint: 5.91:1 AA */
+  --color-status-danger-bg: var(--red-50);
+
+  /* --- Trạng thái: đang thực hiện --- */
+  --color-status-progress: var(--teal-700);
+  --color-status-progress-bg: var(--teal-50);
+
+  /* --- Chữ --- */
+  --color-text-heading: var(--slate-900); /* trên nền trang: 15.31:1 AAA */
+  --color-text-body: var(--slate-700); /* trên nền trang: 8.64:1 AAA */
+  --color-text-muted: var(--slate-600); /* trên nền trắng: 6.16:1 AA */
+  --color-text-on-dark: var(--slate-0);
+
+  /* --- Bề mặt --- */
+  --color-surface-page: var(--slate-50);
+  --color-surface-card: var(--slate-0);
+  --color-surface-subtle: var(--slate-100);
+
+  /* Vùng tô màu diện rộng (design.md 4.9.1, đòn bẩy 2). Đây là đòn bẩy "thân
+     thiện" lớn nhất mà không đánh đổi độ rõ: màu thương hiệu được dùng hào phóng
+     làm nền cả khối, thay vì chỉ nhỏ giọt trên vài cái nút. Chữ đặt trên hai nền
+     này vẫn dùng token chữ thường — cả hai nền đều rất sáng nên tỷ lệ tương phản
+     gần như không đổi so với nền trang (8.4:1 và 8.5:1 cho chữ nội dung). */
+  --color-surface-brand: var(--teal-50);
+  --color-surface-achieve: var(--green-50);
+
+  /* Vùng tô màu ĐẬM, chiếm trọn bề ngang. Đây mới là hiện thực đúng của đòn bẩy
+     làm ấm số 2 ở design.md 4.9.1: màu thương hiệu dùng HÀO PHÓNG làm nền cả
+     khối. Hai nền tint ở trên sáng tới mức gần như không phân biệt được với nền
+     trắng, nên một mình chúng không tạo ra được nhịp màu nào cho trang.
+
+     Số đo tương phản với chữ trắng (đã kiểm định, xem design.md 4.4.5):
+       teal-800  #154a5f : 9.65:1  AAA
+       green-800 #2c4d12 : 9.64:1  AAA */
+  --color-surface-brand-strong: var(--teal-800);
+  --color-surface-achieve-strong: var(--green-800);
+
+  /* --- Đường viền --- */
+  --color-border-input: var(--slate-500); /* ranh giới MANG THÔNG TIN: 4.17:1 */
+  --color-border-subtle: var(--slate-200); /* thuần trang trí: 1.32:1 */
+  --color-border-focus: var(--teal-600); /* vòng focus: 5.34:1 */
+
+  /* --- Khoảng cách ngữ nghĩa (design.md 4.8.1) --- */
+  --space-field-label: var(--space-1-5); /* nhãn -> ô nhập: 6px */
+  --space-field-error: var(--space-1-5); /* ô nhập -> dòng lỗi: 6px */
+  --space-field-group: var(--space-5); /* giữa hai nhóm trường: 20px */
+  --space-card-padding: var(--space-6); /* đệm trong thẻ: 24px */
+  --space-card-gap: var(--space-4); /* giữa các thẻ: 16px */
+  --space-section: var(--space-12); /* giữa các khối lớn (mobile): 48px */
+
+  /* --- Bố cục (design.md 4.8.3) --- */
+  --layout-container-max: 1200px;
+  --layout-gutter: var(--space-4); /* lề hai bên (mobile): 16px */
+  --layout-grid-gap: var(--space-4);
+
+  /* --- Vai trò chữ: giá trị MOBILE-FIRST, được nâng cấp ở breakpoint md --- */
+  --text-display-size: 2.25rem; /* 36px */
+  --text-display-height: 1.2;
+  --text-h1-size: 1.75rem; /* 28px */
+  --text-h1-height: 1.25;
+  --text-h2-size: 1.5rem; /* 24px */
+  --text-h2-height: 1.3;
+  --text-h3-size: 1.25rem; /* 20px */
+  --text-h3-height: 1.35;
+  --text-h4-size: 1.125rem; /* 18px */
+  --text-h4-height: 1.4;
+  --text-body-lg-size: 1.0625rem; /* 17px */
+  --text-body-lg-height: 1.6;
+  --text-body-size: 1rem; /* 16px — KHÔNG hạ xuống ở bất kỳ breakpoint nào */
+  --text-body-height: 1.65; /* giãn rộng cho dấu phụ tiếng Việt */
+  --text-body-sm-size: 0.875rem; /* 14px */
+  --text-body-sm-height: 1.6;
+  --text-caption-size: 0.75rem; /* 12px */
+  --text-caption-height: 1.5;
+}
+
+/* Breakpoint md (768px) trở lên: nâng cấp tiêu đề và nới rộng bố cục.
+   Lưu ý: biến CSS không dùng được bên trong điều kiện @media, nên phải khai báo
+   lại giá trị ở đây thay vì tham chiếu một token breakpoint. */
+@media (min-width: 768px) {
+  :root {
+    --text-display-size: 4rem; /* 64px — khoảng nhảy lớn so với h1 là thứ tạo ra sức nặng thị giác */
+    --text-h1-size: 2.25rem; /* 36px */
+    --text-h2-size: 1.875rem; /* 30px */
+    --text-h3-size: 1.5rem; /* 24px */
+    --text-h4-size: 1.25rem; /* 20px */
+    --text-body-lg-size: 1.125rem; /* 18px */
+
+    --layout-gutter: var(--space-6); /* 24px */
+    --layout-grid-gap: var(--space-5); /* 20px */
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --layout-gutter: var(--space-8); /* 32px */
+    --layout-grid-gap: var(--space-6); /* 24px */
+    --space-section: var(--space-20); /* 80px */
+  }
+}
+
+/* ==========================================================================
+   LỚP 3 — COMPONENT
+   Tùy biến riêng từng component, tham chiếu lớp semantic.
+   ========================================================================== */
+
+:root {
+  /* --- Button (design-tokens.md 3.1) --- */
+  --btn-height-sm: 32px;
+  --btn-height-md: 44px; /* = ngưỡng vùng chạm WCAG 2.5.8 */
+  --btn-height-lg: 52px;
+  /* Đệm ngang rộng hơn mức tối thiểu: nút "béo" đọc ra thân thiện và dễ bấm hơn */
+  --btn-padding-x-sm: var(--space-4);
+  --btn-padding-x-md: var(--space-6);
+  --btn-padding-x-lg: var(--space-8);
+  /* Bo góc VỪA, không bo tròn hoàn toàn.
+     Bản trước dùng `radius-full` với lập luận "bo tròn là tín hiệu thân thiện
+     nhất". Lập luận đó đúng về mặt thân thiện nhưng bỏ qua một vế: viên thuốc
+     bo tròn hoàn toàn là hình nút mặc định của mọi mẫu SaaS dựng sẵn, nên nó
+     đọc ra "vui vẻ, đại trà" chứ không ra "đáng tin, chuyên nghiệp". Với một
+     nền tảng mà người dùng phải giao tiền và thời gian, vế thứ hai quan trọng
+     hơn. Góc 8px giữ được vẻ mềm mà vẫn nghiêm túc. */
+  --btn-radius: var(--radius-md);
+
+  --btn-primary-bg: var(--color-action-primary);
+  --btn-primary-fg: var(--color-text-on-dark);
+  --btn-primary-bg-hover: var(--color-action-primary-hover);
+  --btn-primary-bg-active: var(--color-action-primary-active);
+
+  --btn-secondary-bg: var(--color-surface-subtle);
+  --btn-secondary-fg: var(--color-text-heading);
+
+  --btn-outline-border: var(--color-border-input);
+  --btn-outline-fg: var(--color-text-heading);
+
+  --btn-ghost-fg: var(--color-text-body);
+
+  --btn-danger-bg: var(--color-status-danger);
+  --btn-danger-fg: var(--color-text-on-dark);
+
+  /* --- Input (design-tokens.md 3.2) --- */
+  --input-height: 44px;
+  --input-bg: var(--color-surface-card);
+  --input-border: var(--color-border-input);
+  --input-border-focus: var(--color-border-focus);
+  --input-border-error: var(--color-status-danger);
+  --input-radius: var(--radius-md);
+  --input-padding-x: var(--space-3);
+
+  /* --- Card (design-tokens.md 3.3) --- */
+  --card-bg: var(--color-surface-card);
+  --card-border: var(--color-border-subtle);
+  /* Bo 12px thay cho 16px: khối bo càng lớn càng đọc ra "tiêu dùng, thân thiện";
+     khối bo vừa đọc ra "công cụ, chuyên nghiệp". */
+  --card-radius: var(--radius-lg);
+  --card-padding: var(--space-card-padding);
+  /* Bóng RẤT nhẹ ở trạng thái mặc định. Mục 4.9 cấm rải bóng mềm khắp nơi và
+     lập luận đó vẫn đúng — nhưng bề mặt hoàn toàn phẳng, chỉ có viền 1px, lại
+     đọc ra như bản vẽ khung. Một lớp bóng gần như không thấy được đủ để tách
+     thẻ khỏi nền mà không giả vờ rằng nó nhấc lên được. */
+  --card-shadow: 0 1px 2px 0 rgb(22 34 43 / 0.04);
+  --card-shadow-hover: var(--shadow-md);
+
+  /* --- Badge (design-tokens.md 3.4) --- */
+  --badge-radius: var(--radius-sm);
+  --badge-padding: var(--space-1) 10px;
+  --badge-icon-size: 14px;
+
+  /* --- Alert (design-tokens.md 3.5) --- */
+  --alert-padding: var(--space-4);
+  --alert-radius: var(--radius-lg);
+  --alert-accent-width: 4px;
+
+  /* --- Dialog (design-tokens.md 3.6) --- */
+  --dialog-overlay: rgb(22 34 43 / 0.5);
+  --dialog-bg: var(--color-surface-card);
+  --dialog-radius: var(--radius-xl);
+  --dialog-padding: var(--space-card-padding);
+  --dialog-width-sm: 400px;
+  --dialog-width-md: 520px;
+  --dialog-width-lg: 640px;
+
+  /* --- Dropzone (design-tokens.md 3.7) --- */
+  --dropzone-border: var(--color-border-input);
+  --dropzone-bg: var(--color-surface-subtle);
+  --dropzone-radius: var(--radius-lg);
+  --dropzone-min-height: 160px;
+
+  /* --- Vòng focus (dùng chung toàn hệ thống, design.md 4.6a) --- */
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+  --focus-ring-color: var(--color-border-focus);
+
+  /* --- Chiều cao hai thanh điều hướng cố định ---
+     Khai báo thành token vì chúng được dùng ở HAI nơi phải luôn khớp nhau:
+     chiều cao thật của thanh, và khoảng chừa của scroll-padding bên dưới.
+     Lệch nhau là vòng focus bị che (design.md 4.6h). */
+  --layout-header-height: 64px;
+  --layout-bottom-nav-height: 56px;
+}
+
+/* ==========================================================================
+   BASE — thiết lập nền tảng
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -8,7 +367,172 @@ body {
   min-height: 100%;
 }
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
+html {
+  -webkit-text-size-adjust: 100%;
+
+  /* --- WCAG 2.2 AA 2.4.11 Focus Not Obscured (Minimum) ---
+     Thanh đầu trang dính (sticky) và thanh điều hướng đáy (fixed) đều nằm đè
+     lên luồng nội dung. Khi người dùng bấm Tab tới một phần tử vừa ra khỏi
+     vùng nhìn, trình duyệt cuộn phần tử đó vào đúng mép viewport — tức là
+     ngay bên dưới thanh đầu trang, và vòng focus bị che khuất.
+     scroll-padding chừa sẵn chỗ cho hai thanh này, nên phần tử nhận tiêu điểm
+     luôn dừng ở vị trí nhìn thấy được. Đặt trên <html> để áp cho mọi lần cuộn
+     do trình duyệt tự thực hiện, gồm cả khi nhảy tới liên kết neo. */
+  scroll-padding-top: calc(var(--layout-header-height) + var(--space-4));
 }
 
+@media (max-width: 767px) {
+  html {
+    scroll-padding-bottom: calc(
+      var(--layout-bottom-nav-height) + env(safe-area-inset-bottom) + var(--space-4)
+    );
+  }
+}
+
+body {
+  background-color: var(--color-surface-page);
+  color: var(--color-text-body);
+  font-family: var(--font-body);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-height);
+  font-weight: var(--weight-regular);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  color: var(--color-text-heading);
+  font-family: var(--font-heading);
+  letter-spacing: var(--tracking-heading);
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: var(--text-h1-size);
+  line-height: var(--text-h1-height);
+  font-weight: var(--weight-bold);
+}
+
+h2 {
+  font-size: var(--text-h2-size);
+  line-height: var(--text-h2-height);
+  font-weight: var(--weight-semibold);
+}
+
+h3 {
+  font-size: var(--text-h3-size);
+  line-height: var(--text-h3-height);
+  font-weight: var(--weight-semibold);
+}
+
+h4 {
+  font-size: var(--text-h4-size);
+  line-height: var(--text-h4-height);
+  font-weight: var(--weight-semibold);
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: var(--color-action-link);
+}
+
+/* Nội dung do người dùng nhập (mô tả dự án, thư ngỏ, ghi chú bàn giao) có thể
+   chứa liên kết hoặc chuỗi dài không dấu cách. Không có quy tắc này thì một
+   chuỗi như vậy sẽ đẩy rộng khối chứa và gây cuộn ngang trên điện thoại.
+   Dùng `anywhere` chứ không dùng `break-all`: `break-all` cắt cả từ tiếng Việt
+   bình thường giữa chừng, còn `anywhere` chỉ can thiệp khi thật sự tràn. */
+p,
+li,
+dd,
+blockquote,
+td {
+  overflow-wrap: anywhere;
+}
+
+/* Bỏ độ trễ ~300ms mà một số trình duyệt di động chờ xem cú chạm có phải là
+   nháy đúp để phóng to hay không. Chỉ áp cho phần tử tương tác, không áp cho
+   cả trang, để người dùng vẫn phóng to đọc nội dung được bình thường. */
+button,
+a,
+label,
+summary,
+[role="button"] {
+  touch-action: manipulation;
+}
+
+/* Ô nhập phải kế thừa phông; mặc định của trình duyệt là phông hệ thống.
+   Cỡ chữ không bao giờ dưới 16px trên mobile — iOS Safari sẽ tự phóng to trang. */
+input,
+textarea,
+select,
+button {
+  font-family: inherit;
+  font-size: var(--text-body-size);
+}
+
+/* --- Vòng focus dùng chung (WCAG 2.4.7) ---
+   Mọi phần tử tương tác đều nhận vòng focus này. Không được ghi đè bằng
+   `outline: none` mà không cấp chỉ báo thay thế. */
+:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  border-radius: var(--radius-sm);
+}
+
+/* --- Liên kết "Bỏ qua tới nội dung chính" (WCAG 2.4.1) --- */
+.skip-link {
+  position: absolute;
+  left: var(--space-4);
+  top: calc(-1 * var(--space-16));
+  z-index: var(--z-sticky);
+  padding: var(--space-2) var(--space-4);
+  background-color: var(--color-action-primary);
+  color: var(--color-text-on-dark);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: top var(--duration-fast) ease;
+}
+
+.skip-link:focus {
+  top: var(--space-4);
+}
+
+/* --- Khung nội dung --- */
+.container {
+  width: 100%;
+  max-width: var(--layout-container-max);
+  margin-inline: auto;
+  padding-inline: var(--layout-gutter);
+}
+
+/* --- Chỉ hiện với trình đọc màn hình --- */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* --- Tôn trọng lựa chọn giảm chuyển động của người dùng --- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
