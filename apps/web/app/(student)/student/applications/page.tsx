@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { SiteHeader } from "../../../../components/layout/site-header";
 import { SiteFooter } from "../../../../components/layout/site-footer";
 import { BottomNav } from "../../../../components/layout/bottom-nav";
+import { StudentRouteGuard } from "../../../../features/auth/components/student-route-guard";
 import { ButtonLink } from "../../../../components/ui/button";
 import { StatusBadge } from "../../../../components/ui/status-badge";
 import { EmptyState } from "../../../../components/ui/feedback";
@@ -38,9 +39,10 @@ export default function ApplicationsPage() {
     <>
       <SiteHeader hideOnMobile />
 
+      <StudentRouteGuard>
       <main id="main-content" className="industrial-canvas has-bottom-nav" style={{ paddingBottom: "var(--space-16)" }}>
         {/* THANH THƯỚC ĐO KỸ THUẬT & ĐIỀU HƯỚNG */}
-        <div style={{ borderBottom: "2px solid var(--machinery-border)", backgroundColor: "var(--color-surface-card)" }}>
+        <div className="page-breadcrumb-bar" style={{ borderBottom: "2px solid var(--machinery-border)", backgroundColor: "var(--color-surface-card)" }}>
           <div className="container" style={{ paddingBlock: "10px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
             <nav aria-label="Đường dẫn phân cấp" style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px" }}>
               <ol className="breadcrumbs" style={{ margin: 0, padding: 0 }}>
@@ -176,6 +178,7 @@ export default function ApplicationsPage() {
           )}
         </div>
       </main>
+      </StudentRouteGuard>
 
       <SiteFooter />
       <BottomNav />

@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import { Briefcase, FileText, House, ICON_WEIGHT, UserCircle } from "../ui/icons";
 import { useDemoSession } from "../../features/auth/hooks/use-demo-session";
 
@@ -22,6 +23,13 @@ const STUDENT_TABS = [
   { href: "/student/profile", label: "Hồ sơ", icon: UserCircle }
 ];
 
+const GUEST_TABS = [
+  { href: "/", label: "Trang chủ", icon: House },
+  { href: "/projects", label: "Dự án", icon: Briefcase },
+  { href: "/login", label: "Đăng nhập", icon: UserCircle },
+  { href: "/login?mode=register", label: "Tham gia", icon: FileText }
+];
+
 const SME_TABS = [
   { href: "/", label: "Trang chủ", icon: House },
   { href: "/sme/projects", label: "Dự án của tôi", icon: Briefcase },
@@ -29,13 +37,15 @@ const SME_TABS = [
   { href: "/student/profile", label: "Hồ sơ", icon: UserCircle }
 ];
 
-export function BottomNav() {
+function BottomNavContent() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { session, hydrated } = useDemoSession();
-  const tabs = hydrated && session?.role === "SME" ? SME_TABS : STUDENT_TABS;
-  const activeHref = pathname.startsWith("/workspace/")
-    ? session?.role === "SME" ? "/sme/projects" : "/student/applications"
-    : tabs.find((tab) => pathname === tab.href || (tab.href !== "/" && pathname.startsWith(`${tab.href}/`)))?.href;
+  const tabs = !hydrated || !session ? GUEST_TABS : session.role === "SME" ? SME_TABS : STUDENT_TABS;
+  const currentPath = !session && pathname === "/login" && searchParams.get("mode") === "register" ? "/login?mode=register" : pathname;
+  const activeHref = currentPath.startsWith("/workspace/")
+    ? session?.role === "SME" ? "/sme/projects" : session?.role === "STUDENT" ? "/student/applications" : undefined
+    : tabs.find((tab) => currentPath === tab.href || (tab.href !== "/" && currentPath.startsWith(`${tab.href}/`)))?.href;
   return (
     <nav className="bottom-nav" aria-label="Điều hướng nhanh">
       {tabs.map((tab) => {
@@ -53,5 +63,13 @@ export function BottomNav() {
         );
       })}
     </nav>
+  );
+}
+
+export function BottomNav() {
+  return (
+    <Suspense fallback={<nav className="bottom-nav" aria-label="Điều hướng nhanh" />}>
+      <BottomNavContent />
+    </Suspense>
   );
 }
