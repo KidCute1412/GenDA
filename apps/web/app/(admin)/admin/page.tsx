@@ -78,7 +78,7 @@ export default async function AdminPage({
                   <span style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "var(--green-600)", display: "inline-block" }} />
                   SYSTEM ACTIVE
                 </span>
-                <span className="text-muted">// SLA: ≤ 4.0H</span>
+                <span className="text-muted">{"// SLA: ≤ 4.0H"}</span>
               </div>
             </div>
 
@@ -132,7 +132,7 @@ export default async function AdminPage({
                 className="tab"
                 aria-current={item.key === active ? "page" : undefined}
               >
-                <span style={{ opacity: 0.6, fontSize: "10px" }}>{item.code} //</span>
+                <span style={{ opacity: 0.6, fontSize: "10px" }}>{item.code} ·</span>
                 <span>{item.label}</span>
                 <span 
                   className="num" 
