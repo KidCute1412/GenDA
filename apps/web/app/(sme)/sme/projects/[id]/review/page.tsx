@@ -50,122 +50,226 @@ export default async function ReviewApplicantsPage({ params }: { params: Promise
     <>
       <SiteHeader />
 
-      <main id="main-content" className="container">
-        <nav aria-label="Đường dẫn phân cấp">
-          <ol className="breadcrumbs">
-            <li>
-              <Link href="/">Trang chủ</Link>
-            </li>
-            <li aria-hidden="true">/</li>
-            <li>
-              <Link href="/sme/projects">Dự án của tôi</Link>
-            </li>
-            <li aria-hidden="true">/</li>
-            <li aria-current="page">Ứng viên</li>
-          </ol>
-        </nav>
+      <main id="main-content" className="industrial-canvas" style={{ paddingBottom: "var(--space-16)" }}>
+        {/* THANH THƯỚC ĐO KỸ THUẬT & ĐIỀU HƯỚNG */}
+        <div style={{ borderBottom: "2px solid var(--machinery-border)", backgroundColor: "var(--color-surface-card)" }}>
+          <div className="container" style={{ paddingBlock: "10px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
+            <nav aria-label="Đường dẫn phân cấp" style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px" }}>
+              <ol className="breadcrumbs" style={{ margin: 0, padding: 0 }}>
+                <li>
+                  <Link href="/" style={{ color: "var(--color-text-muted)", textDecoration: "none" }}>HOME</Link>
+                </li>
+                <li aria-hidden="true" style={{ color: "var(--color-text-muted)" }}>/</li>
+                <li>
+                  <Link href="/sme/projects" style={{ color: "var(--color-text-muted)", textDecoration: "none" }}>SME PROJECTS</Link>
+                </li>
+                <li aria-hidden="true" style={{ color: "var(--color-text-muted)" }}>/</li>
+                <li aria-current="page" style={{ fontWeight: 700, color: "var(--orange-500)" }}>APPLICANTS // {project.id.toUpperCase()}</li>
+              </ol>
+            </nav>
 
-        <div className="section--tight">
-          <p className="text-caption">{project.title}</p>
-          <h1>Chọn người làm dự án này</h1>
-          <p className="lede" style={{ marginTop: "var(--space-3)" }}>
-            Bạn chọn đúng một bạn. Xếp trên là những bạn trùng nhiều kỹ năng với yêu cầu của bạn nhất,
-            nhưng thư ngỏ mới là thứ nói lên bạn ấy có hiểu việc hay không.
-          </p>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", fontFamily: "ui-monospace, monospace", fontSize: "11px" }}>
+              <span className="badge badge--verified" style={{ margin: 0 }}>
+                CANDIDATES: {applicants.length}
+              </span>
+              <span style={{ color: "var(--color-text-muted)" }}>
+                MATCH ENGINE ACTIVE
+              </span>
+            </div>
+          </div>
         </div>
 
-        {applicants.length === 0 ? (
-          <EmptyState
-            title="Chưa có ai ứng tuyển"
-            advice="Dự án mới đăng thường có đơn đầu tiên sau 1 tới 2 ngày. Mô tả càng cụ thể thì càng nhiều bạn đủ tự tin để nộp."
-            action={<ButtonLink href={`/projects/${project.id}`} variant="outline">Xem lại dự án</ButtonLink>}
-          />
-        ) : (
-          <ul className="stack" style={{ listStyle: "none", margin: 0, padding: 0, paddingBottom: "var(--space-section)" }}>
-            {applicants.map((applicant) => {
-              const score = matchScore(project.skills, applicant.skills);
+        <div className="container" style={{ paddingTop: "var(--space-6)" }}>
+          
+          {/* HEADER TRANG REVIEW */}
+          <div style={{ marginBottom: "var(--space-6)" }}>
+            <div className="industrial-ruler">SELECTION PROTOCOL // CHỌN NHÂN SỰ DỰ ÁN</div>
+            <h1 style={{ fontSize: "clamp(1.75rem, 3.5vw, 2.5rem)", fontWeight: 900, textTransform: "uppercase", margin: "var(--space-1) 0" }}>
+              XÉT DUYỆT ỨNG VIÊN
+            </h1>
+            <p className="text-muted" style={{ margin: 0, fontSize: "13px", maxWidth: "70ch" }}>
+              Dự án: <strong style={{ color: "var(--color-text-heading)" }}>{project.title}</strong> ({project.smeName}) — Bạn chọn đúng một ứng viên để kích hoạt mốc bàn giao đầu tiên và ký quỹ dự án.
+            </p>
+          </div>
 
-              return (
-                <li key={applicant.id} className={`card stack ${applicant.shortlisted ? "card--selected" : ""}`}>
-                  <div className="cluster cluster--between">
-                    <div>
-                      <h2 style={{ fontSize: "var(--text-h3-size)" }}>{applicant.name}</h2>
-                      <p className="text-muted" style={{ marginTop: "var(--space-1)" }}>
-                        {applicant.major}, {applicant.year}, {applicant.school}
+          {applicants.length === 0 ? (
+            <div className="module-bay" style={{ padding: "var(--space-10)", textAlign: "center" }}>
+              <EmptyState
+                title="CHƯA CÓ ĐƠN ỨNG TUYỂN NÀO"
+                advice="Các dự án vừa xuất bản thường nhận được đơn nộp sau 1-2 ngày. Bạn có thể kiểm tra lại mô tả đề bài và tiêu chí nghiệm thu."
+                action={
+                  <Link href={`/projects/${project.id}`} className="btn--tactile-zinc" style={{ height: "40px", fontSize: "12px", textDecoration: "none" }}>
+                    XEM LẠI ĐỀ BÀI CÔNG KHAI
+                  </Link>
+                }
+              />
+            </div>
+          ) : (
+            <div className="stack" style={{ gap: "var(--space-4)" }}>
+              {applicants.map((applicant) => {
+                const score = matchScore(project.skills, applicant.skills);
+
+                return (
+                  <article 
+                    key={applicant.id} 
+                    className="module-bay"
+                    style={{ 
+                      padding: "var(--space-6)",
+                      backgroundColor: "var(--color-surface-card)",
+                      borderColor: applicant.shortlisted ? "var(--orange-500)" : "var(--machinery-border)"
+                    }}
+                  >
+                    <div className="module-bay__header" style={{ borderColor: applicant.shortlisted ? "var(--orange-500)" : "var(--machinery-border)" }}>
+                      <span className="module-bay__id" style={{ backgroundColor: applicant.shortlisted ? "var(--orange-500)" : "var(--machinery-border)" }}>
+                        CANDIDATE // {applicant.id.toUpperCase()}
+                      </span>
+                      {applicant.shortlisted ? (
+                        <span style={{ color: "var(--orange-500)", fontWeight: 800, fontFamily: "ui-monospace, monospace", fontSize: "11px" }}>
+                          ★ ĐÃ ĐÁNH DẤU RÚT GỌN
+                        </span>
+                      ) : (
+                        <span style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px", color: "var(--color-text-muted)" }}>
+                          HỒ SƠ MỚI
+                        </span>
+                      )}
+                    </div>
+
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "var(--space-4)" }}>
+                      <div>
+                        <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+                          <h2 style={{ fontSize: "1.35rem", fontWeight: 900, textTransform: "uppercase", margin: 0 }}>
+                            {applicant.name}
+                          </h2>
+                          {applicant.verified ? (
+                            <span className="badge badge--verified" style={{ margin: 0 }}>
+                              <SealCheck weight={ICON_WEIGHT} aria-hidden="true" />
+                              SINH VIÊN ĐÃ XÁC THỰC
+                            </span>
+                          ) : (
+                            <span className="badge badge--progress" style={{ margin: 0 }}>
+                              CHỜ XÁC MINH THẺ
+                            </span>
+                          )}
+                        </div>
+
+                        <p className="text-muted" style={{ margin: "4px 0 0", fontSize: "12px", fontFamily: "ui-monospace, monospace" }}>
+                          {applicant.major} // {applicant.year} // {applicant.school}
+                        </p>
+                      </div>
+
+                      {/* Điểm số so khớp cơ khí */}
+                      <div 
+                        style={{ 
+                          border: "2px solid var(--machinery-border)", 
+                          padding: "6px 12px", 
+                          backgroundColor: "var(--color-surface-subtle)",
+                          textAlign: "right"
+                        }}
+                      >
+                        <div style={{ display: "flex", alignItems: "baseline", gap: "6px", justifyContent: "flex-end" }}>
+                          <span style={{ fontSize: "10px", fontFamily: "ui-monospace, monospace", color: "var(--color-text-muted)" }}>
+                            ĐỘ PHÙ HỢP:
+                          </span>
+                          <strong className="num" style={{ fontSize: "1.25rem", fontWeight: 900, color: "var(--orange-500)" }}>
+                            {score.percent}%
+                          </strong>
+                        </div>
+                        <span style={{ fontSize: "11px", color: "var(--color-text-muted)", fontFamily: "ui-monospace, monospace" }}>
+                          Khớp {score.matchedCount}/{score.total} kỹ năng
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Danh sách kỹ năng */}
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBlock: "var(--space-4)" }}>
+                      {applicant.skills.map((skill) => {
+                        const needed = project.skills.includes(skill);
+                        return (
+                          <span 
+                            key={skill} 
+                            className="chip"
+                            style={{ 
+                              fontSize: "11px", 
+                              height: "26px", 
+                              paddingInline: "8px", 
+                              borderColor: needed ? "var(--orange-500)" : "var(--machinery-border)",
+                              backgroundColor: needed ? "var(--color-surface-subtle)" : "transparent",
+                              fontWeight: needed ? 700 : 500
+                            }}
+                          >
+                            {needed ? <Check weight={ICON_WEIGHT} aria-hidden="true" style={{ color: "var(--orange-500)", marginRight: "4px" }} /> : null}
+                            {skill}
+                          </span>
+                        );
+                      })}
+                    </div>
+
+                    {/* Thư ngỏ */}
+                    <div style={{ marginBlock: "var(--space-3)" }}>
+                      <div style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px", color: "var(--color-text-muted)", marginBottom: "4px" }}>
+                        {"// THƯ NGỎ CỦA ỨNG VIÊN"}
+                      </div>
+                      <p 
+                        style={{ 
+                          margin: 0, 
+                          padding: "10px 14px", 
+                          backgroundColor: "var(--color-surface-subtle)", 
+                          borderLeft: "3px solid var(--machinery-border)",
+                          fontSize: "13px", 
+                          lineHeight: 1.5,
+                          maxWidth: "75ch"
+                        }}
+                      >
+                        {applicant.coverLetter}
                       </p>
                     </div>
 
-                    <p className="match-score" style={{ margin: 0 }}>
-                      <span className="match-score__value">{score.percent}%</span>
-                      <span className="text-caption">
-                        phù hợp, trùng {score.matchedCount}/{score.total} kỹ năng
-                      </span>
-                    </p>
-                  </div>
+                    {/* Chân Thẻ & Action buttons */}
+                    <div 
+                      style={{ 
+                        paddingTop: "var(--space-4)", 
+                        borderTop: "2px solid var(--machinery-border)", 
+                        display: "flex", 
+                        justifyContent: "space-between", 
+                        alignItems: "center", 
+                        flexWrap: "wrap", 
+                        gap: "var(--space-3)",
+                        marginTop: "var(--space-4)"
+                      }}
+                    >
+                      <a 
+                        href={applicant.portfolioUrl} 
+                        target="_blank"
+                        rel="noreferrer"
+                        className="btn--tactile-zinc"
+                        style={{ height: "36px", fontSize: "11px", textDecoration: "none" }}
+                      >
+                        {applicant.portfolioLabel}
+                        <ArrowRight weight={ICON_WEIGHT} aria-hidden="true" />
+                      </a>
 
-                  <div className="cluster">
-                    {applicant.verified ? (
-                      <span className="badge badge--verified">
-                        <SealCheck weight={ICON_WEIGHT} aria-hidden="true" />
-                        Sinh viên đã xác thực
-                      </span>
-                    ) : (
-                      /* Chưa xác thực là thông tin quan trọng với SME, nên nói
-                         thẳng thay vì lặng lẽ bỏ huy hiệu đi. */
-                      <StatusBadge status="PENDING" label="Đang chờ xác thực thẻ sinh viên" />
-                    )}
-                    {applicant.shortlisted ? (
-                      <span className="badge badge--progress">
-                        <Check weight={ICON_WEIGHT} aria-hidden="true" />
-                        Trong danh sách rút gọn
-                      </span>
-                    ) : null}
-                  </div>
+                      <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                        <button 
+                          type="button" 
+                          className="chip"
+                          style={{ height: "36px", fontSize: "11px", cursor: "pointer" }}
+                        >
+                          {applicant.shortlisted ? "Bỏ khỏi rút gọn" : "Đánh dấu rút gọn"}
+                        </button>
 
-                  <ul className="pill-list">
-                    {applicant.skills.map((skill) => {
-                      const needed = project.skills.includes(skill);
-                      return (
-                        <li key={skill} className={`skill-pill ${needed ? "skill-pill--matched" : ""}`}>
-                          {needed ? <Check weight={ICON_WEIGHT} aria-hidden="true" /> : null}
-                          {skill}
-                          {needed ? (
-                            <span className="visually-hidden">(khớp yêu cầu của dự án)</span>
-                          ) : null}
-                        </li>
-                      );
-                    })}
-                  </ul>
+                        <AcceptApplicantButton
+                          applicantName={applicant.name}
+                          otherCount={applicants.length - 1}
+                        />
+                      </div>
+                    </div>
 
-                  <div>
-                    <p className="text-caption">Thư ngỏ</p>
-                    <p style={{ marginTop: "var(--space-2)", maxWidth: "70ch" }}>{applicant.coverLetter}</p>
-                  </div>
-
-                  <div className="card__footer cluster cluster--between">
-                    <a href={applicant.portfolioUrl} className="btn btn--ghost btn--sm">
-                      {applicant.portfolioLabel}
-                      <ArrowRight weight={ICON_WEIGHT} aria-hidden="true" />
-                    </a>
-
-                    <span className="cluster">
-                      {/* Danh sách rút gọn là bước TÙY CHỌN (FR-APP-04): nó giúp
-                          SME thu hẹp dần mà chưa phải cam kết gì. */}
-                      <button type="button" className="btn btn--outline btn--sm">
-                        {applicant.shortlisted ? "Bỏ khỏi rút gọn" : "Đánh dấu rút gọn"}
-                      </button>
-
-                      <AcceptApplicantButton
-                        applicantName={applicant.name}
-                        otherCount={applicants.length - 1}
-                      />
-                    </span>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        )}
+                  </article>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </main>
 
       <SiteFooter />

@@ -245,7 +245,7 @@ export default async function WorkspacePage({ params }: { params: Promise<{ id: 
               </ul>
 
               <div className="card__footer">
-                <Link href="/portfolio/nguyen-hai-nam" className="btn btn--outline btn--sm">
+                <Link href="/portfolio/le-tuan-loc" className="btn btn--outline btn--sm">
                   Xem hồ sơ đầy đủ
                 </Link>
               </div>

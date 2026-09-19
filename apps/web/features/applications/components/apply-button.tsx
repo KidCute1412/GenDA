@@ -63,11 +63,16 @@ export function ApplyButton({
 
   return (
     <>
-      <Button size="lg" onClick={open}>
-        Ứng tuyển ngay
-      </Button>
+      <button
+        type="button"
+        className="btn--tactile-orange"
+        style={{ width: "100%", height: "48px" }}
+        onClick={open}
+      >
+        ỨNG TUYỂN NGAY
+      </button>
 
-      <dialog ref={dialogRef} className="dialog dialog--lg" aria-labelledby="apply-title">
+      <dialog ref={dialogRef} className="dialog dialog--lg" aria-labelledby="apply-title" style={{ border: "2px solid var(--machinery-border)", boxShadow: "8px 8px 0px var(--machinery-shadow)", borderRadius: 0 }}>
         {status === "done" ? (
           /* Trạng thái Thành công (design.md 8.4): xác nhận rõ ràng, tạo cảm
              giác đóng gói, và nói luôn bước kế tiếp thay vì bỏ người dùng lơ lửng. */
