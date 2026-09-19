@@ -36,8 +36,15 @@ export async function generateMetadata({
  * trước tiền chia thành mấy đợt, mỗi đợt bao nhiêu, thì mới đánh giá được rủi
  * ro trước khi nhận việc.
  */
-export default async function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ProjectDetailPage({
+  params,
+  searchParams
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ emailVerified?: string }>;
+}) {
   const { id } = await params;
+  await searchParams;
   const project = getProject(id);
 
   if (!project) notFound();
@@ -246,6 +253,9 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                 {project.status === "PUBLISHED" ? (
                   <ApplyButton
                     projectTitle={project.title}
+                    projectId={project.id}
+                    smeName={project.smeName}
+                    budget={project.budget}
                     verified={CURRENT_STUDENT.verification === "VERIFIED"}
                   />
                 ) : (

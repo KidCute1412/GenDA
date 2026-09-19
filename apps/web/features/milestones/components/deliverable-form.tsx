@@ -5,6 +5,7 @@ import { Button } from "../../../components/ui/button";
 import { Dropzone } from "../../../components/ui/dropzone";
 import { TextAreaField, TextField } from "../../../components/ui/field";
 import { Alert } from "../../../components/ui/alert";
+import { useDemoPersistedState } from "../../../lib/hooks/use-demo-persisted-state";
 
 /**
  * Khu vực nộp kết quả bàn giao của sinh viên (docs/design.md 7.6, FR-MIL-03).
@@ -18,11 +19,13 @@ import { Alert } from "../../../components/ui/alert";
  */
 export function DeliverableForm({ milestoneTitle }: { milestoneTitle: string }) {
   const [link, setLink] = useState("");
+  const [fileCount, setFileCount] = useState(0);
   const [status, setStatus] = useState<"idle" | "sending" | "done">("idle");
+  const [submitted, setSubmitted] = useDemoPersistedState(`deliverable:${milestoneTitle}:submitted`, false);
 
-  const canSubmit = link.trim().length > 0 && status === "idle";
+  const canSubmit = (link.trim().length > 0 || fileCount > 0) && status === "idle";
 
-  if (status === "done") {
+  if (status === "done" || submitted) {
     return (
       <Alert variant="success" title="Đã gửi kết quả bàn giao" live="polite">
         Doanh nghiệp nhận được thông báo ngay bây giờ. Trong lúc chờ, bạn vẫn xem lại được những gì mình
@@ -37,7 +40,10 @@ export function DeliverableForm({ milestoneTitle }: { milestoneTitle: string }) 
         event.preventDefault();
         if (!canSubmit) return;
         setStatus("sending");
-        window.setTimeout(() => setStatus("done"), 700);
+        window.setTimeout(() => {
+          setSubmitted(true);
+          setStatus("done");
+        }, 700);
       }}
     >
       <div className="field">
@@ -47,6 +53,7 @@ export function DeliverableForm({ milestoneTitle }: { milestoneTitle: string }) 
           accept=".zip,.pdf,.png,.jpg,.jpeg,.fig"
           hint="ZIP, PDF hoặc ảnh, mỗi tệp tối đa 20MB."
           multiple
+          onFilesSelected={(files) => setFileCount(files.length)}
         />
       </div>
 
@@ -54,7 +61,6 @@ export function DeliverableForm({ milestoneTitle }: { milestoneTitle: string }) 
         id="deliverable-link"
         label="Liên kết sản phẩm"
         type="url"
-        required
         value={link}
         onChange={(event) => setLink(event.target.value)}
         placeholder="https://ten-du-an.vercel.app"
@@ -74,9 +80,9 @@ export function DeliverableForm({ milestoneTitle }: { milestoneTitle: string }) 
       </Button>
 
       {/* Nút disabled bắt buộc kèm lý do (design-tokens.md 3.1) */}
-      {link.trim().length === 0 ? (
+      {link.trim().length === 0 && fileCount === 0 ? (
         <p className="hint-disabled" style={{ marginTop: "var(--space-2)" }}>
-          Điền liên kết sản phẩm để gửi được mốc &ldquo;{milestoneTitle}&rdquo;.
+          Chọn ít nhất một tệp hoặc điền liên kết sản phẩm để gửi được mốc &ldquo;{milestoneTitle}&rdquo;.
         </p>
       ) : null}
     </form>

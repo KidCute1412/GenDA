@@ -6,6 +6,7 @@ import { StatusBadge } from "../../../components/ui/status-badge";
 import { EmptyState } from "../../../components/ui/feedback";
 import { AUDIT_LOG, PENDING_VERIFICATIONS, PROJECTS } from "../../../mocks/data";
 import { formatDate, formatVnd } from "../../../lib/utils/format";
+import { AdminActionButtons } from "../../../features/admin/components/admin-action-buttons";
 import { 
   Check, 
   CheckCircle, 
@@ -292,32 +293,8 @@ export default async function AdminPage({
                       </div>
 
                       {/* Nút hành động */}
-                      <div 
-                        style={{ 
-                          display: "flex", 
-                          justifyContent: "flex-end", 
-                          alignItems: "center", 
-                          gap: "var(--space-3)", 
-                          marginTop: "var(--space-6)",
-                          paddingTop: "var(--space-4)",
-                          borderTop: "2px solid var(--machinery-border)"
-                        }}
-                      >
-                        <button 
-                          type="button" 
-                          className="btn--tactile-zinc"
-                          style={{ height: "40px", fontSize: "12px" }}
-                        >
-                          Từ chối kèm lý do
-                        </button>
-                        <button 
-                          type="button" 
-                          className="btn--tactile-orange"
-                          style={{ height: "40px", fontSize: "12px" }}
-                        >
-                          <Check weight={ICON_WEIGHT} aria-hidden="true" />
-                          Duyệt xuất bản dự án
-                        </button>
+                      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "var(--space-6)", paddingTop: "var(--space-4)", borderTop: "2px solid var(--machinery-border)" }}>
+                        <AdminActionButtons targetId={`project:${project.id}`} approveLabel="DUYỆT XUẤT BẢN" />
                       </div>
                     </article>
                   );
@@ -372,30 +349,7 @@ export default async function AdminPage({
                     </div>
                   </div>
 
-                  <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
-                    <button 
-                      type="button" 
-                      className="btn--tactile-zinc"
-                      style={{ height: "38px", fontSize: "11px" }}
-                    >
-                      Xem minh chứng
-                    </button>
-                    <button 
-                      type="button" 
-                      className="btn--tactile-zinc"
-                      style={{ height: "38px", fontSize: "11px", color: "var(--color-status-danger-text)" }}
-                    >
-                      Từ chối
-                    </button>
-                    <button 
-                      type="button" 
-                      className="btn--tactile-orange"
-                      style={{ height: "38px", fontSize: "11px" }}
-                    >
-                      <ShieldCheck weight={ICON_WEIGHT} aria-hidden="true" />
-                      Xác thực thẻ
-                    </button>
-                  </div>
+                  <AdminActionButtons targetId={`verification:${item.id}`} approveLabel="XÁC THỰC THẺ" reviewLabel="XEM MINH CHỨNG" />
                 </div>
               ))}
             </div>

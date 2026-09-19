@@ -6,6 +6,10 @@ import { Button } from "../../../components/ui/button";
 import { TextAreaField, TextField } from "../../../components/ui/field";
 import { Alert } from "../../../components/ui/alert";
 import { CheckCircle, ICON_WEIGHT } from "../../../components/ui/icons";
+import { useDemoPersistedState } from "../../../lib/hooks/use-demo-persisted-state";
+import { getDemoSession } from "../../auth/services/demo-session";
+import { useDemoSession } from "../../auth/hooks/use-demo-session";
+import type { CreatedApplication } from "./created-applications-panel";
 
 /**
  * Hộp thoại Ứng tuyển (docs/design.md 7.4, FR-APP-01).
@@ -24,15 +28,24 @@ type Status = "idle" | "submitting" | "done";
 
 export function ApplyButton({
   projectTitle,
+  projectId,
+  smeName,
+  budget,
   verified
 }: {
   projectTitle: string;
+  projectId: string;
+  smeName: string;
+  budget: number;
   verified: boolean;
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [status, setStatus] = useState<Status>("idle");
   const [letter, setLetter] = useState("");
   const [touched, setTouched] = useState(false);
+  const [alreadyApplied, setAlreadyApplied] = useDemoPersistedState(`application:${projectTitle}:submitted`, false);
+  const [createdApplications, setCreatedApplications] = useDemoPersistedState<CreatedApplication[]>("applications:created", []);
+  const { session, hydrated } = useDemoSession();
 
   // Kiểm tra hợp lệ tức thời, nhưng chỉ hiện lỗi SAU khi người dùng đã rời ô —
   // báo đỏ ngay từ ký tự đầu tiên là phạt người ta vì tội đang gõ dở.
@@ -41,10 +54,13 @@ export function ApplyButton({
       ? "Thư ngỏ cần ít nhất 80 ký tự. Hãy nói rõ bạn đã làm gì tương tự và khi nào bạn rảnh."
       : undefined;
 
-  const canSubmit = verified && letter.trim().length >= 80 && status === "idle";
+  const isStudent = session?.role === "STUDENT";
+  const hasVerifiedEmail = session?.emailVerified === true;
+  const canSubmit = isStudent && verified && hasVerifiedEmail && letter.trim().length >= 80 && status === "idle";
 
   function open() {
-    setStatus("idle");
+    if (!isStudent) return;
+    setStatus(alreadyApplied ? "done" : "idle");
     dialogRef.current?.showModal();
   }
 
@@ -58,18 +74,27 @@ export function ApplyButton({
 
     setStatus("submitting");
     // Bản dựng giao diện: mô phỏng độ trễ mạng để thấy được trạng thái đang gửi.
-    window.setTimeout(() => setStatus("done"), 700);
+    window.setTimeout(() => {
+      setAlreadyApplied(true);
+      const session = getDemoSession();
+      if (session && !createdApplications.some((application) => application.projectId === projectId && application.ownerEmail === session.email)) {
+        setCreatedApplications((current) => [...current, { id: `a-${Date.now()}`, projectId, projectTitle, smeName, budget, ownerEmail: session.email, submittedAt: new Date().toLocaleDateString("vi-VN"), status: "SUBMITTED" }]);
+      }
+      setStatus("done");
+    }, 700);
   }
 
   return (
     <>
+      {hydrated && !isStudent ? <Alert variant="warning" title="Chỉ sinh viên được ứng tuyển">Hãy đăng nhập bằng tài khoản sinh viên đã xác minh để gửi đơn cho dự án này.</Alert> : null}
       <button
         type="button"
         className="btn--tactile-orange"
         style={{ width: "100%", height: "48px" }}
         onClick={open}
+        disabled={hydrated && !isStudent}
       >
-        ỨNG TUYỂN NGAY
+        {alreadyApplied ? "ĐÃ NỘP ĐƠN" : "ỨNG TUYỂN NGAY"}
       </button>
 
       <dialog ref={dialogRef} className="dialog dialog--lg" aria-labelledby="apply-title" style={{ border: "2px solid var(--machinery-border)", boxShadow: "8px 8px 0px var(--machinery-shadow)", borderRadius: 0 }}>
@@ -122,6 +147,12 @@ export function ApplyButton({
               </Alert>
             ) : null}
 
+            {!hasVerifiedEmail ? (
+              <Alert variant="warning" title="Bạn cần xác minh email trước">
+                Tài khoản đã đăng ký nhưng email chưa được kích hoạt. <Link href="/verify-email?token=genda-demo-valid-2026&next=%2Fprojects%3FemailVerified%3D1">Mở liên kết xác minh</Link> để tiếp tục.
+              </Alert>
+            ) : null}
+
             <div style={{ marginTop: "var(--space-5)" }}>
               <TextAreaField
                 id="cover-letter"
@@ -129,7 +160,7 @@ export function ApplyButton({
                 required
                 rows={7}
                 value={letter}
-                disabled={!verified}
+                disabled={!verified || !hasVerifiedEmail}
                 onChange={(event) => setLetter(event.target.value)}
                 onBlur={() => setTouched(true)}
                 error={letterError}
@@ -141,7 +172,7 @@ export function ApplyButton({
                 id="portfolio-url"
                 label="Liên kết sản phẩm minh chứng"
                 type="url"
-                disabled={!verified}
+                disabled={!verified || !hasVerifiedEmail}
                 placeholder="https://github.com/ten-cua-ban"
                 hint="GitHub, Behance, Drive hay bất cứ nơi nào doanh nghiệp xem được sản phẩm của bạn."
               />
@@ -158,7 +189,7 @@ export function ApplyButton({
 
             {/* Nút disabled BẮT BUỘC đi kèm dòng giải thích lý do (BR-07,
                 design-tokens.md 3.1) — nếu không người dùng chỉ thấy nút xám. */}
-            {verified && letter.trim().length < 80 ? (
+            {verified && hasVerifiedEmail && letter.trim().length < 80 ? (
               <p className="hint-disabled" style={{ marginTop: "var(--space-3)", textAlign: "right" }}>
                 Viết thư ngỏ ít nhất 80 ký tự để gửi được đơn.
               </p>
