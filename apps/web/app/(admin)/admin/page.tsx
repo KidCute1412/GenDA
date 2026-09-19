@@ -2,34 +2,35 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { SiteHeader } from "../../../components/layout/site-header";
 import { SiteFooter } from "../../../components/layout/site-footer";
-import { Button } from "../../../components/ui/button";
 import { StatusBadge } from "../../../components/ui/status-badge";
 import { EmptyState } from "../../../components/ui/feedback";
 import { AUDIT_LOG, PENDING_VERIFICATIONS, PROJECTS } from "../../../mocks/data";
 import { formatDate, formatVnd } from "../../../lib/utils/format";
+import { 
+  Check, 
+  CheckCircle, 
+  ShieldCheck, 
+  Clock, 
+  WarningCircle, 
+  Paperclip,
+  ICON_WEIGHT 
+} from "../../../components/ui/icons";
 
 export const metadata: Metadata = {
-  title: "Bảng điều khiển quản trị",
+  title: "Bảng điều khiển quản trị // GENDA-OPS",
   description: "Duyệt dự án, duyệt minh chứng sinh viên và tra cứu nhật ký kiểm toán."
 };
 
 /**
- * Màn hình 8 — Bảng Điều khiển Quản trị viên (docs/design.md 7.8).
+ * Màn hình 8 — Bảng Điều khiển Quản trị viên (docs/design.md 7.8, DD-10 Neo-Industrial Ledger).
  *
- * Ba hàng đợi gộp vào MỘT trang có tab, không tách thành ba route (Quyết định
- * thiết kế DD-02): quản trị viên làm việc theo phiên xử lý hàng đợi và chuyển
- * qua lại liên tục giữa ba khu vực, gộp tab giúp giữ ngữ cảnh và giảm số lần
- * tải trang.
- *
- * Đây là màn hình có MẬT ĐỘ CAO NHẤT của hệ thống: người dùng là đội vận hành
- * làm việc lặp lại hằng ngày, họ cần nhìn thấy nhiều dòng cùng lúc hơn là nhiều
- * khoảng trắng. Nhật ký kiểm toán vì thế dùng bảng dữ liệu thật với chữ số bảng
- * để các cột thẳng hàng, không bọc từng dòng thành thẻ (design.md 4.9).
+ * Mật độ hiển thị cao nhất hệ thống: Đội vận hành cần nhìn rõ các thông số kỹ thuật,
+ * trạng thái hàng đợi và kiểm toán hệ thống trên bảng mạch cơ khí chính xác.
  */
 const TABS = [
-  { key: "projects", label: "Duyệt dự án" },
-  { key: "students", label: "Duyệt thẻ sinh viên" },
-  { key: "audit", label: "Nhật ký kiểm toán" }
+  { key: "projects", label: "Duyệt dự án", code: "QUEUE.01" },
+  { key: "students", label: "Duyệt thẻ sinh viên", code: "QUEUE.02" },
+  { key: "audit", label: "Nhật ký kiểm toán", code: "LEDGER.LOG" }
 ];
 
 export default async function AdminPage({
@@ -52,147 +53,381 @@ export default async function AdminPage({
     <>
       <SiteHeader />
 
-      <main id="main-content" className="container">
-        <div className="section--tight">
-          <h1>Bảng điều khiển quản trị</h1>
-          <p className="text-muted" style={{ marginTop: "var(--space-2)" }}>
-            Cam kết vận hành: duyệt xong mỗi dự án mới trong vòng 4 giờ làm việc.
-          </p>
-        </div>
+      <main id="main-content" style={{ minHeight: "calc(100vh - 64px - 200px)", paddingBottom: "var(--space-20)" }}>
+        {/* Terminal Header Bar */}
+        <section 
+          style={{ 
+            backgroundColor: "var(--color-surface-subtle)", 
+            borderBottom: "2px solid var(--machinery-border)",
+            paddingBlock: "var(--space-8)"
+          }}
+        >
+          <div className="container">
+            {/* Technical Breadcrumbs & Identity */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "var(--space-2)", marginBottom: "var(--space-3)" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px", fontFamily: "ui-monospace, monospace", fontSize: "11px", color: "var(--color-text-muted)" }}>
+                <span style={{ color: "var(--orange-500)", fontWeight: 800 }}>OPS // TERMINAL</span>
+                <span>/</span>
+                <span>CONTROL_BAY</span>
+                <span>/</span>
+                <span style={{ textTransform: "uppercase", color: "var(--color-text-heading)", fontWeight: 700 }}>{active}</span>
+              </div>
 
-        <nav className="tabs" aria-label="Khu vực làm việc">
-          {TABS.map((item) => (
-            <Link
-              key={item.key}
-              href={item.key === "projects" ? "/admin" : `/admin?tab=${item.key}`}
-              className="tab"
-              aria-current={item.key === active ? "page" : undefined}
-            >
-              {item.label}
-              <span className="text-caption num">{counts[item.key]}</span>
-            </Link>
-          ))}
-        </nav>
+              <div style={{ display: "flex", alignItems: "center", gap: "12px", fontFamily: "ui-monospace, monospace", fontSize: "11px" }}>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", color: "var(--color-status-verified-text)" }}>
+                  <span style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "var(--green-600)", display: "inline-block" }} />
+                  SYSTEM ACTIVE
+                </span>
+                <span className="text-muted">// SLA: ≤ 4.0H</span>
+              </div>
+            </div>
 
-        <div style={{ paddingBottom: "var(--space-section)" }}>
-          {/* --- Hàng đợi duyệt dự án (FR-PRJ-03, FR-PRJ-04) --- */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "var(--space-4)" }}>
+              <div>
+                <h1 style={{ fontSize: "clamp(1.75rem, 3.5vw, 2.5rem)", fontWeight: 900, textTransform: "uppercase", letterSpacing: "-0.02em", margin: 0 }}>
+                  Bảng Điều Khiển Quản Trị
+                </h1>
+                <p className="text-muted" style={{ marginTop: "var(--space-2)", fontSize: "14px", maxWidth: "65ch" }}>
+                  Hệ thống kiểm soát và điều phối vận hành sàn GenDA. Giám sát toàn bộ dòng dữ liệu, phê duyệt danh sách dự án và xác thực hồ sơ sinh viên TP.HCM.
+                </p>
+              </div>
+
+              {/* Machinery Stat Strip */}
+              <div 
+                style={{ 
+                  display: "flex", 
+                  gap: "12px", 
+                  backgroundColor: "var(--color-surface-card)", 
+                  padding: "10px 16px", 
+                  border: "2px solid var(--machinery-border)", 
+                  boxShadow: "3px 3px 0px var(--machinery-shadow)" 
+                }}
+              >
+                <div>
+                  <div style={{ fontFamily: "ui-monospace, monospace", fontSize: "10px", color: "var(--color-text-muted)" }}>CHỜ DUYỆT DỰ ÁN</div>
+                  <div className="num" style={{ fontSize: "1.25rem", fontWeight: 900, color: "var(--orange-500)" }}>{counts.projects}</div>
+                </div>
+                <div style={{ width: "1px", backgroundColor: "var(--machinery-border)", marginInline: "4px" }} />
+                <div>
+                  <div style={{ fontFamily: "ui-monospace, monospace", fontSize: "10px", color: "var(--color-text-muted)" }}>CHỜ XÁC MINH THẺ</div>
+                  <div className="num" style={{ fontSize: "1.25rem", fontWeight: 900, color: "var(--color-text-heading)" }}>{counts.students}</div>
+                </div>
+                <div style={{ width: "1px", backgroundColor: "var(--machinery-border)", marginInline: "4px" }} />
+                <div>
+                  <div style={{ fontFamily: "ui-monospace, monospace", fontSize: "10px", color: "var(--color-text-muted)" }}>LOG KIỂM TOÁN</div>
+                  <div className="num" style={{ fontSize: "1.25rem", fontWeight: 900, color: "var(--color-text-heading)" }}>{counts.audit}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Content Section with Tabs */}
+        <section className="container" style={{ marginTop: "var(--space-8)" }}>
+          <nav className="tabs" aria-label="Khu vực làm việc quản trị" style={{ marginBottom: "var(--space-8)" }}>
+            {TABS.map((item) => (
+              <Link
+                key={item.key}
+                href={item.key === "projects" ? "/admin" : `/admin?tab=${item.key}`}
+                className="tab"
+                aria-current={item.key === active ? "page" : undefined}
+              >
+                <span style={{ opacity: 0.6, fontSize: "10px" }}>{item.code} //</span>
+                <span>{item.label}</span>
+                <span 
+                  className="num" 
+                  style={{ 
+                    marginLeft: "4px",
+                    padding: "2px 6px", 
+                    borderRadius: "2px", 
+                    backgroundColor: item.key === active ? "rgba(255, 255, 255, 0.25)" : "var(--machinery-border)",
+                    color: item.key === active ? "#ffffff" : "var(--color-text-heading)",
+                    fontSize: "11px",
+                    fontWeight: 800
+                  }}
+                >
+                  {counts[item.key]}
+                </span>
+              </Link>
+            ))}
+          </nav>
+
+          {/* TAB 1: HÀNG ĐỢI DUYỆT DỰ ÁN */}
           {active === "projects" ? (
             pendingProjects.length === 0 ? (
               <EmptyState
-                title="Hàng đợi trống"
-                advice="Không còn dự án nào chờ duyệt. Dự án mới gửi lên sẽ xuất hiện ở đây kèm thời điểm gửi."
+                title="Hàng đợi dự án trống"
+                advice="Hiện không có dự án nào đang chờ thẩm định. Dự án mới từ doanh nghiệp sẽ xuất hiện tại đây kèm thời điểm gửi."
               />
             ) : (
-              <ul className="stack" style={{ listStyle: "none", margin: 0, padding: 0 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-6)" }}>
                 {pendingProjects.map((project) => {
                   const total = project.milestones.reduce((sum, m) => sum + m.budget, 0);
                   const balanced = total === project.budget;
 
                   return (
-                    <li key={project.id} className="card stack">
-                      <div className="cluster cluster--between">
-                        <div>
-                          <p className="text-caption">
-                            {project.smeName}, {project.smeIndustry}, {project.smeSize}
-                          </p>
-                          <h2 style={{ fontSize: "var(--text-h4-size)" }}>{project.title}</h2>
+                    <article key={project.id} className="module-bay" style={{ padding: "var(--space-6)" }}>
+                      <div className="module-bay__header" style={{ borderColor: "var(--machinery-border)" }}>
+                        <span className="module-bay__id">
+                          SUBMISSION // {project.id.toUpperCase()}
+                        </span>
+                        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                          <span style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px", color: "var(--color-text-muted)" }}>
+                            HẠN DỰ KIẾN: {project.deadline}
+                          </span>
+                          <StatusBadge status={project.status} />
                         </div>
-                        <StatusBadge status={project.status} />
                       </div>
 
-                      <p style={{ margin: 0, maxWidth: "70ch" }}>{project.problem}</p>
+                      {/* Thông tin chính dự án */}
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "var(--space-4)" }}>
+                        <div style={{ maxWidth: "75ch" }}>
+                          <div style={{ fontFamily: "ui-monospace, monospace", fontSize: "12px", color: "var(--color-text-muted)", marginBottom: "4px" }}>
+                            DOANH NGHIỆP: <strong style={{ color: "var(--color-text-heading)" }}>{project.smeName}</strong> ({project.smeIndustry} • {project.smeSize}) • LH: {project.smeContact}
+                          </div>
+                          <h2 style={{ fontSize: "1.35rem", fontWeight: 800, textTransform: "uppercase", margin: "4px 0 var(--space-3)" }}>
+                            {project.title}
+                          </h2>
+                          <p style={{ color: "var(--color-text-body)", fontSize: "14px", lineHeight: 1.6 }}>
+                            {project.problem}
+                          </p>
+                        </div>
 
-                      <div>
-                        <p className="text-caption">Tiêu chí nghiệm thu do doanh nghiệp khai</p>
-                        <ul style={{ marginTop: "var(--space-2)", paddingLeft: "var(--space-5)" }}>
+                        <div 
+                          style={{ 
+                            border: "2px solid var(--machinery-border)", 
+                            backgroundColor: "var(--color-surface-subtle)", 
+                            padding: "12px 16px", 
+                            minWidth: "200px",
+                            textAlign: "right"
+                          }}
+                        >
+                          <span style={{ fontSize: "10px", fontFamily: "ui-monospace, monospace", color: "var(--color-text-muted)", display: "block" }}>
+                            TỔNG NGÂN SÁCH DỰ ÁN
+                          </span>
+                          <span className="num" style={{ fontSize: "1.45rem", fontWeight: 900, color: "var(--color-text-heading)" }}>
+                            {formatVnd(project.budget)}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Tiêu chí nghiệm thu */}
+                      <div style={{ marginTop: "var(--space-5)", padding: "var(--space-4)", backgroundColor: "var(--color-surface-subtle)", border: "1px solid var(--machinery-border)" }}>
+                        <div style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px", fontWeight: 700, textTransform: "uppercase", color: "var(--color-text-heading)", marginBottom: "8px" }}>
+                          {"// TIÊU CHÍ NGHIỆM THU DO DOANH NGHIỆP KHAI BÁO:"}
+                        </div>
+                        <ul style={{ margin: 0, paddingLeft: "var(--space-4)", fontSize: "13px", color: "var(--color-text-body)" }}>
                           {project.acceptance.map((item) => (
-                            <li key={item}>{item}</li>
+                            <li key={item} style={{ marginBottom: "4px" }}>{item}</li>
                           ))}
                         </ul>
                       </div>
 
-                      {/* Kiểm tra bất biến FR-MIL-02 hiển thị sẵn cho quản trị
-                          viên, để họ không phải tự cộng tay từng mốc. */}
-                      <div
-                        className="stack stack--sm"
-                        style={{
-                          padding: "var(--space-4)",
-                          borderRadius: "var(--radius-lg)",
-                          backgroundColor: "var(--color-surface-subtle)"
+                      {/* Bảng kiểm tra bất biến mốc bàn giao FR-MIL-02 */}
+                      <div 
+                        style={{ 
+                          marginTop: "var(--space-4)", 
+                          border: "2px solid var(--machinery-border)",
+                          backgroundColor: "var(--color-surface-card)"
                         }}
                       >
-                        {project.milestones.map((milestone) => (
-                          <p key={milestone.id} className="cluster cluster--between num" style={{ margin: 0 }}>
-                            <span className="text-muted">
-                              Mốc {milestone.order}: {milestone.title}, hạn{" "}
-                              {formatDate(milestone.deadline)}
-                            </span>
-                            <span>{formatVnd(milestone.budget)}</span>
-                          </p>
-                        ))}
-                        <hr className="rule" />
-                        <p
-                          className="cluster cluster--between num"
-                          style={{ margin: 0, fontWeight: "var(--weight-semibold)" }}
+                        <div 
+                          style={{ 
+                            padding: "8px 14px", 
+                            backgroundColor: "var(--color-surface-subtle)", 
+                            borderBottom: "1px solid var(--machinery-border)",
+                            fontFamily: "ui-monospace, monospace",
+                            fontSize: "11px",
+                            fontWeight: 800,
+                            display: "flex",
+                            justifyContent: "space-between"
+                          }}
                         >
-                          <span>Tổng các mốc so với ngân sách dự án</span>
-                          <span
-                            style={{
-                              color: balanced
-                                ? "var(--color-status-verified-text)"
-                                : "var(--color-status-danger-text)"
+                          <span>KIỂM TRA BẤT BIẾN MỐC BÀN GIAO (FR-MIL-02)</span>
+                          <span style={{ color: balanced ? "var(--color-status-verified-text)" : "var(--color-status-danger-text)" }}>
+                            {balanced ? "✓ TỶ LỆ KHỚP 100%" : "⚠ LỆCH NGÂN SÁCH"}
+                          </span>
+                        </div>
+
+                        <div style={{ padding: "var(--space-3) var(--space-4)" }}>
+                          {project.milestones.map((milestone) => (
+                            <div 
+                              key={milestone.id} 
+                              className="num" 
+                              style={{ 
+                                display: "flex", 
+                                justifyContent: "space-between", 
+                                fontSize: "13px", 
+                                paddingBlock: "4px",
+                                borderBottom: "1px dashed var(--machinery-border)" 
+                              }}
+                            >
+                              <span style={{ color: "var(--color-text-muted)" }}>
+                                MỐC {milestone.order}: {milestone.title} (Hạn: {formatDate(milestone.deadline)})
+                              </span>
+                              <span style={{ fontWeight: 700 }}>{formatVnd(milestone.budget)}</span>
+                            </div>
+                          ))}
+
+                          <div 
+                            className="num" 
+                            style={{ 
+                              display: "flex", 
+                              justifyContent: "space-between", 
+                              paddingTop: "8px", 
+                              fontWeight: 800, 
+                              fontSize: "14px" 
                             }}
                           >
-                            {formatVnd(total)} / {formatVnd(project.budget)}
-                            {balanced ? " (khớp)" : " (lệch)"}
-                          </span>
-                        </p>
+                            <span>TỔNG CỘNG CÁC MỐC</span>
+                            <span 
+                              style={{ 
+                                color: balanced ? "var(--color-status-verified-text)" : "var(--color-status-danger-text)" 
+                              }}
+                            >
+                              {formatVnd(total)} / {formatVnd(project.budget)} {balanced ? "(ĐẠT CHUẨN)" : "(SAI LỆCH)"}
+                            </span>
+                          </div>
+                        </div>
                       </div>
 
-                      <div className="card__footer cluster cluster--end">
-                        <Button variant="danger">Từ chối kèm lý do</Button>
-                        <Button>Duyệt xuất bản</Button>
+                      {/* Nút hành động */}
+                      <div 
+                        style={{ 
+                          display: "flex", 
+                          justifyContent: "flex-end", 
+                          alignItems: "center", 
+                          gap: "var(--space-3)", 
+                          marginTop: "var(--space-6)",
+                          paddingTop: "var(--space-4)",
+                          borderTop: "2px solid var(--machinery-border)"
+                        }}
+                      >
+                        <button 
+                          type="button" 
+                          className="btn--tactile-zinc"
+                          style={{ height: "40px", fontSize: "12px" }}
+                        >
+                          Từ chối kèm lý do
+                        </button>
+                        <button 
+                          type="button" 
+                          className="btn--tactile-orange"
+                          style={{ height: "40px", fontSize: "12px" }}
+                        >
+                          <Check weight={ICON_WEIGHT} aria-hidden="true" />
+                          Duyệt xuất bản dự án
+                        </button>
                       </div>
-                    </li>
+                    </article>
                   );
                 })}
-              </ul>
+              </div>
             )
           ) : null}
 
-          {/* --- Hàng đợi duyệt thẻ sinh viên (FR-USR-03) --- */}
+          {/* TAB 2: HÀNG ĐỢI DUYỆT THẺ SINH VIÊN */}
           {active === "students" ? (
-            <ul className="stack" style={{ listStyle: "none", margin: 0, padding: 0 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
               {PENDING_VERIFICATIONS.map((item) => (
-                <li key={item.id} className="card cluster cluster--between">
+                <div 
+                  key={item.id} 
+                  className="module-bay"
+                  style={{ 
+                    padding: "var(--space-5)",
+                    display: "flex", 
+                    justifyContent: "space-between", 
+                    alignItems: "center", 
+                    flexWrap: "wrap", 
+                    gap: "var(--space-4)" 
+                  }}
+                >
                   <div>
-                    <h2 style={{ fontSize: "var(--text-h4-size)" }}>{item.name}</h2>
-                    <p className="text-muted" style={{ marginTop: "var(--space-1)" }}>
+                    <div className="module-bay__header" style={{ borderColor: "var(--machinery-border)", marginBottom: "8px" }}>
+                      <span className="module-bay__id">VERIFICATION // {item.id.toUpperCase()}</span>
+                      <span style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px", color: "var(--color-text-muted)" }}>
+                        GỬI NGÀY {formatDate(item.submittedAt)}
+                      </span>
+                    </div>
+
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                      <h2 style={{ fontSize: "1.25rem", fontWeight: 800, textTransform: "uppercase", margin: 0 }}>
+                        {item.name}
+                      </h2>
+                      <span className="badge badge--progress" style={{ margin: 0 }}>
+                        <Clock weight={ICON_WEIGHT} aria-hidden="true" />
+                        CHỜ XỬ LÝ
+                      </span>
+                    </div>
+
+                    <p className="text-muted" style={{ marginTop: "4px", fontSize: "13px", fontFamily: "ui-monospace, monospace" }}>
                       {item.school}
                     </p>
-                    <p className="cluster" style={{ marginTop: "var(--space-2)" }}>
-                      <span className="badge badge--neutral">{item.method}</span>
-                      <span className="text-caption num">Gửi ngày {formatDate(item.submittedAt)}</span>
-                    </p>
+
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "8px" }}>
+                      <span className="badge badge--neutral" style={{ fontSize: "10px" }}>
+                        <Paperclip weight={ICON_WEIGHT} aria-hidden="true" />
+                        PHƯƠNG THỨC: {item.method.toUpperCase()}
+                      </span>
+                    </div>
                   </div>
 
-                  <div className="cluster">
-                    <Button variant="outline" size="sm">
+                  <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
+                    <button 
+                      type="button" 
+                      className="btn--tactile-zinc"
+                      style={{ height: "38px", fontSize: "11px" }}
+                    >
                       Xem minh chứng
-                    </Button>
-                    <Button variant="danger" size="sm">
-                      Từ chối kèm lý do
-                    </Button>
-                    <Button size="sm">Xác thực</Button>
+                    </button>
+                    <button 
+                      type="button" 
+                      className="btn--tactile-zinc"
+                      style={{ height: "38px", fontSize: "11px", color: "var(--color-status-danger-text)" }}
+                    >
+                      Từ chối
+                    </button>
+                    <button 
+                      type="button" 
+                      className="btn--tactile-orange"
+                      style={{ height: "38px", fontSize: "11px" }}
+                    >
+                      <ShieldCheck weight={ICON_WEIGHT} aria-hidden="true" />
+                      Xác thực thẻ
+                    </button>
                   </div>
-                </li>
+                </div>
               ))}
-            </ul>
+            </div>
           ) : null}
 
-          {/* --- Nhật ký kiểm toán (FR-ADM-02, FR-ADM-03) --- */}
+          {/* TAB 3: NHẬT KÝ KIỂM TOÁN */}
           {active === "audit" ? (
-            <div className="card" style={{ padding: 0, overflow: "hidden" }}>
+            <div 
+              style={{ 
+                border: "2px solid var(--machinery-border)", 
+                boxShadow: "6px 6px 0px var(--machinery-shadow)",
+                backgroundColor: "var(--color-surface-card)"
+              }}
+            >
+              <div 
+                style={{ 
+                  padding: "10px 16px", 
+                  backgroundColor: "var(--color-surface-subtle)", 
+                  borderBottom: "2px solid var(--machinery-border)",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center"
+                }}
+              >
+                <span style={{ fontFamily: "ui-monospace, monospace", fontSize: "12px", fontWeight: 800 }}>
+                  LEDGER AUDIT LOG // IMMUTABLE RECORD (FR-ADM-02, FR-ADM-03)
+                </span>
+                <span style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px", color: "var(--color-text-muted)" }}>
+                  TỔNG SỐ BẢN GHI: {AUDIT_LOG.length}
+                </span>
+              </div>
+
               <div className="table-scroll">
                 <table className="data-table">
                   <caption className="visually-hidden">
@@ -200,25 +435,38 @@ export default async function AdminPage({
                   </caption>
                   <thead>
                     <tr>
-                      <th scope="col">Thời điểm</th>
-                      <th scope="col">Tác nhân</th>
-                      <th scope="col">Vai trò</th>
-                      <th scope="col">Hành động</th>
-                      <th scope="col">Đối tượng</th>
-                      <th scope="col">Lý do ghi nhận</th>
+                      <th scope="col">THỜI ĐIỂM</th>
+                      <th scope="col">TÁC NHÂN</th>
+                      <th scope="col">VAI TRÒ</th>
+                      <th scope="col">HÀNH ĐỘNG</th>
+                      <th scope="col">ĐỐI TƯỢNG</th>
+                      <th scope="col">LÝ DO GHI NHẬN</th>
                     </tr>
                   </thead>
                   <tbody>
                     {AUDIT_LOG.map((entry) => (
                       <tr key={entry.id}>
-                        <td className="num">{entry.at}</td>
-                        <td>{entry.actor}</td>
+                        <td className="num" style={{ fontWeight: 600 }}>{entry.at}</td>
+                        <td style={{ fontWeight: 700 }}>{entry.actor}</td>
                         <td>
-                          <span className="text-caption">{entry.role}</span>
+                          <span 
+                            className={`badge ${
+                              entry.role === "QUẢN TRỊ" 
+                                ? "badge--warning" 
+                                : entry.role === "DOANH NGHIỆP" 
+                                  ? "badge--neutral" 
+                                  : "badge--verified"
+                            }`}
+                            style={{ fontSize: "10px", margin: 0 }}
+                          >
+                            {entry.role}
+                          </span>
                         </td>
-                        <td>{entry.action}</td>
-                        <td>{entry.target}</td>
-                        <td style={{ whiteSpace: "normal", maxWidth: "28ch" }}>{entry.reason}</td>
+                        <td style={{ fontWeight: 600, color: "var(--color-text-heading)" }}>{entry.action}</td>
+                        <td style={{ fontFamily: "ui-monospace, monospace", fontSize: "12px" }}>{entry.target}</td>
+                        <td style={{ whiteSpace: "normal", maxWidth: "32ch", fontSize: "12px", color: "var(--color-text-muted)" }}>
+                          {entry.reason}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -226,7 +474,7 @@ export default async function AdminPage({
               </div>
             </div>
           ) : null}
-        </div>
+        </section>
       </main>
 
       <SiteFooter />
