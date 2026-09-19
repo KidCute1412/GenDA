@@ -1412,7 +1412,19 @@ Các quyết định dưới đây phát sinh khi dựng mã nguồn, không có
 >
 > **Đính chính ngay trong chính DD này.** Bản đầu của phong cách ấm lồng ba tầng nền và cho **mọi** khối dùng chung một kiểu tấm bo góc. Từng khối đạt mọi tiêu chí, nhưng cả trang đọc ra đều đều — đúng lỗi *"mọi khối lặp đúng một nhịp"* mà Mục 4.9 đã gọi tên từ đầu. Đã sửa: nền rút còn hai tầng, và sự đa dạng chuyển sang **bốn kiểu khối xen kẽ** ở [Mục 4.9.3](#493-bốn-kiểu-khối--luật-xen-kẽ), kèm hai luật đếm được. Bài học đáng ghi: **danh sách kiểm tra theo component không bắt được lỗi này**, vì nó chỉ lộ ra khi nhìn toàn trang cuộn hết một lượt.
 >
-> **Ranh giới giữ nguyên.** Quy trình chọn màu sáu bước, cổng kiểm định tương phản, quy tắc mã hóa ba lớp ở [Mục 4.5](#45-sử-dụng-màu-trong-mã-hóa-trạng-thái-redundant-coding), toàn bộ [Mục 4.6](#46-đặc-tả-tiếp-cận-bàn-phím--trình-đọc-màn-hình-nfr-ux-01), thang khoảng cách cơ số 4px, và ràng buộc dấu phụ tiếng Việt — **không đổi**.
+> #### Quyết định thiết kế DD-10: Chuẩn hóa phong cách Neo-Industrial Ledger (Teenage Engineering Metaphor)
+>
+> **Bối cảnh.** Các mẫu SaaS thông thường (DD-09) và phong cách thủ công nền kem (DD-08) đều dễ tạo cảm giác đại trà, giống các template do AI tự động sinh ra (AI-generated), thiếu tính đột phá và cá tính thương hiệu tại một cuộc thi công nghệ đỉnh cao. GenDA cần một ngôn ngữ thiết kế độc bản, mang tính biểu tượng và thể hiện bản chất của một **"Cỗ máy giao kèo niềm tin" (Trust Machine)**.
+>
+> **Quyết định: Chuyển toàn bộ sản phẩm sang phong cách Neo-Industrial Ledger (Teenage Engineering). DD-08 và DD-09 bị thay thế.**
+>
+> **Các trụ cột thiết kế chính:**
+> 1. **Chất liệu cơ khí & Sổ cái:** Khung lưới cơ khí (Engineered Blueprint Grid), viền đen dứt khoát 2px (`#18181B`), đổ bóng cứng xúc giác (`box-shadow: 4px 4px 0px #18181B`), góc vuông cơ học dứt khoát (`0px` cho module bays, `4px` cho nút).
+> 2. **Điểm nhấn Công nghiệp:** Màu **Safety Orange / International Orange (`#F97316`)** làm điểm nhấn tactile duy nhất.
+> 3. **Typography kỹ thuật:** Sử dụng `Be Vietnam Pro` cho tiêu đề in hoa đanh thép kết hợp `Monospace` cho thông số, số tiền, ngày hạn chót và mã bay (`BAY-01 // ACTIVE`).
+> 4. **Hỗ trợ Song hành Light & Dark Mode:** Hỗ trợ mượt mà cả chế độ Off-White sáng kỹ thuật và chế độ Anodized Carbon tối huyền bí.
+>
+> **Ranh giới bất biến:** Đảm bảo toàn bộ chuẩn tiếp cận WCAG 2.2 AA ở Mục 4.6 và tính toàn vẹn của mã nguồn.
 
 > #### Quyết định thiết kế DD-05: Trang văn bản pháp lý bàn giao ở dạng khung rỗng
 >

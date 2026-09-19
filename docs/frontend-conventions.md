@@ -7,8 +7,8 @@
 - Do not put business authorization decisions only in the UI.
 - Reusable UI belongs in a shared component package only after a second real use.
 - Prefer accessible semantic HTML, keyboard support, and mobile-first responsive layouts.
-- Follow the visual tokens, wireframes, and UX guidelines specified in `docs/design.md`.
-- Style with the design tokens in `apps/web/app/globals.css`. Never hardcode a hex value, and never reference a primitive token (`--blue-600`, `--space-5`) from a component — go through the semantic or component layer (`--color-action-primary`, `--btn-primary-bg`).
-- Build components to the contract in `docs/design-tokens.md`, including every state it lists: default, hover, focus-visible, disabled, and loading where the component calls an API.
+- Follow the visual tokens, wireframes, and UX guidelines specified in `docs/design.md` (DD-10: Neo-Industrial Ledger) and `docs/ui-guidelines.md`.
+- Style with the design tokens in `apps/web/app/globals.css`. Never hardcode a hex value, and support both Light and Dark mode using the semantic token layer (`--color-surface-page`, `--machinery-border`, `--color-action-primary`).
+- Build components to the contract in `docs/design-tokens.md` and `docs/ui-guidelines.md`. Maintain the Neo-Industrial Ledger tactile hardware aesthetic (2px borders, hard shadows, 0px sharp module bays, tactile switch buttons).
 - Each page renders exactly one `<main id="main-content">` so the layout's skip link has a target.
 
