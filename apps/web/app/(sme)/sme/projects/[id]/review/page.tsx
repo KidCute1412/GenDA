@@ -153,7 +153,7 @@ export default async function ReviewApplicantsPage({ params }: { params: Promise
                         </div>
 
                         <p className="text-muted" style={{ margin: "4px 0 0", fontSize: "12px", fontFamily: "ui-monospace, monospace" }}>
-                          {applicant.major} // {applicant.year} // {applicant.school}
+                          {applicant.major} · {applicant.year} · {applicant.school}
                         </p>
                       </div>
 
