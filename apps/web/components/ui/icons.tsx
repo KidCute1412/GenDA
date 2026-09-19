@@ -18,6 +18,7 @@ export {
   XCircle,
   CircleDashed,
   SealCheck,
+  ShieldCheck,
   // --- Ngữ nghĩa thông báo ---
   Info,
   Warning,
@@ -32,6 +33,8 @@ export {
   Eye,
   EyeSlash,
   Star,
+  Sun,
+  Moon,
   // --- Điều hướng dưới đáy màn hình ---
   House,
   Briefcase,
@@ -44,21 +47,24 @@ export {
  * (14-20px), nét `bold` giữ được hình dạng ở cỡ đó; nét `regular` bị mảnh và
  * nhòe đi khi icon nằm trong badge 14px.
  */
+import Image from "next/image";
+
 export const ICON_WEIGHT = "bold" as const;
 
 /**
- * Dấu hiệu nhận diện GenDA, dựng từ mô-típ khối nghiêng của logo.
- * Tô bằng token màu nên đổi thương hiệu là hình đổi theo.
+ * Dấu hiệu nhận diện GenDA chính thức từ tệp logo nguyên bản.
  */
 export function BrandMark({ className }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false">
-      {/* Khối nghiêng teal = quá trình đang vận hành ("Learn") */}
-      <path d="M6 22 L14 6 L20 6 L12 22 Z" fill="var(--color-brand-decorative)" />
-      {/* Khối nghiêng xanh lá = thành quả đã xác thực ("Earn") */}
-      <path d="M16 22 L24 6 L28 6 L20 22 Z" fill="var(--color-status-verified)" />
-      {/* Chân đế slate = khung đỡ, không mang ngữ nghĩa trạng thái */}
-      <rect x="4" y="24" width="24" height="3" rx="1.5" fill="var(--color-text-muted)" />
-    </svg>
+    <Image
+      src="/brandmark.svg"
+      alt="GenDA Logo"
+      width={48}
+      height={32}
+      className={className}
+      priority
+      unoptimized
+      style={{ objectFit: "contain", display: "inline-block" }}
+    />
   );
 }
