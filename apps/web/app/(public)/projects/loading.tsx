@@ -12,7 +12,7 @@ import { ProjectListSkeleton } from "../../../components/ui/feedback";
 export default function Loading() {
   return (
     <>
-      <SiteHeader current="/projects" />
+      <SiteHeader />
 
       <main id="main-content" className="container has-bottom-nav">
         <div className="section--tight">

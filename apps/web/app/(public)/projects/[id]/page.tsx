@@ -55,14 +55,14 @@ export default async function ProjectDetailPage({
 
   return (
     <>
-      <SiteHeader current="/projects" />
+      <SiteHeader hideOnMobile />
 
       <main id="main-content" className="container has-bottom-nav" style={{ paddingTop: "var(--space-8)" }}>
         <div className="industrial-ruler">
           {`SYS.EXPLORER // SPECIFICATION // MOD-${project.id.toUpperCase()}`}
         </div>
 
-        <nav aria-label="Đường dẫn phân cấp">
+        <nav className="page-breadcrumb-bar" aria-label="Đường dẫn phân cấp">
           <ol className="breadcrumbs" style={{ fontFamily: "ui-monospace, monospace", fontSize: "12px", textTransform: "uppercase" }}>
             <li>
               <Link href="/">ROOT</Link>
@@ -292,7 +292,7 @@ export default async function ProjectDetailPage({
       </main>
 
       <SiteFooter />
-      <BottomNav current="/projects" />
+      <BottomNav />
     </>
   );
 }

@@ -22,7 +22,7 @@ const COLUMNS = [
     title: "Dành cho bạn",
     links: [
       { href: "/projects", label: "Dự án đang tuyển" },
-      { href: "/register", label: "Tạo tài khoản" },
+      { href: "/login?mode=register", label: "Tạo tài khoản" },
       { href: "/admin", label: "Bảng quản trị (Ops)" },
       { href: "/ho-tro/cau-hoi-thuong-gap", label: "Câu hỏi thường gặp" }
     ]

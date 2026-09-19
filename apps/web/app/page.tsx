@@ -60,7 +60,7 @@ export default function HomePage() {
 
   return (
     <>
-      <SiteHeader current="/" />
+      <SiteHeader hideOnMobile />
 
       <main id="main-content" className="has-bottom-nav">
         {/* Hero LỆCH TRÁI, lưới 1.35fr / 1fr, đặt trên VÙNG MÀU ĐẬM chiếm trọn
@@ -369,7 +369,7 @@ export default function HomePage() {
       </main>
 
       <SiteFooter />
-      <BottomNav current="/" />
+      <BottomNav />
     </>
   );
 }
