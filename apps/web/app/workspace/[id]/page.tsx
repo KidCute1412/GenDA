@@ -64,7 +64,7 @@ export default async function WorkspacePage({ params }: { params: Promise<{ id: 
 
   return (
     <>
-      <SiteHeader />
+      <SiteHeader hideOnMobile />
 
       <main id="main-content" className="container has-bottom-nav">
         <nav aria-label="Đường dẫn phân cấp">

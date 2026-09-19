@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Briefcase, FileText, House, ICON_WEIGHT, UserCircle } from "../ui/icons";
 import { useDemoSession } from "../../features/auth/hooks/use-demo-session";
 
@@ -28,9 +29,13 @@ const SME_TABS = [
   { href: "/student/profile", label: "Hồ sơ", icon: UserCircle }
 ];
 
-export function BottomNav({ current }: { current?: string }) {
+export function BottomNav() {
+  const pathname = usePathname();
   const { session, hydrated } = useDemoSession();
   const tabs = hydrated && session?.role === "SME" ? SME_TABS : STUDENT_TABS;
+  const activeHref = pathname.startsWith("/workspace/")
+    ? session?.role === "SME" ? "/sme/projects" : "/student/applications"
+    : tabs.find((tab) => pathname === tab.href || (tab.href !== "/" && pathname.startsWith(`${tab.href}/`)))?.href;
   return (
     <nav className="bottom-nav" aria-label="Điều hướng nhanh">
       {tabs.map((tab) => {
@@ -40,7 +45,7 @@ export function BottomNav({ current }: { current?: string }) {
             key={tab.href}
             href={tab.href}
             className="bottom-nav__item"
-            aria-current={current === tab.href ? "page" : undefined}
+            aria-current={activeHref === tab.href ? "page" : undefined}
           >
             <Icon weight={ICON_WEIGHT} aria-hidden="true" />
             {tab.label}

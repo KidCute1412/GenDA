@@ -1171,9 +1171,20 @@
 .bottom-nav__item[aria-current="page"] {
   color: var(--color-action-primary);
   font-weight: var(--weight-semibold);
+  background-color: var(--color-surface-subtle);
+  box-shadow: inset 0 3px 0 var(--color-action-primary);
 }
 
 @media (max-width: 767px) {
+  .site-header--hide-on-mobile {
+    display: none;
+  }
+
+  .site-header__controls .auth-reset,
+  .site-header__controls .auth-dashboard {
+    display: none;
+  }
+
   .has-bottom-nav {
     padding-bottom: calc(var(--layout-bottom-nav-height) + env(safe-area-inset-bottom));
   }

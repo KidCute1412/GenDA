@@ -2,13 +2,19 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { clearDemoSession, DEMO_SESSION_EVENT, getDemoSession, resetDemoData, type DemoSession } from "../services/demo-session";
 
 const dashboardFor = (role: DemoSession["role"]) => role === "SME" ? "/sme/projects" : role === "ADMIN" ? "/admin" : "/student/profile";
+const navFor = (role: DemoSession["role"]) => role === "SME"
+  ? { href: "/sme/projects", label: "DỰ ÁN CỦA TÔI" }
+  : role === "ADMIN"
+    ? { href: "/admin", label: "QUẢN TRỊ" }
+    : { href: "/student/applications", label: "DỰ ÁN CỦA TÔI" };
 
 export function AuthControls() {
   const router = useRouter();
+  const pathname = usePathname();
   const [session, setSession] = useState<DemoSession | null>(null);
 
   useEffect(() => {
@@ -31,7 +37,7 @@ export function AuthControls() {
   if (!session) {
     return (
       <>
-        <button type="button" className="nav-link" onClick={reset}>
+        <button type="button" className="nav-link auth-reset" onClick={reset}>
           ĐẶT LẠI DEMO
         </button>
         <Link href="/login" className="nav-link">ĐĂNG NHẬP</Link>
@@ -40,20 +46,23 @@ export function AuthControls() {
     );
   }
 
+  const primaryNav = navFor(session.role);
+  const isPrimaryNavActive = pathname === primaryNav.href
+    || pathname.startsWith(`${primaryNav.href}/`)
+    || (pathname.startsWith("/workspace/") && session.role !== "ADMIN");
+
   return (
     <>
-      {session.role === "STUDENT" ? (
-        <Link href="/student/applications" className="nav-link">
-          DỰ ÁN CỦA TÔI
-        </Link>
-      ) : null}
-      <button type="button" className="nav-link" onClick={reset}>
+      <Link href={primaryNav.href} className="nav-link auth-dashboard" aria-current={isPrimaryNavActive ? "page" : undefined}>
+        {primaryNav.label}
+      </Link>
+      <button type="button" className="nav-link auth-reset" onClick={reset}>
         ĐẶT LẠI DEMO
       </button>
       <button type="button" className="chip" onClick={() => router.push(dashboardFor(session.role))}>
         {session.name.toUpperCase()}
       </button>
-      <button type="button" className="nav-link" onClick={() => { clearDemoSession(); router.push("/"); }}>
+      <button type="button" className="nav-link auth-logout" onClick={() => { clearDemoSession(); router.push("/"); }}>
         ĐĂNG XUẤT
       </button>
     </>

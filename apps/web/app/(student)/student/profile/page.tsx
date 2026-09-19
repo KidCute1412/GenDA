@@ -56,7 +56,7 @@ export default function StudentProfilePage() {
 
   return (
     <>
-      <SiteHeader />
+      <SiteHeader hideOnMobile />
 
       <main id="main-content" className="industrial-canvas has-bottom-nav" style={{ paddingBottom: "var(--space-16)" }}>
         {/* THANH THƯỚC ĐO KỸ THUẬT & ĐIỀU HƯỚNG */}
@@ -261,7 +261,7 @@ export default function StudentProfilePage() {
       </main>
 
       <SiteFooter />
-      <BottomNav current="/student/profile" />
+      <BottomNav />
     </>
   );
 }
