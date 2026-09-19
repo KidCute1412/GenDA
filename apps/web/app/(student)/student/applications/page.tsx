@@ -7,6 +7,8 @@ import { ButtonLink } from "../../../../components/ui/button";
 import { StatusBadge } from "../../../../components/ui/status-badge";
 import { EmptyState } from "../../../../components/ui/feedback";
 import { MY_APPLICATIONS } from "../../../../mocks/data";
+import { WithdrawApplicationButton } from "../../../../features/applications/components/withdraw-application-button";
+import { CreatedApplicationsPanel } from "../../../../features/applications/components/created-applications-panel";
 import { formatDate, formatVnd } from "../../../../lib/utils/format";
 
 export const metadata: Metadata = {
@@ -73,6 +75,8 @@ export default function ApplicationsPage() {
               Theo dõi tiến trình xét duyệt từ doanh nghiệp đối tác theo thời gian thực. Bạn có thể rút đơn bất cứ lúc nào trước khi đối tác chốt ứng viên chính thức.
             </p>
           </div>
+
+          <CreatedApplicationsPanel />
 
           {applications.length === 0 ? (
             <div className="module-bay" style={{ padding: "var(--space-10)", textAlign: "center" }}>
@@ -142,13 +146,7 @@ export default function ApplicationsPage() {
 
                       <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "4px" }}>
                         {application.status === "SUBMITTED" || application.status === "SHORTLISTED" ? (
-                          <button 
-                            type="button" 
-                            className="chip"
-                            style={{ height: "34px", fontSize: "11px", cursor: "pointer" }}
-                          >
-                            Rút đơn này
-                          </button>
+                          <WithdrawApplicationButton applicationId={application.id} />
                         ) : null}
 
                         {application.status === "ACCEPTED" ? (

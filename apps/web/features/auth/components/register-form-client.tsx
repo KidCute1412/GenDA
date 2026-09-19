@@ -1,18 +1,26 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { TextField } from "../../../components/ui/field";
 import { PasswordField } from "../../../features/auth/components/password-field";
+import { setDemoSession } from "../services/demo-session";
 
 export function RegisterFormClient({ initialRole = "STUDENT" }: { initialRole?: "STUDENT" | "SME" }) {
-  const router = useRouter();
   const [role, setRole] = useState<"STUDENT" | "SME">(initialRole);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [registered, setRegistered] = useState(false);
+  const [resendAfter, setResendAfter] = useState(0);
+  const [resent, setResent] = useState(false);
+
+  useEffect(() => {
+    if (resendAfter === 0) return;
+    const timer = window.setInterval(() => setResendAfter((value) => Math.max(0, value - 1)), 1000);
+    return () => window.clearInterval(timer);
+  }, [resendAfter]);
 
   function handleFillSample(targetRole: "STUDENT" | "SME") {
     setRole(targetRole);
@@ -31,12 +39,48 @@ export function RegisterFormClient({ initialRole = "STUDENT" }: { initialRole?: 
     setIsLoading(true);
 
     setTimeout(() => {
-      if (role === "SME") {
-        router.push("/sme/projects");
-      } else {
-        router.push("/student/profile");
-      }
+      setIsLoading(false);
+      setDemoSession({ name, email, role, emailVerified: false });
+      setRegistered(true);
+      setResendAfter(30);
     }, 600);
+  }
+
+  if (registered) {
+    const next = role === "SME" ? "/sme/projects/new?emailVerified=1" : "/projects?emailVerified=1";
+    const verificationHref = `/verify-email?token=genda-demo-valid-2026&next=${encodeURIComponent(next)}`;
+
+    return (
+      <div className="stack">
+        <h2 style={{ fontSize: "1.25rem", fontWeight: 800, textTransform: "uppercase", margin: 0 }}>
+          KIỂM TRA HỘP THƯ CỦA BẠN
+        </h2>
+        <p className="text-muted">
+          Một liên kết kích hoạt đã được gửi tới <strong>{email}</strong>. Liên kết có hiệu lực trong 15 phút.
+        </p>
+        <div style={{ border: "2px solid var(--machinery-border)", backgroundColor: "var(--color-surface-subtle)", padding: "var(--space-4)" }}>
+          <p className="text-caption" style={{ margin: 0, fontFamily: "ui-monospace, monospace" }}>EMAIL ACTIVATION // SENT</p>
+          <p style={{ margin: "var(--space-2) 0 0", fontSize: "13px" }}>Mở email và bấm “Xác minh địa chỉ email” để kích hoạt tài khoản.</p>
+        </div>
+        <Link href={verificationHref} className="btn--tactile-orange" style={{ height: "42px", textDecoration: "none" }}>
+          MỞ EMAIL XÁC MINH
+        </Link>
+        <div className="cluster" style={{ gap: "var(--space-2)" }}>
+          <button
+            type="button"
+            className="btn--tactile-zinc"
+            disabled={resendAfter > 0}
+            onClick={() => {
+              setResent(true);
+              setResendAfter(30);
+            }}
+          >
+            {resendAfter > 0 ? `GỬI LẠI SAU ${resendAfter}S` : "GỬI LẠI EMAIL"}
+          </button>
+          {resent ? <span className="text-muted" aria-live="polite">Đã gửi lại liên kết kích hoạt.</span> : null}
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -160,7 +204,8 @@ export function RegisterFormClient({ initialRole = "STUDENT" }: { initialRole?: 
           <PasswordField 
             label="MẬT KHẨU BẢO MẬT" 
             autoComplete="new-password" 
-            required={false}
+            showStrength
+            required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />

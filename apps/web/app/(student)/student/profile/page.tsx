@@ -8,6 +8,7 @@ import { Button } from "../../../../components/ui/button";
 import { SelectField, TextField } from "../../../../components/ui/field";
 import { SkillMultiSelect } from "../../../../features/projects/components/skill-multi-select";
 import { VerificationPanel } from "../../../../features/auth/components/verification-panel";
+import { ProfileSaveButton, ReuploadVerificationButton } from "../../../../features/users/components/profile-action-buttons";
 import { CURRENT_STUDENT } from "../../../../mocks/data";
 
 export const metadata: Metadata = {
@@ -132,9 +133,7 @@ export default function StudentProfilePage() {
                 </p>
                 {CURRENT_STUDENT.verification === "REJECTED" ? (
                   <div style={{ marginTop: "var(--space-3)" }}>
-                    <Button variant="outline" size="sm">
-                      Tải lên ảnh thẻ mới
-                    </Button>
+                    <ReuploadVerificationButton />
                   </div>
                 ) : null}
               </div>
@@ -182,9 +181,7 @@ export default function StudentProfilePage() {
                   />
 
                   <div style={{ paddingTop: "var(--space-2)" }}>
-                    <button type="submit" className="btn--tactile-orange" style={{ height: "42px", fontSize: "12px" }}>
-                      LƯU THÔNG TIN HỒ SƠ
-                    </button>
+                    <ProfileSaveButton />
                   </div>
                 </form>
               </section>
