@@ -1,4 +1,5 @@
 import { SiteHeader } from "../../../components/layout/site-header";
+import { BottomNav } from "../../../components/layout/bottom-nav";
 import { ProjectListSkeleton } from "../../../components/ui/feedback";
 
 /**
@@ -12,7 +13,7 @@ import { ProjectListSkeleton } from "../../../components/ui/feedback";
 export default function Loading() {
   return (
     <>
-      <SiteHeader />
+      <SiteHeader hideOnMobile />
 
       <main id="main-content" className="container has-bottom-nav">
         <div className="section--tight">
@@ -24,6 +25,8 @@ export default function Loading() {
 
         <ProjectListSkeleton rows={4} />
       </main>
+
+      <BottomNav />
     </>
   );
 }
