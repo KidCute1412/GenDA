@@ -86,39 +86,29 @@
   padding-block: var(--space-section);
 }
 
-/* --- KIỂU B: TẤM MỞ ĐẦU ---
-   Nền kem, chạm mép TRÊN và hai bên, bo hai góc DƯỚI. Hình dạng này nói đúng
-   một điều: "khối này nối liền với thanh đầu trang, và nó kết thúc ở đây".
-   Dùng cho hero và đầu trang hồ sơ công khai.
-   Nó soi gương với KIỂU D ở chân trang — mở đầu bo góc dưới, kết thúc bo góc
-   trên. Hai dấu ngoặc ôm lấy cả trang. */
+/* --- KIỂU B: TẤM MỞ ĐẦU / HERO --- */
 .band--brand,
 .band--brand-strong {
-  background-color: var(--color-surface-brand);
-  border-radius: 0 0 var(--radius-2xl) var(--radius-2xl);
+  background-color: var(--color-surface-subtle);
+  border-bottom: 1px solid var(--color-border-subtle);
   padding-block: var(--space-section);
   position: relative;
   isolation: isolate;
 }
 
-/* --- KIỂU A: TRÀN MÉP ---
-   Nền kem, chạm cả hai mép, VUÔNG GÓC hoàn toàn. Đây là kiểu "nặng" nhất và
-   cũng là kiểu duy nhất không có góc bo nào — đặt giữa trang, nó cắt ngang
-   mạch đọc và báo rằng sang một phần khác hẳn. */
+/* --- KIỂU A: TRÀN MÉP --- */
 .band--subtle {
-  background-color: var(--color-surface-brand);
+  background-color: var(--color-surface-subtle);
+  border-block: 1px solid var(--color-border-subtle);
   padding-block: var(--space-section);
 }
 
-/* --- KIỂU C: TẤM BO GÓC THỤT VÀO ---
-   Nền xanh nhạt, bo 36px cả bốn góc, thụt vào hai bên để lộ nền trang. Đây là
-   kiểu duy nhất KHÔNG chạm mép nào, nên nó đọc ra như một vật rời đặt lên
-   trang. Chính vì chỉ còn một kiểu như vậy nên nó mới nhấn được — dùng hai lần
-   trên một trang là nó hết nhấn. */
+/* --- KIỂU C: TẤM RỜI NHẤN MẠNH --- */
 .band--achieve,
 .band--achieve-strong {
   background-color: var(--color-surface-achieve);
-  border-radius: var(--radius-2xl);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
   margin-inline: var(--layout-panel-inset);
   padding-block: var(--space-section);
   position: relative;
@@ -242,57 +232,32 @@
   font-weight: var(--weight-medium);
 }
 
-/* --- GIỌNG VIẾT TAY ---
-   Nhãn nhỏ phía trên tiêu đề, viết bằng phông tay màu cam và nghiêng nhẹ. Đây
-   là chi tiết đặc trưng nhất của phong cách này: nó làm cả trang bớt vẻ "tài
-   liệu do máy in ra" chỉ bằng vài chữ.
-
-   Ba ràng buộc bắt buộc đi kèm:
-   1. Chỉ dùng cho nhãn NGẮN và PHỤ. Không bao giờ dùng cho nội dung, nhãn
-      trường, chữ trong nút hay bất cứ thứ gì người dùng phải đọc để thao tác.
-   2. Cỡ chữ không bao giờ dưới 14px. Phông viết tay có nét mảnh và hình chữ
-      bất quy tắc nên mất độ rõ nhanh hơn phông thường khi thu nhỏ.
-   3. KHÔNG viết hoa toàn phần (design.md 4.7.1) — dấu phụ tiếng Việt trên
-      phông tay vốn đã cao, viết hoa nữa thì đè vào dòng trên. */
+/* --- EYEBROW / CATEGORY TAG (Modern SaaS) --- */
 .eyebrow {
-  font-family: var(--font-hand);
-  font-size: var(--text-body-lg-size);
-  line-height: 1.3;
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-heading);
+  font-size: var(--text-caption-size);
+  line-height: 1.4;
   font-weight: var(--weight-semibold);
-  letter-spacing: var(--tracking-normal);
-  color: var(--color-accent-text);
-  margin: 0 0 var(--space-2);
-  transform: rotate(-1.5deg);
-  transform-origin: left center;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--color-action-primary);
+  background-color: var(--color-status-progress-bg);
+  border: 1px solid var(--blue-200);
+  border-radius: var(--radius-full);
+  padding: 4px 12px;
+  margin: 0 0 var(--space-3);
+  width: fit-content;
 }
 
-/* Từ nhấn trong tiêu đề lớn, có NÉT KHOANH TRÒN vẽ tay bao quanh.
-   Nét khoanh là ảnh SVG nội tuyến chứ không phải viền CSS: một viền bo tròn
-   đều tăm tắp sẽ đọc ra như khối giao diện, còn nét vẽ tay hở đầu và không đều
-   mới đọc ra như có người cầm bút khoanh vào.
-   Thuần trang trí -> nằm ở pseudo-element, trình đọc màn hình không thấy. */
+/* Từ nhấn trong tiêu đề: Tô màu accent tinh tế, bỏ nét vẽ tay thủ công */
 .hand-accent {
-  font-family: var(--font-hand);
-  font-weight: var(--weight-semibold);
-  font-style: normal;
-  color: var(--color-accent-text);
+  font-family: inherit;
+  font-weight: var(--weight-bold);
+  color: var(--color-action-primary);
   position: relative;
   white-space: nowrap;
-  padding-inline: 0.12em;
-}
-
-.hand-accent::after {
-  content: "";
-  position: absolute;
-  left: -0.14em;
-  right: -0.14em;
-  top: 0.04em;
-  bottom: 0.04em;
-  z-index: -1;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 100' fill='none' stroke='%23e85d2c' stroke-width='3.5' stroke-linecap='round'%3E%3Cpath d='M152 7C88 4 24 23 13 49c-9 23 45 44 129 42 76-2 141-21 148-45 7-20-38-35-104-39'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
 }
 
 /* Số tiền, điểm số, số thứ tự: chữ số bảng để các cột số thẳng hàng nhau. */
@@ -313,20 +278,16 @@
   gap: var(--space-2);
   height: var(--btn-height-md);
   padding-inline: var(--btn-padding-x-md);
-  border: 1px solid transparent;
+  border: 2px solid var(--machinery-border);
   border-radius: var(--btn-radius);
-  font-family: var(--font-body);
+  font-family: ui-monospace, monospace;
   font-size: var(--text-body-sm-size);
-  font-weight: var(--weight-semibold);
+  font-weight: var(--weight-bold);
   line-height: 1;
   text-decoration: none;
   white-space: nowrap;
   cursor: pointer;
-  transition:
-    background-color var(--duration-fast) ease,
-    border-color var(--duration-fast) ease,
-    box-shadow var(--duration-fast) ease,
-    transform var(--duration-fast) ease;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.15s ease;
 }
 
 .btn--sm {
@@ -345,45 +306,57 @@
   width: 100%;
 }
 
-/* --- Biến thể --- */
+/* --- Biến thể (DD-10 Neo-Industrial Ledger) --- */
 
 .btn--primary {
-  background-color: var(--btn-primary-bg);
-  color: var(--btn-primary-fg);
+  background-color: var(--orange-500);
+  color: #ffffff;
+  border-color: var(--machinery-border);
+  box-shadow: 4px 4px 0px var(--machinery-shadow);
 }
 
 .btn--primary:hover {
-  background-color: var(--btn-primary-bg-hover);
-  box-shadow: var(--shadow-md);
+  background-color: var(--orange-600);
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px var(--machinery-shadow);
 }
 
 .btn--primary:active {
-  background-color: var(--btn-primary-bg-active);
-  box-shadow: none;
+  background-color: var(--orange-700);
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0px var(--machinery-shadow);
 }
 
 .btn--secondary {
   background-color: var(--btn-secondary-bg);
   color: var(--btn-secondary-fg);
+  border-color: var(--machinery-border);
+  box-shadow: 4px 4px 0px var(--machinery-shadow);
 }
 
 .btn--secondary:hover {
-  background-color: var(--color-border-subtle);
+  background-color: var(--color-surface-subtle);
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px var(--machinery-shadow);
 }
 
 .btn--outline {
   background-color: transparent;
   color: var(--btn-outline-fg);
-  border-color: var(--btn-outline-border);
+  border-color: var(--machinery-border);
+  box-shadow: 3px 3px 0px var(--machinery-shadow);
 }
 
 .btn--outline:hover {
   background-color: var(--color-surface-subtle);
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0px var(--machinery-shadow);
 }
 
 .btn--ghost {
   background-color: transparent;
   color: var(--btn-ghost-fg);
+  border-color: transparent;
 }
 
 .btn--ghost:hover {
@@ -393,10 +366,14 @@
 .btn--danger {
   background-color: var(--btn-danger-bg);
   color: var(--btn-danger-fg);
+  border-color: var(--machinery-border);
+  box-shadow: 4px 4px 0px var(--machinery-shadow);
 }
 
 .btn--danger:hover {
   filter: brightness(0.92);
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px var(--machinery-shadow);
 }
 
 /* --- Trạng thái ---
@@ -625,15 +602,23 @@
   min-height: var(--input-height);
   padding: var(--space-2) var(--input-padding-x);
   background-color: var(--input-bg);
-  border: 1px solid var(--input-border);
-  border-radius: var(--input-radius);
-  color: var(--color-text-body);
+  border: 2px solid var(--machinery-border);
+  border-radius: 2px;
+  color: var(--color-text-heading);
   /* 16px — dưới ngưỡng này iOS Safari tự phóng to trang giữa lúc điền form */
   font-size: var(--text-body-size);
   line-height: var(--text-body-height);
   transition:
     border-color var(--duration-fast) ease,
     box-shadow var(--duration-fast) ease;
+}
+
+.input:focus,
+.textarea:focus,
+.select:focus {
+  border-color: var(--orange-500);
+  outline: none;
+  box-shadow: 2px 2px 0px var(--machinery-shadow);
 }
 
 .textarea {
@@ -933,9 +918,10 @@
   text-align: center;
   gap: var(--space-3);
   padding: var(--space-12) var(--space-6);
-  background-color: var(--color-surface-subtle);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-2xl);
+  background-color: var(--color-surface-card);
+  border: 2px solid var(--machinery-border);
+  box-shadow: 4px 4px 0px var(--machinery-shadow);
+  border-radius: 0px;
 }
 
 .state-block svg {
@@ -957,9 +943,9 @@
   width: min(calc(100vw - 2 * var(--space-4)), var(--dialog-width-md));
   padding: var(--dialog-padding);
   background-color: var(--dialog-bg);
-  border: 0;
-  border-radius: var(--dialog-radius);
-  box-shadow: var(--shadow-lg);
+  border: 2px solid var(--machinery-border);
+  border-radius: 4px;
+  box-shadow: 8px 8px 0px var(--machinery-shadow);
   color: var(--color-text-body);
 }
 
@@ -1053,6 +1039,8 @@
   top: 0;
   z-index: var(--z-sticky);
   background-color: var(--color-surface-page);
+  border-bottom: 2px solid var(--machinery-border);
+  transition: background-color var(--duration-normal) ease, border-color var(--duration-normal) ease;
 }
 
 .site-header__inner {
@@ -1060,44 +1048,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
-  /* Trần chiều cao: thanh điều hướng không được ăn mất viewport.
-     Dùng token vì scroll-padding-top trong globals.css phải khớp đúng con số
-     này, nếu không vòng focus sẽ bị thanh này che (WCAG 2.2 AA 2.4.11). */
-  min-height: var(--layout-header-height);
-}
-
-.site-header__nav {
-  display: none;
-  gap: var(--space-6);
-}
-
-/* Điều hướng chữ chỉ hiện từ md; dưới ngưỡng đó dùng Bottom Navigation */
-@media (min-width: 768px) {
-  .site-header__nav {
-    display: flex;
-    align-items: center;
-  }
-}
-
-.nav-link {
-  color: var(--color-text-body);
-  text-decoration: none;
-  font-size: var(--text-body-sm-size);
-  font-weight: var(--weight-medium);
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-full);
-}
-
-.nav-link:hover {
-  color: var(--color-text-heading);
-  background-color: var(--color-surface-subtle);
-}
-
-/* Chỉ báo tab đang chọn: KHÔNG chỉ bằng màu — có thêm nền viên thuốc đặc */
-.nav-link[aria-current="page"] {
-  color: var(--color-text-heading);
-  background-color: var(--color-surface-subtle);
-  font-weight: var(--weight-semibold);
+  height: 64px;
 }
 
 .brand {
@@ -1105,19 +1056,78 @@
   align-items: center;
   gap: var(--space-2);
   font-family: var(--font-heading);
-  font-size: var(--text-h4-size);
-  font-weight: var(--weight-bold);
-  letter-spacing: var(--tracking-heading);
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
   color: var(--color-text-heading);
   text-decoration: none;
+  text-transform: uppercase;
 }
 
-.brand svg {
-  width: 28px;
-  height: 28px;
+.brand__tag {
+  font-family: ui-monospace, monospace;
+  font-size: 9px;
+  font-weight: 700;
+  background-color: var(--orange-500);
+  color: #ffffff;
+  padding: 1px 5px;
+  border-radius: 2px;
+  letter-spacing: 0.05em;
+  margin-left: 4px;
 }
 
-/* --- Bottom Navigation: 4 tab, chỉ hiện trên mobile (design.md Mục 6) --- */
+.brand svg,
+.brand img {
+  width: auto;
+  height: 32px;
+  object-fit: contain;
+}
+
+.site-header__nav {
+  display: none;
+  gap: var(--space-1);
+}
+
+@media (min-width: 768px) {
+  .site-header__nav {
+    display: flex;
+    align-items: center;
+    background-color: var(--color-surface-subtle);
+    border: 1px solid var(--machinery-border);
+    padding: 3px;
+    border-radius: 4px;
+  }
+}
+
+.nav-link {
+  color: var(--color-text-body);
+  text-decoration: none;
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 6px 14px;
+  border-radius: 2px;
+  transition: color var(--duration-fast) ease, background-color var(--duration-fast) ease;
+}
+
+.nav-link:hover {
+  color: var(--color-text-heading);
+  background-color: var(--color-surface-card);
+}
+
+.nav-link[aria-current="page"] {
+  color: #ffffff;
+  background-color: var(--machinery-border);
+}
+
+.dark .nav-link[aria-current="page"] {
+  color: #09090b;
+  background-color: #f4f4f5;
+}
+
+/* --- Bottom Navigation: 4 tab, chỉ hiện trên mobile --- */
 .bottom-nav {
   position: fixed;
   bottom: 0;
@@ -1126,7 +1136,9 @@
   z-index: var(--z-sticky);
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  background-color: var(--color-surface-page);
+  background-color: rgb(255 255 255 / 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-top: 1px solid var(--color-border-subtle);
   padding-bottom: env(safe-area-inset-bottom);
 }
@@ -1143,9 +1155,6 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-1);
-  /* Sàn bắt buộc của WCAG 2.2 AA (2.5.8) cho web là 24px; GenDA chọn hẳn 60px
-     vì đây là bề mặt điều hướng chính của sinh viên, thao tác bằng ngón cái
-     khi đang di chuyển. Xem lập luận ở design.md 4.6f. */
   min-height: var(--layout-bottom-nav-height);
   padding: var(--space-2);
   color: var(--color-text-muted);
@@ -1164,7 +1173,6 @@
   font-weight: var(--weight-semibold);
 }
 
-/* Chừa chỗ cho bottom nav để nội dung cuối trang không bị che khuất */
 @media (max-width: 767px) {
   .has-bottom-nav {
     padding-bottom: calc(var(--layout-bottom-nav-height) + env(safe-area-inset-bottom));
@@ -1188,13 +1196,11 @@
   color: var(--color-text-muted);
 }
 
-/* --- Fat Footer = KIỂU D: TẤM BO MÉP ---
-   Nền kem, bo hai góc TRÊN, chạm mép đáy. Hai góc bo nói "đây là một tấm";
-   mép đáy chạm nói "hết trang rồi, không còn gì bên dưới". Đây là kiểu duy
-   nhất trong bốn kiểu mà vị trí trên trang là cố định. */
+/* --- Modern SaaS Footer --- */
 .site-footer {
   background-color: var(--color-surface-subtle);
-  border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+  border-top: 1px solid var(--color-border-subtle);
+  border-radius: 0;
   padding-block: var(--space-16) var(--space-12);
   margin-top: var(--space-section);
 }
@@ -1228,8 +1234,8 @@
 }
 
 /* ==========================================================================
-   TAB (SME theo trạng thái dự án, Admin ba hàng đợi)
-   Viên thuốc đặc thay cho gạch chân — cùng ngôn ngữ hình với nút và badge.
+/* ==========================================================================
+   TAB (SME theo trạng thái dự án, Admin ba hàng đợi - Neo-Industrial Ledger)
    ========================================================================== */
 
 .tabs {
@@ -1243,28 +1249,55 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  min-height: 44px;
-  padding: var(--space-2) var(--space-5);
-  border: 1px solid transparent;
-  border-radius: var(--radius-full);
-  background: none;
-  color: var(--color-text-muted);
-  font-size: var(--text-body-sm-size);
-  font-weight: var(--weight-medium);
+  min-height: 40px;
+  padding: var(--space-2) var(--space-4);
+  border: 2px solid var(--machinery-border);
+  border-radius: 4px;
+  background-color: #ffffff;
+  color: var(--color-text-body);
+  font-family: ui-monospace, monospace;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
   text-decoration: none;
   cursor: pointer;
+  box-shadow: 2px 2px 0px var(--machinery-shadow);
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.15s ease;
 }
 
 .tab:hover {
   color: var(--color-text-heading);
   background-color: var(--color-surface-subtle);
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px var(--machinery-shadow);
 }
 
 .tab[aria-selected="true"],
 .tab[aria-current="page"] {
-  background-color: var(--color-action-primary);
-  color: var(--color-text-on-dark);
-  font-weight: var(--weight-semibold);
+  background-color: var(--orange-500);
+  color: #ffffff;
+  border-color: var(--machinery-border);
+  box-shadow: 3px 3px 0px var(--machinery-shadow);
+}
+
+.dark .tab {
+  background-color: #18181b;
+  color: #f4f4f5;
+  border-color: #3f3f46;
+  box-shadow: 2px 2px 0px #000000;
+}
+
+.dark .tab:hover {
+  background-color: #27272a;
+}
+
+.dark .tab[aria-selected="true"],
+.dark .tab[aria-current="page"] {
+  background-color: var(--orange-500);
+  color: #ffffff;
+  border-color: #000000;
+  box-shadow: 3px 3px 0px #000000;
 }
 
 /* --- Hàng tìm kiếm ---
@@ -1291,34 +1324,44 @@
 }
 
 /* ==========================================================================
-   BỘ LỌC (Faceted Filter — Filter Chips)
+   BỘ LỌC (Faceted Filter — Filter Chips Neo-Industrial)
    ========================================================================== */
 
 .chip {
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
-  min-height: 44px; /* vùng chạm WCAG 2.5.8 */
-  padding: var(--space-2) var(--space-5);
-  border: 1px solid var(--color-border-input);
-  border-radius: var(--radius-full);
+  min-height: 38px;
+  padding: 6px 14px;
+  border: 2px solid var(--machinery-border);
+  box-shadow: 2px 2px 0px var(--machinery-shadow);
+  border-radius: 2px;
   background-color: var(--color-surface-card);
   color: var(--color-text-body);
-  font-size: var(--text-body-sm-size);
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   text-decoration: none;
   cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.15s ease;
 }
 
 .chip:hover {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px var(--machinery-shadow);
   background-color: var(--color-surface-subtle);
 }
 
-/* Chip đang bật: nền đặc + dấu tích, không chỉ mã hóa bằng màu */
 .chip[aria-pressed="true"] {
-  background-color: var(--color-action-primary);
-  border-color: var(--color-action-primary);
-  color: var(--color-text-on-dark);
-  font-weight: var(--weight-semibold);
+  background-color: var(--machinery-border);
+  color: #ffffff;
+}
+
+.dark .chip[aria-pressed="true"] {
+  background-color: #f4f4f5;
+  color: #09090b;
 }
 
 .chip svg {
@@ -1327,27 +1370,32 @@
 }
 
 /* ==========================================================================
-   THẺ KỸ NĂNG (Tag Pills)
-   Kỹ năng trùng khớp đổi nền xanh lá + THÊM DẤU TÍCH, để độ tương đồng không
-   chỉ được mã hóa bằng màu (design.md 4.2 định luật Tương đồng).
+   THẺ KỸ NĂNG (Tag Pills Neo-Industrial)
    ========================================================================== */
 
 .skill-pill {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-1);
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-full);
-  background-color: var(--color-surface-subtle);
+  gap: 4px;
+  padding: 3px 8px;
+  border: 1px solid var(--machinery-border);
+  border-radius: 2px;
+  background-color: var(--color-surface-card);
   color: var(--color-text-body);
-  font-size: var(--text-caption-size);
-  line-height: var(--text-caption-height);
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .skill-pill--matched {
-  background-color: var(--color-status-verified-bg);
-  color: var(--color-status-verified-text);
-  font-weight: var(--weight-semibold);
+  background-color: var(--color-surface-subtle);
+  border-color: var(--orange-500);
+  color: var(--orange-600);
+}
+
+.dark .skill-pill--matched {
+  color: var(--orange-400);
 }
 
 .skill-pill svg {
@@ -1368,36 +1416,264 @@
    KHỐI ĐẶC THÙ TRANG CHỦ — design.md 4.9
    ========================================================================== */
 
-/* Hero LỆCH TRÁI, lưới bất đối xứng. Không phải hero căn giữa có pill badge —
-   đó là bố cục mặc định của mọi công cụ dựng trang. */
+/* ==========================================================================
+   NEO-INDUSTRIAL LEDGER (TEENAGE ENGINEERING METAPHOR)
+   Thiết kế cơ khí chính xác, thước đo kỹ thuật, tactile hardware vibe
+   ========================================================================== */
+
+/* Canvas lưới cơ khí kỹ thuật (Engineered Blueprint Grid) */
+.industrial-hero,
+.industrial-canvas {
+  position: relative;
+  background-color: var(--color-surface-page);
+  background-image: 
+    linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.industrial-hero {
+  border-bottom: 2px solid var(--machinery-border);
+  padding-block: var(--space-12) var(--space-16);
+}
+
+.dark .industrial-canvas {
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+}
+
+/* Thước đo kỹ thuật cơ khí chạy dọc hoặc ngang */
+.industrial-ruler {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #71717a;
+  margin-bottom: var(--space-4);
+}
+
+.industrial-ruler::before {
+  content: "";
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background-color: var(--orange-500);
+  border-radius: 2px;
+}
+
+/* Tiêu đề Neo-Industrial: Sắc đanh, dứt khoát, kỹ thuật */
+.industrial-display {
+  font-family: var(--font-sans);
+  font-size: clamp(2.5rem, 5.5vw, 4.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  font-weight: 800;
+  color: #09090b;
+  text-transform: uppercase;
+}
+
+.industrial-highlight {
+  background-color: #09090b;
+  color: #ffffff;
+  padding-inline: 12px;
+  display: inline-block;
+  transform: skewX(-4deg);
+}
+
+/* Module Bay: Khối cơ khí với đường viền cơ khí, đinh ốc trang trí */
+.module-bay {
+  position: relative;
+  background-color: #ffffff;
+  border: 2px solid #18181b;
+  box-shadow: 6px 6px 0px #18181b;
+  border-radius: 0px; /* Góc sắc cơ khí dứt khoát */
+  padding: var(--space-6);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.module-bay:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 8px 8px 0px #18181b;
+}
+
+.module-bay__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: var(--space-3);
+  margin-bottom: var(--space-4);
+  border-bottom: 2px solid #18181b;
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: #71717a;
+}
+
+.module-bay__id {
+  background-color: #18181b;
+  color: #ffffff;
+  padding: 2px 6px;
+  border-radius: 2px;
+}
+
+/* Nút bấm Tactile Hardware (Kiểu nút bấm cơ khí của Teenage Engineering) */
+.btn--tactile-orange {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: 48px;
+  padding-inline: var(--space-6);
+  background-color: var(--orange-500);
+  color: #ffffff;
+  border: 2px solid #18181b;
+  box-shadow: 4px 4px 0px #18181b;
+  border-radius: 4px;
+  font-family: ui-monospace, monospace;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.btn--tactile-orange:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px #18181b;
+  background-color: var(--orange-600);
+}
+
+.btn--tactile-zinc {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: 48px;
+  padding-inline: var(--space-6);
+  background-color: #ffffff;
+  color: #18181b;
+  border: 2px solid #18181b;
+  box-shadow: 4px 4px 0px #18181b;
+  border-radius: 4px;
+  font-family: ui-monospace, monospace;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.btn--tactile-zinc:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px #18181b;
+  background-color: #f4f4f5;
+}
+
+/* Nút bấm chuyển đổi Theme cơ khí */
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background-color: var(--color-surface-card);
+  color: var(--color-text-heading);
+  border: 2px solid var(--machinery-border);
+  box-shadow: 2px 2px 0px var(--machinery-shadow);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.15s ease;
+}
+
+.theme-toggle-btn:hover {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px var(--machinery-shadow);
+  background-color: var(--color-surface-subtle);
+}
+
+.theme-toggle-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Dark Mode Overrides cho Neo-Industrial Ledger */
+.dark .industrial-hero {
+  background-color: #09090b;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  border-bottom: 2px solid #27272a;
+}
+
+.dark .industrial-display {
+  color: #f4f4f5;
+}
+
+.dark .industrial-highlight {
+  background-color: var(--orange-500);
+  color: #ffffff;
+}
+
+.dark .module-bay {
+  background-color: #121215;
+  border-color: #3f3f46;
+  box-shadow: 6px 6px 0px #000000;
+}
+
+.dark .module-bay:hover {
+  box-shadow: 8px 8px 0px #000000;
+}
+
+.dark .module-bay__header {
+  border-bottom-color: #27272a;
+  color: #a1a1aa;
+}
+
+.dark .module-bay__id {
+  background-color: #27272a;
+}
+
+.dark .btn--tactile-zinc {
+  background-color: #18181b;
+  color: #f4f4f5;
+  border-color: #3f3f46;
+  box-shadow: 4px 4px 0px #000000;
+}
+
+.dark .btn--tactile-zinc:hover {
+  background-color: #27272a;
+  box-shadow: 2px 2px 0px #000000;
+}
+
+.dark .btn--tactile-orange {
+  border-color: #000000;
+  box-shadow: 4px 4px 0px #000000;
+}
+
+.dark .btn--tactile-orange:hover {
+  box-shadow: 2px 2px 0px #000000;
+}
+
 .hero-editorial {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--space-8);
   align-items: center;
-  padding-block: var(--space-10) var(--space-12);
 }
 
 @media (min-width: 1024px) {
   .hero-editorial {
     grid-template-columns: 1.15fr 1fr;
     gap: var(--space-12);
-    padding-block: var(--space-16) var(--space-16);
-    align-items: center;
-  }
-}
-
-/* Thẻ nổi bật trong hero: nổi hẳn lên khỏi tấm kem bằng bóng mềm và nghiêng
-   rất nhẹ. Độ nghiêng nhỏ tới mức không ai đọc ra là "hiệu ứng", nhưng đủ để
-   thẻ thôi trông như một ô vuông dán phẳng lên nền. */
-@media (min-width: 1024px) {
-  .hero-feature {
-    box-shadow: var(--shadow-lg);
-    transform: rotate(-1.2deg);
-  }
-
-  .hero-feature:hover {
-    transform: rotate(0deg);
   }
 }
 
@@ -1548,24 +1824,33 @@
 .project-row {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--space-3);
-  padding-block: var(--space-5);
-  border-top: 1px solid var(--color-border-subtle);
+  gap: var(--space-4);
+  padding: var(--space-5);
+  margin-bottom: var(--space-4);
+  background-color: var(--color-surface-card);
+  border: 2px solid var(--machinery-border);
+  box-shadow: 4px 4px 0px var(--machinery-shadow);
+  border-radius: 0px;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.project-row:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px var(--machinery-shadow);
 }
 
 @media (min-width: 768px) {
   .project-row {
     grid-template-columns: 1fr auto;
     gap: var(--space-6);
-    align-items: start;
+    align-items: center;
   }
 }
 
 .project-row__money {
-  font-family: var(--font-heading);
-  font-size: var(--text-h4-size);
-  font-weight: var(--weight-bold);
-  font-variant-numeric: tabular-nums;
+  font-family: ui-monospace, monospace;
+  font-size: 1.4rem;
+  font-weight: 800;
   color: var(--color-text-heading);
   margin: 0;
 }
@@ -1680,31 +1965,42 @@
 .data-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: var(--text-body-sm-size);
+  font-size: 13px;
+  background-color: var(--color-surface-card);
 }
 
 .data-table th,
 .data-table td {
   text-align: left;
-  padding: var(--space-3) var(--space-4);
-  border-bottom: 1px solid var(--color-border-subtle);
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--machinery-border);
   white-space: nowrap;
 }
 
 .data-table th {
-  color: var(--color-text-muted);
-  font-size: var(--text-caption-size);
-  font-weight: var(--weight-bold);
-  letter-spacing: var(--tracking-label);
+  background-color: var(--color-surface-subtle);
+  color: var(--color-text-heading);
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 2px solid var(--machinery-border);
 }
 
 .data-table td {
   color: var(--color-text-body);
 }
 
+.data-table tr:hover td {
+  background-color: rgba(249, 115, 22, 0.04);
+}
+
 /* Cột thời điểm dùng chữ số bảng để các hàng thẳng cột với nhau */
 .data-table .num {
+  font-family: ui-monospace, monospace;
   font-variant-numeric: tabular-nums;
+  font-size: 12px;
 }
 
 /* ==========================================================================
