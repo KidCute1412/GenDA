@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { DEMO_SESSION_EVENT, getDemoSession, type DemoSession } from "../services/demo-session";
 
 /** Keeps client-only demo authentication state in sync without server/client hydration drift. */
@@ -8,7 +8,8 @@ export function useDemoSession() {
   const [session, setSession] = useState<DemoSession | null>(null);
   const [hydrated, setHydrated] = useState(false);
 
-  useEffect(() => {
+  // Read browser storage before the next paint so role-based navigation does not flash guest UI.
+  useLayoutEffect(() => {
     const sync = () => setSession(getDemoSession());
     sync();
     setHydrated(true);
