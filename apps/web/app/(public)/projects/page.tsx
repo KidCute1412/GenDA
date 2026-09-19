@@ -5,7 +5,7 @@ import { SiteFooter } from "../../../components/layout/site-footer";
 import { BottomNav } from "../../../components/layout/bottom-nav";
 import { ButtonLink } from "../../../components/ui/button";
 import { EmptyState } from "../../../components/ui/feedback";
-import { Check, ICON_WEIGHT, MagnifyingGlass } from "../../../components/ui/icons";
+import { Check, MagnifyingGlass } from "../../../components/ui/icons";
 import { CURRENT_STUDENT, PROJECTS, SKILL_CATALOG, TODAY } from "../../../mocks/data";
 import { daysUntil, formatDate, formatVnd, matchScore } from "../../../lib/utils/format";
 
@@ -103,42 +103,49 @@ export default async function ProjectsPage({
     <>
       <SiteHeader current="/projects" />
 
-      <main id="main-content" className="container has-bottom-nav">
+      <main id="main-content" className="container has-bottom-nav" style={{ paddingTop: "var(--space-8)" }}>
+        <div className="industrial-ruler">
+          {"SYS.EXPLORER // REGISTRY // 04 MODULES ACTIVE"}
+        </div>
+
         <nav aria-label="Đường dẫn phân cấp">
-          <ol className="breadcrumbs">
+          <ol className="breadcrumbs" style={{ fontFamily: "ui-monospace, monospace", fontSize: "12px", textTransform: "uppercase" }}>
             <li>
-              <Link href="/">Trang chủ</Link>
+              <Link href="/">ROOT</Link>
             </li>
             <li aria-hidden="true">/</li>
-            <li aria-current="page">Dự án đang tuyển</li>
+            <li aria-current="page" style={{ color: "var(--orange-500)", fontWeight: 700 }}>PROJECTS</li>
           </ol>
         </nav>
 
-        <div className="section--tight">
-          <h1>Dự án đang tuyển</h1>
-          <p className="lede" style={{ marginTop: "var(--space-3)" }}>
-            Mọi dự án ở đây đều đã qua kiểm duyệt, có mốc bàn giao và ngân sách rõ ràng từ trước.
+        <div className="section--tight" style={{ borderBottom: "2px solid var(--machinery-border)", paddingBottom: "var(--space-6)", marginBottom: "var(--space-8)" }}>
+          <h1 className="industrial-display" style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}>
+            DỰ ÁN ĐANG TUYỂN
+          </h1>
+          <p className="lede" style={{ marginTop: "var(--space-3)", color: "var(--color-text-muted)" }}>
+            Tất cả dự án được mã hóa hợp đồng kiểm soát theo từng mốc (milestone), giải ngân qua ký quỹ độc lập.
           </p>
         </div>
 
         {/* --- Thanh tìm kiếm & bộ lọc --- */}
-        <div>
+        <div style={{ marginBottom: "var(--space-8)" }}>
           <form action="/projects" method="get" role="search" className="stack stack--sm">
-            <label className="field__label" htmlFor="project-search">
-              Tìm theo tên dự án, doanh nghiệp hoặc kỹ năng
+            <label className="field__label" htmlFor="project-search" style={{ fontFamily: "ui-monospace, monospace", textTransform: "uppercase", fontSize: "12px", letterSpacing: "0.08em" }}>
+              {"[SCAN] TÌM THEO TÊN DỰ ÁN, DOANH NGHIỆP HOẶC KỸ NĂNG"}
             </label>
-            <div className="search-row">
+            <div className="search-row" style={{ maxWidth: "720px" }}>
               <input
                 id="project-search"
                 className="input"
                 type="search"
                 name="q"
                 defaultValue={params.q ?? ""}
-                placeholder="Ví dụ: landing page, SEO, Figma"
+                placeholder="Nhập từ khóa kỹ thuật (ví dụ: React, Figma, SEO)..."
+                style={{ fontFamily: "ui-monospace, monospace" }}
               />
-              <button type="submit" className="btn btn--primary">
-                <MagnifyingGlass weight={ICON_WEIGHT} aria-hidden="true" />
-                Tìm
+              <button type="submit" className="btn--tactile-orange" style={{ height: "42px", paddingInline: "var(--space-5)" }}>
+                <MagnifyingGlass weight="bold" aria-hidden="true" />
+                TÌM KIẾM
               </button>
             </div>
             {/* Giữ lại các lọc đang bật khi người dùng gửi ô tìm kiếm */}
@@ -149,9 +156,11 @@ export default async function ProjectsPage({
           </form>
         </div>
 
-        <div className="stack stack--sm" style={{ marginTop: "var(--space-6)" }}>
+        <div className="stack stack--sm" style={{ marginBottom: "var(--space-10)" }}>
           <fieldset style={{ border: 0, margin: 0, padding: 0 }}>
-            <legend className="field__label">Kỹ năng</legend>
+            <legend className="field__label" style={{ fontFamily: "ui-monospace, monospace", textTransform: "uppercase", fontSize: "11px", letterSpacing: "0.1em", color: "var(--color-text-muted)" }}>
+              {"// LỌC THEO KỸ NĂNG"}
+            </legend>
             <ul className="pill-list">
               {FILTERABLE_SKILLS.map((skill) => {
                 const on = activeSkills.includes(skill);
@@ -163,7 +172,7 @@ export default async function ProjectsPage({
                       aria-pressed={on}
                       scroll={false}
                     >
-                      {on ? <Check weight={ICON_WEIGHT} aria-hidden="true" /> : null}
+                      {on ? <Check weight="bold" aria-hidden="true" /> : null}
                       {skill}
                     </Link>
                   </li>
@@ -172,8 +181,10 @@ export default async function ProjectsPage({
             </ul>
           </fieldset>
 
-          <fieldset style={{ border: 0, margin: 0, padding: 0 }}>
-            <legend className="field__label">Khoảng ngân sách</legend>
+          <fieldset style={{ border: 0, margin: "var(--space-4) 0 0 0", padding: 0 }}>
+            <legend className="field__label" style={{ fontFamily: "ui-monospace, monospace", textTransform: "uppercase", fontSize: "11px", letterSpacing: "0.1em", color: "var(--color-text-muted)" }}>
+              {"// KHOẢNG NGÂN SÁCH KÝ QUỸ"}
+            </legend>
             <ul className="pill-list">
               {BUDGET_BUCKETS.map((b) => {
                 const on = params.budget === b.key;
@@ -185,7 +196,7 @@ export default async function ProjectsPage({
                       aria-pressed={on}
                       scroll={false}
                     >
-                      {on ? <Check weight={ICON_WEIGHT} aria-hidden="true" /> : null}
+                      {on ? <Check weight="bold" aria-hidden="true" /> : null}
                       {b.label}
                     </Link>
                   </li>
@@ -195,9 +206,13 @@ export default async function ProjectsPage({
           </fieldset>
 
           {hasFilter ? (
-            <p>
-              <Link href="/projects" className="btn btn--ghost btn--sm">
-                Xóa toàn bộ bộ lọc
+            <p style={{ marginTop: "var(--space-3)" }}>
+              <Link
+                href="/projects"
+                className="btn--tactile-zinc"
+                style={{ height: "32px", fontSize: "11px", paddingInline: "12px", textDecoration: "none" }}
+              >
+                {"[XÓA TOÀN BỘ BỘ LỌC]"}
               </Link>
             </p>
           ) : null}
@@ -205,34 +220,45 @@ export default async function ProjectsPage({
 
         {/* --- Kết quả --- */}
         <div className="section--tight">
-          <p className="text-muted" aria-live="polite">
-            {results.length} dự án phù hợp
-          </p>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px dashed var(--machinery-border)", paddingBottom: "var(--space-2)", marginBottom: "var(--space-4)" }}>
+            <p style={{ fontFamily: "ui-monospace, monospace", fontSize: "12px", fontWeight: 700, margin: 0, textTransform: "uppercase" }} aria-live="polite">
+              KẾT QUẢ QUÉT: <span style={{ color: "var(--orange-500)" }}>{results.length}</span> DỰ ÁN
+            </p>
+            <span style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px", color: "var(--color-text-muted)" }}>
+              SORT: MATCH_SCORE DESC
+            </span>
+          </div>
 
           {results.length === 0 ? (
             <EmptyState
               title="Chưa có dự án nào khớp với bộ lọc này"
               advice="Hãy thử bỏ bớt một kỹ năng hoặc nới khoảng ngân sách. Dự án mới được duyệt mỗi ngày nên bạn quay lại sau cũng được."
               action={
-                <ButtonLink href="/projects" variant="outline">
+                <ButtonLink href="/projects" variant="outline" className="btn--tactile-zinc">
                   Xóa bộ lọc
                 </ButtonLink>
               }
             />
           ) : (
             <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
-              {results.map((project) => {
+              {results.map((project, idx) => {
                 const score = matchScore(project.skills, CURRENT_STUDENT.skills);
                 const remaining = daysUntil(project.deadline, TODAY);
+                const bayId = `MOD-${String(idx + 1).padStart(2, "0")}`;
 
                 return (
                   <li key={project.id} className="project-row">
                     <div className="stack stack--sm">
-                      <p className="text-caption">
-                        {project.smeName}, {project.smeIndustry}
-                      </p>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px", fontFamily: "ui-monospace, monospace", fontSize: "11px", color: "var(--color-text-muted)" }}>
+                        <span style={{ backgroundColor: "var(--machinery-border)", color: "var(--color-surface-card)", padding: "1px 6px", fontWeight: 800, borderRadius: "2px" }}>
+                          {bayId}
+                        </span>
+                        <span>{project.smeName.toUpperCase()}</span>
+                        <span>{"//"}</span>
+                        <span>{project.smeIndustry.toUpperCase()}</span>
+                      </div>
 
-                      <h2 style={{ fontSize: "var(--text-h3-size)" }}>
+                      <h2 style={{ fontSize: "var(--text-h3-size)", margin: "var(--space-1) 0" }}>
                         <Link
                           href={`/projects/${project.id}`}
                           style={{ color: "inherit", textDecoration: "none" }}
@@ -241,11 +267,11 @@ export default async function ProjectsPage({
                         </Link>
                       </h2>
 
-                      <p className="text-muted" style={{ margin: 0, maxWidth: "62ch" }}>
+                      <p className="text-muted" style={{ margin: 0, maxWidth: "62ch", lineHeight: 1.5 }}>
                         {project.summary}
                       </p>
 
-                      <ul className="pill-list">
+                      <ul className="pill-list" style={{ marginTop: "var(--space-2)" }}>
                         {project.skills.map((skill) => {
                           const owned = score.matched.includes(skill);
                           return (
@@ -253,8 +279,7 @@ export default async function ProjectsPage({
                               key={skill}
                               className={`skill-pill ${owned ? "skill-pill--matched" : ""}`}
                             >
-                              {/* Kỹ năng trùng khớp có DẤU TÍCH, không chỉ đổi màu nền */}
-                              {owned ? <Check weight={ICON_WEIGHT} aria-hidden="true" /> : null}
+                              {owned ? <Check weight="bold" aria-hidden="true" /> : null}
                               {skill}
                               {owned ? (
                                 <span className="visually-hidden">(bạn đã có kỹ năng này)</span>
@@ -269,24 +294,43 @@ export default async function ProjectsPage({
                     <div className="project-row__meta stack stack--sm">
                       <p className="project-row__money">{formatVnd(project.budget)}</p>
 
-                      <p className="text-caption num" style={{ margin: 0 }}>
-                        Hạn {formatDate(project.deadline)}, còn {remaining} ngày
+                      <p className="text-caption num" style={{ margin: 0, fontFamily: "ui-monospace, monospace" }}>
+                        HẠN: {formatDate(project.deadline)} (CÒN {remaining}D)
                       </p>
 
-                      {/* Điểm phù hợp LUÔN đi kèm diễn giải trùng mấy trên mấy
-                          (FR-MAT-02): một con số trần không kiểm chứng được. */}
-                      <p className="match-score" style={{ margin: 0 }}>
-                        <span className="match-score__value">{score.percent}%</span>
-                        <span className="text-caption">
-                          phù hợp, trùng {score.matchedCount}/{score.total} kỹ năng
+                      {/* Điểm phù hợp LUÔN đi kèm diễn giải trùng mấy trên mấy (FR-MAT-02) */}
+                      <div style={{ margin: 0, display: "inline-flex", flexDirection: "column", alignItems: "flex-end" }}>
+                        <span style={{
+                          fontFamily: "ui-monospace, monospace",
+                          fontSize: "12px",
+                          fontWeight: 800,
+                          backgroundColor: score.percent >= 70 ? "rgba(249, 115, 22, 0.15)" : "var(--color-surface-subtle)",
+                          color: score.percent >= 70 ? "var(--orange-500)" : "var(--color-text-muted)",
+                          border: `1px solid ${score.percent >= 70 ? "var(--orange-500)" : "var(--machinery-border)"}`,
+                          padding: "2px 6px",
+                          borderRadius: "2px"
+                        }}>
+                          [MATCH: {score.percent}%]
                         </span>
-                      </p>
+                        <span className="text-caption" style={{ fontFamily: "ui-monospace, monospace", fontSize: "10px", marginTop: "2px" }}>
+                          KHỚP {score.matchedCount}/{score.total} KỸ NĂNG
+                        </span>
+                      </div>
 
-                      <p style={{ margin: 0 }}>
-                        <Link href={`/projects/${project.id}`} className="btn btn--outline btn--sm">
-                          Xem chi tiết
+                      <div style={{ marginTop: "var(--space-2)" }}>
+                        <Link
+                          href={`/projects/${project.id}`}
+                          className="btn--tactile-zinc"
+                          style={{
+                            height: "36px",
+                            fontSize: "12px",
+                            paddingInline: "var(--space-4)",
+                            display: "inline-flex"
+                          }}
+                        >
+                          XEM CHI TIẾT
                         </Link>
-                      </p>
+                      </div>
                     </div>
                   </li>
                 );

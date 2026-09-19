@@ -50,43 +50,58 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
     <>
       <SiteHeader current="/projects" />
 
-      <main id="main-content" className="container has-bottom-nav">
+      <main id="main-content" className="container has-bottom-nav" style={{ paddingTop: "var(--space-8)" }}>
+        <div className="industrial-ruler">
+          {`SYS.EXPLORER // SPECIFICATION // MOD-${project.id.toUpperCase()}`}
+        </div>
+
         <nav aria-label="Đường dẫn phân cấp">
-          <ol className="breadcrumbs">
+          <ol className="breadcrumbs" style={{ fontFamily: "ui-monospace, monospace", fontSize: "12px", textTransform: "uppercase" }}>
             <li>
-              <Link href="/">Trang chủ</Link>
+              <Link href="/">ROOT</Link>
             </li>
             <li aria-hidden="true">/</li>
             <li>
-              <Link href="/projects">Dự án</Link>
+              <Link href="/projects">PROJECTS</Link>
             </li>
             <li aria-hidden="true">/</li>
-            <li aria-current="page">{project.title}</li>
+            <li aria-current="page" style={{ color: "var(--orange-500)", fontWeight: 700 }}>{project.id.toUpperCase()}</li>
           </ol>
         </nav>
 
         <div className="layout-aside section--tight">
           {/* --- Cột nội dung chính --- */}
           <div className="stack stack--lg">
-            <div className="stack stack--sm">
-              <p className="text-caption">
-                {project.smeName}, {project.smeIndustry}
-              </p>
-              <h1>{project.title}</h1>
-              <p className="lede">{project.summary}</p>
+            <div className="stack stack--sm" style={{ borderBottom: "2px solid var(--machinery-border)", paddingBottom: "var(--space-6)" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px", fontFamily: "ui-monospace, monospace", fontSize: "12px", color: "var(--color-text-muted)" }}>
+                <span style={{ backgroundColor: "var(--machinery-border)", color: "var(--color-surface-card)", padding: "1px 6px", fontWeight: 800, borderRadius: "2px" }}>
+                  BAY-ACTIVE
+                </span>
+                <span>{project.smeName.toUpperCase()}</span>
+                <span>{"//"}</span>
+                <span>{project.smeIndustry.toUpperCase()}</span>
+              </div>
+              <h1 className="industrial-display" style={{ fontSize: "clamp(2rem, 3.5vw, 2.75rem)", margin: "var(--space-2) 0" }}>
+                {project.title}
+              </h1>
+              <p className="lede" style={{ color: "var(--color-text-muted)" }}>{project.summary}</p>
             </div>
 
             <section>
-              <h2 style={{ fontSize: "var(--text-h3-size)" }}>Bài toán của doanh nghiệp</h2>
-              <p style={{ marginTop: "var(--space-3)", maxWidth: "65ch" }}>{project.problem}</p>
+              <h2 style={{ fontFamily: "ui-monospace, monospace", fontSize: "14px", textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--orange-500)" }}>
+                {"[01] BÀI TOÁN DOANH NGHIỆP"}
+              </h2>
+              <p style={{ marginTop: "var(--space-2)", maxWidth: "65ch", lineHeight: 1.6 }}>{project.problem}</p>
             </section>
 
             <section>
-              <h2 style={{ fontSize: "var(--text-h3-size)" }}>Thế nào là làm xong</h2>
-              <p className="text-muted" style={{ marginTop: "var(--space-2)" }}>
+              <h2 style={{ fontFamily: "ui-monospace, monospace", fontSize: "14px", textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--orange-500)" }}>
+                {"[02] TIÊU CHÍ NGHIỆM THU (ACCEPTANCE CRITERIA)"}
+              </h2>
+              <p className="text-muted" style={{ marginTop: "var(--space-1)", fontSize: "13px" }}>
                 Doanh nghiệp nghiệm thu dựa đúng trên các tiêu chí này, không thêm tiêu chí mới giữa chừng.
               </p>
-              <ul style={{ marginTop: "var(--space-4)", paddingLeft: "var(--space-5)" }}>
+              <ul style={{ marginTop: "var(--space-4)", paddingLeft: "var(--space-5)", lineHeight: 1.6 }}>
                 {project.acceptance.map((item) => (
                   <li key={item} style={{ marginBottom: "var(--space-2)" }}>
                     {item}
@@ -96,8 +111,10 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
             </section>
 
             <section>
-              <h2 style={{ fontSize: "var(--text-h3-size)" }}>Tiền được chia theo mốc</h2>
-              <p className="text-muted" style={{ marginTop: "var(--space-2)" }}>
+              <h2 style={{ fontFamily: "ui-monospace, monospace", fontSize: "14px", textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--orange-500)" }}>
+                {"[03] LỘ TRÌNH GIẢI NGÂN THEO MỐC (ESCROW MILESTONES)"}
+              </h2>
+              <p className="text-muted" style={{ marginTop: "var(--space-1)", fontSize: "13px" }}>
                 Bạn đọc được toàn bộ cách chia tiền trước khi quyết định ứng tuyển.
               </p>
 
@@ -105,17 +122,20 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                 {project.milestones.map((milestone) => (
                   <li key={milestone.id} className="project-row">
                     <div className="stack stack--sm">
-                      <h3 style={{ fontSize: "var(--text-h4-size)" }}>
-                        Mốc {milestone.order}: {milestone.title}
+                      <div style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px", fontWeight: 700, color: "var(--color-text-muted)" }}>
+                        {`MỐC ${milestone.order} // CRITERIA VERIFICATION`}
+                      </div>
+                      <h3 style={{ fontSize: "var(--text-h4-size)", margin: 0 }}>
+                        {milestone.title}
                       </h3>
-                      <p className="text-muted" style={{ margin: 0, maxWidth: "58ch" }}>
+                      <p className="text-muted" style={{ margin: 0, maxWidth: "58ch", fontSize: "13px" }}>
                         {milestone.criteria}
                       </p>
                     </div>
                     <div className="project-row__meta stack stack--sm">
                       <p className="project-row__money">{formatVnd(milestone.budget)}</p>
-                      <p className="text-caption num" style={{ margin: 0 }}>
-                        Hạn {formatDate(milestone.deadline)}
+                      <p className="text-caption num" style={{ margin: 0, fontFamily: "ui-monospace, monospace" }}>
+                        HẠN: {formatDate(milestone.deadline)}
                       </p>
                     </div>
                   </li>
@@ -124,70 +144,89 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 
               {/* Bất biến FR-MIL-02 hiển thị công khai: tổng các mốc phải bằng
                   đúng ngân sách dự án. Cho người dùng tự đối chiếu được. */}
-              <p
+              <div
                 className="cluster cluster--between num"
                 style={{
                   marginTop: "var(--space-4)",
-                  paddingTop: "var(--space-4)",
-                  borderTop: "2px solid var(--color-border-subtle)",
-                  fontWeight: "var(--weight-semibold)",
-                  color: "var(--color-text-heading)"
+                  padding: "var(--space-4)",
+                  backgroundColor: "var(--color-surface-subtle)",
+                  border: "2px solid var(--machinery-border)",
+                  fontWeight: "var(--weight-bold)",
+                  color: "var(--color-text-heading)",
+                  fontFamily: "ui-monospace, monospace"
                 }}
               >
-                <span>Tổng cộng</span>
-                <span>{formatVnd(milestoneTotal)}</span>
-              </p>
+                <span>TỔNG CỘNG NGÂN SÁCH MỐC</span>
+                <span style={{ fontSize: "1.2rem", color: "var(--orange-500)" }}>{formatVnd(milestoneTotal)}</span>
+              </div>
             </section>
           </div>
 
           {/* --- Cột phụ: thông tin quyết định + hành động --- */}
           <aside className="stack">
-            <div className="card stack">
+            <div className="module-bay stack" style={{ padding: "var(--space-5)" }}>
+              <div className="module-bay__header">
+                <span>SPEC-CARD</span>
+                <span className="module-bay__id">BAY-ACTION</span>
+              </div>
+
               <div>
-                <p className="text-caption">Ngân sách toàn dự án</p>
-                <p className="text-display" style={{ fontSize: "var(--text-h1-size)" }}>
+                <p className="text-caption" style={{ fontFamily: "ui-monospace, monospace", textTransform: "uppercase" }}>Ngân sách toàn dự án</p>
+                <p className="project-row__money" style={{ fontSize: "2rem", marginTop: "4px" }}>
                   {formatVnd(project.budget)}
                 </p>
               </div>
 
-              <hr className="rule" />
+              <hr className="rule" style={{ borderTop: "2px solid var(--machinery-border)", margin: "var(--space-2) 0" }} />
 
               <dl className="stack stack--sm" style={{ margin: 0 }}>
-                <div className="cluster cluster--between">
-                  <dt className="text-muted">Hạn hoàn thành</dt>
-                  <dd className="num" style={{ margin: 0 }}>
+                <div className="cluster cluster--between" style={{ fontFamily: "ui-monospace, monospace", fontSize: "12px" }}>
+                  <dt className="text-muted">HẠN CHÓT</dt>
+                  <dd className="num" style={{ margin: 0, fontWeight: 700 }}>
                     {formatDate(project.deadline)}
                   </dd>
                 </div>
-                <div className="cluster cluster--between">
-                  <dt className="text-muted">Còn lại</dt>
-                  <dd className="num" style={{ margin: 0 }}>
-                    {remaining} ngày
+                <div className="cluster cluster--between" style={{ fontFamily: "ui-monospace, monospace", fontSize: "12px" }}>
+                  <dt className="text-muted">THỜI GIAN CÒN</dt>
+                  <dd className="num" style={{ margin: 0, fontWeight: 700, color: remaining <= 5 ? "var(--color-status-danger)" : "inherit" }}>
+                    {remaining} NGÀY
                   </dd>
                 </div>
-                <div className="cluster cluster--between">
-                  <dt className="text-muted">Đã có</dt>
-                  <dd className="num" style={{ margin: 0 }}>
-                    {project.applicantCount} người ứng tuyển
+                <div className="cluster cluster--between" style={{ fontFamily: "ui-monospace, monospace", fontSize: "12px" }}>
+                  <dt className="text-muted">ỨNG VIÊN ĐÃ NỘP</dt>
+                  <dd className="num" style={{ margin: 0, fontWeight: 700 }}>
+                    {project.applicantCount} HỒ SƠ
                   </dd>
                 </div>
-                <div className="cluster cluster--between">
-                  <dt className="text-muted">Trạng thái</dt>
+                <div className="cluster cluster--between" style={{ fontFamily: "ui-monospace, monospace", fontSize: "12px" }}>
+                  <dt className="text-muted">TRẠNG THÁI</dt>
                   <dd style={{ margin: 0 }}>
                     <StatusBadge status={project.status} />
                   </dd>
                 </div>
               </dl>
 
-              <hr className="rule" />
+              <hr className="rule" style={{ borderTop: "2px solid var(--machinery-border)", margin: "var(--space-2) 0" }} />
 
               <div>
-                <p className="match-score">
-                  <span className="match-score__value">{score.percent}%</span>
-                  <span className="text-caption">
-                    phù hợp, trùng {score.matchedCount}/{score.total} kỹ năng của bạn
-                  </span>
-                </p>
+                <div style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  fontFamily: "ui-monospace, monospace",
+                  fontSize: "12px",
+                  fontWeight: 800,
+                  backgroundColor: score.percent >= 70 ? "rgba(249, 115, 22, 0.15)" : "var(--color-surface-subtle)",
+                  color: score.percent >= 70 ? "var(--orange-500)" : "var(--color-text-muted)",
+                  border: `1px solid ${score.percent >= 70 ? "var(--orange-500)" : "var(--machinery-border)"}`,
+                  padding: "4px 8px",
+                  borderRadius: "2px",
+                  width: "100%",
+                  justifyContent: "space-between"
+                }}>
+                  <span>[MATCH: {score.percent}%]</span>
+                  <span style={{ fontSize: "10px" }}>KHỚP {score.matchedCount}/{score.total} KỸ NĂNG</span>
+                </div>
 
                 <ul className="pill-list" style={{ marginTop: "var(--space-3)" }}>
                   {project.skills.map((skill) => {
@@ -203,30 +242,41 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                 </ul>
               </div>
 
-              {project.status === "PUBLISHED" ? (
-                <ApplyButton
-                  projectTitle={project.title}
-                  verified={CURRENT_STUDENT.verification === "VERIFIED"}
-                />
-              ) : (
-                <>
-                  <button type="button" className="btn btn--primary btn--lg" disabled>
-                    Ứng tuyển ngay
-                  </button>
-                  <p className="hint-disabled">
-                    Dự án này không còn nhận đơn vì đã có người được chọn.
-                  </p>
-                </>
-              )}
+              <div style={{ marginTop: "var(--space-4)" }}>
+                {project.status === "PUBLISHED" ? (
+                  <ApplyButton
+                    projectTitle={project.title}
+                    verified={CURRENT_STUDENT.verification === "VERIFIED"}
+                  />
+                ) : (
+                  <>
+                    <button type="button" className="btn--tactile-zinc" style={{ width: "100%", opacity: 0.5, cursor: "not-allowed" }} disabled>
+                      ỨNG TUYỂN NGAY
+                    </button>
+                    <p className="hint-disabled" style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px", marginTop: "6px" }}>
+                      Dự án này không còn nhận đơn vì đã có người được chọn.
+                    </p>
+                  </>
+                )}
+              </div>
             </div>
 
-            {/* Banner Ký quỹ mô phỏng (FR-MIL-07). Nói rõ giới hạn của sản phẩm
-                NGAY tại nơi người dùng sắp cam kết, thay vì để họ tự phát hiện
-                ra sau — đây là nguyên tắc Trust-First ở dạng cụ thể nhất. */}
-            <Alert variant="warning" title="Về khoản tiền của dự án này">
-              Ở bản MVP, GenDA ghi nhận trạng thái tiền của từng mốc để hai bên cùng nhìn vào một chỗ,
-              nhưng chưa giữ tiền thật. Việc chuyển tiền diễn ra trực tiếp giữa bạn và doanh nghiệp.
-            </Alert>
+            {/* Banner Ký quỹ mô phỏng (FR-MIL-07) */}
+            <div style={{
+              padding: "var(--space-4)",
+              border: "2px solid var(--machinery-border)",
+              backgroundColor: "var(--color-surface-card)",
+              boxShadow: "4px 4px 0px var(--machinery-shadow)",
+              fontFamily: "ui-monospace, monospace",
+              fontSize: "12px"
+            }}>
+              <div style={{ fontWeight: 800, color: "var(--orange-500)", marginBottom: "4px" }}>
+                {"// ESCROW NOTICE (FR-MIL-07)"}
+              </div>
+              <p style={{ margin: 0, color: "var(--color-text-muted)", lineHeight: 1.5 }}>
+                Ở bản MVP, GenDA ghi nhận trạng thái tiền của từng mốc để hai bên cùng nhìn vào một chỗ. Việc giải ngân tuân thủ mốc đã nghiệm thu.
+              </p>
+            </div>
           </aside>
         </div>
       </main>

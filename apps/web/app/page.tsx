@@ -71,93 +71,105 @@ export default function HomePage() {
             - Khối có nền riêng vì đòn bẩy làm ấm số 2 ở 4.9.1: hero là một
               TẤM KEM BO GÓC LỚN nằm lọt trong panel trắng của trang, không
               phải một dải màu chạy chạm mép màn hình. */}
-        <section className="band--brand-strong">
+        {/* Hero NEO-INDUSTRIAL LEDGER: Teenage Engineering Metaphor */}
+        <section className="industrial-hero">
           <div className="container hero-editorial">
           <div>
-            <p className="eyebrow">Dự án thật, trả công thật</p>
-            {/* Từ nhấn viết tay, có nét khoanh tròn vẽ tay bao quanh — chi tiết
-                đặc trưng nhất của phong cách này (design.md 4.9.1 đòn bẩy 3).
-                Nét khoanh nằm ở pseudo-element nên trình đọc màn hình chỉ nghe
-                đúng một câu liền mạch "From Learn to Earn". */}
-            <h1 className="text-display hero-display" style={{ marginBlock: "var(--space-4) var(--space-5)" }}>
-              From <span className="hand-accent">Learn</span> to Earn
+            <div className="industrial-ruler">
+              <span>SYS.SPEC // PROTOCOL 2026 // VN-HCM</span>
+            </div>
+            
+            <h1 className="industrial-display" style={{ marginBlock: "var(--space-2) var(--space-4)" }}>
+              From Learn <br />
+              to <span className="industrial-highlight">Earn.</span>
             </h1>
-            {/* Đoạn dẫn giữ trong ba dòng ở desktop: hero phải nằm trọn trong
-                một màn hình, người đọc không cần cuộn mới thấy nút hành động. */}
-            <p className="lede">
-              Bạn cần một dự án thật để đưa vào CV. Doanh nghiệp gần bạn cần người làm nhưng ngại giao cho
-              người lạ. GenDA đứng giữa lo phần niềm tin.
+            
+            <p className="lede" style={{ color: "#52525b", maxWidth: "48ch", fontSize: "1.125rem", lineHeight: 1.6 }}>
+              Cỗ máy chuẩn hóa giao kèo dự án vi mô (1.000.000 — 5.000.000 VNĐ). 
+              Thiết lập mốc nghiệm thu cơ khí, ký quỹ mô phỏng minh bạch và đóng dấu chứng nhận năng lực bất biến.
             </p>
 
-            <div className="cluster hero-cta" style={{ marginTop: "var(--space-8)", gap: "var(--space-3)" }}>
-              <ButtonLink href="/projects" size="lg">
-                Tôi là sinh viên, tìm dự án
-              </ButtonLink>
-              <ButtonLink href="/sme/projects/new" size="lg" variant="outline">
-                Tôi là doanh nghiệp, cần người làm
-              </ButtonLink>
+            <div className="cluster hero-cta" style={{ marginTop: "var(--space-8)", gap: "var(--space-4)" }}>
+              <Link href="/projects" className="btn--tactile-orange">
+                Tìm việc / Nhận dự án
+                <ArrowRight weight={ICON_WEIGHT} aria-hidden="true" />
+              </Link>
+              <Link href="/sme/projects/new" className="btn--tactile-zinc">
+                Đăng bài toán kỹ thuật
+              </Link>
             </div>
           </div>
 
-          {/* Cột phải của hero: MỘT DỰ ÁN THẬT đang tuyển, dựng bằng đúng các
-              component mà trang /projects dùng.
+          {/* Cột phải: Module Bay - Khối giao kèo phần cứng cơ khí */}
+          <article className="module-bay stack stack--sm">
+            <div className="module-bay__header">
+              <span className="module-bay__id">BAY-01 // ACTIVE</span>
+              <span>EST. 2026</span>
+            </div>
 
-              Trước đây chỗ này là lưới 2x2 bốn con số cỡ lớn. Khối đó là mẫu bị
-              dùng lại nhiều nhất trên các trang do máy sinh, và tệ hơn: nó nói
-              về nền tảng chứ không cho xem nền tảng. Đặt một dự án thật vào đây
-              trả lời ngay câu hỏi đầu tiên của người mới vào — "trên này có việc
-              gì?" — và chứng minh sản phẩm tồn tại thay vì mô tả nó. */}
-          <article className="card hero-feature stack stack--sm">
-            <p className="cluster cluster--between" style={{ margin: 0 }}>
-              <span className="text-caption">{preview.smeName}, {preview.smeIndustry}</span>
+            <div className="cluster cluster--between" style={{ margin: 0 }}>
+              <span style={{ fontFamily: "ui-monospace, monospace", fontSize: "12px", fontWeight: 700, color: "#71717a", textTransform: "uppercase" }}>
+                {preview.smeName} &bull; {preview.smeIndustry}
+              </span>
               <StatusBadge status="PUBLISHED" />
-            </p>
+            </div>
 
-            <h2 style={{ fontSize: "var(--text-h4-size)" }}>
+            <h2 style={{ fontSize: "1.25rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "-0.02em" }}>
               <Link href={`/projects/${preview.id}`} style={{ color: "inherit", textDecoration: "none" }}>
                 {preview.title}
               </Link>
             </h2>
 
-            <p className="cluster cluster--between" style={{ margin: 0 }}>
-              <span className="project-row__money">{formatVnd(preview.budget)}</span>
-              <span className="text-caption num">
-                {preview.milestones.length} mốc bàn giao
+            <div className="cluster cluster--between" style={{ margin: "var(--space-2) 0" }}>
+              <span style={{ fontFamily: "ui-monospace, monospace", fontSize: "1.5rem", fontWeight: 800, color: "#09090b" }}>
+                {formatVnd(preview.budget)}
               </span>
-            </p>
+              <span style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px", fontWeight: 700, background: "#f4f4f5", border: "1px solid #18181b", padding: "3px 8px" }}>
+                {preview.milestones.length} PHÂN ĐOẠN (MỐC)
+              </span>
+            </div>
 
-            <hr className="rule" />
+            <hr style={{ border: 0, borderTop: "2px dashed #d4d4d8", margin: "var(--space-2) 0" }} />
 
             <ul className="pill-list">
               {preview.skills.map((skill) => {
                 const owned = previewScore.matched.includes(skill);
                 return (
-                  <li key={skill} className={`skill-pill ${owned ? "skill-pill--matched" : ""}`}>
-                    {owned ? <Check weight={ICON_WEIGHT} aria-hidden="true" /> : null}
-                    {skill}
+                  <li 
+                    key={skill} 
+                    style={{ 
+                      fontFamily: "ui-monospace, monospace", 
+                      fontSize: "11px", 
+                      fontWeight: 700, 
+                      padding: "4px 10px", 
+                      border: "1px solid #18181b", 
+                      background: owned ? "#18181b" : "#ffffff", 
+                      color: owned ? "#ffffff" : "#18181b" 
+                    }}
+                  >
+                    {owned ? "[x] " : "[ ] "}{skill}
                   </li>
                 );
               })}
             </ul>
 
-            <p className="text-caption num" style={{ margin: 0 }}>
-              Hạn {formatDate(preview.deadline)}, còn {daysUntil(preview.deadline, TODAY)} ngày
-            </p>
+            <div className="cluster cluster--between" style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px", fontWeight: 700, color: "#71717a", paddingTop: "var(--space-3)" }}>
+              <span>HẠN CHÓT: {formatDate(preview.deadline)}</span>
+              <span style={{ color: "var(--orange-600)" }}>CÒN {daysUntil(preview.deadline, TODAY)} NGÀY</span>
+            </div>
           </article>
           </div>
         </section>
 
-        {/* Bốn con số cam kết, dạng dải NGANG gọn ngay dưới hero.
-            Vẫn là cam kết sản phẩm lấy từ requirement.md, nhưng trình bày ở cỡ
-            vừa phải để chúng là thông tin, không phải khẩu hiệu. */}
+        {/* Bốn con số cam kết — Thông số vận hành cơ khí */}
         <section className="container hero-spill" style={{ paddingBottom: "var(--space-8)" }}>
-          <dl className="stat-strip">
-            {COMMITMENTS.map((commitment) => (
-              <div key={commitment.label}>
+          <dl className="stat-strip" style={{ borderTop: "2px solid var(--machinery-border)" }}>
+            {COMMITMENTS.map((commitment, idx) => (
+              <div key={commitment.label} style={{ borderLeft: idx > 0 ? "1px dashed var(--machinery-border)" : "none", paddingLeft: idx > 0 ? "var(--space-4)" : "0" }}>
                 <dt className="visually-hidden">{commitment.label}</dt>
                 <dd style={{ margin: 0 }}>
-                  <span className="stat__value">{commitment.value}</span>
-                  <span className="stat__label" aria-hidden="true">
+                  <span className="stat__value" style={{ fontFamily: "ui-monospace, monospace", color: "var(--orange-500)" }}>{commitment.value}</span>
+                  <span className="stat__label" aria-hidden="true" style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px", fontWeight: 600 }}>
                     {commitment.label}
                   </span>
                 </dd>
@@ -166,37 +178,32 @@ export default function HomePage() {
           </dl>
         </section>
 
-        {/* Khối sáng ngay sau vùng màu đậm. Nhịp màu của trang là ĐẬM → SÁNG →
-            SÁNG → ĐẬM: hai vùng màu neo hai đầu, phần giữa để thở. Nếu khối nào
-            cũng tô màu thì màu lại mất hết sức nặng. */}
-        <section id="trust-layer" className="container section">
+        {/* Khối Trust Layer: Giao thức an toàn 4 trụ cột */}
+        <section id="trust-layer" className="container section" style={{ borderTop: "2px solid var(--machinery-border)" }}>
           <div style={{ maxWidth: "720px" }}>
-            <h2>Bốn lớp bảo vệ niềm tin</h2>
-            <p className="lede" style={{ marginTop: "var(--space-4)" }}>
-              Vấn đề ở đây không phải thiếu người làm, mà là lần đầu hợp tác thì hai bên chẳng có cơ sở
-              nào để tin nhau. Bốn lớp dưới đây là cách chúng tôi xử lý chuyện đó.
+            <div className="industrial-ruler">
+              <span>PROTOCOL.TRUST // 4 LAYERS</span>
+            </div>
+            <h2 style={{ fontSize: "2rem", fontWeight: 800, textTransform: "uppercase" }}>Bốn Tầng Giao Kèo Niềm Tin</h2>
+            <p className="lede" style={{ marginTop: "var(--space-3)", color: "var(--color-text-body)" }}>
+              Giải quyết triệt để sự đứt gãy niềm tin giữa sinh viên và doanh nghiệp SMEs thông qua 4 giao thức chuẩn hóa bất biến.
             </p>
           </div>
 
           <div>
-            {/* Danh sách ĐÁNH SỐ CÓ KẺ NGANG, không phải bốn thẻ giống hệt nhau
-                xếp lưới đều: khi mọi thứ trông quan trọng như nhau thì không gì
-                quan trọng cả. */}
-            <ol className="editorial-list" style={{ marginTop: "var(--space-10)" }}>
+            <ol className="editorial-list" style={{ marginTop: "var(--space-8)" }}>
               {PILLARS.map((pillar, index) => (
-                <li key={pillar.title} className="editorial-list__item">
-                  {/* Số cỡ lớn chìm màu chỉ làm nhịp thị giác, nên aria-hidden:
-                      thứ tự đã nằm sẵn trong ngữ nghĩa của thẻ <ol>. */}
-                  <span className="editorial-list__num" aria-hidden="true">
-                    {String(index + 1).padStart(2, "0")}
+                <li key={pillar.title} className="editorial-list__item" style={{ borderTop: "1px solid var(--machinery-border)" }}>
+                  <span className="editorial-list__num" aria-hidden="true" style={{ fontFamily: "ui-monospace, monospace", color: "var(--orange-500)", fontWeight: 800 }}>
+                    [0{index + 1}]
                   </span>
                   <div>
-                    <h3 style={{ fontSize: "var(--text-h4-size)" }}>{pillar.title}</h3>
-                    <p className="text-muted" style={{ marginTop: "var(--space-1)" }}>
-                      {pillar.lead}
+                    <h3 style={{ fontSize: "var(--text-h4-size)", fontWeight: 800, textTransform: "uppercase" }}>{pillar.title}</h3>
+                    <p style={{ marginTop: "var(--space-1)", fontFamily: "ui-monospace, monospace", fontSize: "12px", color: "var(--color-text-muted)" }}>
+                      {"// "}{pillar.lead}
                     </p>
                   </div>
-                  <p style={{ margin: 0 }}>{pillar.body}</p>
+                  <p style={{ margin: 0, color: "var(--color-text-body)", lineHeight: 1.6 }}>{pillar.body}</p>
                 </li>
               ))}
             </ol>
@@ -350,7 +357,7 @@ export default function HomePage() {
                 </ul>
 
                 <div className="card__footer">
-                  <Link href={`/portfolio/nguyen-hai-nam`} className="btn btn--outline btn--sm">
+                  <Link href={`/portfolio/le-tuan-loc`} className="btn btn--outline btn--sm">
                     Xem hồ sơ đầy đủ
                     <ArrowRight weight={ICON_WEIGHT} aria-hidden="true" />
                   </Link>
