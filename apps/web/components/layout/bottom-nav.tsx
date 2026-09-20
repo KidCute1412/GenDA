@@ -34,7 +34,7 @@ const SME_TABS = [
   { href: "/", label: "Trang chủ", icon: House },
   { href: "/sme/projects", label: "Dự án của tôi", icon: Briefcase },
   { href: "/sme/projects/new", label: "Đăng dự án", icon: FileText },
-  { href: "/student/profile", label: "Hồ sơ", icon: UserCircle }
+  { href: "/sme/profile", label: "Hồ sơ", icon: UserCircle }
 ];
 
 export function BottomNav() {

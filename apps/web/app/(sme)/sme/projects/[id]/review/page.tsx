@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { SiteHeader } from "../../../../../../components/layout/site-header";
 import { SiteFooter } from "../../../../../../components/layout/site-footer";
+import { BottomNav } from "../../../../../../components/layout/bottom-nav";
 import { StatusBadge } from "../../../../../../components/ui/status-badge";
 import { EmptyState } from "../../../../../../components/ui/feedback";
 import { ButtonLink } from "../../../../../../components/ui/button";
@@ -49,9 +50,9 @@ export default async function ReviewApplicantsPage({ params }: { params: Promise
 
   return (
     <>
-      <SiteHeader />
+      <SiteHeader hideOnMobile />
 
-      <main id="main-content" className="industrial-canvas" style={{ paddingBottom: "var(--space-16)" }}>
+      <main id="main-content" className="industrial-canvas has-bottom-nav" style={{ paddingBottom: "var(--space-16)" }}>
         {/* THANH THƯỚC ĐO KỸ THUẬT & ĐIỀU HƯỚNG */}
         <div style={{ borderBottom: "2px solid var(--machinery-border)", backgroundColor: "var(--color-surface-card)" }}>
           <div className="container" style={{ paddingBlock: "10px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
@@ -89,7 +90,7 @@ export default async function ReviewApplicantsPage({ params }: { params: Promise
               XÉT DUYỆT ỨNG VIÊN
             </h1>
             <p className="text-muted" style={{ margin: 0, fontSize: "13px", maxWidth: "70ch" }}>
-              Dự án: <strong style={{ color: "var(--color-text-heading)" }}>{project.title}</strong> ({project.smeName}) — Bạn chọn đúng một ứng viên để kích hoạt mốc bàn giao đầu tiên và ký quỹ dự án.
+              Dự án: <strong style={{ color: "var(--color-text-heading)" }}>{project.title}</strong> ({project.smeName}) - Bạn chọn đúng một ứng viên để kích hoạt mốc bàn giao đầu tiên và ký quỹ dự án.
             </p>
           </div>
 
@@ -268,6 +269,7 @@ export default async function ReviewApplicantsPage({ params }: { params: Promise
       </main>
 
       <SiteFooter />
+      <BottomNav />
     </>
   );
 }

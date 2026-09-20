@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { SiteHeader } from "../../../components/layout/site-header";
 import { SiteFooter } from "../../../components/layout/site-footer";
+import { BottomNav } from "../../../components/layout/bottom-nav";
 import { StatusBadge } from "../../../components/ui/status-badge";
 import { EmptyState } from "../../../components/ui/feedback";
 import { AUDIT_LOG, PENDING_VERIFICATIONS, PROJECTS } from "../../../mocks/data";
@@ -52,9 +53,9 @@ export default async function AdminPage({
 
   return (
     <>
-      <SiteHeader />
+      <SiteHeader hideOnMobile />
 
-      <main id="main-content" style={{ minHeight: "calc(100vh - 64px - 200px)", paddingBottom: "var(--space-20)" }}>
+      <main id="main-content" className="has-bottom-nav" style={{ minHeight: "calc(100vh - 64px - 200px)", paddingBottom: "var(--space-20)" }}>
         {/* Terminal Header Bar */}
         <section 
           style={{ 
@@ -432,6 +433,7 @@ export default async function AdminPage({
       </main>
 
       <SiteFooter />
+      <BottomNav />
     </>
   );
 }
