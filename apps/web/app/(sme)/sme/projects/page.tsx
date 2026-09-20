@@ -9,6 +9,8 @@ import { EmptyState } from "../../../../components/ui/feedback";
 import { PROJECTS, TODAY } from "../../../../mocks/data";
 import { daysUntil, formatDate, formatVnd } from "../../../../lib/utils/format";
 import { CreatedProjectsPanel } from "../../../../features/projects/components/created-projects-panel";
+import { LedgerApplicantQueue } from "../../../../features/applications/components/ledger-applicant-queue";
+import { RoleRouteGuard } from "../../../../features/auth/components/role-route-guard";
 
 export const metadata: Metadata = {
   title: "Dự án của tôi",
@@ -64,10 +66,14 @@ export default async function SmeProjectsPage({
   const projects = PROJECTS.filter((project) => activeTab.match(project.status));
 
   return (
-    <>
+    <RoleRouteGuard role="SME">
+      <>
       <SiteHeader hideOnMobile />
 
       <main id="main-content" className="industrial-canvas has-bottom-nav" style={{ paddingBottom: "var(--space-16)" }}>
+        <div className="container" style={{ paddingTop: "var(--space-8)" }}>
+          <LedgerApplicantQueue />
+        </div>
         {/* THANH THƯỚC ĐO KỸ THUẬT & ĐIỀU HƯỚNG */}
         <div style={{ borderBottom: "2px solid var(--machinery-border)", backgroundColor: "var(--color-surface-card)" }}>
           <div className="container" style={{ paddingBlock: "10px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
@@ -277,6 +283,7 @@ export default async function SmeProjectsPage({
 
       <SiteFooter />
       <BottomNav />
-    </>
+      </>
+    </RoleRouteGuard>
   );
 }
