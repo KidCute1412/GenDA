@@ -1457,8 +1457,16 @@
 }
 
 .industrial-hero {
+  display: flex;
+  align-items: center;
   border-bottom: 2px solid var(--machinery-border);
-  padding-block: var(--space-12) var(--space-16);
+  padding-block: var(--space-16);
+}
+
+@media (min-width: 768px) {
+  .industrial-hero {
+    min-height: clamp(35rem, 70svh, 42.5rem);
+  }
 }
 
 .dark .industrial-canvas {
@@ -1512,9 +1520,9 @@
 /* Module Bay: Khối cơ khí với đường viền cơ khí, đinh ốc trang trí */
 .module-bay {
   position: relative;
-  background-color: #ffffff;
-  border: 2px solid #18181b;
-  box-shadow: 6px 6px 0px #18181b;
+  background-color: var(--color-surface-card);
+  border: 2px solid var(--machinery-border);
+  box-shadow: 6px 6px 0px var(--machinery-shadow);
   border-radius: 0px; /* Góc sắc cơ khí dứt khoát */
   padding: var(--space-6);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
@@ -1522,7 +1530,7 @@
 
 .module-bay:hover {
   transform: translate(-2px, -2px);
-  box-shadow: 8px 8px 0px #18181b;
+  box-shadow: 8px 8px 0px var(--machinery-shadow);
 }
 
 .module-bay__header {
@@ -1531,18 +1539,56 @@
   align-items: center;
   padding-bottom: var(--space-3);
   margin-bottom: var(--space-4);
-  border-bottom: 2px solid #18181b;
+  border-bottom: 2px solid var(--machinery-border);
   font-family: ui-monospace, monospace;
   font-size: 11px;
   font-weight: 700;
-  color: #71717a;
+  color: var(--color-text-muted);
 }
 
 .module-bay__id {
-  background-color: #18181b;
+  background-color: var(--machinery-border);
   color: #ffffff;
   padding: 2px 6px;
   border-radius: 2px;
+}
+
+/* Thẻ định danh linh kiện cơ khí chuẩn cao cấp (High-Contrast Hardware Tag) */
+.tag-hardware {
+  display: inline-flex;
+  align-items: center;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 2px;
+  background-color: var(--machinery-border);
+  color: #ffffff;
+}
+
+.dark .tag-hardware {
+  background-color: #27272a;
+  color: #f4f4f5;
+  border: 1px solid #3f3f46;
+}
+
+/* Poster đồ họa Terminal xác thực (Auth Enclave Poster) */
+.auth-poster {
+  background-color: #18181b;
+  color: #ffffff;
+  padding: var(--space-6);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  border-right: 2px solid var(--machinery-border);
+}
+
+.dark .auth-poster {
+  background-color: #121215;
+  color: #f4f4f5;
+  border-right-color: #27272a;
 }
 
 /* Nút bấm Tactile Hardware (Kiểu nút bấm cơ khí của Teenage Engineering) */
@@ -1555,8 +1601,8 @@
   padding-inline: var(--space-6);
   background-color: var(--orange-500);
   color: #ffffff;
-  border: 2px solid #18181b;
-  box-shadow: 4px 4px 0px #18181b;
+  border: 2px solid var(--machinery-border);
+  box-shadow: 4px 4px 0px var(--machinery-shadow);
   border-radius: 4px;
   font-family: ui-monospace, monospace;
   font-size: 14px;
@@ -1565,12 +1611,12 @@
   letter-spacing: 0.05em;
   text-decoration: none;
   cursor: pointer;
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.15s ease;
 }
 
 .btn--tactile-orange:hover {
   transform: translate(2px, 2px);
-  box-shadow: 2px 2px 0px #18181b;
+  box-shadow: 2px 2px 0px var(--machinery-shadow);
   background-color: var(--orange-600);
 }
 
@@ -1581,10 +1627,10 @@
   gap: var(--space-2);
   height: 48px;
   padding-inline: var(--space-6);
-  background-color: #ffffff;
-  color: #18181b;
-  border: 2px solid #18181b;
-  box-shadow: 4px 4px 0px #18181b;
+  background-color: var(--color-surface-card);
+  color: var(--color-text-heading);
+  border: 2px solid var(--machinery-border);
+  box-shadow: 4px 4px 0px var(--machinery-shadow);
   border-radius: 4px;
   font-family: ui-monospace, monospace;
   font-size: 14px;
@@ -1593,13 +1639,13 @@
   letter-spacing: 0.05em;
   text-decoration: none;
   cursor: pointer;
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.15s ease;
 }
 
 .btn--tactile-zinc:hover {
   transform: translate(2px, 2px);
-  box-shadow: 2px 2px 0px #18181b;
-  background-color: #f4f4f5;
+  box-shadow: 2px 2px 0px var(--machinery-shadow);
+  background-color: var(--color-surface-subtle);
 }
 
 /* Nút bấm chuyển đổi Theme cơ khí */
@@ -1664,6 +1710,8 @@
 
 .dark .module-bay__id {
   background-color: #27272a;
+  color: #f4f4f5;
+  border: 1px solid #3f3f46;
 }
 
 .dark .btn--tactile-zinc {
@@ -1679,7 +1727,7 @@
 }
 
 .dark .btn--tactile-orange {
-  border-color: #000000;
+  border-color: #3f3f46;
   box-shadow: 4px 4px 0px #000000;
 }
 

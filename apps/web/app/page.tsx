@@ -84,8 +84,8 @@ export default function HomePage() {
               to <span className="industrial-highlight">Earn.</span>
             </h1>
             
-            <p className="lede" style={{ color: "#52525b", maxWidth: "48ch", fontSize: "1.125rem", lineHeight: 1.6 }}>
-              Cỗ máy chuẩn hóa giao kèo dự án vi mô (1.000.000 — 5.000.000 VNĐ). 
+            <p className="lede" style={{ color: "var(--color-text-body)", maxWidth: "48ch", fontSize: "1.125rem", lineHeight: 1.6 }}>
+              Cỗ máy chuẩn hóa giao kèo dự án vi mô (1.000.000 - 5.000.000 VNĐ). 
               Thiết lập mốc nghiệm thu cơ khí, ký quỹ mô phỏng minh bạch và đóng dấu chứng nhận năng lực bất biến.
             </p>
 
@@ -108,7 +108,7 @@ export default function HomePage() {
             </div>
 
             <div className="cluster cluster--between" style={{ margin: 0 }}>
-              <span style={{ fontFamily: "ui-monospace, monospace", fontSize: "12px", fontWeight: 700, color: "#71717a", textTransform: "uppercase" }}>
+              <span style={{ fontFamily: "ui-monospace, monospace", fontSize: "12px", fontWeight: 700, color: "var(--color-text-muted)", textTransform: "uppercase" }}>
                 {preview.smeName} &bull; {preview.smeIndustry}
               </span>
               <StatusBadge status="PUBLISHED" />
@@ -121,15 +121,15 @@ export default function HomePage() {
             </h2>
 
             <div className="cluster cluster--between" style={{ margin: "var(--space-2) 0" }}>
-              <span style={{ fontFamily: "ui-monospace, monospace", fontSize: "1.5rem", fontWeight: 800, color: "#09090b" }}>
+              <span style={{ fontFamily: "ui-monospace, monospace", fontSize: "1.5rem", fontWeight: 800, color: "var(--color-text-heading)" }}>
                 {formatVnd(preview.budget)}
               </span>
-              <span style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px", fontWeight: 700, background: "#f4f4f5", border: "1px solid #18181b", padding: "3px 8px" }}>
+              <span style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px", fontWeight: 700, background: "var(--color-surface-subtle)", border: "1px solid var(--machinery-border)", color: "var(--color-text-heading)", padding: "3px 8px" }}>
                 {preview.milestones.length} PHÂN ĐOẠN (MỐC)
               </span>
             </div>
 
-            <hr style={{ border: 0, borderTop: "2px dashed #d4d4d8", margin: "var(--space-2) 0" }} />
+            <hr style={{ border: 0, borderTop: "2px dashed var(--machinery-border)", margin: "var(--space-2) 0" }} />
 
             <ul className="pill-list">
               {preview.skills.map((skill) => {
@@ -142,9 +142,9 @@ export default function HomePage() {
                       fontSize: "11px", 
                       fontWeight: 700, 
                       padding: "4px 10px", 
-                      border: "1px solid #18181b", 
-                      background: owned ? "#18181b" : "#ffffff", 
-                      color: owned ? "#ffffff" : "#18181b" 
+                      border: "1px solid var(--machinery-border)", 
+                      background: owned ? "var(--machinery-border)" : "var(--color-surface-card)", 
+                      color: owned ? "#ffffff" : "var(--color-text-heading)" 
                     }}
                   >
                     {owned ? "[x] " : "[ ] "}{skill}
@@ -153,9 +153,9 @@ export default function HomePage() {
               })}
             </ul>
 
-            <div className="cluster cluster--between" style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px", fontWeight: 700, color: "#71717a", paddingTop: "var(--space-3)" }}>
+            <div className="cluster cluster--between" style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px", fontWeight: 700, color: "var(--color-text-muted)", paddingTop: "var(--space-3)" }}>
               <span>HẠN CHÓT: {formatDate(preview.deadline)}</span>
-              <span style={{ color: "var(--orange-600)" }}>CÒN {daysUntil(preview.deadline, TODAY)} NGÀY</span>
+              <span style={{ color: "var(--color-action-primary)" }}>CÒN {daysUntil(preview.deadline, TODAY)} NGÀY</span>
             </div>
           </article>
           </div>

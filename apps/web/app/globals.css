@@ -1,6 +1,6 @@
 /* ==========================================================================
-   GenDA Design Tokens — BẢN CLEAN MODERN SAAS / TECH (DD-09)
-   Nguồn chân lý: docs/design.md (Mục DD-09) & docs/ui-guidelines.md
+   GenDA Design Tokens — NEO-INDUSTRIAL LEDGER (DD-10)
+   Nguồn chân lý: docs/ui-guidelines.md & docs/design.md (Mục DD-10)
    Đặc tả component:  docs/design-tokens.md
 
    Kiến trúc ba lớp: PRIMITIVE -> SEMANTIC -> COMPONENT
@@ -87,13 +87,13 @@
   --space-20: 5rem; /* 80px */
   --space-24: 6rem; /* 96px */
 
-  /* --- Bo góc Modern SaaS (DD-09: Tinh gọn, sắc nét) --- */
-  --radius-sm: 4px;
-  --radius-md: 6px;  /* Input, Select, Dropdown */
-  --radius-lg: 8px;  /* Button, Card, Badge */
-  --radius-xl: 12px; /* Modal, Panel */
-  --radius-2xl: 16px;/* Container lớn */
-  --radius-full: 9999px; /* Chỉ dùng cho Avatar hoặc Badge Pill nhỏ */
+  /* --- Bo góc Neo-Industrial Ledger (DD-10: Góc dứt khoát cơ khí) --- */
+  --radius-sm: 2px;
+  --radius-md: 4px;  /* Input, Select, Dropdown, Button */
+  --radius-lg: 0px;  /* Thẻ Module Bay hoàn toàn vuông vức 0px */
+  --radius-xl: 4px;  /* Panel cơ khí */
+  --radius-2xl: 4px; /* Container lớn */
+  --radius-full: 9999px; /* Chỉ dùng cho Avatar khi cần thiết */
 
   /* --- Đổ bóng tinh tế (Subtle Shadows) --- */
   --shadow-sm: 0 1px 2px 0 rgb(15 23 42 / 0.05);
@@ -314,37 +314,37 @@
   --input-radius: var(--radius-md); /* 6px */
   --input-padding-x: var(--space-3);
 
-  /* --- Card (DD-09: Bo góc 8px, viền 1px tinh tế) --- */
+  /* --- Card / Module Bay (DD-10: 0px vuông vức cơ khí) --- */
   --card-bg: var(--color-surface-card);
-  --card-border: var(--color-border-subtle);
-  --card-radius: var(--radius-lg); /* 8px */
+  --card-border: var(--machinery-border);
+  --card-radius: var(--radius-lg); /* 0px */
   --card-padding: var(--space-card-padding);
-  --card-shadow: var(--shadow-sm);
-  --card-shadow-hover: var(--shadow-md);
+  --card-shadow: 4px 4px 0px var(--machinery-shadow);
+  --card-shadow-hover: 6px 6px 0px var(--machinery-shadow);
 
-  /* --- Badge --- */
-  --badge-radius: var(--radius-md);
+  /* --- Badge (DD-10: 2px) --- */
+  --badge-radius: var(--radius-sm);
   --badge-padding: 2px 8px;
   --badge-icon-size: 14px;
 
-  /* --- Alert --- */
+  /* --- Alert (DD-10: 2px, viền 2px cơ khí) --- */
   --alert-padding: var(--space-4);
-  --alert-radius: var(--radius-lg);
+  --alert-radius: var(--radius-sm);
   --alert-accent-width: 4px;
 
-  /* --- Dialog --- */
-  --dialog-overlay: rgb(15 23 42 / 0.5);
+  /* --- Dialog (DD-10: 4px cơ khí, viền đen) --- */
+  --dialog-overlay: rgb(0 0 0 / 0.6);
   --dialog-bg: var(--color-surface-card);
-  --dialog-radius: var(--radius-xl);
+  --dialog-radius: var(--radius-md);
   --dialog-padding: var(--space-6);
   --dialog-width-sm: 400px;
   --dialog-width-md: 520px;
   --dialog-width-lg: 640px;
 
-  /* --- Dropzone --- */
-  --dropzone-border: var(--color-border-input);
+  /* --- Dropzone (DD-10: 2px) --- */
+  --dropzone-border: var(--machinery-border);
   --dropzone-bg: var(--color-surface-subtle);
-  --dropzone-radius: var(--radius-lg);
+  --dropzone-radius: var(--radius-sm);
   --dropzone-min-height: 160px;
 
   /* --- Vòng focus --- */
