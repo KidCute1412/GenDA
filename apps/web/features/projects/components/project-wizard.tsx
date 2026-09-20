@@ -12,10 +12,9 @@ import { BudgetInput } from "./budget-input";
 import { MilestoneEditor } from "../../milestones/components/milestone-editor";
 import { DraftSaveButton } from "./draft-save-button";
 import { TODAY } from "../../../mocks/data";
-import { useDemoPersistedState } from "../../../lib/hooks/use-demo-persisted-state";
 import { getDemoSession } from "../../auth/services/demo-session";
 import { useDemoSession } from "../../auth/hooks/use-demo-session";
-import type { CreatedProject } from "./created-projects-panel";
+import { createProject } from "../../demo-ledger/store";
 
 /**
  * Màn hình 3 — Wizard Đăng Dự án (docs/design.md 7.3).
@@ -42,7 +41,7 @@ export function ProjectWizard() {
   const [step, setStep] = useState(0);
   const [budget, setBudget] = useState(2_000_000);
   const [submitted, setSubmitted] = useState(false);
-  const [, setCreatedProjects] = useDemoPersistedState<CreatedProject[]>("projects:created", []);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const { session, hydrated } = useDemoSession();
   const hasVerifiedEmail = session?.emailVerified === true;
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -103,6 +102,7 @@ export function ProjectWizard() {
           Bạn vẫn có thể điền nội dung để chuẩn bị, nhưng chỉ gửi duyệt được sau khi mở liên kết xác minh email. <Link href="/verify-email?token=genda-demo-valid-2026&next=%2Fsme%2Fprojects%2Fnew%3FemailVerified%3D1">Xác minh email</Link>
         </Alert>
       ) : null}
+      {submitError ? <Alert variant="danger" title="Không thể gửi dự án">{submitError}</Alert> : null}
     <form
       onSubmit={(event) => {
         event.preventDefault();
@@ -112,18 +112,27 @@ export function ProjectWizard() {
         const title = form.querySelector<HTMLInputElement>("#project-title")?.value.trim() ?? "Dự án chưa đặt tên";
         const deadline = form.querySelector<HTMLInputElement>("#project-deadline")?.value ?? "";
         const projectBudget = Number(form.querySelector<HTMLInputElement>('input[name="budget"]')?.value ?? budget);
-        setCreatedProjects((current) => [
-          ...current,
-          {
-            id: `p-${Date.now()}`,
-            title,
-            budget: projectBudget,
-            deadline,
-            createdAt: new Date().toLocaleDateString("vi-VN"),
-            ownerEmail: currentSession.email,
-            status: "PENDING_REVIEW"
-          }
-        ]);
+        const rows = JSON.parse(form.querySelector<HTMLInputElement>('input[name="milestones"]')?.value ?? "[]") as Array<{ title: string; budget: number; deadline: string }>;
+        const skills = Array.from(form.querySelectorAll<HTMLInputElement>('input[name="skills"]')).map((el) => el.value);
+        const result = createProject({
+          ownerEmail: currentSession.email,
+          title,
+          smeName: currentSession.name,
+          budget: projectBudget,
+          deadline,
+          skills,
+          summary: form.querySelector<HTMLTextAreaElement>("#project-problem")?.value ?? "",
+          problem: form.querySelector<HTMLTextAreaElement>("#project-problem")?.value ?? "",
+          acceptance: [form.querySelector<HTMLTextAreaElement>("#project-acceptance")?.value ?? ""],
+          milestones: rows.map((row, index) => ({
+            order: index + 1,
+            title: row.title,
+            budget: Number(row.budget),
+            deadline: row.deadline,
+            criteria: form.querySelector<HTMLTextAreaElement>("#project-acceptance")?.value ?? ""
+          }))
+        });
+        if (!result.ok) { setSubmitError(result.message); return; }
         setSubmitted(true);
       }}
     >

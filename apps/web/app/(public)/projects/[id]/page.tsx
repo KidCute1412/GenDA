@@ -8,6 +8,7 @@ import { StatusBadge } from "../../../../components/ui/status-badge";
 import { Alert } from "../../../../components/ui/alert";
 import { Check, ICON_WEIGHT } from "../../../../components/ui/icons";
 import { ApplyButton } from "../../../../features/applications/components/apply-button";
+import { LedgerProjectDetail } from "../../../../features/projects/components/ledger-project-detail";
 import { CURRENT_STUDENT, PROJECTS, TODAY, getProject } from "../../../../mocks/data";
 import { daysUntil, formatDate, formatVnd, matchScore } from "../../../../lib/utils/format";
 
@@ -47,7 +48,9 @@ export default async function ProjectDetailPage({
   await searchParams;
   const project = getProject(id);
 
-  if (!project) notFound();
+  if (!project) {
+    return <LedgerProjectDetail id={id} />;
+  }
 
   const score = matchScore(project.skills, CURRENT_STUDENT.skills);
   const remaining = daysUntil(project.deadline, TODAY);
@@ -81,7 +84,7 @@ export default async function ProjectDetailPage({
           <div className="stack stack--lg">
             <div className="stack stack--sm" style={{ borderBottom: "2px solid var(--machinery-border)", paddingBottom: "var(--space-6)" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "8px", fontFamily: "ui-monospace, monospace", fontSize: "12px", color: "var(--color-text-muted)" }}>
-                <span style={{ backgroundColor: "var(--machinery-border)", color: "var(--color-surface-card)", padding: "1px 6px", fontWeight: 800, borderRadius: "2px" }}>
+                <span className="tag-hardware">
                   BAY-ACTIVE
                 </span>
                 <span>{project.smeName.toUpperCase()}</span>

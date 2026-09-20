@@ -4,12 +4,12 @@ import type { Metadata } from "next";
 import { SiteHeader } from "../../../components/layout/site-header";
 import { SiteFooter } from "../../../components/layout/site-footer";
 import { BottomNav } from "../../../components/layout/bottom-nav";
-import { Alert } from "../../../components/ui/alert";
 import { StatusBadge } from "../../../components/ui/status-badge";
 import { Stepper, type Step } from "../../../components/ui/stepper";
 import { ICON_WEIGHT, SealCheck } from "../../../components/ui/icons";
 import { WorkspaceRoleActions } from "../../../features/workspace/components/workspace-role-actions";
 import { WorkspaceEscrowPanel } from "../../../features/workspace/components/workspace-escrow-panel";
+import { LedgerWorkspace } from "../../../features/workspace/components/ledger-workspace";
 import { APPLICANTS, DELIVERY_HISTORY, PROJECTS, getProject } from "../../../mocks/data";
 import { formatDate, formatVnd } from "../../../lib/utils/format";
 
@@ -24,11 +24,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
   const project = getProject(id);
-  return { title: project ? `Không gian làm việc: ${project.title}` : "Không tìm thấy dự án" };
+  return { title: project ? `Không gian làm việc: ${project.title}` : "Không gian làm việc" };
 }
 
 /**
- * Màn hình 6 — Không gian Quản lý Milestone & Bàn giao (docs/design.md 7.6).
+ * Màn hình 6 - Không gian Quản lý Milestone & Bàn giao (docs/design.md 7.6).
  *
  * Đây là MỘT route dùng chung cho cả hai bên, không tách thành hai màn hình
  * riêng (Quyết định thiết kế DD-02): hai bên nhìn vào cùng một tiến độ mốc,
@@ -39,14 +39,17 @@ export async function generateMetadata({
  * nhãn ghi rõ của ai, đúng như wireframe ở Mục 7.6; khi nối API thật, mỗi người
  * chỉ thấy khối tương ứng với vai trò lấy từ phiên đăng nhập.
  *
- * Mật độ ở màn hình này CHẶT hơn hẳn khu marketing — đây là nơi làm việc hằng
+ * Mật độ ở màn hình này CHẶT hơn hẳn khu marketing - đây là nơi làm việc hằng
  * ngày, người dùng cần thấy nhiều thứ cùng lúc (design.md 4.9).
  */
 export default async function WorkspacePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  if (id === "demo") return <LedgerWorkspace />;
   const project = getProject(id);
 
-  if (!project) notFound();
+  if (!project) {
+    return <LedgerWorkspace projectId={id} />;
+  }
 
   // Mốc đang mở là mốc đầu tiên chưa được nghiệm thu.
   const active = project.milestones.find((milestone) => milestone.status !== "ACCEPTED") ?? project.milestones[0];
@@ -115,10 +118,6 @@ export default async function WorkspacePage({ params }: { params: Promise<{ id: 
                         Hạn {formatDate(milestone.deadline)}
                       </span>
                     </span>
-                    {/* Tiền và badge có bề rộng riêng cố định. Nếu để chúng tự
-                        co theo nội dung, badge dài ngắn khác nhau sẽ đẩy cột tiền
-                        lệch trục giữa các hàng, đúng thứ mà Mục 4.9 của design.md
-                        cấm: số để so sánh phải nằm trên một trục dọc duy nhất. */}
                     <span className="milestone-row__meta">
                       <span className="project-row__money">{formatVnd(milestone.budget)}</span>
                       <span className="milestone-row__badge">

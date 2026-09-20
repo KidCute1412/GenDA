@@ -1,17 +1,16 @@
 "use client";
 
-import { useDemoPersistedState } from "../../../lib/hooks/use-demo-persisted-state";
+import { useDemoLedger } from "../../demo-ledger/use-demo-ledger";
 import { useDemoSession } from "../../auth/hooks/use-demo-session";
 import { StatusBadge } from "../../../components/ui/status-badge";
 import { formatVnd } from "../../../lib/utils/format";
 
-export type CreatedProject = { id: string; title: string; budget: number; deadline: string; createdAt: string; ownerEmail: string; status: "PENDING_REVIEW" };
-
 export function CreatedProjectsPanel() {
-  const [projects] = useDemoPersistedState<CreatedProject[]>("projects:created", []);
+  const ledger = useDemoLedger();
   const { session, hydrated } = useDemoSession();
   if (!hydrated || session?.role !== "SME") return null;
-  const mine = projects.filter((project) => project.ownerEmail === session?.email);
+  const owner = ledger.users.find((user) => user.email === session.email);
+  const mine = ledger.projects.filter((project) => project.ownerId === owner?.id && project.createdAt !== "2026-09-01");
   if (mine.length === 0) return null;
   return (
     <section className="stack" style={{ marginBottom: "var(--space-6)" }}>
