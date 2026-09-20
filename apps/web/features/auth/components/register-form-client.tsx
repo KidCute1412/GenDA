@@ -5,6 +5,7 @@ import Link from "next/link";
 import { TextField } from "../../../components/ui/field";
 import { PasswordField } from "../../../features/auth/components/password-field";
 import { setDemoSession } from "../services/demo-session";
+import { registerDemoUser } from "../../demo-ledger/store";
 
 export function RegisterFormClient({ initialRole = "STUDENT" }: { initialRole?: "STUDENT" | "SME" }) {
   const [role, setRole] = useState<"STUDENT" | "SME">(initialRole);
@@ -40,6 +41,8 @@ export function RegisterFormClient({ initialRole = "STUDENT" }: { initialRole?: 
 
     setTimeout(() => {
       setIsLoading(false);
+      const result = registerDemoUser({ name, email, role });
+      if (!result.ok) return;
       setDemoSession({ name, email, role, emailVerified: false });
       setRegistered(true);
       setResendAfter(30);
