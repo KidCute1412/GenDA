@@ -88,14 +88,9 @@ export function RegisterFormClient({ initialRole = "STUDENT" }: { initialRole?: 
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-        <h2 style={{ fontSize: "1.25rem", fontWeight: 800, textTransform: "uppercase", margin: 0 }}>
-          THIẾT LẬP TÀI KHOẢN
-        </h2>
-        <span style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px", color: "var(--orange-500)", fontWeight: 700 }}>
-          JOIN // 02
-        </span>
-      </div>
+      <h2 style={{ fontSize: "1.25rem", fontWeight: 800, textTransform: "uppercase", margin: 0 }}>
+        THIẾT LẬP TÀI KHOẢN
+      </h2>
       <p className="text-muted" style={{ marginTop: "2px", marginBottom: 0, fontSize: "12px" }}>
         Khởi tạo mã định danh năng lực & tham gia mạng lưới GenDA.
       </p>
