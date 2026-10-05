@@ -16,8 +16,7 @@ Phong cách chính thức của dự án là: **Neo-Industrial Ledger (Teenage E
 2. **Dứt khoát, Cơ học & Xúc giác (Tactile Hardware)**:
    - **Góc vuông cơ khí dứt khoát**: `--radius-sm: 2px`, `--radius-md: 4px`, `--radius-lg: 0px` (thẻ module bay hoàn toàn vuông vức 0px sắc lẹm).
    - **Đường viền cơ khí**: Đường viền dày 2px rõ ràng (`border: 2px solid var(--machinery-border)`).
-   - **Bóng cứng xúc giác (Hard Drop Shadows)**: Không dùng bóng mờ nhòe lan tỏa của SaaS thông thường. Sử dụng bóng đổ cơ học dứt khoát:
-     `box-shadow: 4px 4px 0px var(--machinery-shadow);`
+   - **Đổ bóng tiết chế**: Không dùng bóng mờ nhòe lan tỏa của SaaS thông thường, và cũng KHÔNG rải bóng đen lên mọi khung. Chỉ nút hành động chính (cam) có bóng nhấn nhạt, ngắn `box-shadow: var(--shadow-press);` (3px 3px 0, đen 22%). Khung, thẻ, tab, chip, hộp thoại không đổ bóng: phân tầng bằng viền và nền; thẻ tương tác hover thì viền chuyển cam.
    - **Phản hồi nút bấm cơ học**: Nút khi bấm hoặc hover sẽ lún xuống như một phím switch cơ khí thực thụ (`transform: translate(2px, 2px)`).
 
 3. **Màu nhấn Công nghiệp (Hardware Accent)**:
@@ -37,7 +36,7 @@ Phong cách chính thức của dự án là: **Neo-Industrial Ledger (Teenage E
 | `--color-surface-subtle` | `#F4F4F5` | `#121215` | Nền khoang phụ / band |
 | `--color-surface-card` | `#FFFFFF` | `#18181B` | Nền Module Bay |
 | `--machinery-border` | `#18181B` (đen đanh thép) | `#3F3F46` (viền nhôm phay xước) | Viền cơ khí 2px |
-| `--machinery-shadow` | `#18181B` | `#000000` | Bóng cứng cơ khí |
+| `--machinery-shadow` | `#18181B` | `#000000` | Màu gốc cho bóng; dùng qua `--shadow-press` / `--shadow-press-sm`, chỉ cho nút chính |
 | `--color-action-primary` | `#F97316` (Safety Orange) | `#F97316` (Safety Orange) | Màu công tắc / CTA chính |
 | `--color-action-primary-hover` | `#EA580C` | `#FB923C` | Hover công tắc |
 | `--color-text-heading` | `#09090B` | `#F4F4F5` | Tiêu đề in hoa cơ khí |
@@ -95,7 +94,7 @@ Mỗi khi yêu cầu một AI Agent tạo hoặc sửa màn hình, **phải đí
 Bạn là Frontend Engineer tuân thủ nghiêm ngặt Design System Neo-Industrial Ledger của GenDA (quy định tại docs/ui-guidelines.md và DD-10).
 
 Yêu cầu bất biến:
-1. Thẩm mỹ: Cỗ máy cơ khí chính xác (Teenage Engineering Metaphor). Góc vuông sắc dứt khoát, viền 2px (#18181B trong light mode, #3F3F46 trong dark mode), đổ bóng cứng xúc giác (box-shadow: 4px 4px 0px ...).
+1. Thẩm mỹ: Cỗ máy cơ khí chính xác (Teenage Engineering Metaphor). Góc vuông sắc dứt khoát, viền 2px (#18181B trong light mode, #3F3F46 trong dark mode), chỉ nút hành động chính có bóng nhấn nhạt (var(--shadow-press)); khung, thẻ, tab, chip không đổ bóng.
 2. Màu nhấn duy nhất: Safety Orange (#F97316) cho CTA chính và điểm nhấn kỹ thuật.
 3. Typography: Dùng Be Vietnam Pro cho tiêu đề in hoa dứt khoát; bắt buộc dùng Monospace cho số tiền, mã ID (BAY-01), hạn chót, trạng thái kỹ thuật ([x], [ ]).
 4. Hỗ trợ 100% Light Mode và Dark Mode qua các biến CSS (--color-surface-page, --machinery-border, --color-text-heading).

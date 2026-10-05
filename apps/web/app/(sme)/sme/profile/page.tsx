@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import { SiteHeader } from "../../../../components/layout/site-header";
 import { SiteFooter } from "../../../../components/layout/site-footer";
@@ -22,38 +21,9 @@ export default function SmeProfilePage() {
 
       <RoleRouteGuard role="SME">
         <main id="main-content" className="industrial-canvas has-bottom-nav" style={{ paddingBottom: "var(--space-16)" }}>
-          {/* THANH THƯỚC ĐO KỸ THUẬT & ĐIỀU HƯỚNG */}
-          <div className="page-breadcrumb-bar" style={{ borderBottom: "2px solid var(--machinery-border)", backgroundColor: "var(--color-surface-card)" }}>
-            <div className="container" style={{ paddingBlock: "10px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
-              <nav aria-label="Đường dẫn phân cấp" style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px" }}>
-                <ol className="breadcrumbs" style={{ margin: 0, padding: 0 }}>
-                  <li>
-                    <Link href="/" style={{ color: "var(--color-text-muted)", textDecoration: "none" }}>HOME</Link>
-                  </li>
-                  <li aria-hidden="true" style={{ color: "var(--color-text-muted)" }}>/</li>
-                  <li>
-                    <Link href="/sme/projects" style={{ color: "var(--color-text-muted)", textDecoration: "none" }}>SME PORTAL</Link>
-                  </li>
-                  <li aria-hidden="true" style={{ color: "var(--color-text-muted)" }}>/</li>
-                  <li aria-current="page" style={{ fontWeight: 700, color: "var(--orange-500)" }}>PROFILE</li>
-                </ol>
-              </nav>
-
-              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontFamily: "ui-monospace, monospace", fontSize: "11px" }}>
-                <span className="badge badge--verified" style={{ margin: 0 }}>
-                  STATUS // ACTIVE
-                </span>
-                <span style={{ color: "var(--color-text-muted)" }}>
-                  ORG: THE COFFEE LAB
-                </span>
-              </div>
-            </div>
-          </div>
-
           <div className="container" style={{ paddingTop: "var(--space-6)" }}>
             {/* TIÊU ĐỀ TRANG NEO-INDUSTRIAL */}
             <div style={{ marginBottom: "var(--space-6)" }}>
-              <div className="industrial-ruler">ENTERPRISE DOSSIER // HỒ SƠ DOANH NGHIỆP</div>
               <h1 style={{ fontSize: "clamp(1.75rem, 3.5vw, 2.5rem)", fontWeight: 900, textTransform: "uppercase", margin: "var(--space-1) 0" }}>
                 HỒ SƠ DOANH NGHIỆP
               </h1>
@@ -83,7 +53,7 @@ export default function SmeProfilePage() {
                 <hr style={{ border: 0, borderTop: "2px dashed var(--machinery-border)", margin: "var(--space-3) 0" }} />
 
                 <div className="grid-cards" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "var(--space-4)" }}>
-                  <div className="module-bay" style={{ padding: "var(--space-4)", boxShadow: "3px 3px 0px var(--machinery-shadow)" }}>
+                  <div className="module-bay" style={{ padding: "var(--space-4)" }}>
                     <span style={{ fontFamily: "ui-monospace, monospace", fontSize: "10px", color: "var(--color-text-muted)", display: "block" }}>
                       LĨNH VỰC HOẠT ĐỘNG
                     </span>
@@ -92,7 +62,7 @@ export default function SmeProfilePage() {
                     </strong>
                   </div>
 
-                  <div className="module-bay" style={{ padding: "var(--space-4)", boxShadow: "3px 3px 0px var(--machinery-shadow)" }}>
+                  <div className="module-bay" style={{ padding: "var(--space-4)" }}>
                     <span style={{ fontFamily: "ui-monospace, monospace", fontSize: "10px", color: "var(--color-text-muted)", display: "block" }}>
                       DỰ ÁN ĐÃ ĐĂNG
                     </span>
@@ -101,7 +71,7 @@ export default function SmeProfilePage() {
                     </strong>
                   </div>
 
-                  <div className="module-bay" style={{ padding: "var(--space-4)", boxShadow: "3px 3px 0px var(--machinery-shadow)" }}>
+                  <div className="module-bay" style={{ padding: "var(--space-4)" }}>
                     <span style={{ fontFamily: "ui-monospace, monospace", fontSize: "10px", color: "var(--color-text-muted)", display: "block" }}>
                       HẠN MỨC GIAO KÈO
                     </span>

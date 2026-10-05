@@ -40,7 +40,8 @@ export function PasswordField({
   required = true,
   value: controlledValue,
   onChange: controlledOnChange,
-  defaultValue = ""
+  defaultValue = "",
+  error
 }: {
   label?: string;
   autoComplete?: "new-password" | "current-password";
@@ -49,6 +50,8 @@ export function PasswordField({
   value?: string;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   defaultValue?: string;
+  /** Dòng lỗi dưới ô (ví dụ "Mật khẩu nhập lại không khớp"). */
+  error?: string;
 }) {
   const id = useId();
   const [internalValue, setInternalValue] = useState(defaultValue);
@@ -73,6 +76,7 @@ export function PasswordField({
       id={id}
       label={label}
       required={required}
+      error={error}
       hint={showStrength && value.length === 0 ? "Ít nhất 8 ký tự." : undefined}
     >
       <div className="input-affix">
@@ -85,7 +89,10 @@ export function PasswordField({
           autoComplete={autoComplete}
           value={value}
           onChange={handleChange}
-          aria-describedby={meterVisible ? `${id}-strength` : showStrength ? `${id}-hint` : undefined}
+          aria-invalid={error ? "true" : undefined}
+          aria-describedby={
+            error ? `${id}-error` : meterVisible ? `${id}-strength` : showStrength ? `${id}-hint` : undefined
+          }
         />
 
         {/* Nhãn đọc được đổi theo trạng thái, nên trình đọc màn hình biết nút này

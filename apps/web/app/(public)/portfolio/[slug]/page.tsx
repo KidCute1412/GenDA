@@ -82,35 +82,6 @@ export default async function PortfolioPage({ params }: { params: Promise<{ slug
           <LedgerPortfolioPanel />
         </div>
         
-        {/* THANH THƯỚC ĐO KỸ THUẬT & ĐIỀU HƯỚNG */}
-        <div style={{ borderBottom: "2px solid var(--machinery-border)", backgroundColor: "var(--color-surface-card)" }}>
-          <div className="container" style={{ paddingBlock: "10px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
-            <nav aria-label="Đường dẫn phân cấp" style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px" }}>
-              <ol className="breadcrumbs" style={{ margin: 0, padding: 0 }}>
-                <li>
-                  <Link href="/" style={{ color: "var(--color-text-muted)", textDecoration: "none" }}>HOME</Link>
-                </li>
-                <li aria-hidden="true" style={{ color: "var(--color-text-muted)" }}>/</li>
-                <li>
-                  <Link href="/student/profile" style={{ color: "var(--color-text-muted)", textDecoration: "none" }}>STUDENT</Link>
-                </li>
-                <li aria-hidden="true" style={{ color: "var(--color-text-muted)" }}>/</li>
-                <li aria-current="page" style={{ fontWeight: 700, color: "var(--orange-500)" }}>PORTFOLIO // {slug.toUpperCase()}</li>
-              </ol>
-            </nav>
-
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", fontFamily: "ui-monospace, monospace", fontSize: "11px" }}>
-              <span className="badge badge--verified" style={{ margin: 0 }}>
-                <SealCheck weight={ICON_WEIGHT} aria-hidden="true" />
-                VERIFIED ID // VN-HCM
-              </span>
-              <span style={{ color: "var(--color-text-muted)" }}>
-                {entries.length} DỰ ÁN NGHIỆM THU
-              </span>
-            </div>
-          </div>
-        </div>
-
         {/* HERO SECTION CHUẨN NEO-INDUSTRIAL LEDGER */}
         <section 
           style={{ 
@@ -202,7 +173,6 @@ export default async function PortfolioPage({ params }: { params: Promise<{ slug
               border: "2px solid var(--machinery-border)", 
               backgroundColor: "var(--color-surface-card)", 
               padding: "var(--space-4) var(--space-5)",
-              boxShadow: "3px 3px 0px var(--machinery-shadow)",
               display: "flex",
               alignItems: "flex-start",
               gap: "var(--space-3)",

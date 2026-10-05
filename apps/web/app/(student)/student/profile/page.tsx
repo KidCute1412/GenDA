@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import { SiteHeader } from "../../../../components/layout/site-header";
 import { SiteFooter } from "../../../../components/layout/site-footer";
@@ -9,7 +8,6 @@ import { Button } from "../../../../components/ui/button";
 import { SelectField, TextField } from "../../../../components/ui/field";
 import { SkillMultiSelect } from "../../../../features/projects/components/skill-multi-select";
 import { VerificationPanel } from "../../../../features/auth/components/verification-panel";
-import { AccountSessionActions } from "../../../../features/auth/components/account-session-actions";
 import { ProfileSaveButton, ReuploadVerificationButton } from "../../../../features/users/components/profile-action-buttons";
 import { CURRENT_STUDENT } from "../../../../mocks/data";
 
@@ -62,36 +60,11 @@ export default function StudentProfilePage() {
 
       <StudentRouteGuard>
       <main id="main-content" className="industrial-canvas has-bottom-nav" style={{ paddingBottom: "var(--space-16)" }}>
-        {/* THANH THƯỚC ĐO KỸ THUẬT & ĐIỀU HƯỚNG */}
-        <div className="page-breadcrumb-bar" style={{ borderBottom: "2px solid var(--machinery-border)", backgroundColor: "var(--color-surface-card)" }}>
-          <div className="container" style={{ paddingBlock: "10px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
-            <nav aria-label="Đường dẫn phân cấp" style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px" }}>
-              <ol className="breadcrumbs" style={{ margin: 0, padding: 0 }}>
-                <li>
-                  <Link href="/" style={{ color: "var(--color-text-muted)", textDecoration: "none" }}>HOME</Link>
-                </li>
-                <li aria-hidden="true" style={{ color: "var(--color-text-muted)" }}>/</li>
-                <li aria-current="page" style={{ fontWeight: 700, color: "var(--orange-500)" }}>STUDENT // PROFILE</li>
-              </ol>
-            </nav>
-
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", fontFamily: "ui-monospace, monospace", fontSize: "11px" }}>
-              <span className="badge badge--verified" style={{ margin: 0 }}>
-                STATUS // {CURRENT_STUDENT.verification}
-              </span>
-              <span style={{ color: "var(--color-text-muted)" }}>
-                ID: {CURRENT_STUDENT.slug.toUpperCase()}
-              </span>
-            </div>
-          </div>
-        </div>
-
         <div className="container" style={{ paddingTop: "var(--space-6)" }}>
           
           {/* TIÊU ĐỀ TRANG NEO-INDUSTRIAL */}
           <div style={{ marginBottom: "var(--space-6)" }}>
-            <div className="industrial-ruler">STUDENT DOSSIER // HỒ SƠ NĂNG LỰC</div>
-            <h1 style={{ fontSize: "clamp(1.75rem, 3.5vw, 2.5rem)", fontWeight: 900, textTransform: "uppercase", margin: "var(--space-1) 0" }}>
+            <h1 style={{ fontSize: "clamp(1.75rem, 3.5vw, 2.5rem)", fontWeight: 900, textTransform: "uppercase", margin: "0 0 var(--space-1)" }}>
               HỒ SƠ CỦA TÔI
             </h1>
             <p className="text-muted" style={{ margin: 0, fontSize: "13px", maxWidth: "68ch" }}>
@@ -105,7 +78,6 @@ export default function StudentProfilePage() {
               border: "2px solid var(--machinery-border)", 
               backgroundColor: "var(--color-surface-card)", 
               padding: "var(--space-4) var(--space-5)",
-              boxShadow: "3px 3px 0px var(--machinery-shadow)",
               marginBottom: "var(--space-6)"
             }}
           >
@@ -143,9 +115,20 @@ export default function StudentProfilePage() {
             </div>
           </div>
 
-          {/* BỐ CỤC 2 CỘT CHUẨN CƠ KHÍ */}
-          <div className="layout-aside">
+          {/* MỘT CỘT: thông tin cơ bản + kỹ năng (tài khoản, đăng xuất, portfolio đã nằm trong menu người dùng trên header) */}
+          <div style={{ maxWidth: "880px" }}>
             <div className="stack stack--lg">
+              {/* Chưa xác thực thì vẫn cần chỗ gửi minh chứng sinh viên */}
+              {!verified ? (
+                <section className="module-bay" style={{ padding: "var(--space-6)" }}>
+                  <div className="module-bay__header">
+                    <span className="module-bay__id">XÁC THỰC</span>
+                    <span>XÁC THỰC SINH VIÊN</span>
+                  </div>
+                  <VerificationPanel />
+                </section>
+              ) : null}
+
               
               {/* SECTION: THÔNG TIN CƠ BẢN */}
               <section className="module-bay" style={{ padding: "var(--space-6)" }}>
@@ -204,62 +187,6 @@ export default function StudentProfilePage() {
               </section>
             </div>
 
-            {/* CỘT ASIDE BÊN PHẢI */}
-            <aside className="stack stack--md">
-              <AccountSessionActions />
-              
-              {/* XÁC THỰC TÀI KHOẢN */}
-              <section className="module-bay" style={{ padding: "var(--space-5)" }}>
-                <div className="module-bay__header">
-                  <span className="module-bay__id">MODULE // 03</span>
-                  <span>XÁC THỰC SINH VIÊN</span>
-                </div>
-
-                {verified ? (
-                  <div className="stack stack--sm" style={{ marginTop: "var(--space-2)" }}>
-                    <div style={{ padding: "10px", backgroundColor: "var(--color-surface-subtle)", border: "1px dashed var(--machinery-border)" }}>
-                      <span style={{ fontSize: "11px", color: "var(--color-text-muted)", fontFamily: "ui-monospace, monospace", display: "block" }}>
-                        EMAIL TRƯỜNG ĐÃ XÁC THỰC:
-                      </span>
-                      <strong style={{ fontSize: "12px", color: "var(--orange-500)", fontFamily: "ui-monospace, monospace", display: "block", marginTop: "2px" }}>
-                        {CURRENT_STUDENT.schoolEmail}
-                      </strong>
-                    </div>
-                    <p className="text-caption" style={{ margin: 0, fontSize: "11px", color: "var(--color-text-muted)" }}>
-                      Nếu bạn chuyển trường hoặc email sinh viên hết hiệu lực, hãy cập nhật lại minh chứng.
-                    </p>
-                  </div>
-                ) : (
-                  <div style={{ marginTop: "var(--space-2)" }}>
-                    <VerificationPanel />
-                  </div>
-                )}
-              </section>
-
-              {/* KHỐI LIÊN KẾT NHANH TỚI PORTFOLIO CÔNG KHAI */}
-              <section className="module-bay" style={{ padding: "var(--space-5)", border: "2px solid var(--orange-500)" }}>
-                <div className="module-bay__header" style={{ borderColor: "var(--orange-500)" }}>
-                  <span className="module-bay__id" style={{ backgroundColor: "var(--orange-500)" }}>DOSSIER // PUBLIC</span>
-                  <span style={{ color: "var(--orange-500)", fontWeight: 800 }}>BẢO CHỨNG</span>
-                </div>
-                
-                <h2 style={{ fontSize: "1.1rem", fontWeight: 800, textTransform: "uppercase", margin: "var(--space-1) 0" }}>
-                  PORTFOLIO CÔNG KHAI
-                </h2>
-                
-                <p className="text-muted" style={{ fontSize: "12px", margin: "0 0 var(--space-4)", lineHeight: 1.4 }}>
-                  Trang hồ sơ năng lực chứa các dự án đã được doanh nghiệp nghiệm thu, điểm sao đánh giá và nhận xét khóa kín.
-                </p>
-
-                <Link 
-                  href={`/portfolio/${CURRENT_STUDENT.slug}`}
-                  className="btn--tactile-zinc"
-                  style={{ width: "100%", height: "40px", fontSize: "12px", textDecoration: "none" }}
-                >
-                  XEM PORTFOLIO CỦA TÔI
-                </Link>
-              </section>
-            </aside>
           </div>
         </div>
       </main>

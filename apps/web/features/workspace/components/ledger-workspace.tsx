@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { SiteHeader } from "../../../components/layout/site-header";
 import { SiteFooter } from "../../../components/layout/site-footer";
 import { BottomNav } from "../../../components/layout/bottom-nav";
@@ -103,24 +102,6 @@ export function LedgerWorkspace({ projectId }: { projectId?: string } = {}) {
       <SiteHeader hideOnMobile />
 
       <main id="main-content" className="container has-bottom-nav" style={{ paddingTop: "var(--space-8)" }}>
-        <div className="industrial-ruler">
-          {`SYS.WORKSPACE // ACTIVE-EXECUTION // MOD-${project.id.toUpperCase()}`}
-        </div>
-
-        <nav className="page-breadcrumb-bar" aria-label="Đường dẫn phân cấp">
-          <ol className="breadcrumbs" style={{ fontFamily: "ui-monospace, monospace", fontSize: "12px", textTransform: "uppercase" }}>
-            <li>
-              <Link href="/">ROOT</Link>
-            </li>
-            <li aria-hidden="true">/</li>
-            <li>
-              <Link href="/workspace/demo">WORKSPACE</Link>
-            </li>
-            <li aria-hidden="true">/</li>
-            <li aria-current="page" style={{ color: "var(--orange-500)", fontWeight: 700 }}>{project.id.toUpperCase()}</li>
-          </ol>
-        </nav>
-
         <div className="section--tight cluster cluster--between" style={{ borderBottom: "2px solid var(--machinery-border)", paddingBottom: "var(--space-4)" }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "8px", fontFamily: "ui-monospace, monospace", fontSize: "12px", color: "var(--color-text-muted)" }}>

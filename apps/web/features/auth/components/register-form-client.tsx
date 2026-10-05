@@ -6,16 +6,30 @@ import { TextField } from "../../../components/ui/field";
 import { PasswordField } from "../../../features/auth/components/password-field";
 import { setDemoSession } from "../services/demo-session";
 import { registerDemoUser } from "../../demo-ledger/store";
+import { RecaptchaField, verifyRecaptcha } from "./recaptcha-field";
+import { isValidTaxCode, isValidWebsite, validateSmeIdentity } from "../../../lib/utils/sme-identity";
 
 export function RegisterFormClient({ initialRole = "STUDENT" }: { initialRole?: "STUDENT" | "SME" }) {
   const [role, setRole] = useState<"STUDENT" | "SME">(initialRole);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [confirmTouched, setConfirmTouched] = useState(false);
+  // Định danh doanh nghiệp: mã số thuế, hoặc website công ty nếu chưa có mã số thuế
+  const [taxCode, setTaxCode] = useState("");
+  const [noTaxCode, setNoTaxCode] = useState(false);
+  const [website, setWebsite] = useState("");
+  const [smeTouched, setSmeTouched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [registered, setRegistered] = useState(false);
   const [resendAfter, setResendAfter] = useState(0);
   const [resent, setResent] = useState(false);
+  const [agreed, setAgreed] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  // Đổi key để gắn lại widget reCAPTCHA (bắt giải lại) khi xác minh thất bại
+  const [captchaKey, setCaptchaKey] = useState(0);
+  const [formError, setFormError] = useState("");
 
   useEffect(() => {
     if (resendAfter === 0) return;
@@ -26,27 +40,108 @@ export function RegisterFormClient({ initialRole = "STUDENT" }: { initialRole?: 
   function handleFillSample(targetRole: "STUDENT" | "SME") {
     setRole(targetRole);
     setPassword("••••••••");
+    setConfirmPassword("••••••••");
     if (targetRole === "STUDENT") {
       setName("Lê Tuấn Lộc");
       setEmail("letuanloc.2203@hcmus.edu.vn");
     } else {
       setName("The Coffee Lab");
       setEmail("contact@coffeelab.vn");
+      setNoTaxCode(false);
+      setTaxCode("0316789012");
     }
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (password !== confirmPassword) {
+      setConfirmTouched(true);
+      return;
+    }
+    if (role === "SME" && smeIdentityError) {
+      setSmeTouched(true);
+      return;
+    }
+    if (!agreed) {
+      setFormError("Bạn cần đồng ý với Quy chế sàn và Chính sách bảo mật để tạo tài khoản.");
+      return;
+    }
+    if (!captchaToken) {
+      setFormError("Hãy tick ô reCAPTCHA \"Tôi không phải người máy\" trước khi tạo tài khoản.");
+      return;
+    }
+    setFormError("");
     setIsLoading(true);
+
+    if (!(await verifyRecaptcha(captchaToken))) {
+      setIsLoading(false);
+      setCaptchaToken(null);
+      setCaptchaKey((key) => key + 1);
+      setFormError("Xác minh reCAPTCHA không thành công hoặc đã hết hạn. Hãy tick lại rồi thử lần nữa.");
+      return;
+    }
 
     setTimeout(() => {
       setIsLoading(false);
-      const result = registerDemoUser({ name, email, role });
-      if (!result.ok) return;
+      const result = registerDemoUser({
+        name,
+        email,
+        role,
+        ...(role === "SME" ? (noTaxCode ? { companyWebsite: website } : { taxCode }) : {})
+      });
+      if (!result.ok) {
+        setFormError(result.message);
+        return;
+      }
+      // Doanh nghiệp: chưa tạo phiên đăng nhập, chờ quản trị viên duyệt
+      if (role === "SME") {
+        setRegistered(true);
+        return;
+      }
       setDemoSession({ name, email, role, emailVerified: false });
       setRegistered(true);
       setResendAfter(30);
     }, 600);
+  }
+
+  const smeIdentityError = role === "SME" ? validateSmeIdentity(noTaxCode ? { companyWebsite: website } : { taxCode }) : null;
+  // Báo lỗi khi đã bấm gửi, hoặc khi người dùng đã gõ xong một giá trị sai định dạng
+  const taxCodeError =
+    role === "SME" && !noTaxCode && (smeTouched || (taxCode.replace(/\D/g, "").length >= 10 && !isValidTaxCode(taxCode)))
+      ? smeIdentityError ?? undefined
+      : undefined;
+  const websiteError =
+    role === "SME" && noTaxCode && (smeTouched || (website.includes(".") && !isValidWebsite(website) && website.length > 6))
+      ? smeIdentityError ?? undefined
+      : undefined;
+
+  const confirmMismatch =
+    confirmPassword.length > 0 &&
+    confirmPassword !== password &&
+    (confirmTouched || confirmPassword.length >= password.length);
+
+  if (registered && role === "SME") {
+    return (
+      <div className="stack">
+        <h2 style={{ fontSize: "1.25rem", fontWeight: 800, textTransform: "uppercase", margin: 0 }}>
+          HỒ SƠ ĐANG CHỜ DUYỆT
+        </h2>
+        <p className="text-muted">
+          Đăng ký doanh nghiệp <strong>{name}</strong> đã được gửi. Quản trị viên GenDA sẽ đối chiếu{" "}
+          {noTaxCode ? "website công ty" : "mã số thuế"} trước khi kích hoạt tài khoản.
+        </p>
+        <div style={{ border: "2px solid var(--machinery-border)", backgroundColor: "var(--color-surface-subtle)", padding: "var(--space-4)" }}>
+          <p className="text-caption" style={{ margin: 0, fontFamily: "ui-monospace, monospace" }}>SME REGISTRATION // PENDING REVIEW</p>
+          <p style={{ margin: "var(--space-2) 0 0", fontSize: "13px" }}>
+            Khi được duyệt, chúng tôi gửi thông báo tới <strong>{email}</strong> và bạn có thể đăng nhập để đăng dự án.
+            Nếu bị từ chối, thông báo sẽ nêu rõ lý do.
+          </p>
+        </div>
+        <Link href="/login" className="btn--tactile-zinc" style={{ height: "42px", textDecoration: "none" }}>
+          VỀ TRANG ĐĂNG NHẬP
+        </Link>
+      </div>
+    );
   }
 
   if (registered) {
@@ -177,7 +272,66 @@ export function RegisterFormClient({ initialRole = "STUDENT" }: { initialRole?: 
           </label>
         </div>
 
+        {/* Doanh nghiệp: bắt buộc mã số thuế; chưa có thì nhập website công ty thay thế */}
+        {role === "SME" ? (
+          <div
+            style={{
+              padding: "var(--space-3)",
+              border: "1px dashed var(--machinery-border)",
+              backgroundColor: "var(--color-surface-subtle)"
+            }}
+          >
+            {noTaxCode ? (
+              <TextField
+                id="register-website"
+                label="WEBSITE CÔNG TY"
+                type="url"
+                inputMode="url"
+                required
+                autoComplete="url"
+                value={website}
+                onChange={(e) => setWebsite(e.target.value)}
+                placeholder="congty.vn"
+                hint="Dùng thay cho mã số thuế. Chúng tôi sẽ đối chiếu website khi duyệt tài khoản."
+                error={websiteError}
+              />
+            ) : (
+              <TextField
+                id="register-tax-code"
+                label="MÃ SỐ THUẾ"
+                required
+                inputMode="numeric"
+                autoComplete="off"
+                maxLength={14}
+                value={taxCode}
+                onChange={(e) => setTaxCode(e.target.value)}
+                placeholder="0312345678"
+                hint="10 chữ số, hoặc dạng 0123456789-001 nếu là chi nhánh."
+                error={taxCodeError}
+              />
+            )}
+            <label
+              htmlFor="register-no-tax-code"
+              style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", cursor: "pointer" }}
+            >
+              <input
+                id="register-no-tax-code"
+                type="checkbox"
+                checked={noTaxCode}
+                onChange={(e) => {
+                  setNoTaxCode(e.target.checked);
+                  setSmeTouched(false);
+                }}
+                style={{ width: "16px", height: "16px", margin: 0, accentColor: "var(--orange-500)", cursor: "pointer" }}
+              />
+              Chưa có mã số thuế, dùng website công ty thay thế
+            </label>
+          </div>
+        ) : null}
+
         <div className="stack" style={{ gap: "6px" }}>
+          {/* Màn hình rộng xếp từng cặp trường thành hai cột để biểu mẫu vừa màn hình laptop */}
+          <div className="auth-form-pair">
           <TextField
             id="register-name"
             label="HỌ VÀ TÊN / DOANH NGHIỆP"
@@ -185,7 +339,7 @@ export function RegisterFormClient({ initialRole = "STUDENT" }: { initialRole?: 
             autoComplete="name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Lê Tuấn Lộc / The Coffee Lab"
+            placeholder="Lê Tuấn Lộc"
           />
 
           <TextField
@@ -198,6 +352,9 @@ export function RegisterFormClient({ initialRole = "STUDENT" }: { initialRole?: 
             onChange={(e) => setEmail(e.target.value)}
             placeholder="contact@example.com"
           />
+          </div>
+
+          <div className="auth-form-pair">
 
           <PasswordField 
             label="MẬT KHẨU BẢO MẬT" 
@@ -207,20 +364,77 @@ export function RegisterFormClient({ initialRole = "STUDENT" }: { initialRole?: 
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+
+          {/* Nhập lại mật khẩu: báo lệch khi đã gõ đủ độ dài mật khẩu, hoặc sau khi bấm gửi */}
+          <PasswordField
+            label="NHẬP LẠI MẬT KHẨU"
+            autoComplete="new-password"
+            required
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            error={confirmMismatch ? "Mật khẩu nhập lại không khớp. Hãy gõ lại đúng mật khẩu đã đặt." : undefined}
+          />
+          </div>
         </div>
 
-        <button 
-          type="submit" 
-          disabled={isLoading}
-          className="btn--tactile-orange" 
-          style={{ width: "100%", height: "40px", fontSize: "12px", marginTop: "4px", cursor: isLoading ? "wait" : "pointer" }}
+        {/* Bắt buộc tick đồng ý điều khoản trước khi tạo tài khoản */}
+        <label
+          htmlFor="register-agree"
+          style={{ display: "flex", alignItems: "flex-start", gap: "8px", fontSize: "13px", lineHeight: 1.45, cursor: "pointer" }}
+        >
+          <input
+            id="register-agree"
+            type="checkbox"
+            required
+            checked={agreed}
+            onChange={(e) => {
+              setAgreed(e.target.checked);
+              if (e.target.checked) setFormError("");
+            }}
+            style={{ width: "18px", height: "18px", marginTop: "1px", flexShrink: 0, accentColor: "var(--orange-500)", cursor: "pointer" }}
+          />
+          <span>
+            Tôi đồng ý với{" "}
+            <Link href="/phap-ly/quy-che-san" target="_blank" style={{ textDecoration: "underline", color: "var(--orange-500)" }}>
+              Quy chế sàn
+            </Link>{" "}
+            &{" "}
+            <Link href="/phap-ly/bao-mat" target="_blank" style={{ textDecoration: "underline", color: "var(--orange-500)" }}>
+              Bảo mật
+            </Link>
+            .
+          </span>
+        </label>
+
+        <RecaptchaField
+          key={captchaKey}
+          onChange={(token) => {
+            setCaptchaToken(token);
+            if (token) setFormError("");
+          }}
+        />
+
+        {formError ? (
+          <p role="alert" style={{ margin: 0, fontSize: "12px", color: "var(--color-danger-text, #b91c1c)" }}>
+            {formError}
+          </p>
+        ) : null}
+
+        <button
+          type="submit"
+          disabled={isLoading || !agreed || !captchaToken}
+          className="btn--tactile-orange"
+          style={{
+            width: "100%",
+            height: "40px",
+            fontSize: "12px",
+            marginTop: "4px",
+            cursor: isLoading ? "wait" : !agreed || !captchaToken ? "not-allowed" : "pointer",
+            opacity: agreed && captchaToken ? 1 : 0.55
+          }}
         >
           {isLoading ? "ĐANG TẠO TÀI KHOẢN..." : "TẠO TÀI KHOẢN MỚI"}
         </button>
-
-        <p className="text-caption" style={{ textAlign: "center", fontSize: "10px", color: "var(--color-text-muted)", margin: 0 }}>
-          Đồng ý với <Link href="/phap-ly/quy-che-san" style={{ textDecoration: "underline" }}>Quy chế sàn</Link> & <Link href="/phap-ly/bao-mat" style={{ textDecoration: "underline" }}>Bảo mật</Link>.
-        </p>
       </form>
     </div>
   );
