@@ -39,8 +39,8 @@ export default async function LoginPage({
         <div className="container" style={{ maxWidth: "1080px", width: "100%" }}>
           
           <div 
-            className="module-bay" 
-            style={{ 
+            className="module-bay module-bay--static"
+            style={{
               padding: 0, 
               overflow: "hidden", 
               display: "grid", 

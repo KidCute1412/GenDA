@@ -4,6 +4,8 @@ import { SiteFooter } from "../components/layout/site-footer";
 import { BottomNav } from "../components/layout/bottom-nav";
 import { ButtonLink } from "../components/ui/button";
 import { StatusBadge } from "../components/ui/status-badge";
+import { Typewriter } from "../components/ui/typewriter";
+import { HeroPattern } from "../components/ui/hero-pattern";
 import { ArrowRight, Check, ICON_WEIGHT } from "../components/ui/icons";
 import { CURRENT_STUDENT, PORTFOLIO, PROJECTS, TODAY } from "../mocks/data";
 import { daysUntil, formatDate, formatVnd, matchScore } from "../lib/utils/format";
@@ -73,22 +75,20 @@ export default function HomePage() {
               phải một dải màu chạy chạm mép màn hình. */}
         {/* Hero NEO-INDUSTRIAL LEDGER: Teenage Engineering Metaphor */}
         <section className="industrial-hero">
+          <HeroPattern />
+          <div className="hero-content">
           <div className="container hero-editorial">
           <div>
-            <div className="industrial-ruler">
-              <span>SYS.SPEC // PROTOCOL 2026 // VN-HCM</span>
-            </div>
-            
-            <h1 className="industrial-display" style={{ marginBlock: "var(--space-2) var(--space-4)" }}>
-              From Learn <br />
-              to <span className="industrial-highlight">Earn.</span>
+            <h1 className="industrial-display" style={{ marginBlock: "0 var(--space-4)" }}>
+              <Typewriter
+                parts={[
+                  { text: "From Learn", breakAfter: true },
+                  { text: "to " },
+                  { text: "Earn.", className: "industrial-highlight" }
+                ]}
+              />
             </h1>
             
-            <p className="lede" style={{ color: "var(--color-text-body)", maxWidth: "48ch", fontSize: "1.125rem", lineHeight: 1.6 }}>
-              Cỗ máy chuẩn hóa giao kèo dự án vi mô (1.000.000 - 5.000.000 VNĐ). 
-              Thiết lập mốc nghiệm thu cơ khí, ký quỹ mô phỏng minh bạch và đóng dấu chứng nhận năng lực bất biến.
-            </p>
-
             <div className="cluster hero-cta" style={{ marginTop: "var(--space-8)", gap: "var(--space-4)" }}>
               <Link href="/projects" className="btn--tactile-orange">
                 Tìm việc / Nhận dự án
@@ -101,6 +101,7 @@ export default function HomePage() {
           </div>
 
           {/* Cột phải: Module Bay - Khối giao kèo phần cứng cơ khí */}
+          <div className="hero-card-stage">
           <article className="module-bay stack stack--sm">
             <div className="module-bay__header">
               <span className="module-bay__id">BAY-01 // ACTIVE</span>
@@ -159,34 +160,41 @@ export default function HomePage() {
             </div>
           </article>
           </div>
-        </section>
+          </div>
 
-        {/* Bốn con số cam kết — Thông số vận hành cơ khí */}
-        <section className="container hero-spill" style={{ paddingBottom: "var(--space-8)" }}>
-          <dl className="stat-strip" style={{ borderTop: "2px solid var(--machinery-border)" }}>
-            {COMMITMENTS.map((commitment, idx) => (
-              <div key={commitment.label} style={{ borderLeft: idx > 0 ? "1px dashed var(--machinery-border)" : "none", paddingLeft: idx > 0 ? "var(--space-4)" : "0" }}>
-                <dt className="visually-hidden">{commitment.label}</dt>
-                <dd style={{ margin: 0 }}>
-                  <span className="stat__value" style={{ fontFamily: "ui-monospace, monospace", color: "var(--orange-500)" }}>{commitment.value}</span>
-                  <span className="stat__label" aria-hidden="true" style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px", fontWeight: 600 }}>
-                    {commitment.label}
-                  </span>
-                </dd>
+          {/* Bốn con số cam kết — Thông số vận hành cơ khí */}
+          <div className="container hero-stats">
+            <section className="spec-panel" aria-label="Bốn cam kết của GenDA">
+              <div className="module-bay__header">
+                <span className="module-bay__id">SPEC // 4 CAM KẾT</span>
+                <span>VẬN HÀNH 2026</span>
               </div>
-            ))}
-          </dl>
+              <dl className="spec-panel__grid">
+                {COMMITMENTS.map((commitment, idx) => (
+                  <div key={commitment.label} className="spec-panel__cell">
+                    <dt className="visually-hidden">{commitment.label}</dt>
+                    <dd>
+                      <span className="spec-panel__code" aria-hidden="true">[0{idx + 1}]</span>
+                      <span className="stat__value spec-panel__value">{commitment.value}</span>
+                      <span className="stat__label spec-panel__label" aria-hidden="true">{commitment.label}</span>
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+          </div>
+          </div>
         </section>
 
         {/* Khối Trust Layer: Giao thức an toàn 4 trụ cột */}
         <section id="trust-layer" className="container section" style={{ borderTop: "2px solid var(--machinery-border)" }}>
-          <div style={{ maxWidth: "720px" }}>
-            <div className="industrial-ruler">
-              <span>PROTOCOL.TRUST // 4 LAYERS</span>
-            </div>
-            <h2 style={{ fontSize: "2rem", fontWeight: 800, textTransform: "uppercase" }}>Bốn Tầng Giao Kèo Niềm Tin</h2>
-            <p className="lede" style={{ marginTop: "var(--space-3)", color: "var(--color-text-body)" }}>
-              Giải quyết triệt để sự đứt gãy niềm tin giữa sinh viên và doanh nghiệp SMEs thông qua 4 giao thức chuẩn hóa bất biến.
+          <div>
+            <h2 style={{ display: "flex", alignItems: "center", gap: "12px", fontSize: "2rem", fontWeight: 800, textTransform: "uppercase" }}>
+              <span aria-hidden="true" style={{ width: "14px", height: "14px", flexShrink: 0, borderRadius: "2px", backgroundColor: "var(--orange-500)" }} />
+              Bốn Tầng Giao Kèo Niềm Tin
+            </h2>
+            <p className="lede" style={{ marginTop: "var(--space-3)", color: "var(--color-text-body)", maxWidth: "none" }}>
+              Xóa khoảng cách niềm tin sinh viên – SMEs bằng 4 giao thức chuẩn hóa.
             </p>
           </div>
 
@@ -194,8 +202,10 @@ export default function HomePage() {
             <ol className="editorial-list" style={{ marginTop: "var(--space-8)" }}>
               {PILLARS.map((pillar, index) => (
                 <li key={pillar.title} className="editorial-list__item" style={{ borderTop: "1px solid var(--machinery-border)" }}>
-                  <span className="editorial-list__num" aria-hidden="true" style={{ fontFamily: "ui-monospace, monospace", color: "var(--orange-500)", fontWeight: 800 }}>
-                    [0{index + 1}]
+                  <span className="editorial-list__num editorial-list__num--bracket" aria-hidden="true" style={{ fontFamily: "ui-monospace, monospace", color: "var(--orange-500)", fontWeight: 800 }}>
+                    <span className="editorial-list__bracket editorial-list__bracket--open">[</span>
+                    <span className="editorial-list__digits">0{index + 1}</span>
+                    <span className="editorial-list__bracket editorial-list__bracket--close">]</span>
                   </span>
                   <div>
                     <h3 style={{ fontSize: "var(--text-h4-size)", fontWeight: 800, textTransform: "uppercase" }}>{pillar.title}</h3>

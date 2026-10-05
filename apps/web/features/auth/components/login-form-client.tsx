@@ -49,14 +49,9 @@ export function LoginFormClient() {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-        <h2 style={{ fontSize: "1.25rem", fontWeight: 800, textTransform: "uppercase", margin: 0 }}>
-          XÁC THỰC TÀI KHOẢN
-        </h2>
-        <span style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px", color: "var(--orange-500)", fontWeight: 700 }}>
-          AUTH // 01
-        </span>
-      </div>
+      <h2 style={{ fontSize: "1.25rem", fontWeight: 800, textTransform: "uppercase", margin: 0 }}>
+        XÁC THỰC TÀI KHOẢN
+      </h2>
       <p className="text-muted" style={{ marginTop: "2px", marginBottom: 0, fontSize: "12px" }}>
         Dùng chung một tài khoản cho cả sinh viên và doanh nghiệp.
       </p>

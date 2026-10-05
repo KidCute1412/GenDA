@@ -1043,7 +1043,9 @@
   transition: background-color var(--duration-normal) ease, border-color var(--duration-normal) ease;
 }
 
+/* Header trải hết bề ngang (không giới hạn theo .container): logo nằm sát góc trái */
 .site-header__inner {
+  max-width: none;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1460,7 +1462,7 @@
   display: flex;
   align-items: center;
   border-bottom: 2px solid var(--machinery-border);
-  padding-block: var(--space-16);
+  padding-block: var(--space-10) var(--space-16);
 }
 
 @media (min-width: 768px) {
@@ -1517,6 +1519,297 @@
   transform: skewX(-4deg);
 }
 
+/* Hiệu ứng gõ chữ: từng ký tự hiện theo --tw-delay, con trỏ nhấp nháy rồi tắt */
+.typewriter__word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.typewriter__char {
+  animation: typewriter-char 0.01s steps(1, end) var(--tw-delay, 0ms) both;
+}
+
+.typewriter__caret {
+  display: inline-block;
+  width: 0.08em;
+  height: 0.85em;
+  margin-left: 0.06em;
+  vertical-align: -0.05em;
+  background-color: var(--orange-500);
+  animation: typewriter-caret 0.9s steps(1, end) var(--tw-delay, 0ms) 6 both;
+}
+
+@keyframes typewriter-char {
+  from { visibility: hidden; }
+  to { visibility: visible; }
+}
+
+@keyframes typewriter-caret {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .typewriter__char { animation: none; }
+  .typewriter__caret { display: none; }
+}
+
+/* Họa tiết nền hero */
+.hero-pattern {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+.hero-stats {
+  margin-top: var(--space-12);
+}
+
+/* Bảng thông số: một module đặc (nền thẻ) nên họa tiết nền không bao giờ xuyên qua chữ */
+.spec-panel {
+  position: relative;
+  background-color: var(--color-surface-card);
+  border: 2px solid var(--machinery-border);
+  box-shadow: 6px 6px 0px var(--machinery-shadow);
+  border-radius: 0;
+  padding: var(--space-4) var(--space-6) var(--space-6);
+}
+
+.spec-panel__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  margin: 0;
+}
+
+.spec-panel__cell {
+  padding: var(--space-3) var(--space-4);
+  border-left: 1px dashed var(--machinery-border);
+}
+
+.spec-panel__cell:nth-child(odd) { border-left: 0; padding-left: 0; }
+.spec-panel__cell:nth-child(n + 3) { border-top: 1px dashed var(--machinery-border); }
+
+@media (min-width: 768px) {
+  .spec-panel__grid { grid-template-columns: repeat(4, 1fr); }
+  .spec-panel__cell:nth-child(odd) { border-left: 1px dashed var(--machinery-border); padding-left: var(--space-4); }
+  .spec-panel__cell:nth-child(n + 3) { border-top: 0; }
+  .spec-panel__cell:first-child { border-left: 0; padding-left: 0; }
+}
+
+.spec-panel__cell dd { margin: 0; }
+
+.spec-panel__code {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--color-text-muted);
+}
+
+.spec-panel .spec-panel__value {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color: var(--orange-500);
+}
+
+.spec-panel__label {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.dark .spec-panel {
+  background-color: #121215;
+  border-color: #3f3f46;
+  box-shadow: 6px 6px 0px #000000;
+}
+
+/* Hiệu ứng nền hero: làn sáng nâu đỏ (#60241E) quét chéo, lộ ra qua lưới ô 96px (bội của lưới 32px sẵn có)
+   của hero (không thêm họa tiết mới). Mask chạy từ trái sang phải. */
+.hero-backdrop__glow {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, #60241e 1px, transparent 1px),
+    linear-gradient(to bottom, #60241e 1px, transparent 1px);
+  background-size: 96px 96px;
+  opacity: 0.2;
+  -webkit-mask-image: linear-gradient(115deg, transparent 22%, #000 50%, transparent 78%);
+  mask-image: linear-gradient(115deg, transparent 22%, #000 50%, transparent 78%);
+  -webkit-mask-size: 300% 100%;
+  mask-size: 300% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  animation: hero-glow-sweep 14s linear infinite;
+}
+
+@keyframes hero-glow-sweep {
+  from { -webkit-mask-position: 100% 0; mask-position: 100% 0; }
+  to { -webkit-mask-position: 0 0; mask-position: 0 0; }
+}
+
+/* Chi tiết trang trí hero — tất cả nằm ở lề/khoảng đệm, không đè lên chữ:
+   - thước đo dọc hai bên lề (vạch 8px, vạch lớn + số mỗi 64px, khớp lưới 32px),
+     có con trượt chạy chậm lên xuống;
+   - bốn dấu góc (crop mark) đóng khung vùng nội dung;
+   - tấm gạch chéo lệch sau thẻ BAY-01 (kiểu mặt cắt bản vẽ kỹ thuật);
+   - đinh tán ở bốn góc thẻ BAY-01 và bảng thông số. */
+.hero-pattern {
+  --hero-accent: #60241e;
+  --hero-ink: var(--machinery-border);
+}
+
+.dark .hero-pattern {
+  --hero-accent: #c8503f;
+  --hero-ink: #71717a;
+}
+
+.hero-ruler {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: none;
+  width: 44px;
+  color: var(--hero-ink);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  background-repeat: repeat-y, repeat-y;
+  background-size: 6px 8px, 14px 64px;
+}
+
+.hero-ruler--left {
+  left: 20px;
+  border-right: 1px solid color-mix(in srgb, currentColor 45%, transparent);
+  background-image:
+    linear-gradient(to bottom, color-mix(in srgb, currentColor 35%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, currentColor 70%, transparent) 1px, transparent 1px);
+  background-position: right top, right top;
+}
+
+.hero-ruler--right {
+  right: 20px;
+  border-left: 1px solid color-mix(in srgb, currentColor 45%, transparent);
+  background-image:
+    linear-gradient(to bottom, color-mix(in srgb, currentColor 35%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, currentColor 70%, transparent) 1px, transparent 1px);
+  background-position: left top, left top;
+}
+
+.hero-ruler__num {
+  position: absolute;
+  margin-top: 3px;
+  opacity: 0.55;
+}
+
+.hero-ruler--left .hero-ruler__num { right: 18px; }
+.hero-ruler--right .hero-ruler__num { left: 18px; }
+
+/* Con trượt: tam giác cạnh cứng bám mép thước */
+.hero-ruler__cursor {
+  position: absolute;
+  top: 12%;
+  width: 10px;
+  height: 12px;
+  margin-top: -6px;
+  background-color: var(--hero-accent);
+  animation: hero-ruler-cursor 14s ease-in-out infinite alternate;
+}
+
+.hero-ruler--left .hero-ruler__cursor { right: -11px; clip-path: polygon(0 0, 100% 50%, 0 100%); }
+.hero-ruler--right .hero-ruler__cursor { left: -11px; clip-path: polygon(100% 0, 0 50%, 100% 100%); animation-delay: -7s; }
+
+@keyframes hero-ruler-cursor {
+  from { top: 12%; }
+  to { top: 88%; }
+}
+
+@media (min-width: 1280px) {
+  .hero-ruler { display: block; }
+}
+
+/* Dấu góc: nằm trong khoảng đệm của hero (trên 40px, dưới 64px), lệch ra ngoài vùng nội dung 12px */
+.hero-frame {
+  position: absolute;
+  top: 12px;
+  bottom: 24px;
+  left: 0;
+  right: 0;
+  color: var(--hero-ink);
+}
+
+.hero-frame__corner {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 0 solid currentColor;
+  opacity: 0.6;
+}
+
+.hero-frame__corner--tl { top: 0; left: calc(var(--layout-gutter) - 12px); border-top-width: 2px; border-left-width: 2px; }
+.hero-frame__corner--tr { top: 0; right: calc(var(--layout-gutter) - 12px); border-top-width: 2px; border-right-width: 2px; }
+.hero-frame__corner--bl { bottom: 0; left: calc(var(--layout-gutter) - 12px); border-bottom-width: 2px; border-left-width: 2px; }
+.hero-frame__corner--br { bottom: 0; right: calc(var(--layout-gutter) - 12px); border-bottom-width: 2px; border-right-width: 2px; }
+
+/* Tấm gạch chéo lệch sau thẻ BAY-01 */
+.hero-card-stage {
+  position: relative;
+  isolation: isolate;
+  --hatch: var(--machinery-border);
+}
+
+.dark .hero-card-stage { --hatch: #52525b; }
+
+.hero-card-stage::before {
+  content: "";
+  position: absolute;
+  inset: 12px -12px -12px 12px;
+  z-index: -1;
+  border: 1px solid var(--hatch);
+  background-image: repeating-linear-gradient(-45deg, var(--hatch) 0 1px, transparent 1px 8px);
+  opacity: 0.45;
+}
+
+@media (min-width: 1024px) {
+  .hero-card-stage::before { inset: 22px -22px -22px 22px; }
+}
+
+/* Đinh tán bốn góc: vòng tròn rỗng, vẽ bằng 4 radial-gradient trên một lớp phủ */
+.hero-card-stage > .module-bay::after,
+.spec-panel::after {
+  --rivet: color-mix(in srgb, var(--machinery-border) 55%, transparent);
+  --rivet-dot: radial-gradient(circle, transparent 1.6px, var(--rivet) 1.7px 3px, transparent 3.2px);
+  content: "";
+  position: absolute;
+  inset: 7px;
+  pointer-events: none;
+  background:
+    var(--rivet-dot) left top / 8px 8px no-repeat,
+    var(--rivet-dot) right top / 8px 8px no-repeat,
+    var(--rivet-dot) left bottom / 8px 8px no-repeat,
+    var(--rivet-dot) right bottom / 8px 8px no-repeat;
+}
+
+.dark .hero-card-stage > .module-bay::after,
+.dark .spec-panel::after {
+  --rivet: #52525b;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-backdrop__glow { display: none; }
+  .hero-ruler__cursor { animation: none; }
+}
+
 /* Module Bay: Khối cơ khí với đường viền cơ khí, đinh ốc trang trí */
 .module-bay {
   position: relative;
@@ -1531,6 +1824,13 @@
 .module-bay:hover {
   transform: translate(-2px, -2px);
   box-shadow: 8px 8px 0px var(--machinery-shadow);
+}
+
+/* Khung tĩnh (vd. khung đăng nhập/đăng ký): không nhấc lên khi rê chuột */
+.module-bay--static,
+.module-bay--static:hover {
+  transform: none;
+  transition: none;
 }
 
 .module-bay__header {
@@ -1850,6 +2150,39 @@
     letter-spacing: -0.04em;
     /* Kéo lên cho mép trên của chữ số thẳng hàng quang học với tiêu đề bên cạnh */
     margin-top: -0.12em;
+  }
+}
+
+/* Số trong ngoặc xếp ba hàng: "[" trái hàng 1, số giữa hàng 2, "]" phải hàng 3 */
+.editorial-list__num.editorial-list__num--bracket {
+  display: grid;
+  grid-template-rows: repeat(3, auto);
+  width: 2.3em;
+  line-height: 0.85;
+  letter-spacing: 0;
+}
+
+/* Ngoặc nhỏ hơn số và kéo sát vào hàng số để khối gọn lại */
+.editorial-list__bracket {
+  font-size: 0.62em;
+  line-height: 1;
+}
+
+.editorial-list__bracket--open { justify-self: start; margin-bottom: -0.3em; }
+.editorial-list__digits { justify-self: center; }
+.editorial-list__bracket--close { justify-self: end; margin-top: -0.3em; }
+
+/* Dưới 1024px lưới chỉ có 2 cột: cho đoạn mô tả trải hết bề ngang, để nó không
+   kéo giãn cột số (cột "auto") và ép tiêu đề thành một cột chữ dọc. */
+@media (max-width: 1023px) {
+  .editorial-list__item > p {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 1024px) {
+  .editorial-list__num.editorial-list__num--bracket {
+    font-size: clamp(2.75rem, 4.5vw, 4rem);
   }
 }
 
