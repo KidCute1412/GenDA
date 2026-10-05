@@ -21,9 +21,9 @@ if errorlevel 1 (
   echo [ERROR] Update Docker Desktop to include Docker Compose.
   goto :failed
 )
-powershell.exe -NoProfile -Command "$composeVersion = [version]((docker compose version --short).TrimStart('v')); if ($composeVersion -lt [version]'2.32.0') { exit 1 }"
+powershell.exe -NoProfile -Command "$composeVersion = [version]((docker compose version --short).TrimStart('v')); if ($composeVersion -lt [version]'5.0.2') { exit 1 }"
 if errorlevel 1 (
-  echo [ERROR] Docker Compose 2.32 or newer is required for source reload. Update Docker Desktop.
+  echo [ERROR] Docker Compose 5.0.2 or newer is required for source reload. Update Docker Desktop.
   goto :failed
 )
 if not exist ".env" (

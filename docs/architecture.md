@@ -68,7 +68,7 @@ Next.js `GET /api/health` uses the generated client to verify frontend -> API ->
 
 ## Local runtime
 
-`compose.yaml` runs frontend/backend/PostgreSQL. Prerequisites: Docker Desktop with Linux containers, Compose 2.32+, Windows Terminal. `start.bat` creates local `.env` if missing, validates configuration, builds/waits for health, then opens a new terminal with two panes.
+`compose.yaml` runs frontend/backend/PostgreSQL. Prerequisites: Docker Desktop with Linux containers, Compose 5.0.2+, Windows Terminal. `start.bat` creates local `.env` if missing, validates configuration, builds/waits for health, then opens a new terminal with two panes.
 
 Frontend Watch syncs source for Next.js HMR. Backend Watch rebuilds/restarts after Java/resources/POM changes; this is automatic reload, not instantaneous JVM hot swap. One shared Compose watcher runs in the background; each pane follows only its service logs.
 

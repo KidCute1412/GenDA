@@ -7,7 +7,7 @@ test("role session survives navigation and protects student pages", async ({ pag
   await expect(page.getByText(/Cần đăng nhập bằng tài khoản sinh viên/i)).toBeVisible();
   await page.goto("/login");
   await page.getByRole("button", { name: /SINH VIÊN$/i }).click();
-  await expect(page).toHaveURL(/student\/profile/);
+  await expect(page).toHaveURL(/\/projects$/);
   await page.goto("/student/applications");
   await expect(page.getByRole("heading", { name: /ĐƠN CỦA TÔI/i })).toBeVisible();
 });

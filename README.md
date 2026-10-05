@@ -2,7 +2,7 @@
 
 Next.js frontend, Spring Boot modular monolith, PostgreSQL.
 
-Install Docker Desktop (Linux containers, Compose 2.32+) and Windows Terminal, then run `start.bat`. It starts frontend/backend/database and opens two panes. UI: http://localhost:3000. API: http://localhost:3001/api/v1/health.
+Install Docker Desktop (Linux containers, Compose 5.0.2+) and Windows Terminal, then run `start.bat`. It starts frontend/backend/database and opens two panes. UI: http://localhost:3000. API: http://localhost:3001/api/v1/health.
 
 Closing panes leaves containers running; `stop.bat` stops them and preserves data. See [local setup](docs/local-development.md), [architecture](docs/architecture.md) and [deployment guide](docs/deployment.md) for modules, reload, migrations and Vercel/Render/Supabase setup.
 
