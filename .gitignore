@@ -13,7 +13,7 @@ out/
 .vercel/
 *.tsbuildinfo
 
-# NestJS/build output
+# Build output
 dist/
 coverage/
 
@@ -36,3 +36,9 @@ Thumbs.db
 .vscode/*
 !.vscode/extensions.json
 .idea/
+
+# Java / Maven
+target/
+
+# Local background watcher state/logs
+output/genda-compose-watch.*

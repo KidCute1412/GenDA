@@ -2,23 +2,33 @@
 
 ## Contract
 
-This repository uses NestJS code-first OpenAPI: DTO decorators and controller metadata generate the OpenAPI document. Use `openapi-typescript` plus `openapi-fetch` (or the project-approved equivalent) to generate `packages/api-client`. A contract change updates the API, generated client, and tests in the same change.
+Spring Boot code-first OpenAPI uses springdoc, controller metadata, Java DTOs and Jakarta validation. Local document: `/api/v1/openapi`; production disables it by default.
 
-## Request and response
+With backend running:
+```sh
+node scripts/export-openapi.mjs
+corepack pnpm --filter @genda/api-client generate
+```
 
-- Prefix every endpoint with `/api/v1`.
-- Use plural resource names and HTTP semantics.
-- Validate DTOs with a global validation pipe: whitelist, transform, and reject unknown fields.
-- Paginated responses use `{ data, page, pageSize, total }`.
-- Errors use `{ code, message, details?, requestId }`.
-- Never expose Prisma models directly from controllers.
-- Use explicit response DTOs and serializers; do not implicitly serialize ORM objects.
+Commit `packages/api-client/openapi.json` and generated `src/schema.d.ts` with API changes. Export removes environment-specific server URLs. Frontend imports `@genda/api-client` (openapi-typescript/openapi-fetch), not hand-written response types. CI re-exports/regenerates and rejects drift.
 
-## Authentication and authorization
+## Request/response
 
-Authentication identifies the user; guards and application use cases authorize the action. Role checks are not a substitute for ownership checks.
+- Prefix backend endpoints with `/api/v1`; use plural resources and HTTP semantics.
+- Validate Java DTOs with Jakarta Bean Validation and `@Valid`; reject unknown JSON properties.
+- Pagination: `{ data, page, pageSize, total }`.
+- Errors: `{ code, message, details?, requestId }`; no SQL, stack traces or credentials. Use stable domain error codes for business failures.
+- Never serialize JPA/Hibernate entities; use explicit DTOs/mapping.
+- Preserve health route and response `{ status: "ok", service: "genda-api" }`; database failure returns safe 503.
+- Next.js `/api/health` is an operational connectivity check, not a duplicate business API.
+
+## Authentication/authorization
+
+Real backend auth is not implemented in the scaffold; browser demo sessions are not credentials. Choose identity/session contract before adding protected business endpoints. API security and use cases enforce role, ownership, assignments and lifecycle.
+
+CORS uses exact origins. Current health requests do not use credentialed cookies; adding cookie authentication requires a reviewed CORS/CSRF/session design.
 
 ## Compatibility
 
-Additive response fields are preferred. Renames, removals, and semantic changes require an ADR and versioning decision. Do not silently change enum meanings. Generated artifacts must be reproducible in CI.
+Preserve current routes/statuses/semantics. Prefer additive fields. Renames/removals/semantic changes require an ADR and versioning decision. Generated artifacts must reproduce in CI; Java source models are not shared with TypeScript.
 

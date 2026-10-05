@@ -1,7 +1,7 @@
 ---
 name: code-review
-description: Review SkillBridge changes for architecture, clean code, correctness, security, tests, and unintended scope.
+description: Review SkillBridge correctness, Spring Boot module boundaries, authorization, contracts, migrations and tests.
 ---
 
-Read the relevant architecture and definition-of-done docs. Review module boundaries, authorization versus ownership, state transitions, transaction safety, API compatibility, Prisma access, frontend loading/error states, accessibility, tests, and secret handling. Report concrete findings by severity with file references and a suggested fix. Do not rewrite unrelated code or approve based only on compilation.
+Read architecture and definition of done. Review ownership, domain purity, transactions, authorization/ownership, lifecycle transitions, JPA access, Flyway compatibility and OpenAPI client alignment. Check frontend states, accessibility and secrets. Browser demo behavior does not prove backend authorization. Report concrete severity/file findings; do not approve from compilation alone or rewrite unrelated code.
 

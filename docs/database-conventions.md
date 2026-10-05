@@ -1,13 +1,16 @@
 # Database Conventions
 
-- PostgreSQL is the system of record; Prisma is the only application database client.
-- Database table and column names use snake_case. Prisma model names use singular PascalCase and explicit `@@map`/`@map` when physical names differ.
-- Every entity has a stable id and `createdAt`; mutable records generally also have `updatedAt`.
-- Use foreign keys, unique constraints, check constraints where practical, and indexes based on real query paths.
-- Schema changes are made through reviewed Prisma migrations.
-- Seed data must be deterministic and safe to run repeatedly.
-- Use transactions for state transitions spanning multiple records.
-- Do not store uploaded files in PostgreSQL; store metadata and an object-storage key.
-- Avoid JSON for relationships or fields that need querying, validation, or referential integrity.
-- Do not use database cascades for business workflows unless the deletion policy is documented; prefer explicit application use cases for important records.
+- PostgreSQL is the system of record; backend persistence uses Spring Data JPA/Hibernate.
+- JPA entities/repository adapters stay in the owning module's infrastructure. Map to domain/application models; never expose ORM entities from controllers or import another module's repositories.
+- Tables/columns use snake_case with explicit mappings where needed. Use stable IDs, created timestamps and generally updated timestamps; prefer UUID for new IDs unless an existing contract requires otherwise.
+- Enforce foreign keys, uniqueness, check constraints and query-driven indexes in SQL. Document deletion policies; cascades must not implement business workflows.
+- Flyway files live in `apps/api/src/main/resources/db/migration`, named `V<number>__<description>.sql`. Commit them with entity/API/tests.
+- Flyway is the only schema writer. Hibernate uses `ddl-auto=validate`, never automatic update/create in normal environments.
+- V1 initializes migration history only because the previous backend had no business schema. Add real domain tables in V2+ as features appear.
+- Never edit applied migrations, auto-baseline populated databases or clean hosted databases. Existing populated schemas require backup, explicit reviewed baseline and data-preserving migration.
+- Coordinate migration numbers across the team. Seed demo data separately, deterministically and idempotently; production never runs demo seeds implicitly.
+- Application use cases own transactions for multi-record transitions. Implement concurrency constraints/locking with the affected use case.
+- Local PostgreSQL and Supabase use identical migrations; this does not transfer local records. Import/seed is separate.
+- Supabase uses session-pooler JDBC, TLS and a small Hikari pool. Credentials belong only in private environment configuration.
+- Files belong in object storage; database stores metadata/storage keys. Avoid JSON for relational fields requiring integrity or querying.
 
