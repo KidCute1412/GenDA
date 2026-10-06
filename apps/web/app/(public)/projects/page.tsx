@@ -5,11 +5,13 @@ import { SiteHeader } from "../../../components/layout/site-header";
 import { SiteFooter } from "../../../components/layout/site-footer";
 import { BottomNav } from "../../../components/layout/bottom-nav";
 import { ButtonLink } from "../../../components/ui/button";
+import { Alert } from "../../../components/ui/alert";
 import { EmptyState } from "../../../components/ui/feedback";
 import { Check, MagnifyingGlass } from "../../../components/ui/icons";
 import { CURRENT_STUDENT } from "../../../mocks/data";
 import { daysUntil, formatDate, formatVnd, matchScore } from "../../../lib/utils/format";
 import { browsePublishedProjects, listSkills } from "../../../features/projects/api";
+import { LedgerPublishedProjects } from "../../../features/projects/components/ledger-published-projects";
 
 export const dynamic = "force-dynamic";
 
@@ -91,6 +93,7 @@ export default async function ProjectsPage({
 
   const requestedPage = Number.parseInt(params.page ?? "1", 10);
   const currentPage = Number.isFinite(requestedPage) && requestedPage > 0 ? requestedPage : 1;
+  let catalogUnavailable = false;
   const [projectPage, filterableSkills] = await Promise.all([
     browsePublishedProjects({
       q: keyword || undefined,
@@ -99,8 +102,14 @@ export default async function ProjectsPage({
       maxBudget: bucket?.max,
       page: currentPage,
       pageSize: 12
+    }).catch(() => {
+      catalogUnavailable = true;
+      return { data: [], total: 0, page: 1, pageSize: 12 };
     }),
-    listSkills()
+    listSkills().catch(() => {
+      catalogUnavailable = true;
+      return [];
+    })
   ]);
   const results = projectPage.data;
   const pageCount = Math.max(1, Math.ceil(projectPage.total / projectPage.pageSize));
@@ -212,6 +221,12 @@ export default async function ProjectsPage({
 
         {/* --- Kết quả --- */}
         <div className="section--tight">
+          {catalogUnavailable ? (
+            <Alert variant="warning" title="Danh sách API tạm thời chưa sẵn sàng">
+              Bạn vẫn có thể xem và ứng tuyển các dự án demo vừa được duyệt bên dưới.
+            </Alert>
+          ) : null}
+          <LedgerPublishedProjects />
           <div className="enter" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px dashed var(--machinery-border)", paddingBottom: "var(--space-2)", marginBottom: "var(--space-4)", "--e": 6 } as CSSProperties}>
             <p style={{ fontFamily: "ui-monospace, monospace", fontSize: "12px", fontWeight: 700, margin: 0, textTransform: "uppercase" }} aria-live="polite">
               KẾT QUẢ QUÉT: <span style={{ color: "var(--orange-500)" }}>{projectPage.total}</span> DỰ ÁN
