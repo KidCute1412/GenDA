@@ -58,4 +58,4 @@ From `apps/api`, run `mvnw.cmd verify` (Windows) or `sh mvnw verify` (Linux). Co
 
 If Playwright's browser is missing, install Chromium with `corepack pnpm --filter @genda/web exec playwright install chromium`. The existing `PLAYWRIGHT_CHROME_PATH` override can use installed Chrome when download is unavailable.
 
-Current backend implements health/readiness only. The existing UI remains a sample-data/localStorage demo. See [architecture](architecture.md) and [deployment](deployment.md).
+The backend also serves the read-only skill and published-project catalog. Docker Compose activates the local-only `demo` profile, whose startup runner applies an idempotent sample-data seed after Flyway; production does not activate this profile. The project list/detail pages use these APIs, while authentication, matching, applications and other workflows remain sample-data/localStorage behavior. See [frontend/backend integration](frontend-backend-integration.md), [architecture](architecture.md) and [deployment](deployment.md).

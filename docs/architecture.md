@@ -13,7 +13,7 @@ packages/config      existing shared frontend configuration placeholders
 
 Persistence uses PostgreSQL, Spring Data JPA/Hibernate and Flyway. Springdoc 3.0.3 generates the code-first REST contract. See [ADR 0002](decisions/0002-spring-boot-and-docker.md), [API conventions](api-conventions.md) and [database conventions](database-conventions.md).
 
-**Current capability:** the migrated backend implements only the existing `GET /api/v1/health`; there were no business endpoints, tables or authentication to migrate. Flyway V1 initializes migration history without inventing domain tables. The UI remains a browser demo backed by localStorage and sample data. Simulated users, transitions and balances are not production authorization/persistence. Replace demo adapters as real backend vertical slices are implemented.
+**Current capability:** the backend implements health/readiness plus a read-only published-project catalog: `GET /api/v1/skills`, `GET /api/v1/projects`, and `GET /api/v1/projects/{projectId}`. Flyway owns the skill/project catalog schema; the local `demo` profile adds deterministic sample projects. The public project list and detail pages use the generated API client. Authentication, matching, applications, and the remaining browser demo workflows are still localStorage/sample-data behavior and are not production authorization or persistence.
 
 ## Modular monolith and business ownership
 

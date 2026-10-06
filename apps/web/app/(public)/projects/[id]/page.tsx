@@ -7,13 +7,11 @@ import { StatusBadge } from "../../../../components/ui/status-badge";
 import { Alert } from "../../../../components/ui/alert";
 import { Check, ICON_WEIGHT } from "../../../../components/ui/icons";
 import { ApplyButton } from "../../../../features/applications/components/apply-button";
-import { LedgerProjectDetail } from "../../../../features/projects/components/ledger-project-detail";
-import { CURRENT_STUDENT, PROJECTS, TODAY, getProject } from "../../../../mocks/data";
+import { getPublishedProject } from "../../../../features/projects/api";
+import { CURRENT_STUDENT } from "../../../../mocks/data";
 import { daysUntil, formatDate, formatVnd, matchScore } from "../../../../lib/utils/format";
 
-export function generateStaticParams() {
-  return PROJECTS.map((project) => ({ id: project.id }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params
@@ -21,7 +19,7 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const project = getProject(id);
+  const project = await getPublishedProject(id);
   if (!project) return { title: "Không tìm thấy dự án" };
 
   return { title: project.title, description: project.summary };
@@ -45,14 +43,15 @@ export default async function ProjectDetailPage({
 }) {
   const { id } = await params;
   await searchParams;
-  const project = getProject(id);
+  const project = await getPublishedProject(id);
 
   if (!project) {
-    return <LedgerProjectDetail id={id} />;
+    notFound();
   }
 
-  const score = matchScore(project.skills, CURRENT_STUDENT.skills);
-  const remaining = daysUntil(project.deadline, TODAY);
+  const projectSkillNames = project.skills.map((skill) => skill.name);
+  const score = matchScore(projectSkillNames, CURRENT_STUDENT.skills);
+  const remaining = daysUntil(project.deadline, new Date().toISOString().slice(0, 10));
   const milestoneTotal = project.milestones.reduce((sum, milestone) => sum + milestone.budget, 0);
 
   return (
@@ -93,7 +92,7 @@ export default async function ProjectDetailPage({
                 Doanh nghiệp nghiệm thu dựa đúng trên các tiêu chí này, không thêm tiêu chí mới giữa chừng.
               </p>
               <ul style={{ marginTop: "var(--space-4)", paddingLeft: "var(--space-5)", lineHeight: 1.6 }}>
-                {project.acceptance.map((item) => (
+                {project.acceptanceCriteria.map((item) => (
                   <li key={item} style={{ marginBottom: "var(--space-2)" }}>
                     {item}
                   </li>
@@ -120,7 +119,7 @@ export default async function ProjectDetailPage({
                         {milestone.title}
                       </h3>
                       <p className="text-muted" style={{ margin: 0, maxWidth: "58ch", fontSize: "13px" }}>
-                        {milestone.criteria}
+                        {milestone.criteria.join(" · ")}
                       </p>
                     </div>
                     <div className="project-row__meta stack stack--sm">
@@ -186,13 +185,13 @@ export default async function ProjectDetailPage({
                 <div className="cluster cluster--between" style={{ fontFamily: "ui-monospace, monospace", fontSize: "12px" }}>
                   <dt className="text-muted">ỨNG VIÊN ĐÃ NỘP</dt>
                   <dd className="num" style={{ margin: 0, fontWeight: 700 }}>
-                    {project.applicantCount} HỒ SƠ
+                    —
                   </dd>
                 </div>
                 <div className="cluster cluster--between" style={{ fontFamily: "ui-monospace, monospace", fontSize: "12px" }}>
                   <dt className="text-muted">TRẠNG THÁI</dt>
                   <dd style={{ margin: 0 }}>
-                    <StatusBadge status={project.status} />
+                    <StatusBadge status="PUBLISHED" />
                   </dd>
                 </div>
               </dl>
@@ -221,11 +220,11 @@ export default async function ProjectDetailPage({
 
                 <ul className="pill-list" style={{ marginTop: "var(--space-3)" }}>
                   {project.skills.map((skill) => {
-                    const owned = score.matched.includes(skill);
+                    const owned = score.matched.includes(skill.name);
                     return (
-                      <li key={skill} className={`skill-pill ${owned ? "skill-pill--matched" : ""}`}>
+                      <li key={skill.code} className={`skill-pill ${owned ? "skill-pill--matched" : ""}`}>
                         {owned ? <Check weight={ICON_WEIGHT} aria-hidden="true" /> : null}
-                        {skill}
+                        {skill.name}
                         {owned ? <span className="visually-hidden">(bạn đã có kỹ năng này)</span> : null}
                       </li>
                     );
@@ -234,24 +233,13 @@ export default async function ProjectDetailPage({
               </div>
 
               <div style={{ marginTop: "var(--space-4)" }}>
-                {project.status === "PUBLISHED" ? (
-                  <ApplyButton
-                    projectTitle={project.title}
-                    projectId={project.id}
-                    smeName={project.smeName}
-                    budget={project.budget}
-                    verified={CURRENT_STUDENT.verification === "VERIFIED"}
-                  />
-                ) : (
-                  <>
-                    <button type="button" className="btn--tactile-zinc" style={{ width: "100%", opacity: 0.5, cursor: "not-allowed" }} disabled>
-                      ỨNG TUYỂN NGAY
-                    </button>
-                    <p className="hint-disabled" style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px", marginTop: "6px" }}>
-                      Dự án này không còn nhận đơn vì đã có người được chọn.
-                    </p>
-                  </>
-                )}
+                <ApplyButton
+                  projectTitle={project.title}
+                  projectId={project.id}
+                  smeName={project.smeName}
+                  budget={project.budget}
+                  verified={CURRENT_STUDENT.verification === "VERIFIED"}
+                />
               </div>
             </div>
 
