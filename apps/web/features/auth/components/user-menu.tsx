@@ -4,12 +4,11 @@ import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { CaretDown, FileText, ICON_WEIGHT, IdentificationCard, UserCircle } from "../../../components/ui/icons";
-import { CURRENT_STUDENT } from "../../../mocks/data";
 import type { DemoSession } from "../services/demo-session";
 
 /**
  * Menu tài khoản ở góc phải header: một nút biểu tượng người dùng, bấm vào mở danh sách
- * lối tắt theo vai trò (sinh viên: Portfolio + Hồ sơ; doanh nghiệp: Hồ sơ doanh nghiệp;
+ * lối tắt theo vai trò (sinh viên: CV + Hồ sơ; doanh nghiệp: Hồ sơ doanh nghiệp;
  * admin: Trang quản trị).
  *
  * Theo mẫu "menu button" của WAI-ARIA: aria-haspopup / aria-expanded trên nút, danh sách
@@ -22,8 +21,7 @@ function itemsFor(role: DemoSession["role"]): MenuItem[] {
   if (role === "SME") return [{ href: "/sme/profile", label: "Hồ sơ doanh nghiệp", icon: IdentificationCard }];
   if (role === "ADMIN") return [{ href: "/admin", label: "Trang quản trị", icon: IdentificationCard }];
   return [
-    // Bản demo chỉ có một portfolio mẫu; bản thật lấy slug theo tài khoản đăng nhập
-    { href: `/portfolio/${CURRENT_STUDENT.slug}`, label: "Portfolio", icon: FileText },
+    { href: "/student/cv", label: "CV của tôi", icon: FileText },
     { href: "/student/profile", label: "Hồ sơ", icon: IdentificationCard }
   ];
 }

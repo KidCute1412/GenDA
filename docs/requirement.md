@@ -9,7 +9,7 @@ Khi hai nhóm nguồn mâu thuẫn: nguồn kỹ thuật thắng ở quyết đ�
 
 ## 1. Ranh giới phát hành
 
-MVP số hóa đúng một vòng đời: **SME đăng dự án → admin duyệt → sinh viên ứng tuyển → SME chọn → thực hiện theo milestone → nghiệm thu → portfolio xác thực**. Mọi thứ nằm ngoài vòng đời này thuộc V1.1/V2.0.
+MVP số hóa đúng một vòng đời: **SME đăng dự án → admin duyệt → sinh viên ứng tuyển → SME chọn → thực hiện theo milestone → nghiệm thu → SME đánh giá**. Mọi thứ nằm ngoài vòng đời này thuộc V1.1/V2.0.
 
 | Ràng buộc MVP | Giá trị | Nguồn |
 | --- | --- | --- |
@@ -25,7 +25,7 @@ MVP số hóa đúng một vòng đời: **SME đăng dự án → admin duyệt
 
 | Tác nhân | Mô tả | Vai trò hệ thống |
 | --- | --- | --- |
-| Sinh viên | Sinh viên năm 3–4 hoặc mới tốt nghiệp dưới 1 năm, ngành CNTT/Kinh tế/QTKD tại TP.HCM. Ứng tuyển cá nhân, thực hiện dự án, sở hữu portfolio. | `STUDENT` |
+| Sinh viên | Sinh viên năm 3–4 hoặc mới tốt nghiệp dưới 1 năm, ngành CNTT/Kinh tế/QTKD tại TP.HCM. Ứng tuyển cá nhân bằng CV (PDF), thực hiện dự án. | `STUDENT` |
 | SME | Chủ doanh nghiệp hoặc người phụ trách vận hành tại SME dưới 20 nhân sự. Đăng dự án, chọn ứng viên, định nghĩa milestone, nghiệm thu. | `SME` |
 | Quản trị viên | Đội vận hành GenDA. Duyệt dự án, hỗ trợ tranh chấp, kiểm toán thay đổi trạng thái. | `ADMIN` |
 
@@ -49,12 +49,13 @@ Phân quyền chi tiết theo `docs/authorization-matrix.md`. Mọi yêu cầu d
 
 | ID | Yêu cầu | Ưu tiên |
 | --- | --- | --- |
-| FR-USR-01 | Sinh viên khai hồ sơ gồm họ tên, trường, ngành, năm học, danh sách kỹ năng và liên kết portfolio ngoài. | M |
+| FR-USR-01 | Sinh viên khai hồ sơ gồm họ tên, trường, ngành, năm học, danh sách kỹ năng và CV dạng PDF (tối đa 2 MB, thay được bất cứ lúc nào). | M |
 | FR-USR-02 | Sinh viên nộp minh chứng sinh viên: email tên miền trường **hoặc** ảnh thẻ sinh viên còn hiệu lực. | M |
 | FR-USR-03 | Quản trị viên duyệt hoặc từ chối minh chứng sinh viên; hồ sơ mang trạng thái xác minh rõ ràng (`UNVERIFIED` / `PENDING` / `VERIFIED` / `REJECTED`). Từ chối phải kèm lý do. | M |
 | FR-USR-04 | SME khai hồ sơ gồm tên doanh nghiệp, lĩnh vực, quy mô nhân sự, người liên hệ và thông tin liên lạc. | M |
 | FR-USR-05 | Kỹ năng được chọn từ danh mục kỹ năng do hệ thống quản lý, không nhập tự do, để matching và tìm kiếm hoạt động được. | M |
 | FR-USR-06 | Người dùng xem hồ sơ công khai của bên kia trong phạm vi một dự án đang tương tác. | M |
+| FR-USR-07 | Tài khoản sinh viên mới tạo phải nộp CV (PDF) trước khi xem danh sách và chi tiết dự án; chưa nộp thì được chuyển sang bước nộp CV. | M |
 
 ### 3.3 Dự án — module `projects`
 
@@ -76,7 +77,7 @@ Vòng đời trạng thái theo `docs/domain-model.md`. Trạng thái `SUBMITTED
 
 | ID | Yêu cầu | Ưu tiên |
 | --- | --- | --- |
-| FR-APP-01 | Sinh viên đã xác minh ứng tuyển vào một dự án `PUBLISHED`, kèm thư ngỏ và liên kết sản phẩm minh chứng. | M |
+| FR-APP-01 | Sinh viên đã xác minh ứng tuyển vào một dự án `PUBLISHED`, kèm thư ngỏ và CV (PDF) trong hồ sơ; chưa có CV thì không gửi được đơn. | M |
 | FR-APP-02 | Một sinh viên chỉ có tối đa một ứng tuyển đang hoạt động cho mỗi dự án. | M |
 | FR-APP-03 | SME xem danh sách ứng viên của dự án mình sở hữu, kèm hồ sơ kỹ năng và điểm phù hợp. | M |
 | FR-APP-04 | SME đánh dấu ứng tuyển vào danh sách rút gọn (`SUBMITTED → SHORTLISTED`). | S |
@@ -116,15 +117,9 @@ Vòng đời trạng thái theo `docs/domain-model.md`. Trạng thái `SUBMITTED
 | FR-REV-03 | Đánh giá đã gửi hiển thị trên hồ sơ công khai của sinh viên. | M |
 | FR-REV-04 | Đánh giá hai chiều (sinh viên đánh giá SME) **không** thuộc MVP. | — |
 
-### 3.8 Portfolio và chứng nhận — module `certificates`
+### 3.8 Portfolio và chứng nhận — module `certificates` (đã bỏ)
 
-| ID | Yêu cầu | Ưu tiên |
-| --- | --- | --- |
-| FR-CERT-01 | Khi dự án chuyển `COMPLETED`, hệ thống tạo một mục portfolio đã xác thực cho sinh viên được phân công, gồm tên dự án, tên SME, phạm vi công việc, khoảng thời gian và đánh giá. | M |
-| FR-CERT-02 | Mục portfolio được tạo bởi hệ thống, không do sinh viên tự khai và không thể sửa nội dung xác thực. | M |
-| FR-CERT-03 | Sinh viên chia sẻ portfolio qua một liên kết công khai, chỉ đọc. | M |
-| FR-CERT-04 | Sinh viên chọn ẩn hoặc hiện từng mục trên trang portfolio công khai; ẩn không xóa bản ghi. | S |
-| FR-CERT-05 | Mục portfolio ghi rõ quyền sử dụng sản phẩm đã thỏa thuận giữa SME và sinh viên. | S |
+Portfolio xác thực (FR-CERT-01…05) đã bị loại khỏi phạm vi. Năng lực của sinh viên được thể hiện bằng CV dạng PDF gửi kèm đơn ứng tuyển (FR-USR-01, FR-USR-07, FR-APP-01) và đánh giá của SME sau khi hoàn tất dự án (FR-REV-01…03).
 
 ### 3.9 Quản trị — module `admin`
 
@@ -148,7 +143,7 @@ Bất biến áp dụng xuyên suốt mọi use case. Vi phạm trả về lỗi
 | BR-05 | Mỗi dự án có tối đa một ứng tuyển ở trạng thái `ACCEPTED`. |
 | BR-06 | Một ứng tuyển được chấp nhận thuộc về tối đa một phân công dự án đang hoạt động. |
 | BR-07 | Milestone không được nghiệm thu khi chưa có kết quả bàn giao ở trạng thái `SUBMITTED`. |
-| BR-08 | Chỉ dự án `COMPLETED` mới sinh mục portfolio xác thực hoặc chứng nhận. |
+| BR-08 | Chỉ dự án `COMPLETED` mới được SME gửi đánh giá cho sinh viên. |
 | BR-09 | Mọi hành vi chấp nhận và từ chối ghi lại người thực hiện và thời điểm. |
 | BR-10 | Ngân sách dự án nằm trong khoảng 1.000.000 – 5.000.000 VNĐ. |
 | BR-11 | Hạn chót dự án phải ở tương lai tại thời điểm publish. |
@@ -185,7 +180,7 @@ Vòng đời MVP được coi là hoàn tất khi các kịch bản sau chạy �
 1. **Tạo và duyệt dự án** — SME đã xác minh tạo dự án ngân sách 3.000.000 VNĐ, gửi duyệt; quản trị viên publish; dự án xuất hiện trong danh sách công khai. Quản trị viên từ chối không kèm lý do bị hệ thống chặn.
 2. **Ứng tuyển và chọn** — Sinh viên chưa xác minh bị từ chối ứng tuyển (BR-03). Sinh viên đã xác minh ứng tuyển thành công; ứng tuyển thứ hai vào cùng dự án bị chặn (FR-APP-02). SME chấp nhận một ứng viên; các ứng viên còn lại chuyển `REJECTED` và dự án sang `IN_PROGRESS` trong cùng transaction (FR-APP-05, BR-13).
 3. **Milestone và nghiệm thu** — SME tạo 2 milestone có tổng ngân sách đúng bằng ngân sách dự án; tạo milestone lệch tổng bị chặn (FR-MIL-02). Sinh viên nộp bàn giao; SME yêu cầu chỉnh sửa kèm lý do; sinh viên nộp lại; cả hai lần nộp đều còn trong lịch sử (FR-MIL-05). SME nghiệm thu milestone chưa có bàn giao bị chặn (BR-07).
-4. **Hoàn tất và portfolio** — Sau khi mọi milestone `ACCEPTED`, dự án chuyển `COMPLETED`; hệ thống sinh mục portfolio xác thực; sinh viên mở được liên kết portfolio công khai. Sinh viên không sửa được nội dung xác thực (FR-CERT-02).
+4. **Hoàn tất và đánh giá** — Sau khi mọi milestone `ACCEPTED`, dự án chuyển `COMPLETED`; SME gửi đánh giá đúng một lần và không sửa được (FR-REV-01…03).
 5. **Phân quyền** — Với mỗi use case có trạng thái: truy cập chưa xác thực bị chặn, sai vai trò bị chặn, đúng vai trò nhưng sai chủ sở hữu bị chặn, chuyển trạng thái không hợp lệ bị chặn, và mọi hành động quản trị đều sinh bản ghi kiểm toán (FR-ADM-02).
 
 Ngoài ra, điều kiện đóng theo `docs/definition-of-done.md` phải đạt: lint, typecheck, test, build, migration và seed đã rà soát.
@@ -195,7 +190,7 @@ Ngoài ra, điều kiện đóng theo `docs/definition-of-done.md` phải đạt
 | Nhóm yêu cầu | Module sở hữu | Tài liệu liên quan |
 | --- | --- | --- |
 | FR-AUTH-01…05 | `auth` | `docs/authorization-matrix.md`, `docs/api-conventions.md` |
-| FR-USR-01…06 | `users` | `docs/domain-model.md`, `docs/database-conventions.md` |
+| FR-USR-01…07 | `users` | `docs/domain-model.md`, `docs/database-conventions.md` |
 | FR-PRJ-01…09 | `projects` | `docs/domain-model.md`, `docs/authorization-matrix.md` |
 | FR-APP-01…07 | `applications` | `docs/domain-model.md`, `docs/authorization-matrix.md` |
 | FR-MAT-01…04 | `matching` | `docs/architecture.md`, `docs/testing-strategy.md` |
@@ -236,7 +231,7 @@ Các điểm cần quyết định trước khi module liên quan được imple
 | OQ-02 | **Ứng tuyển theo nhóm.** Slides cho phép nhóm 2–4; mô tả dự án (mới hơn) giới hạn 1 sinh viên ở MVP. Tài liệu này theo mô tả dự án. Cần xác nhận lược đồ dữ liệu có chừa chỗ cho nhóm ở V1.1 hay không. | Slides vs. Mô tả dự án 2.3.1 |
 | OQ-03 | **Trạng thái `SUBMITTED` ở cấp dự án.** `docs/domain-model.md` liệt kê `IN_PROGRESS → SUBMITTED → COMPLETED`, nhưng MVP đóng dự án bằng cách nghiệm thu milestone cuối. Cần chốt: bỏ `SUBMITTED` khỏi vòng đời dự án, hay thêm bước sinh viên bàn giao toàn bộ dự án. | `docs/domain-model.md` vs. FR-PRJ-08 |
 | OQ-04 | **Stack backend.** Slides ghi Node.js/Express; ADR 0001 từng chọn NestJS. ADR 0002 thay thế stack backend bằng Java/Spring Boot, JPA và Flyway; modular monolith được giữ nguyên. Tài liệu này theo nguồn kỹ thuật hiện hành. | Slides vs. ADR 0002 |
-| OQ-05 | **Quyền sở hữu sản phẩm bàn giao.** Mô tả dự án 2.3.8 yêu cầu quy định rõ quyền sở hữu, quyền SME sử dụng và quyền sinh viên đưa vào portfolio. Cần văn bản pháp lý trước khi FR-CERT-05 được implement. | Mô tả dự án 2.3.8 |
+| OQ-05 | **Quyền sở hữu sản phẩm bàn giao.** Mô tả dự án 2.3.8 yêu cầu quy định rõ quyền sở hữu, quyền SME sử dụng và quyền sinh viên nêu sản phẩm trong CV. Cần văn bản pháp lý trước khi vận hành thật. | Mô tả dự án 2.3.8 |
 | OQ-06 | **Đăng ký sàn TMĐT.** Mô tả dự án 2.3.8 nêu nghĩa vụ rà soát đăng ký website cung cấp dịch vụ TMĐT với Bộ Công Thương khi vận hành chính thức. Ảnh hưởng thời điểm mở public, không ảnh hưởng MVP pilot. | NĐ 52/2013, NĐ 85/2021 |
 | OQ-07 | **Lưu trữ tệp.** `docs/database-conventions.md` yêu cầu object storage nhưng chưa chọn nhà cung cấp; ràng buộc chi phí là NFR-OPS-01. Cần một ADR. | `docs/database-conventions.md` |
 
@@ -257,4 +252,3 @@ Các điểm cần quyết định trước khi module liên quan được imple
 | SME giao việc vượt phạm vi đã thỏa thuận | Sinh viên bị thiệt, bỏ nền tảng | Phạm vi và tiêu chí nghiệm thu bắt buộc khai lúc đăng dự án (FR-PRJ-01); milestone cố định ngân sách (FR-MIL-02) |
 | Tranh chấp lúc nghiệm thu | Bế tắc, cần can thiệp thủ công | Lịch sử bàn giao không ghi đè (FR-MIL-05), nhật ký chuyển trạng thái cho quản trị viên (FR-ADM-03) |
 | Thị trường hai phía lệch cung cầu | Không có giao dịch để kiểm chứng | Ngoài phạm vi kỹ thuật; thuộc kế hoạch GTM ba giai đoạn |
-| Portfolio xác thực bị khai khống | Mất giá trị cốt lõi của sản phẩm | Mục portfolio do hệ thống sinh, sinh viên không sửa được (FR-CERT-02) |

@@ -9,6 +9,7 @@ import { SelectField, TextField } from "../../../../components/ui/field";
 import { SkillMultiSelect } from "../../../../features/projects/components/skill-multi-select";
 import { VerificationPanel } from "../../../../features/auth/components/verification-panel";
 import { ProfileSaveButton, ReuploadVerificationButton } from "../../../../features/users/components/profile-action-buttons";
+import { CvUploader } from "../../../../features/users/components/cv-uploader";
 import { CURRENT_STUDENT } from "../../../../mocks/data";
 
 export const metadata: Metadata = {
@@ -115,7 +116,7 @@ export default function StudentProfilePage() {
             </div>
           </div>
 
-          {/* MỘT CỘT: thông tin cơ bản + kỹ năng (tài khoản, đăng xuất, portfolio đã nằm trong menu người dùng trên header) */}
+          {/* MỘT CỘT: thông tin cơ bản + kỹ năng (tài khoản, đăng xuất, CV đã có lối tắt trong menu người dùng trên header) */}
           <div style={{ maxWidth: "880px" }}>
             <div className="stack stack--lg">
               {/* Chưa xác thực thì vẫn cần chỗ gửi minh chứng sinh viên */}
@@ -172,10 +173,24 @@ export default function StudentProfilePage() {
                 </form>
               </section>
 
-              {/* SECTION: KỸ NĂNG CHUẨN */}
+              {/* SECTION: CV (PDF) — gửi kèm mỗi đơn ứng tuyển */}
               <section className="module-bay" style={{ padding: "var(--space-6)" }}>
                 <div className="module-bay__header">
                   <span className="module-bay__id">MODULE // 02</span>
+                  <span>CV CỦA TÔI</span>
+                </div>
+
+                <p className="text-muted" style={{ margin: "0 0 var(--space-4)", fontSize: "12px" }}>
+                  CV dạng PDF được gửi kèm mỗi đơn ứng tuyển để doanh nghiệp xem cùng thư ngỏ. Thay CV mới thì các đơn gửi sau sẽ dùng bản mới.
+                </p>
+
+                <CvUploader id="profile-cv" />
+              </section>
+
+              {/* SECTION: KỸ NĂNG CHUẨN */}
+              <section className="module-bay" style={{ padding: "var(--space-6)" }}>
+                <div className="module-bay__header">
+                  <span className="module-bay__id">MODULE // 03</span>
                   <span>DANH MỤC KỸ NĂNG CHUẨN</span>
                 </div>
 

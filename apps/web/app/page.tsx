@@ -7,7 +7,7 @@ import { StatusBadge } from "../components/ui/status-badge";
 import { Typewriter } from "../components/ui/typewriter";
 import { HeroPattern } from "../components/ui/hero-pattern";
 import { ArrowRight, Check, ICON_WEIGHT } from "../components/ui/icons";
-import { CURRENT_STUDENT, PORTFOLIO, PROJECTS, TODAY } from "../mocks/data";
+import { CURRENT_STUDENT, PROJECTS, TODAY } from "../mocks/data";
 import { daysUntil, formatDate, formatVnd, matchScore } from "../lib/utils/format";
 
 /**
@@ -47,18 +47,28 @@ const PILLARS = [
     body: "Ở bản đầu tiên này, GenDA ghi nhận trạng thái tiền của từng mốc để hai bên cùng nhìn vào một chỗ, nhưng chưa giữ tiền thật. Điều đó được nói rõ ở mọi màn hình liên quan, thay vì để bạn tự phát hiện ra sau."
   },
   {
-    title: "Portfolio xác thực",
-    lead: "Không ai tự khai được, kể cả bạn",
-    body: "Làm xong và được nghiệm thu, hệ thống tự viết mục portfolio cho bạn: tên doanh nghiệp, việc đã làm, thời gian, đánh giá. Bạn chỉ chọn ẩn hay hiện, phần nội dung thì khóa."
+    title: "Ứng tuyển bằng CV",
+    lead: "Nộp một lần, dùng cho mọi đơn",
+    body: "Bạn tải CV dạng PDF lên một lần, mỗi đơn ứng tuyển đều tự gửi kèm để doanh nghiệp đọc cùng thư ngỏ. Có kinh nghiệm mới thì thay CV, các đơn sau dùng bản mới."
   }
 ];
+
+/** Ví dụ một dòng kinh nghiệm sinh viên đưa vào CV sau khi dự án được nghiệm thu. */
+const CV_HIGHLIGHT = {
+  title: "Trang giới thiệu vùng trồng cho hợp tác xã rau Củ Chi",
+  smeName: "HTX Rau an toàn Tân Phú Trung",
+  period: "12/06/2026 - 04/07/2026",
+  skills: ["Next.js", "React", "UI/UX"],
+  review:
+    "Bạn chủ động hỏi lại những chỗ đề bài của bên mình viết chưa rõ, nên không phải làm lại lần nào. Trang chạy nhanh, các cô chú trong hợp tác xã tự vào xem trên điện thoại được."
+};
 
 export default function HomePage() {
   const published = PROJECTS.filter((project) => project.status === "PUBLISHED");
   const featured = published.slice(0, 3);
   const preview = published[0];
   const previewScore = matchScore(preview.skills, CURRENT_STUDENT.skills);
-  const sample = PORTFOLIO[0];
+  const sample = CV_HIGHLIGHT;
 
   return (
     <>
@@ -327,8 +337,8 @@ export default function HomePage() {
             <div className="split" style={{ marginTop: "var(--space-8)" }}>
               <div>
                 <p className="lede" style={{ marginBottom: "var(--space-6)" }}>
-                  Không phải một tấm chứng chỉ chung chung. Là một mục hồ sơ do hệ thống tự viết sau khi
-                  doanh nghiệp nghiệm thu, nhà tuyển dụng đọc vào là biết chắc công việc đã thật sự diễn ra.
+                  Không phải một tấm chứng chỉ chung chung. Là một dự án thật có doanh nghiệp nghiệm thu và
+                  đánh giá, đủ để bạn ghi vào CV và kể lại cụ thể trong buổi phỏng vấn tiếp theo.
                 </p>
 
                 <blockquote className="pull-quote">
@@ -367,8 +377,8 @@ export default function HomePage() {
                 </ul>
 
                 <div className="card__footer">
-                  <Link href={`/portfolio/le-tuan-loc`} className="btn btn--outline btn--sm">
-                    Xem hồ sơ đầy đủ
+                  <Link href="/student/cv" className="btn btn--outline btn--sm">
+                    Cập nhật CV của bạn
                     <ArrowRight weight={ICON_WEIGHT} aria-hidden="true" />
                   </Link>
                 </div>

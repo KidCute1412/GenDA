@@ -725,21 +725,6 @@
   height: 44px; /* vùng chạm WCAG 2.5.8 */
 }
 
-/* --- Thẻ gạt ẩn/hiện mục portfolio (FR-CERT-04) --- */
-.toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  min-height: 44px;
-  cursor: pointer;
-}
-
-.toggle input {
-  width: 44px;
-  height: 24px;
-  accent-color: var(--color-status-verified);
-}
-
 /* ==========================================================================
    DROPZONE — design-tokens.md 3.7
    Kéo thả là thao tác chuột thuần túy, nên vùng này BẮT BUỘC đồng thời là một
@@ -3427,25 +3412,3 @@
   font-size: 12px;
 }
 
-/* ==========================================================================
-   BENTO GRID — trang portfolio công khai (design.md 7.7)
-   Ô có kích thước khác nhau; số ô đúng bằng số mục nội dung.
-   ========================================================================== */
-
-.bento {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-card-gap);
-}
-
-@media (min-width: 768px) {
-  .bento {
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--layout-grid-gap);
-  }
-
-  /* Mục đầu tiên chiếm trọn hàng: đây là dự án nổi bật, không ngang hàng */
-  .bento > :first-child {
-    grid-column: 1 / -1;
-  }
-}

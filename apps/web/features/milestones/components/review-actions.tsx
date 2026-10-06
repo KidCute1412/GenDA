@@ -38,9 +38,9 @@ export function ReviewActions({ enabled, isFinalMilestone }: { enabled: boolean;
         {isFinalMilestone ? (
           <section className="card stack stack--sm">
             <Alert variant="success" title="Dự án đã hoàn tất">
-              Đây là mốc cuối cùng. Dự án chuyển sang COMPLETED; SME cần gửi đánh giá để hệ thống sinh portfolio xác thực.
+              Đây là mốc cuối cùng. Dự án chuyển sang COMPLETED; SME gửi đánh giá cho sinh viên để khép lại dự án.
             </Alert>
-            <ReviewForm studentName="Lê Tuấn Lộc" portfolioSlug="le-tuan-loc" />
+            <ReviewForm studentName="Lê Tuấn Lộc" />
           </section>
         ) : null}
       </div>

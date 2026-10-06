@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { cvOnboardingHref } from "../../users/components/cv-required-gate";
 import { TextField } from "../../../components/ui/field";
 import { PasswordField } from "../../../features/auth/components/password-field";
 import { setDemoSession } from "../services/demo-session";
@@ -145,7 +146,7 @@ export function RegisterFormClient({ initialRole = "STUDENT" }: { initialRole?: 
   }
 
   if (registered) {
-    const next = role === "SME" ? "/sme/projects/new?emailVerified=1" : "/projects?emailVerified=1";
+    const next = role === "SME" ? "/sme/projects/new?emailVerified=1" : cvOnboardingHref("/projects?emailVerified=1");
     const verificationHref = `/verify-email?token=genda-demo-valid-2026&next=${encodeURIComponent(next)}`;
 
     return (

@@ -3,12 +3,13 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { Button } from "../../../components/ui/button";
-import { TextAreaField, TextField } from "../../../components/ui/field";
+import { Field, TextAreaField } from "../../../components/ui/field";
 import { Alert } from "../../../components/ui/alert";
 import { CheckCircle, ICON_WEIGHT } from "../../../components/ui/icons";
 import { useDemoSession } from "../../auth/hooks/use-demo-session";
 import { applyToProject } from "../../demo-ledger/store";
 import { useDemoLedger } from "../../demo-ledger/use-demo-ledger";
+import { CvUploader } from "../../users/components/cv-uploader";
 
 /**
  * Hộp thoại Ứng tuyển (docs/design.md 7.4, FR-APP-01).
@@ -22,6 +23,8 @@ import { useDemoLedger } from "../../demo-ledger/use-demo-ledger";
  * Chặn mềm theo BR-03: sinh viên chưa xác thực vẫn mở được hộp thoại để ĐỌC
  * yêu cầu, nhưng không gửi được đơn. Chặn ngay từ nút bấm sẽ khiến bạn ấy không
  * hiểu vì sao mình bị chặn.
+ *
+ * Đơn ứng tuyển gửi kèm CV (PDF) của sinh viên; có thể thay CV ngay trong hộp thoại.
  */
 type Status = "idle" | "submitting" | "done";
 
@@ -57,7 +60,8 @@ export function ApplyButton({
 
   const isStudent = session?.role === "STUDENT";
   const hasVerifiedEmail = session?.emailVerified === true;
-  const canSubmit = isStudent && (student?.studentVerified ?? verified) && hasVerifiedEmail && letter.trim().length >= 80 && status === "idle";
+  const hasCv = Boolean(student?.cv);
+  const canSubmit = isStudent && (student?.studentVerified ?? verified) && hasVerifiedEmail && hasCv && letter.trim().length >= 80 && status === "idle";
 
   function open() {
     if (!isStudent) return;
@@ -74,8 +78,7 @@ export function ApplyButton({
     if (!canSubmit) return;
 
     setStatus("submitting");
-    const portfolioUrl = (event.currentTarget.querySelector("#portfolio-url") as HTMLInputElement | null)?.value ?? "";
-    const result = applyToProject({ email: session?.email ?? "", projectId, coverLetter: letter, portfolioUrl });
+    const result = applyToProject({ email: session?.email ?? "", projectId, coverLetter: letter });
     if (!result.ok) { setSubmitError(result.message); setStatus("idle"); return; }
     setSubmitError(null);
     setStatus("done");
@@ -166,14 +169,12 @@ export function ApplyButton({
                 placeholder="Em đã làm một trang tương tự cho..."
               />
 
-              <TextField
-                id="portfolio-url"
-                label="Liên kết sản phẩm minh chứng"
-                type="url"
-                disabled={!verified || !hasVerifiedEmail}
-                placeholder="https://github.com/ten-cua-ban"
-                hint="GitHub, Behance, Drive hay bất cứ nơi nào doanh nghiệp xem được sản phẩm của bạn."
-              />
+              {verified && hasVerifiedEmail ? (
+                <Field id="apply-cv" label="CV đính kèm (PDF)" required>
+                  <CvUploader id="apply-cv" />
+                  <p className="field__hint">Doanh nghiệp xem CV này cùng thư ngỏ. Thay CV ở đây cũng cập nhật CV trong hồ sơ của bạn.</p>
+                </Field>
+              ) : null}
             </div>
 
             <div className="dialog__actions">
@@ -187,9 +188,9 @@ export function ApplyButton({
 
             {/* Nút disabled BẮT BUỘC đi kèm dòng giải thích lý do (BR-07,
                 design-tokens.md 3.1) — nếu không người dùng chỉ thấy nút xám. */}
-            {verified && hasVerifiedEmail && letter.trim().length < 80 ? (
+            {verified && hasVerifiedEmail && (letter.trim().length < 80 || !hasCv) ? (
               <p className="hint-disabled" style={{ marginTop: "var(--space-3)", textAlign: "right" }}>
-                Viết thư ngỏ ít nhất 80 ký tự để gửi được đơn.
+                {!hasCv ? "Tải lên CV (PDF) để gửi được đơn." : "Viết thư ngỏ ít nhất 80 ký tự để gửi được đơn."}
               </p>
             ) : null}
           </form>

@@ -1,21 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { Alert } from "../../../components/ui/alert";
 import { Button } from "../../../components/ui/button";
 import { TextAreaField } from "../../../components/ui/field";
 
 /** Mock UI for FR-REV-01..03. Persistence and the once-only constraint belong to reviews use case. */
-export function ReviewForm({ studentName, portfolioSlug }: { studentName: string; portfolioSlug: string }) {
+export function ReviewForm({ studentName }: { studentName: string }) {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
   if (submitted) {
     return (
-      <Alert variant="success" title="Đã gửi đánh giá và tạo portfolio xác thực" live="polite">
-        Đánh giá của bạn đã được khóa. Hệ thống đã tạo mục portfolio xác thực cho {studentName}. <Link href={`/portfolio/${portfolioSlug}`}>Mở portfolio công khai</Link>
+      <Alert variant="success" title="Đã gửi đánh giá" live="polite">
+        Đánh giá của bạn dành cho {studentName} đã được khóa và không thể sửa.
       </Alert>
     );
   }
@@ -51,7 +50,7 @@ export function ReviewForm({ studentName, portfolioSlug }: { studentName: string
         hint="Đánh giá chỉ gửi một lần và không thể sửa sau đó."
       />
       <Button type="submit" disabled={rating === 0 || comment.trim().length < 10}>
-        GỬI ĐÁNH GIÁ VÀ TẠO PORTFOLIO
+        GỬI ĐÁNH GIÁ
       </Button>
     </form>
   );

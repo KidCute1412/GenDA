@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     template: "%s | GenDA"
   },
   description:
-    "Nền tảng kết nối sinh viên TP.HCM với doanh nghiệp nhỏ và vừa qua các mini-project 1-5 triệu đồng, có mốc bàn giao rõ ràng và portfolio được xác thực.",
+    "Nền tảng kết nối sinh viên TP.HCM với doanh nghiệp nhỏ và vừa qua các mini-project 1-5 triệu đồng, có mốc bàn giao rõ ràng và ứng tuyển bằng CV.",
   icons: {
     icon: [
       { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },

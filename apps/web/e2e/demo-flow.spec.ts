@@ -41,7 +41,7 @@ test("runs the demo lifecycle across SME, Admin and Student", async ({ page }) =
   await page.goto("/login"); await page.getByRole("button", { name: /SINH VIÊN$/i }).click(); await page.goto("/projects");
   const projectCard = page.locator("article").filter({ hasText: title }); await expect(projectCard).toBeVisible(); await projectCard.getByRole("button", { name: /Ứng tuyển ngay/i }).click();
   await page.getByLabel("Thư ngỏ").fill("Em đã có kinh nghiệm thực hiện sản phẩm tương tự và có thể bàn giao đúng hạn theo các mốc đã nêu.");
-  await page.getByLabel("Liên kết sản phẩm minh chứng").fill("https://example.com/portfolio"); await page.getByRole("button", { name: "Gửi đơn ứng tuyển" }).click(); await expect(page.getByText("Đã gửi đơn của bạn")).toBeVisible();
+  await expect(page.getByRole("button", { name: /XEM CV/ })).toBeVisible(); await page.getByRole("button", { name: "Gửi đơn ứng tuyển" }).click(); await expect(page.getByText("Đã gửi đơn của bạn")).toBeVisible();
 
   await page.goto("/login"); await page.getByRole("button", { name: /DOANH NGHIỆP$/i }).click(); await page.goto("/sme/projects");
   const applicantCard = page.locator("article").filter({ hasText: title }); await applicantCard.getByRole("button", { name: "Chấp nhận" }).click(); await expect(applicantCard.getByRole("link", { name: "Vào workspace" })).toBeVisible();
@@ -54,8 +54,5 @@ test("runs the demo lifecycle across SME, Admin and Student", async ({ page }) =
   await page.goto("/login"); await page.getByRole("button", { name: /SINH VIÊN$/i }).click(); await page.goto("/workspace/demo"); await page.getByLabel("Liên kết bàn giao").fill("https://example.com/delivery-2"); await page.getByLabel("Ghi chú").fill("Bàn giao mốc cuối"); await page.getByRole("button", { name: "Nộp bàn giao" }).click();
   await page.goto("/login"); await page.getByRole("button", { name: /DOANH NGHIỆP$/i }).click(); await page.goto("/workspace/demo"); await page.getByRole("button", { name: "Nghiệm thu" }).click(); await expect(page.getByText("Đã hoàn thành")).toBeVisible();
   await page.getByLabel("Nhận xét").fill("Sinh viên bàn giao đầy đủ, đúng hạn và phản hồi tốt."); await page.getByRole("button", { name: "Gửi đánh giá" }).click();
-
-  await page.goto("/login"); await page.getByRole("button", { name: /SINH VIÊN$/i }).click(); await page.goto("/portfolio/le-tuan-loc");
-  const portfolioEntry = page.locator("article").filter({ hasText: title }); await expect(portfolioEntry).toBeVisible(); await expect(portfolioEntry.getByText("5/5")).toBeVisible();
-  await portfolioEntry.getByRole("button", { name: "Ẩn khỏi trang công khai" }).click(); await expect(portfolioEntry.getByText("ĐANG ẨN")).toBeVisible();
+  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("genda-demo:ledger:v2") ?? "{}").reviews?.length ?? 0)).toBeGreaterThan(0);
 });
