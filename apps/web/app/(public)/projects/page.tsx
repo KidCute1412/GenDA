@@ -7,9 +7,11 @@ import { BottomNav } from "../../../components/layout/bottom-nav";
 import { ButtonLink } from "../../../components/ui/button";
 import { EmptyState } from "../../../components/ui/feedback";
 import { Check, MagnifyingGlass } from "../../../components/ui/icons";
-import { CURRENT_STUDENT, PROJECTS, SKILL_CATALOG, TODAY } from "../../../mocks/data";
+import { CURRENT_STUDENT } from "../../../mocks/data";
 import { daysUntil, formatDate, formatVnd, matchScore } from "../../../lib/utils/format";
-import { LedgerPublishedProjects } from "../../../features/projects/components/ledger-published-projects";
+import { browsePublishedProjects, listSkills } from "../../../features/projects/api";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Dự án đang tuyển",
@@ -35,12 +37,7 @@ const BUDGET_BUCKETS = [
   { key: "3-5", label: "3 đến 5 triệu", min: 3_000_000, max: 5_000_000 }
 ];
 
-/** Chỉ mở bộ lọc cho các kỹ năng đang thực sự có dự án, tránh ngõ cụt 0 kết quả. */
-const FILTERABLE_SKILLS = SKILL_CATALOG.filter((skill) =>
-  PROJECTS.some((project) => project.status === "PUBLISHED" && project.skills.includes(skill))
-);
-
-type SearchParams = { q?: string; skill?: string | string[]; budget?: string };
+type SearchParams = { q?: string; skill?: string | string[]; budget?: string; page?: string };
 
 function toList(value: string | string[] | undefined): string[] {
   if (!value) return [];
@@ -71,6 +68,16 @@ function toggleBudgetHref(params: SearchParams, bucket: string) {
   return qs ? `/projects?${qs}` : "/projects";
 }
 
+function pageHref(params: SearchParams, page: number) {
+  const query = new URLSearchParams();
+  if (params.q) query.set("q", params.q);
+  if (params.budget) query.set("budget", params.budget);
+  toList(params.skill).forEach((skill) => query.append("skill", skill));
+  if (page > 1) query.set("page", String(page));
+  const qs = query.toString();
+  return qs ? `/projects?${qs}` : "/projects";
+}
+
 export default async function ProjectsPage({
   searchParams
 }: {
@@ -78,28 +85,26 @@ export default async function ProjectsPage({
 }) {
   const params = await searchParams;
   const activeSkills = toList(params.skill);
-  const keyword = (params.q ?? "").trim().toLowerCase();
+  const keyword = (params.q ?? "").trim();
   const bucket = BUDGET_BUCKETS.find((b) => b.key === params.budget);
   const hasFilter = Boolean(keyword || activeSkills.length > 0 || bucket);
 
-  const results = PROJECTS.filter((project) => project.status === "PUBLISHED")
-    .filter((project) =>
-      keyword
-        ? project.title.toLowerCase().includes(keyword) ||
-          project.smeName.toLowerCase().includes(keyword) ||
-          project.skills.some((skill) => skill.toLowerCase().includes(keyword))
-        : true
-    )
-    .filter((project) =>
-      activeSkills.length > 0 ? activeSkills.every((skill) => project.skills.includes(skill)) : true
-    )
-    .filter((project) => (bucket ? project.budget >= bucket.min && project.budget <= bucket.max : true))
-    // Sắp xếp giảm dần theo điểm phù hợp (FR-MAT-03)
-    .sort(
-      (a, b) =>
-        matchScore(b.skills, CURRENT_STUDENT.skills).percent -
-        matchScore(a.skills, CURRENT_STUDENT.skills).percent
-    );
+  const requestedPage = Number.parseInt(params.page ?? "1", 10);
+  const currentPage = Number.isFinite(requestedPage) && requestedPage > 0 ? requestedPage : 1;
+  const [projectPage, filterableSkills] = await Promise.all([
+    browsePublishedProjects({
+      q: keyword || undefined,
+      skill: activeSkills.length > 0 ? activeSkills : undefined,
+      minBudget: bucket?.min,
+      maxBudget: bucket?.max,
+      page: currentPage,
+      pageSize: 12
+    }),
+    listSkills()
+  ]);
+  const results = projectPage.data;
+  const pageCount = Math.max(1, Math.ceil(projectPage.total / projectPage.pageSize));
+  const today = new Date().toISOString().slice(0, 10);
 
   return (
     <>
@@ -107,7 +112,6 @@ export default async function ProjectsPage({
 
       {/* projects-page: chạy hiệu ứng vào trang (vạch quét + các khối hiện lần lượt), xem components.css */}
       <main id="main-content" className="container has-bottom-nav projects-page" style={{ paddingTop: "var(--space-8)" }}>
-        <LedgerPublishedProjects />
         <div className="section--tight projects-page__head" style={{ borderBottom: "2px solid var(--machinery-border)", paddingBottom: "var(--space-6)", marginBottom: "var(--space-8)" }}>
           <h1 className="industrial-display projects-page__title" style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}>
             DỰ ÁN ĐANG TUYỂN
@@ -150,18 +154,18 @@ export default async function ProjectsPage({
               {"// LỌC THEO KỸ NĂNG"}
             </legend>
             <ul className="pill-list">
-              {FILTERABLE_SKILLS.map((skill) => {
-                const on = activeSkills.includes(skill);
+              {filterableSkills.map((skill) => {
+                const on = activeSkills.includes(skill.code);
                 return (
-                  <li key={skill}>
+                  <li key={skill.code}>
                     <Link
-                      href={toggleSkillHref(params, skill)}
+                      href={toggleSkillHref(params, skill.code)}
                       className="chip"
                       aria-pressed={on}
                       scroll={false}
                     >
                       {on ? <Check weight="bold" aria-hidden="true" /> : null}
-                      {skill}
+                      {skill.name}
                     </Link>
                   </li>
                 );
@@ -210,10 +214,10 @@ export default async function ProjectsPage({
         <div className="section--tight">
           <div className="enter" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px dashed var(--machinery-border)", paddingBottom: "var(--space-2)", marginBottom: "var(--space-4)", "--e": 6 } as CSSProperties}>
             <p style={{ fontFamily: "ui-monospace, monospace", fontSize: "12px", fontWeight: 700, margin: 0, textTransform: "uppercase" }} aria-live="polite">
-              KẾT QUẢ QUÉT: <span style={{ color: "var(--orange-500)" }}>{results.length}</span> DỰ ÁN
+              KẾT QUẢ QUÉT: <span style={{ color: "var(--orange-500)" }}>{projectPage.total}</span> DỰ ÁN
             </p>
             <span style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px", color: "var(--color-text-muted)" }}>
-              SORT: MATCH_SCORE DESC
+              SORT: DEADLINE ASC
             </span>
           </div>
 
@@ -228,10 +232,12 @@ export default async function ProjectsPage({
               }
             />
           ) : (
+            <>
             <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
               {results.map((project, idx) => {
-                const score = matchScore(project.skills, CURRENT_STUDENT.skills);
-                const remaining = daysUntil(project.deadline, TODAY);
+                const projectSkillNames = project.skills.map((skill) => skill.name);
+                const score = matchScore(projectSkillNames, CURRENT_STUDENT.skills);
+                const remaining = daysUntil(project.deadline, today);
                 const bayId = `MOD-${String(idx + 1).padStart(2, "0")}`;
 
                 return (
@@ -261,14 +267,14 @@ export default async function ProjectsPage({
 
                       <ul className="pill-list" style={{ marginTop: "var(--space-2)" }}>
                         {project.skills.map((skill) => {
-                          const owned = score.matched.includes(skill);
+                          const owned = score.matched.includes(skill.name);
                           return (
                             <li
-                              key={skill}
+                              key={skill.code}
                               className={`skill-pill ${owned ? "skill-pill--matched" : ""}`}
                             >
                               {owned ? <Check weight="bold" aria-hidden="true" /> : null}
-                              {skill}
+                              {skill.name}
                               {owned ? (
                                 <span className="visually-hidden">(bạn đã có kỹ năng này)</span>
                               ) : null}
@@ -324,6 +330,22 @@ export default async function ProjectsPage({
                 );
               })}
             </ul>
+            {pageCount > 1 ? (
+              <nav className="cluster cluster--between" aria-label="Phân trang dự án" style={{ marginTop: "var(--space-6)" }}>
+                {currentPage > 1 ? (
+                  <ButtonLink href={pageHref(params, currentPage - 1)} variant="outline" className="btn--tactile-zinc">
+                    Trang trước
+                  </ButtonLink>
+                ) : <span />}
+                <span className="text-caption num">Trang {currentPage}/{pageCount}</span>
+                {currentPage < pageCount ? (
+                  <ButtonLink href={pageHref(params, currentPage + 1)} variant="outline" className="btn--tactile-zinc">
+                    Trang sau
+                  </ButtonLink>
+                ) : <span />}
+              </nav>
+            ) : null}
+            </>
           )}
         </div>
       </main>
