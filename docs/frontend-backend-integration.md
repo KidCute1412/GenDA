@@ -19,7 +19,7 @@ The public project list and detail Server Components call the backend through `A
 Until their backend slices exist, these behaviors stay behind the existing demo adapters:
 
 - the current demo student's skill set and the displayed match score;
-- demo session/email-verification state;
+- email-verification state;
 - the apply action and application lifecycle;
 - SME/admin/workspace workflows.
 
@@ -29,6 +29,6 @@ These values never grant backend authorization. Do not send them as trusted role
 
 `compose.yaml` activates Spring profile `demo`. After Flyway finishes the versioned schema migrations, a profile-scoped startup runner executes the idempotent catalog seed. The seed is deliberately absent from Flyway schema history. Deployment environments do not activate `demo`, so production receives the canonical skill reference data but no sample projects.
 
-## Authentication decision still open
+## Authentication boundary
 
-The three catalog reads are temporarily unauthenticated so the current public discovery routes can integrate before the identity/session contract exists. This is an explicit exception to the current authorization matrix, which says published-project browsing requires authentication. Before the protected MVP release, resolve the public-discovery decision and either enforce authentication in the API or update the matrix and privacy review.
+The login and registration UI use the generated client with `credentials: include`. JavaScript receives only the authenticated user DTO; both JWTs remain in `HttpOnly` cookies. Student registration creates a session with an unverified account. SME registration creates a `PENDING` account without a session and the API blocks login until approval. On page load, the frontend calls `/auth/me`; an expired access cookie triggers one `/auth/refresh` rotation before retrying. Email verification and SME moderation remain separate future backend slices. Catalog reads remain public while all mutations are protected by backend authentication, authorization and CSRF checks.

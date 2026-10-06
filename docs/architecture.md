@@ -13,7 +13,7 @@ packages/config      existing shared frontend configuration placeholders
 
 Persistence uses PostgreSQL, Spring Data JPA/Hibernate and Flyway. Springdoc 3.0.3 generates the code-first REST contract. See [ADR 0002](decisions/0002-spring-boot-and-docker.md), [API conventions](api-conventions.md) and [database conventions](database-conventions.md).
 
-**Current capability:** the backend implements health/readiness plus a read-only published-project catalog: `GET /api/v1/skills`, `GET /api/v1/projects`, and `GET /api/v1/projects/{projectId}`. Flyway owns the skill/project catalog schema; the local `demo` profile adds deterministic sample projects. The public project list and detail pages use the generated API client. Authentication, matching, applications, and the remaining browser demo workflows are still localStorage/sample-data behavior and are not production authorization or persistence.
+**Current capability:** the backend implements health/readiness, account registration, JWT cookie authentication, and a read-only published-project catalog. Authentication exposes CSRF bootstrap, student/SME registration, login, refresh, logout and current-user endpoints. Flyway owns users, registration identity fields and revocable refresh sessions; the local `demo` profile adds deterministic sample users/projects. Email verification, matching, applications, and the remaining workflows still use sample/local browser data.
 
 ## Modular monolith and business ownership
 
@@ -58,7 +58,7 @@ Springdoc emits `/api/v1/openapi` locally. Export the normalized snapshot and re
 
 Health preserves `{ status: "ok", service: "genda-api" }`, returning 503 if PostgreSQL is unavailable. Compose and Render use it for readiness. Errors use `{ code, message, requestId }`, without SQL, credentials or stack traces.
 
-No real auth existed in the scaffold. Mock role selection is not identity. Choose the auth provider/session contract before implementing protected endpoints, and enforce the authorization matrix on the backend.
+Authentication uses a five-minute access JWT and a rotating refresh JWT in scoped `HttpOnly` cookies. Refresh sessions are fingerprinted in PostgreSQL and revoked on logout. Refresh TTL is 24 hours by default or seven days when the user remembers the device. Cookie mutations require a double-submit CSRF token; CORS allows credentials only from configured exact origins. Frontend role checks remain UX only.
 
 ## Frontend
 
@@ -92,6 +92,5 @@ See [local development](local-development.md) for launch/reload/checks and the c
 ## Decisions needed when implementing business features
 
 Local infrastructure and deployment target choices are settled by ADR 0002. These do not block local launch:
-- Authentication provider and session/token contract: choose before protected APIs; browser demo login is not authentication.
 - Object storage provider and upload authorization: choose before file deliverables; no durable uploads on Render filesystem.
 - Confirm group applications and the project-level SUBMITTED transition before their schema/use cases; existing OQ-02/OQ-03 in requirements describe the alternatives.

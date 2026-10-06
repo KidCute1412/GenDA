@@ -3,6 +3,6 @@ import type { paths } from "./schema";
 
 export type { paths, components } from "./schema";
 
-export function createApiClient(baseUrl: string) {
-  return createClient<paths>({ baseUrl });
+export function createApiClient(baseUrl: string, options: { credentials?: RequestCredentials } = {}) {
+  return createClient<paths>({ baseUrl, ...options });
 }
