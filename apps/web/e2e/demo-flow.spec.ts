@@ -1,6 +1,9 @@
 import { expect, test } from "@playwright/test";
 
-test.beforeEach(async ({ page }) => { await page.goto("/"); await page.evaluate(() => { for (let i = localStorage.length - 1; i >= 0; i -= 1) { const key = localStorage.key(i); if (key?.startsWith("genda-demo:")) localStorage.removeItem(key); } }); });
+// Trợ lý Gen tự bật có thể che nút mà luồng demo cần bấm; Gen có kiểm thử riêng ở assistant.spec.ts
+const QUIET_GEN = { version: 1, introDone: true, seen: {}, lastActiveAt: null, autoOpen: false };
+
+test.beforeEach(async ({ page }) => { await page.addInitScript((memory) => localStorage.setItem("genda-demo:assistant:student-loc", JSON.stringify(memory)), QUIET_GEN); await page.goto("/"); await page.evaluate(() => { for (let i = localStorage.length - 1; i >= 0; i -= 1) { const key = localStorage.key(i); if (key?.startsWith("genda-demo:")) localStorage.removeItem(key); } }); });
 
 test("role session survives navigation and protects student pages", async ({ page }) => {
   await page.goto("/student/applications");

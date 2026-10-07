@@ -154,3 +154,63 @@ export function advanceEscrow(email: string, milestoneId: string) { return updat
 export function submitReview(input: { email: string; projectId: string; rating: number; comment: string }) { return update((draft) => { const user = actor(draft, input.email); const project = draft.projects.find((p) => p.id === input.projectId); const accepted = draft.applications.find((a) => a.projectId === input.projectId && a.status === "ACCEPTED"); if (!user || !project || user.id !== project.ownerId) return fail("NOT_OWNER", "Bạn không sở hữu dự án này."); if (project.status !== "COMPLETED" || !accepted) return fail("INVALID_TRANSITION", "Dự án chưa hoàn tất."); if (draft.reviews.some((r) => r.projectId === input.projectId)) return fail("INVALID_TRANSITION", "Đánh giá chỉ được gửi một lần."); const review = { id: crypto.randomUUID(), projectId: project.id, studentId: accepted.studentId, rating: input.rating, comment: input.comment, createdAt: new Date().toISOString() }; draft.reviews.push(review); audit(draft, user.id, "SUBMIT_REVIEW", project.id); return { ok: true, value: undefined }; }); }
 
 if (typeof window !== "undefined") window.addEventListener("storage", (event) => { if (event.key === KEY) { memory = null; listeners.forEach((listener) => listener()); } });
+
+/**
+ * Kịch bản demo cho trợ lý Gen (features/assistant): dựng nhanh những tình huống ngoài đời
+ * phải chờ nhiều ngày mới có. Chỉ dành cho bản demo, backend không có tương đương.
+ * - `rejections`: thêm 3 đơn bị từ chối, lệch kỹ năng và dùng lại cùng một thư ngỏ.
+ * - `away-news`: một dự án mới khớp kỹ năng và một đơn vừa vào danh sách rút gọn (đi kèm giả lập vắng mặt).
+ * - `changes`: mốc đang làm bị yêu cầu sửa, còn 2 ngày tới hạn.
+ */
+export type AssistantScenario = "rejections" | "away-news" | "changes";
+export function seedAssistantScenario(email: string, scenario: AssistantScenario): DemoResult {
+  return update((draft) => {
+    const student = actor(draft, email);
+    if (student?.role !== "STUDENT") return fail("WRONG_ROLE", "Kịch bản này dành cho tài khoản sinh viên.");
+    const now = Date.now();
+    const daysAgo = (days: number) => new Date(now - days * 86_400_000).toISOString();
+    const dateIn = (days: number) => new Date(now + days * 86_400_000).toISOString().slice(0, 10);
+    const addProject = (input: Pick<DemoProject, "title" | "smeName" | "budget" | "skills" | "summary" | "status">, createdDaysAgo: number) => {
+      const id = `p-demo-${crypto.randomUUID().slice(0, 8)}`;
+      const half = Math.round(input.budget / 2);
+      const milestones: DemoMilestone[] = [
+        { id: `${id}:m1`, projectId: id, order: 1, title: "Bản nháp đầu tiên", budget: half, deadline: dateIn(10), criteria: "Doanh nghiệp duyệt hướng làm", status: "PENDING", escrow: "PENDING_FUNDING" },
+        { id: `${id}:m2`, projectId: id, order: 2, title: "Bàn giao hoàn chỉnh", budget: input.budget - half, deadline: dateIn(24), criteria: "Đạt toàn bộ tiêu chí nghiệm thu", status: "PENDING", escrow: "PENDING_FUNDING" }
+      ];
+      draft.milestones.push(...milestones);
+      draft.projects.push({ ...input, id, ownerId: "sme-coffee", deadline: dateIn(24), problem: input.summary, acceptance: ["Đạt toàn bộ tiêu chí nghiệm thu"], milestoneIds: milestones.map((m) => m.id), createdAt: daysAgo(createdDaysAgo) });
+      return id;
+    };
+
+    if (scenario === "rejections") {
+      const letter = "Em rất muốn tham gia dự án này. Em là người chăm chỉ, ham học hỏi và luôn hoàn thành công việc đúng hạn.";
+      const closed: Array<[Pick<DemoProject, "title" | "smeName" | "budget" | "skills" | "summary" | "status">, number]> = [
+        [{ title: "Thiết kế menu và standee mùa Giáng sinh", smeName: "Tiệm bánh Mây", budget: 2_000_000, skills: ["Figma", "Thiết kế đồ họa"], summary: "Bộ menu và standee cho mùa lễ cuối năm.", status: "IN_PROGRESS" }, 12],
+        [{ title: "Chạy quảng cáo Meta cho đợt khai trương", smeName: "Spa Hoa Cúc", budget: 3_500_000, skills: ["Quảng cáo Meta", "Content Marketing", "Figma"], summary: "Lên nội dung và chạy quảng cáo hai tuần khai trương.", status: "IN_PROGRESS" }, 8],
+        [{ title: "Làm lại giao diện trang đặt lịch khám", smeName: "Phòng khám thú y An Bình", budget: 4_000_000, skills: ["Figma", "UI/UX", "React"], summary: "Đơn giản hóa luồng đặt lịch khám trên điện thoại.", status: "IN_PROGRESS" }, 4]
+      ];
+      closed.forEach(([project, days]) => {
+        const projectId = addProject(project, days + 3);
+        draft.applications.push({ id: `a-demo-${crypto.randomUUID().slice(0, 8)}`, projectId, studentId: student.id, coverLetter: letter, cv: student.cv, status: "REJECTED", submittedAt: daysAgo(days) });
+      });
+    } else if (scenario === "away-news") {
+      addProject({ title: "Landing page đặt bàn cho quán bún bò", smeName: "Bún bò Cô Ba", budget: 3_000_000, skills: ["Next.js", "React", "UI/UX"], summary: "Trang giới thiệu thực đơn và nhận đặt bàn trước qua điện thoại.", status: "PUBLISHED" }, 2);
+      const pending = draft.applications.find((a) => a.studentId === student.id && a.status === "SUBMITTED");
+      const project = draft.projects.find((p) => p.id === pending?.projectId);
+      if (pending && project) {
+        pending.status = "SHORTLISTED";
+        draft.audits.unshift({ id: crypto.randomUUID(), at: daysAgo(3), actorId: project.ownerId, action: "SHORTLISTED", targetId: pending.id });
+      }
+    } else {
+      const assigned = draft.applications.find((a) => a.studentId === student.id && a.status === "ACCEPTED");
+      const project = draft.projects.find((p) => p.id === assigned?.projectId && p.status === "IN_PROGRESS");
+      const milestone = project && project.milestoneIds.map((id) => draft.milestones.find((m) => m.id === id)).find((m) => m && m.status !== "ACCEPTED");
+      if (!project || !milestone) return fail("NOT_FOUND", "Không có mốc nào đang làm để giả lập.");
+      milestone.status = "CHANGES_REQUESTED";
+      milestone.deadline = dateIn(2);
+      draft.submissions.push({ id: crypto.randomUUID(), milestoneId: milestone.id, studentId: student.id, link: "https://example.com/ban-chay-thu", note: "Em gửi bản chạy thử.", files: [], submittedAt: daysAgo(2), feedback: "Cỡ chữ phần mô tả trên điện thoại còn nhỏ, nút đặt hàng bị che bởi thanh điều hướng. Nhờ em chỉnh lại giúp." });
+      draft.audits.unshift({ id: crypto.randomUUID(), at: daysAgo(1), actorId: project.ownerId, action: "REQUEST_CHANGES", targetId: milestone.id, reason: "Cỡ chữ và vị trí nút đặt hàng" });
+    }
+    return { ok: true, value: undefined };
+  });
+}

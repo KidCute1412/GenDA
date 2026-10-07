@@ -116,7 +116,7 @@ export function ApplicationsBoard() {
                   <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
                     <StatusBadge status={application.status} label={STATUS_LABEL[application.status]} />
                     <span style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px", color: "var(--color-text-muted)" }}>
-                      Nộp ngày {formatDate(application.submittedAt)}
+                      Nộp ngày {formatDate(application.submittedAt.slice(0, 10))}
                     </span>
                   </div>
 

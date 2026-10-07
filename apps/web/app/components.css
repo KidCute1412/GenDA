@@ -3412,3 +3412,371 @@
   font-size: 12px;
 }
 
+
+/* ==========================================================================
+   TRỢ LÝ GEN (features/assistant): hộp thoại kiểu game, design.md DD-11
+   Chân dung Gen đứng trong hộp và nhô lên khỏi mép trên: phần tử cắt qua ranh giới
+   khối (4.9.2 H.1). Không lớp phủ, không bẫy tiêu điểm: lời nhắc, không phải câu hỏi bắt buộc.
+   ========================================================================== */
+
+.gen-assistant {
+  --gen-z: calc(var(--z-sticky) + 10);
+  --gen-portrait-width: 176px;
+  --gen-bottom: var(--space-6);
+}
+
+@media (max-width: 767px) {
+  .gen-assistant {
+    --gen-portrait-width: 88px;
+    --gen-bottom: calc(var(--layout-bottom-nav-height) + env(safe-area-inset-bottom) + var(--space-3));
+  }
+}
+
+.gen-dialog {
+  position: fixed;
+  left: 50%;
+  bottom: var(--gen-bottom);
+  z-index: var(--gen-z);
+  width: min(760px, calc(100vw - 2 * var(--space-4)));
+  transform: translateX(-50%);
+}
+
+/* Đáy chân dung đặt trên viền đáy 2px của hộp, để viền vẫn liền một nét */
+.gen-dialog__stage {
+  position: absolute;
+  left: var(--space-4);
+  bottom: 2px;
+  z-index: 1;
+  width: var(--gen-portrait-width);
+  pointer-events: none;
+}
+
+.gen-dialog__portrait {
+  display: block;
+  width: 100%;
+  height: auto;
+  animation: gen-rise var(--duration-slow) ease-out both;
+}
+
+.gen-dialog__box {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5) var(--space-4) calc(var(--gen-portrait-width) + var(--space-8));
+  background-color: var(--color-surface-card);
+  border: 2px solid var(--machinery-border);
+  border-radius: 0;
+  color: var(--color-text-heading);
+  animation: gen-rise var(--duration-normal) ease-out both;
+}
+
+/* Thanh tên: bảng tên cam kiểu game, phần còn lại là mã máy đơn sắc */
+.gen-dialog__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.gen-dialog__name {
+  padding: 2px var(--space-2);
+  background-color: var(--color-action-primary);
+  border: 2px solid var(--machinery-border);
+  color: #18181b; /* chữ mực trên cam: 6.3:1 */
+  font-family: ui-monospace, monospace;
+  font-size: var(--text-body-sm-size);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.gen-dialog__role,
+.gen-dialog__counter {
+  color: var(--color-text-muted);
+  font-family: ui-monospace, monospace;
+  font-size: var(--text-caption-size);
+  letter-spacing: var(--tracking-label);
+  white-space: nowrap;
+}
+
+.gen-dialog__role {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gen-dialog__counter {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.gen-dialog__close {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin: calc(-1 * var(--space-2)) calc(-1 * var(--space-3)) calc(-1 * var(--space-2)) 0;
+  background: none;
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  color: var(--color-text-body);
+  cursor: pointer;
+}
+
+.gen-dialog__close:hover {
+  border-color: var(--machinery-border);
+}
+
+/* Vùng chữ giữ sẵn chỗ cho cả câu (phần chưa chạy chỉ ẩn), nên bố cục không nhảy khi chữ chạy */
+.gen-dialog__text {
+  min-height: calc(3 * var(--text-body-lg-height) * 1em);
+  font-size: var(--text-body-lg-size);
+  line-height: var(--text-body-lg-height);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  user-select: none;
+}
+
+.gen-dialog__ghost {
+  visibility: hidden;
+}
+
+.gen-dialog__advance {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.gen-dialog__next {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 44px;
+  padding-inline: var(--space-3);
+  background: var(--color-surface-card);
+  border: 2px solid var(--machinery-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-heading);
+  font-family: ui-monospace, monospace;
+  font-size: var(--text-caption-size);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.gen-dialog__next:hover {
+  border-color: var(--color-action-primary);
+}
+
+.gen-dialog__next:active,
+.gen-choice:active {
+  transform: translate(2px, 2px);
+}
+
+/* Lựa chọn đánh số như game; phím 1-4 chọn nhanh khi tiêu điểm ở trong hộp thoại */
+.gen-dialog__choices {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gen-choice {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: 44px;
+  padding: var(--space-2) var(--space-3);
+  background-color: var(--color-surface-card);
+  border: 2px solid var(--machinery-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-heading);
+  font: inherit;
+  font-weight: var(--weight-semibold);
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color var(--duration-fast) ease;
+}
+
+.gen-choice:hover {
+  border-color: var(--color-action-primary);
+}
+
+.gen-choice__key {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--machinery-border);
+  font-family: ui-monospace, monospace;
+  font-size: var(--text-caption-size);
+  font-weight: var(--weight-bold);
+}
+
+/* Lựa chọn đầu là lựa chọn Gen đề xuất */
+li:first-child > .gen-choice .gen-choice__key {
+  background-color: var(--color-action-primary);
+  color: #18181b;
+}
+
+.gen-choice__tag {
+  margin-left: auto;
+  color: var(--color-accent-strong);
+  font-family: ui-monospace, monospace;
+  font-size: var(--text-caption-size);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-label);
+  white-space: nowrap;
+}
+
+.gen-dialog__why,
+.gen-dialog__demo {
+  color: var(--color-text-muted);
+  font-size: var(--text-body-sm-size);
+}
+
+.gen-dialog__why summary,
+.gen-dialog__demo summary {
+  width: fit-content;
+  min-height: 24px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.gen-dialog__why p,
+.gen-dialog__demo p {
+  margin: var(--space-2) 0 0;
+}
+
+.gen-dialog__footer {
+  display: grid;
+  gap: var(--space-2);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.gen-dialog__toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 32px;
+  color: var(--color-text-body);
+  font-size: var(--text-body-sm-size);
+  cursor: pointer;
+}
+
+.gen-dialog__toggle input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-action-primary);
+}
+
+.gen-dialog__demo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+/* Nút gọi Gen: phím phần cứng vuông, mặt Gen bên trong, huy hiệu số điều mới */
+.gen-launcher {
+  position: fixed;
+  right: var(--space-4);
+  bottom: var(--gen-bottom);
+  z-index: var(--gen-z);
+  width: 60px;
+  height: 60px;
+  padding: 0;
+  background-color: var(--color-surface-card);
+  border: 2px solid var(--machinery-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) ease;
+}
+
+.gen-launcher:hover {
+  border-color: var(--color-action-primary);
+}
+
+.gen-launcher:active {
+  transform: translate(2px, 2px);
+}
+
+.gen-launcher__face {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.gen-launcher__badge {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding-inline: 4px;
+  background-color: var(--color-action-primary);
+  border: 2px solid var(--machinery-border);
+  color: #18181b;
+  font-family: ui-monospace, monospace;
+  font-size: var(--text-caption-size);
+  font-weight: var(--weight-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Chớp mắt MỘT lần mỗi câu thoại mới: không có vòng lặp vô hạn (4.12d) */
+.gen-portrait__eyes {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: gen-blink 220ms ease-in-out 120ms 1;
+}
+
+@keyframes gen-blink {
+  50% { transform: scaleY(0.1); }
+}
+
+@keyframes gen-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+@media (max-width: 767px) {
+  /* Màn hẹp: Gen đứng sau mép trên của hộp, nhường trọn bề ngang cho chữ */
+  .gen-dialog__stage {
+    left: var(--space-3);
+    bottom: calc(100% - 2px);
+  }
+
+  .gen-dialog__box {
+    padding: var(--space-3) var(--space-4) var(--space-4);
+  }
+
+  .gen-dialog__role {
+    display: none;
+  }
+
+  .gen-dialog__text {
+    min-height: calc(3 * var(--text-body-height) * 1em);
+    font-size: var(--text-body-size);
+    line-height: var(--text-body-height);
+  }
+}
+
+@media print {
+  .gen-assistant {
+    display: none;
+  }
+}

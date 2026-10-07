@@ -1410,6 +1410,25 @@ Các quyết định dưới đây phát sinh khi dựng mã nguồn, không có
 >
 > **Lý do.** Quy chế sàn và chính sách bảo mật là văn bản ràng buộc quyền lợi người dùng. Một bản nháp nghe hợp lý rất dễ trôi thẳng vào bản chạy thật mà không ai rà lại, và khi đó nền tảng đang tuyên bố những điều chưa ai duyệt. Nói rõ "đang hoàn thiện" đúng tinh thần Trust-First hơn là đăng một văn bản có vẻ đầy đủ.
 
+> #### Quyết định thiết kế DD-11: Trợ lý Gen hiện ra như hộp thoại trong game, với một nhân vật vẽ riêng
+>
+> **Bối cảnh.** GenDA thêm trợ lý tìm việc Gen ([`assistant.md`](./assistant.md)): đọc tình trạng của sinh viên và lên tiếng khi có điều đáng nói. Câu hỏi thiết kế là trợ lý *trông* thế nào. Ô chat góc màn hình là khuôn mẫu ai cũng đã thấy và dễ bị lờ đi; toast thì quá ngắn cho một lời khuyên có lý lẽ.
+>
+> **Quyết định: lời nhắc hiện ra như hộp thoại trong game visual novel.** Một nhân vật có tên, có biểu cảm, đứng trên mép hộp thoại; chữ chạy từng ký tự; câu cuối mở các lựa chọn đánh số. Hình thức này tạo cảm giác có một người đang nói chuyện với sinh viên, đúng vai "chị khóa trên" của Gen, và giữ lời khuyên đủ dài mà vẫn chia nhỏ được từng câu.
+>
+> **Nhân vật** là tài sản nhận diện vẽ riêng bằng SVG, thuộc ngoại lệ "được phép tự vẽ" ở [Mục 4.10](#410-hệ-thống-biểu-tượng-icon-system), luôn `aria-hidden`. Phong cách anime 2D phẳng, viền mực đậm như viền cơ khí 2px của DD-10; mọi điểm cam (kẹp tóc hai vạch `//`, tai nghe, dây hoodie, thẻ tên) là Safety Orange. Không dùng nhân vật 3D vì [Mục 4.9.1](#491-làm-ấm-mà-không-rơi-lại-vào-khuôn-mẫu) cấm minh họa người kiểu 3D bong bóng; không dùng model của bên thứ ba vì vướng điều khoản thương mại và không mang nhận diện GenDA. Bảng màu nhân vật cố ý không đổi theo chế độ tối: viền mực riêng giúp nhân vật đứng được trên mọi nền.
+>
+> **Ngoại lệ có kiểm soát với [Mục 4.12](#412-chuyển-động-motion).** Ba chuyển động riêng của Gen đều có lý do nói được thành lời và đều **hữu hạn**:
+> 1. *Chữ chạy* (24ms mỗi ký tự): lý do "đang nói". Bấm là hiện hết ngay (4.12e). Vùng chữ giữ sẵn chỗ cho cả câu nên không làm bố cục nhảy.
+> 2. *Khẩu hình đóng mở*: chỉ chạy khi chữ đang chạy, dừng ngay khi câu hiện đủ. Cùng với chữ chạy là đúng hai phần tử chuyển động (4.12d).
+> 3. *Chớp mắt một lần* mỗi câu mới: `animation-iteration-count: 1`, không có vòng lặp vô hạn.
+>
+> Với `prefers-reduced-motion`, chữ hiện ngay cả câu và khẩu hình đứng yên (cờ được kiểm tra trong JavaScript, vì hai chuyển động này điều khiển bằng JS); chớp mắt và trượt vào đã nằm trong khối CSS toàn cục.
+>
+> **Ranh giới bất biến.** Hộp thoại không modal, không lớp phủ, không bẫy tiêu điểm; tự bật thì không giành tiêu điểm. Tự bật nhiều nhất một lần mỗi phiên. Nguyên câu được đọc một lần qua vùng `aria-live="polite"`, chữ đang chạy ẩn với trình đọc màn hình. Mọi vùng bấm ≥ 44px. Bảng tên dùng chữ mực trên nền cam (6,3:1). Hộp thoại vuông góc 0px, viền 2px, không đổ bóng, đúng DD-10.
+>
+> **Điều kiện xem lại.** (1) Chỉ số "tỷ lệ tắt tự bật" ở [`assistant.md`](./assistant.md) mục 8 tăng cao trong pilot: hạ tần suất trước, đổi hình thức sau. (2) Có ngân sách họa sĩ: nâng nhân vật lên Live2D **từ chính thiết kế này**, giữ nguyên bảng màu và phụ kiện nhận diện.
+
 ---
 
 ## 12. Bản đồ Bàn giao Thiết kế → Mã nguồn
@@ -1432,6 +1451,8 @@ Bảng này trả lời câu hỏi *"quy định ở mục nào thì nằm ở t
 | Mục 8.1 / 8.2 / 8.3 — Skeleton, Empty, Error | `apps/web/components/ui/feedback.tsx` |
 | Mục 8.6 — Loading gắn vào route | `apps/web/app/(public)/projects/loading.tsx` |
 | Mục 8.6 — Error gắn vào route | `apps/web/app/error.tsx` |
+| DD-11 — hộp thoại kiểu game của trợ lý Gen | `apps/web/features/assistant/components/gen-dialogue.tsx`, mục "TRỢ LÝ GEN" trong `apps/web/app/components.css` |
+| DD-11 — nhân vật Gen | `apps/web/features/assistant/components/gen-portrait.tsx` |
 | Màn hình 1 — Trang chủ | `apps/web/app/page.tsx` |
 | Màn hình 2 — Hồ sơ & Xác thực | `apps/web/app/(student)/student/profile/page.tsx` |
 | Màn hình 3 — Wizard đăng dự án | `apps/web/features/projects/components/project-wizard.tsx` |
