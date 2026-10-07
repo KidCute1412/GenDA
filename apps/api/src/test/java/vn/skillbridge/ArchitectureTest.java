@@ -12,7 +12,8 @@ class ArchitectureTest {
     static final ArchRule domainHasNoFrameworkDependencies = noClasses()
             .that().resideInAPackage("..domain..")
             .should().dependOnClassesThat().resideInAnyPackage(
-                    "org.springframework..", "jakarta.persistence..", "jakarta.servlet..", "..api..", "..infrastructure..")
+                    "org.springframework..", "jakarta.persistence..", "jakarta.servlet..",
+                    "..api..", "..application..", "..infrastructure..")
             .allowEmptyShould(true);
 
     @ArchTest
@@ -22,9 +23,15 @@ class ArchitectureTest {
             .allowEmptyShould(true);
 
     @ArchTest
+    static final ArchRule apiDoesNotDependOnInfrastructure = noClasses()
+            .that().resideInAPackage("..api..")
+            .should().dependOnClassesThat().resideInAPackage("..infrastructure..")
+            .allowEmptyShould(true);
+
+    @ArchTest
     static final ArchRule platformDoesNotDependOnBusinessModules = noClasses()
             .that().resideInAPackage("vn.skillbridge.platform..")
             .should().dependOnClassesThat().resideInAnyPackage(
-                    "vn.skillbridge.projects..", "vn.skillbridge.users..")
+                    "vn.skillbridge.auth..", "vn.skillbridge.projects..", "vn.skillbridge.users..")
             .allowEmptyShould(true);
 }

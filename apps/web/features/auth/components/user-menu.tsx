@@ -4,7 +4,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { CaretDown, FileText, ICON_WEIGHT, IdentificationCard, UserCircle } from "../../../components/ui/icons";
-import type { DemoSession } from "../services/demo-session";
+import type { AuthSession } from "../services/auth-api";
 
 /**
  * Menu tài khoản ở góc phải header: một nút biểu tượng người dùng, bấm vào mở danh sách
@@ -17,7 +17,7 @@ import type { DemoSession } from "../services/demo-session";
  */
 type MenuItem = { href: string; label: string; icon: typeof UserCircle };
 
-function itemsFor(role: DemoSession["role"]): MenuItem[] {
+function itemsFor(role: AuthSession["role"]): MenuItem[] {
   if (role === "SME") return [{ href: "/sme/profile", label: "Hồ sơ doanh nghiệp", icon: IdentificationCard }];
   if (role === "ADMIN") return [{ href: "/admin", label: "Trang quản trị", icon: IdentificationCard }];
   return [
@@ -26,7 +26,7 @@ function itemsFor(role: DemoSession["role"]): MenuItem[] {
   ];
 }
 
-export function UserMenu({ session }: { session: DemoSession }) {
+export function UserMenu({ session }: { session: AuthSession }) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);

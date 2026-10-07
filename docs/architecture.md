@@ -13,7 +13,7 @@ packages/config      existing shared frontend configuration placeholders
 
 Persistence uses PostgreSQL, Spring Data JPA/Hibernate and Flyway. Springdoc 3.0.3 generates the code-first REST contract. See [ADR 0002](decisions/0002-spring-boot-and-docker.md), [API conventions](api-conventions.md) and [database conventions](database-conventions.md).
 
-**Current capability:** the backend implements health/readiness plus a read-only published-project catalog: `GET /api/v1/skills`, `GET /api/v1/projects`, and `GET /api/v1/projects/{projectId}`. Flyway owns the skill/project catalog schema; the local `demo` profile adds deterministic sample projects. The public project list and detail pages use the generated API client. Authentication, matching, applications, and the remaining browser demo workflows are still localStorage/sample-data behavior and are not production authorization or persistence.
+**Current capability:** the backend implements health/readiness, account registration, JWT cookie authentication, and a read-only published-project catalog. Authentication exposes CSRF bootstrap, student/SME registration, login, refresh, logout and current-user endpoints. Flyway owns users, registration identity fields and revocable refresh sessions; the local `demo` profile adds deterministic sample users/projects. Email verification, matching, applications, and the remaining workflows still use sample/local browser data.
 
 ## Modular monolith and business ownership
 
@@ -33,22 +33,80 @@ One application/JAR, one relational database. Organize packages under `vn.skillb
 
 `workspace` composes domains and owns view state/navigation. `demo-ledger` is a temporary frontend adapter. `platform` owns health, HTTP errors and configuration, not business rules.
 
-Create module packages when behavior exists, not empty scaffolding:
+### Backend module organization
+
+Create packages only when working behavior exists; do not add empty scaffolding. Every business module starts with the same four layers:
 
 ```text
-projects/
-  api/             controllers, HTTP DTOs, validation, serialization
-  application/     use cases, public facade, repository ports, transactions
-  domain/          entities/value objects, lifecycle rules, domain errors
-  infrastructure/  JPA entities/repositories/adapters, external integrations
+<module>/
+  api/             HTTP controllers, request/response DTOs and exception mapping
+    dto/           transport-only request and response models
+  application/     use cases, transactions, commands/results and outbound ports
+  domain/          framework-free entities, value objects and business rules
+  infrastructure/  implementations of application ports and framework configuration
+    config/         Spring configuration and typed properties owned by the module
+    security/       authentication/security implementations owned by the module
+    persistence/    JPA entities, Spring Data interfaces and repository adapters
 ```
 
-- Controller -> application -> domain and repository port. Infrastructure implements ports.
-- Domain imports no Spring, JPA, servlet, HTTP or infrastructure types.
-- Application may use Spring transaction/service annotations; never HTTP DTOs or infrastructure repositories/entities.
+When one layer grows, group its files by business capability rather than by technical class type. Repeat the same capability name across the layers where it has behavior. Do not create a capability directory for a single unrelated helper or force every layer to contain every capability.
+
+The current `auth` module is the reference structure:
+
+```text
+auth/
+  api/
+    dto/                         login, registration, CSRF and user HTTP models
+    AuthController.java
+    AuthCookieWriter.java
+    AuthExceptionHandler.java
+  application/
+    account/                     login, registration, password and user repository port
+    session/                     token issuance, refresh, logout and session repository port
+    AuthException.java           error shared by auth use cases
+  domain/
+    account/                     AuthUser, UserRole and RegistrationIdentity
+    session/                     RefreshSession and its usability rule
+  infrastructure/
+    config/                      AuthProperties and auth bean configuration
+    security/                    JWT, BCrypt, CSRF and Spring Security implementations
+    persistence/
+      account/                   auth-user JPA mapping and repository adapter
+      session/                   refresh-session JPA mapping and repository adapter
+```
+
+The package communicates ownership, so avoid repeating layer names inside capability names. For example, use `application.session.SessionService`, not `application.session.SessionApplicationService`.
+
+### Backend naming conventions
+
+Names describe the architectural role of a type, not only the technology it happens to use:
+
+| Role | Pattern | Auth example |
+| --- | --- | --- |
+| HTTP controller | `<Capability>Controller` | `AuthController` |
+| HTTP request/response | `<Action>Request`, `<Resource>Response` | `LoginRequest`, `AuthUserResponse` |
+| Application use case | `<Action>Service` or `<Capability>Service` | `LoginService`, `RegistrationService`, `SessionService` |
+| Use-case input/output | `<Action>Command`, `<Action>Result` | `RegistrationCommand`, `RegistrationResult` |
+| Domain model/value object | business name without framework suffix | `AuthUser`, `RegistrationIdentity`, `RefreshSession` |
+| Application repository port | `<Aggregate>Repository` | `AuthUserRepository`, `RefreshSessionRepository` |
+| Other outbound application port | capability name ending in `Service` | `PasswordService`, `TokenService` |
+| Handwritten JPA adapter | `Jpa<Aggregate>RepositoryAdapter` | `JpaAuthUserRepositoryAdapter` |
+| Spring Data interface | `SpringData<Aggregate>Repository` | `SpringDataAuthUserRepository` |
+| JPA-mapped type | `<Aggregate>JpaEntity` | `AuthUserJpaEntity`, `RefreshSessionJpaEntity` |
+| Typed configuration | `<Capability>Properties` | `AuthProperties` |
+| Security/filter implementation | technology or responsibility first | `JwtTokenService`, `CsrfProtectionFilter` |
+
+Use `Repository` consistently for persistent aggregate access. Reserve `Store` for a genuinely different key-value, cache or object-storage abstraction. The `Adapter` suffix is required for handwritten persistence implementations so they remain distinguishable from Spring Data interfaces. Only JPA-mapped classes use the `JpaEntity` suffix; domain models never carry persistence or framework suffixes.
+
+### Backend dependency direction
+
+- Controller -> application use case -> domain and application port; infrastructure implements application ports.
+- Domain imports no Spring, JPA, servlet, HTTP, application or infrastructure types.
+- Application may use Spring transaction/service annotations, but never imports HTTP DTOs, JPA entities, Spring Data interfaces or infrastructure adapters.
+- Infrastructure may depend inward on application ports and domain models. JPA entities are mapped to domain/application models inside the adapter and never leave infrastructure.
 - Cross-module calls use public application facades with IDs and explicit models. Never access another module's private repositories/entities or mutate its tables directly.
 - Shared kernel contains only demonstrated shared concepts. No speculative event bus, Spring Modulith, queue or Redis.
-- ArchUnit checks domain purity/application dependency direction. Add concrete cross-module checks as real modules appear; review ownership as well as tests.
+- ArchUnit checks domain purity and application dependency direction. Add concrete cross-module checks as real modules appear; review ownership as well as tests.
 
 ## API and authorization
 
@@ -58,7 +116,7 @@ Springdoc emits `/api/v1/openapi` locally. Export the normalized snapshot and re
 
 Health preserves `{ status: "ok", service: "genda-api" }`, returning 503 if PostgreSQL is unavailable. Compose and Render use it for readiness. Errors use `{ code, message, requestId }`, without SQL, credentials or stack traces.
 
-No real auth existed in the scaffold. Mock role selection is not identity. Choose the auth provider/session contract before implementing protected endpoints, and enforce the authorization matrix on the backend.
+Authentication uses a five-minute access JWT and a rotating refresh JWT in scoped `HttpOnly` cookies. Refresh sessions are fingerprinted in PostgreSQL and revoked on logout. Refresh TTL is 24 hours by default or seven days when the user remembers the device. Cookie mutations require a double-submit CSRF token; CORS allows credentials only from configured exact origins. Frontend role checks remain UX only.
 
 ## Frontend
 
@@ -92,6 +150,5 @@ See [local development](local-development.md) for launch/reload/checks and the c
 ## Decisions needed when implementing business features
 
 Local infrastructure and deployment target choices are settled by ADR 0002. These do not block local launch:
-- Authentication provider and session/token contract: choose before protected APIs; browser demo login is not authentication.
 - Object storage provider and upload authorization: choose before file deliverables; no durable uploads on Render filesystem.
 - Confirm group applications and the project-level SUBMITTED transition before their schema/use cases; existing OQ-02/OQ-03 in requirements describe the alternatives.
