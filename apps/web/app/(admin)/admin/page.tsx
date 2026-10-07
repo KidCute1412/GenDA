@@ -5,28 +5,25 @@ import { SiteFooter } from "../../../components/layout/site-footer";
 import { BottomNav } from "../../../components/layout/bottom-nav";
 import { StatusBadge } from "../../../components/ui/status-badge";
 import { EmptyState } from "../../../components/ui/feedback";
-import { AUDIT_LOG, PENDING_VERIFICATIONS, PROJECTS } from "../../../mocks/data";
+import { AUDIT_LOG, PROJECTS } from "../../../mocks/data";
 import { formatDate, formatVnd } from "../../../lib/utils/format";
 import { AdminActionButtons } from "../../../features/admin/components/admin-action-buttons";
 import { LedgerAuditPanel } from "../../../features/admin/components/ledger-audit-panel";
 import { LedgerProjectQueue } from "../../../features/admin/components/ledger-project-queue";
 import { LedgerOpportunityQueue, LedgerOpportunityQueueCount } from "../../../features/admin/components/ledger-opportunity-queue";
-import { LedgerVerificationQueue } from "../../../features/admin/components/ledger-verification-queue";
 import { LedgerSmeQueue, LedgerSmeQueueCount } from "../../../features/admin/components/ledger-sme-queue";
 import { RoleRouteGuard } from "../../../features/auth/components/role-route-guard";
 import { 
   Check, 
   CheckCircle, 
   ShieldCheck, 
-  Clock, 
   WarningCircle, 
-  Paperclip,
   ICON_WEIGHT 
 } from "../../../components/ui/icons";
 
 export const metadata: Metadata = {
   title: "Bảng điều khiển quản trị // GENDA-OPS",
-  description: "Duyệt dự án, duyệt minh chứng sinh viên, duyệt đăng ký doanh nghiệp và tra cứu nhật ký kiểm toán."
+  description: "Duyệt dự án, duyệt đăng ký doanh nghiệp và tra cứu nhật ký kiểm toán."
 };
 
 /**
@@ -37,9 +34,8 @@ export const metadata: Metadata = {
  */
 const TABS = [
   { key: "projects", label: "Duyệt dự án", code: "QUEUE.01" },
-  { key: "students", label: "Duyệt thẻ sinh viên", code: "QUEUE.02" },
-  { key: "smes", label: "Duyệt doanh nghiệp", code: "QUEUE.03" },
-  { key: "opportunities", label: "Duyệt tin ngắn", code: "QUEUE.04" },
+  { key: "smes", label: "Duyệt doanh nghiệp", code: "QUEUE.02" },
+  { key: "opportunities", label: "Duyệt tin ngắn", code: "QUEUE.03" },
   { key: "audit", label: "Nhật ký kiểm toán", code: "LEDGER.LOG" }
 ];
 
@@ -55,7 +51,6 @@ export default async function AdminPage({
 
   const counts: Record<string, number> = {
     projects: pendingProjects.length,
-    students: PENDING_VERIFICATIONS.length,
     audit: AUDIT_LOG.length
   };
 
@@ -99,7 +94,7 @@ export default async function AdminPage({
                   Bảng Điều Khiển Quản Trị
                 </h1>
                 <p className="text-muted" style={{ marginTop: "var(--space-2)", fontSize: "14px", maxWidth: "65ch" }}>
-                  Hệ thống kiểm soát và điều phối vận hành sàn GenDA. Giám sát toàn bộ dòng dữ liệu, phê duyệt danh sách dự án và xác thực hồ sơ sinh viên TP.HCM.
+                  Hệ thống kiểm soát và điều phối vận hành sàn GenDA. Theo dõi dòng dữ liệu, phê duyệt dự án và xác minh hồ sơ doanh nghiệp.
                 </p>
               </div>
 
@@ -116,11 +111,6 @@ export default async function AdminPage({
                 <div>
                   <div style={{ fontFamily: "ui-monospace, monospace", fontSize: "10px", color: "var(--color-text-muted)" }}>CHỜ DUYỆT DỰ ÁN</div>
                   <div className="num" style={{ fontSize: "1.25rem", fontWeight: 900, color: "var(--brand-500)" }}>{counts.projects}</div>
-                </div>
-                <div style={{ width: "1px", backgroundColor: "var(--machinery-border)", marginInline: "4px" }} />
-                <div>
-                  <div style={{ fontFamily: "ui-monospace, monospace", fontSize: "10px", color: "var(--color-text-muted)" }}>CHỜ XÁC MINH THẺ</div>
-                  <div className="num" style={{ fontSize: "1.25rem", fontWeight: 900, color: "var(--color-text-heading)" }}>{counts.students}</div>
                 </div>
                 <div style={{ width: "1px", backgroundColor: "var(--machinery-border)", marginInline: "4px" }} />
                 <div>
@@ -319,60 +309,7 @@ export default async function AdminPage({
           {/* TAB: HÀNG ĐỢI DUYỆT ĐĂNG KÝ DOANH NGHIỆP */}
           {active === "smes" ? <LedgerSmeQueue /> : null}
 
-          {/* TAB 2: HÀNG ĐỢI DUYỆT THẺ SINH VIÊN */}
-          {active === "students" ? <LedgerVerificationQueue /> : null}
-          {active === "students" ? (
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
-              {PENDING_VERIFICATIONS.map((item) => (
-                <div 
-                  key={item.id} 
-                  className="module-bay"
-                  style={{ 
-                    padding: "var(--space-5)",
-                    display: "flex", 
-                    justifyContent: "space-between", 
-                    alignItems: "center", 
-                    flexWrap: "wrap", 
-                    gap: "var(--space-4)" 
-                  }}
-                >
-                  <div>
-                    <div className="module-bay__header" style={{ borderColor: "var(--machinery-border)", marginBottom: "8px" }}>
-                      <span className="module-bay__id">VERIFICATION // {item.id.toUpperCase()}</span>
-                      <span style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px", color: "var(--color-text-muted)" }}>
-                        GỬI NGÀY {formatDate(item.submittedAt)}
-                      </span>
-                    </div>
-
-                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                      <h2 style={{ fontSize: "1.25rem", fontWeight: 800, textTransform: "uppercase", margin: 0 }}>
-                        {item.name}
-                      </h2>
-                      <span className="badge badge--progress" style={{ margin: 0 }}>
-                        <Clock weight={ICON_WEIGHT} aria-hidden="true" />
-                        CHỜ XỬ LÝ
-                      </span>
-                    </div>
-
-                    <p className="text-muted" style={{ marginTop: "4px", fontSize: "13px", fontFamily: "ui-monospace, monospace" }}>
-                      {item.school}
-                    </p>
-
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "8px" }}>
-                      <span className="badge badge--neutral" style={{ fontSize: "10px" }}>
-                        <Paperclip weight={ICON_WEIGHT} aria-hidden="true" />
-                        PHƯƠNG THỨC: {item.method.toUpperCase()}
-                      </span>
-                    </div>
-                  </div>
-
-                  <AdminActionButtons targetId={`verification:${item.id}`} approveLabel="XÁC THỰC THẺ" reviewLabel="XEM MINH CHỨNG" />
-                </div>
-              ))}
-            </div>
-          ) : null}
-
-          {/* TAB 3: NHẬT KÝ KIỂM TOÁN */}
+          {/* TAB: NHẬT KÝ KIỂM TOÁN */}
           {active === "audit" ? <LedgerAuditPanel /> : null}
           {active === "audit" ? (
             <div 

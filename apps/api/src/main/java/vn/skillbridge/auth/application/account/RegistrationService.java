@@ -5,8 +5,8 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.skillbridge.auth.application.AuthException;
-import vn.skillbridge.auth.application.session.AuthResult;
-import vn.skillbridge.auth.application.session.SessionIssuer;
+import vn.skillbridge.auth.application.emailverification.EmailVerificationService;
+import vn.skillbridge.auth.domain.account.AccountState;
 import vn.skillbridge.auth.domain.account.AuthUser;
 import vn.skillbridge.auth.domain.account.RegistrationIdentity;
 import vn.skillbridge.auth.domain.account.UserRole;
@@ -15,18 +15,19 @@ import vn.skillbridge.auth.domain.account.UserRole;
 public class RegistrationService {
     private final AuthUserRepository accounts;
     private final PasswordService passwords;
-    private final SessionIssuer sessions;
+    private final EmailVerificationService emailVerifications;
 
-    public RegistrationService(AuthUserRepository accounts, PasswordService passwords, SessionIssuer sessions) {
+    public RegistrationService(AuthUserRepository accounts, PasswordService passwords,
+            EmailVerificationService emailVerifications) {
         this.accounts = accounts;
         this.passwords = passwords;
-        this.sessions = sessions;
+        this.emailVerifications = emailVerifications;
     }
 
     @Transactional
     public RegistrationResult register(RegistrationCommand command) {
         if (command.role() == null || command.role() == UserRole.ADMIN) {
-            throw new AuthException("REGISTRATION_ROLE_INVALID", "Only STUDENT and SME accounts can register");
+            throw new AuthException("REGISTRATION_ROLE_INVALID", "Only CONTRIBUTOR and SME accounts can register");
         }
 
         String email = command.email().trim().toLowerCase(Locale.ROOT);
@@ -44,11 +45,11 @@ public class RegistrationService {
 
         AuthUser user = new AuthUser(UUID.randomUUID(), email, passwords.hash(command.password()),
                 command.name().trim(), command.role(), false,
-                command.role() == UserRole.STUDENT ? "UNVERIFIED" : null,
-                command.role() == UserRole.SME ? "PENDING" : null, true);
+                AccountState.PENDING_EMAIL_VERIFICATION,
+                command.role() == UserRole.SME ? "PENDING" : null);
         accounts.create(user, identity.taxCode(), identity.companyWebsite());
+        emailVerifications.issueInitial(user, command.requestSource());
 
-        AuthResult session = command.role() == UserRole.STUDENT ? sessions.issue(user, false) : null;
-        return new RegistrationResult(user, session);
+        return new RegistrationResult(user);
     }
 }

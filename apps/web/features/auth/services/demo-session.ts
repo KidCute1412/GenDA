@@ -1,9 +1,11 @@
-export type DemoRole = "STUDENT" | "SME" | "ADMIN";
+export type DemoRole = "CONTRIBUTOR" | "SME" | "ADMIN";
+export type DemoAccountState = "PENDING_EMAIL_VERIFICATION" | "EMAIL_VERIFIED" | "ACTIVE" | "DISABLED";
 
 export type DemoSession = {
   name: string;
   email: string;
   role: DemoRole;
+  accountState: DemoAccountState;
   emailVerified: boolean;
   expiresAt: number;
 };
@@ -18,6 +20,7 @@ export function getDemoSession(): DemoSession | null {
   if (!raw) return null;
   try {
     const session = JSON.parse(raw) as DemoSession;
+    session.accountState ??= session.emailVerified ? "ACTIVE" : "PENDING_EMAIL_VERIFICATION";
     if (session.expiresAt <= Date.now()) {
       window.localStorage.removeItem(SESSION_KEY);
       return null;
@@ -39,7 +42,7 @@ export function setDemoSession(session: Omit<DemoSession, "expiresAt">) {
 export function activateDemoSession() {
   const current = getDemoSession();
   if (!current) return null;
-  return setDemoSession({ ...current, emailVerified: true });
+  return setDemoSession({ ...current, accountState: "ACTIVE", emailVerified: true });
 }
 
 export function clearDemoSession() {

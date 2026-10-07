@@ -56,7 +56,6 @@ export function LedgerPublishedProjects() {
                 projectTitle={project.title}
                 smeName={project.smeName}
                 budget={project.budget}
-                verified
               />
             </div>
           </div>

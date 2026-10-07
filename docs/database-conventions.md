@@ -16,7 +16,7 @@
 
 ## Approved target persistence for contributor onboarding
 
-The current schema still contains `STUDENT` and `student_profiles`. Migration to the approved `CONTRIBUTOR` model must preserve existing accounts/profile data and be coordinated with enum constraints, JPA mappings, OpenAPI, frontend routes and seeds; never rewrite an applied migration.
+The account-role schema uses `CONTRIBUTOR`. Account lifecycle is stored in `account_state` with `PENDING_EMAIL_VERIFICATION`, `EMAIL_VERIFIED`, `ACTIVE`, and `DISABLED`; the former boolean `active` and `student_verification_status` columns have been removed. Flyway owns hash-only OTP challenge persistence and a source-hashed confirmation-attempt audit. The legacy `student_profiles` table/name remains until the contributor-profile migration.
 
 - `auth` owns account email-verification state and OTP challenges. A challenge stores user/purpose, OTP hash, expiry, failed-attempt count, resend/creation time and consumption/invalidation time; it never stores the raw OTP. Enforce at most one current challenge per account and purpose, and index expiry/lookup fields used by confirmation and cleanup.
 - `users` owns contributor profile fields and completeness inputs. Background type is explicit structured data; student-specific fields are optional/conditional rather than properties of the system role.

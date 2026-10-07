@@ -70,7 +70,7 @@
         "tags": [
           "auth-controller"
         ],
-        "summary": "Register a student or an SME account",
+        "summary": "Register a contributor or SME account pending email verification",
         "operationId": "register",
         "requestBody": {
           "content": {
@@ -163,6 +163,61 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthUserResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/email-verifications/resend": {
+      "post": {
+        "tags": [
+          "auth-controller"
+        ],
+        "summary": "Issue a replacement email-verification code after the resend cooldown",
+        "operationId": "resendEmail",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResendEmailVerificationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Accepted"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/email-verifications/confirm": {
+      "post": {
+        "tags": [
+          "auth-controller"
+        ],
+        "summary": "Confirm a registered email with a six-digit one-time code",
+        "operationId": "confirmEmail",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmEmailVerificationRequest"
               }
             }
           },
@@ -569,9 +624,6 @@
               "$ref": "#/components/schemas/SkillCatalogItemResponse"
             }
           },
-          "verificationStatus": {
-            "type": "string"
-          },
           "complete": {
             "type": "boolean"
           }
@@ -581,8 +633,7 @@
           "displayName",
           "email",
           "skills",
-          "userId",
-          "verificationStatus"
+          "userId"
         ]
       },
       "RegisterRequest": {
@@ -607,7 +658,7 @@
           "role": {
             "type": "string",
             "enum": [
-              "STUDENT",
+              "CONTRIBUTOR",
               "SME"
             ]
           },
@@ -645,22 +696,29 @@
           "role": {
             "type": "string",
             "enum": [
-              "STUDENT",
+              "CONTRIBUTOR",
               "SME",
               "ADMIN"
             ]
           },
+          "accountState": {
+            "type": "string",
+            "enum": [
+              "PENDING_EMAIL_VERIFICATION",
+              "EMAIL_VERIFIED",
+              "ACTIVE",
+              "DISABLED"
+            ]
+          },
           "emailVerified": {
             "type": "boolean"
-          },
-          "studentVerificationStatus": {
-            "type": "string"
           },
           "smeApprovalStatus": {
             "type": "string"
           }
         },
         "required": [
+          "accountState",
           "email",
           "emailVerified",
           "id",
@@ -689,6 +747,40 @@
         "required": [
           "email",
           "password"
+        ]
+      },
+      "ResendEmailVerificationRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254,
+            "minLength": 0
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "ConfirmEmailVerificationRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254,
+            "minLength": 0
+          },
+          "code": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\d{6}"
+          }
+        },
+        "required": [
+          "code",
+          "email"
         ]
       },
       "ApiError": {

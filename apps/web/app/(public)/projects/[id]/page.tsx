@@ -238,7 +238,6 @@ export default async function ProjectDetailPage({
                   projectId={project.id}
                   smeName={project.smeName}
                   budget={project.budget}
-                  verified={CURRENT_STUDENT.verification === "VERIFIED"}
                 />
               </div>
             </div>

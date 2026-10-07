@@ -12,7 +12,6 @@ public record StudentProfileView(
         String major,
         StudyYear studyYear,
         List<SkillSummary> skills,
-        String verificationStatus,
         boolean complete) {
 
     public StudentProfileView {

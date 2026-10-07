@@ -1,7 +1,7 @@
 package vn.skillbridge.auth.domain.account;
 
 public enum UserRole {
-    STUDENT,
+    CONTRIBUTOR,
     SME,
     ADMIN
 }

@@ -32,7 +32,7 @@ class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 var claims = tokens.parseAccessToken(rawToken);
                 var principal = new AuthenticatedPrincipal(claims.userId(), claims.email(), claims.displayName(),
-                        claims.role(), claims.emailVerified(), claims.studentVerificationStatus(),
+                        claims.role(), claims.accountState(), claims.emailVerified(),
                         claims.smeApprovalStatus());
                 var authentication = new UsernamePasswordAuthenticationToken(principal, null,
                         List.of(new SimpleGrantedAuthority("ROLE_" + claims.role())));

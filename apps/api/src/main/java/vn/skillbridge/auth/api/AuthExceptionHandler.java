@@ -16,6 +16,10 @@ public class AuthExceptionHandler {
             case "INVALID_CREDENTIALS", "INVALID_REFRESH_TOKEN" -> HttpStatus.UNAUTHORIZED;
             case "EMAIL_ALREADY_REGISTERED" -> HttpStatus.CONFLICT;
             case "REGISTRATION_ROLE_INVALID", "SME_IDENTITY_REQUIRED" -> HttpStatus.BAD_REQUEST;
+            case "OTP_INVALID" -> HttpStatus.UNPROCESSABLE_ENTITY;
+            case "OTP_EXPIRED", "OTP_ATTEMPTS_EXCEEDED" -> HttpStatus.GONE;
+            case "OTP_RESEND_TOO_SOON", "OTP_RATE_LIMITED" -> HttpStatus.TOO_MANY_REQUESTS;
+            case "EMAIL_DELIVERY_FAILED" -> HttpStatus.SERVICE_UNAVAILABLE;
             default -> HttpStatus.FORBIDDEN;
         };
         return ResponseEntity.status(status).body(

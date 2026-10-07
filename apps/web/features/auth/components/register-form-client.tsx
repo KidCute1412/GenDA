@@ -1,16 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { cvOnboardingHref } from "../../users/components/cv-required-gate";
 import { TextField } from "../../../components/ui/field";
 import { PasswordField } from "../../../features/auth/components/password-field";
 import { AuthApiError, registerAccount } from "../services/auth-api";
 import { RecaptchaField, verifyRecaptcha } from "./recaptcha-field";
 import { isValidTaxCode, isValidWebsite, validateSmeIdentity } from "../../../lib/utils/sme-identity";
 
-export function RegisterFormClient({ initialRole = "STUDENT" }: { initialRole?: "STUDENT" | "SME" }) {
-  const [role, setRole] = useState<"STUDENT" | "SME">(initialRole);
+export function RegisterFormClient({ initialRole = "CONTRIBUTOR" }: { initialRole?: "CONTRIBUTOR" | "SME" }) {
+  const router = useRouter();
+  const [role, setRole] = useState<"CONTRIBUTOR" | "SME">(initialRole);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,26 +23,17 @@ export function RegisterFormClient({ initialRole = "STUDENT" }: { initialRole?: 
   const [website, setWebsite] = useState("");
   const [smeTouched, setSmeTouched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [registered, setRegistered] = useState(false);
-  const [resendAfter, setResendAfter] = useState(0);
-  const [resent, setResent] = useState(false);
   const [agreed, setAgreed] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   // Đổi key để gắn lại widget reCAPTCHA (bắt giải lại) khi xác minh thất bại
   const [captchaKey, setCaptchaKey] = useState(0);
   const [formError, setFormError] = useState("");
 
-  useEffect(() => {
-    if (resendAfter === 0) return;
-    const timer = window.setInterval(() => setResendAfter((value) => Math.max(0, value - 1)), 1000);
-    return () => window.clearInterval(timer);
-  }, [resendAfter]);
-
-  function handleFillSample(targetRole: "STUDENT" | "SME") {
+  function handleFillSample(targetRole: "CONTRIBUTOR" | "SME") {
     setRole(targetRole);
     setPassword("Demo@12345");
     setConfirmPassword("Demo@12345");
-    if (targetRole === "STUDENT") {
+    if (targetRole === "CONTRIBUTOR") {
       setName("Sinh viên mới");
       setEmail(`student.${Date.now()}@example.com`);
     } else {
@@ -90,13 +82,7 @@ export function RegisterFormClient({ initialRole = "STUDENT" }: { initialRole?: 
         taxCode: role === "SME" && !noTaxCode ? taxCode : undefined,
         companyWebsite: role === "SME" && noTaxCode ? website : undefined
       });
-      // Doanh nghiệp: chưa tạo phiên đăng nhập, chờ quản trị viên duyệt
-      if (role === "SME") {
-        setRegistered(true);
-        return;
-      }
-      setRegistered(true);
-      setResendAfter(30);
+      router.push(`/verify-email?email=${encodeURIComponent(email)}`);
     } catch (error) {
       if (error instanceof AuthApiError && error.code === "EMAIL_ALREADY_REGISTERED") {
         setFormError("Email này đã được đăng ký. Hãy đăng nhập hoặc dùng email khác.");
@@ -126,67 +112,6 @@ export function RegisterFormClient({ initialRole = "STUDENT" }: { initialRole?: 
     confirmPassword !== password &&
     (confirmTouched || confirmPassword.length >= password.length);
 
-  if (registered && role === "SME") {
-    return (
-      <div className="stack">
-        <h2 style={{ fontSize: "1.25rem", fontWeight: 800, textTransform: "uppercase", margin: 0 }}>
-          HỒ SƠ ĐANG CHỜ DUYỆT
-        </h2>
-        <p className="text-muted">
-          Đăng ký doanh nghiệp <strong>{name}</strong> đã được gửi. Quản trị viên GenDA sẽ đối chiếu{" "}
-          {noTaxCode ? "website công ty" : "mã số thuế"} trước khi kích hoạt tài khoản.
-        </p>
-        <div style={{ border: "2px solid var(--machinery-border)", backgroundColor: "var(--color-surface-subtle)", padding: "var(--space-4)" }}>
-          <p className="text-caption" style={{ margin: 0, fontFamily: "ui-monospace, monospace" }}>SME REGISTRATION // PENDING REVIEW</p>
-          <p style={{ margin: "var(--space-2) 0 0", fontSize: "13px" }}>
-            Khi được duyệt, chúng tôi gửi thông báo tới <strong>{email}</strong> và bạn có thể đăng nhập để đăng dự án.
-            Nếu bị từ chối, thông báo sẽ nêu rõ lý do.
-          </p>
-        </div>
-        <Link href="/login" className="btn--tactile-zinc" style={{ height: "42px", textDecoration: "none" }}>
-          VỀ TRANG ĐĂNG NHẬP
-        </Link>
-      </div>
-    );
-  }
-
-  if (registered) {
-    const next = role === "SME" ? "/sme/projects/new?emailVerified=1" : cvOnboardingHref("/projects?emailVerified=1");
-    const verificationHref = `/verify-email?token=genda-demo-valid-2026&next=${encodeURIComponent(next)}`;
-
-    return (
-      <div className="stack">
-        <h2 style={{ fontSize: "1.25rem", fontWeight: 800, textTransform: "uppercase", margin: 0 }}>
-          KIỂM TRA HỘP THƯ CỦA BẠN
-        </h2>
-        <p className="text-muted">
-          Một liên kết kích hoạt đã được gửi tới <strong>{email}</strong>. Liên kết có hiệu lực trong 15 phút.
-        </p>
-        <div style={{ border: "2px solid var(--machinery-border)", backgroundColor: "var(--color-surface-subtle)", padding: "var(--space-4)" }}>
-          <p className="text-caption" style={{ margin: 0, fontFamily: "ui-monospace, monospace" }}>EMAIL ACTIVATION // SENT</p>
-          <p style={{ margin: "var(--space-2) 0 0", fontSize: "13px" }}>Mở email và bấm “Xác minh địa chỉ email” để kích hoạt tài khoản.</p>
-        </div>
-        <Link href={verificationHref} className="btn--tactile-brand" style={{ height: "42px", textDecoration: "none" }}>
-          MỞ EMAIL XÁC MINH
-        </Link>
-        <div className="cluster" style={{ gap: "var(--space-2)" }}>
-          <button
-            type="button"
-            className="btn--tactile-zinc"
-            disabled={resendAfter > 0}
-            onClick={() => {
-              setResent(true);
-              setResendAfter(30);
-            }}
-          >
-            {resendAfter > 0 ? `GỬI LẠI SAU ${resendAfter}S` : "GỬI LẠI EMAIL"}
-          </button>
-          {resent ? <span className="text-muted" aria-live="polite">Đã gửi lại liên kết kích hoạt.</span> : null}
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div>
       <h2 style={{ fontSize: "1.25rem", fontWeight: 800, textTransform: "uppercase", margin: 0 }}>
@@ -205,7 +130,7 @@ export function RegisterFormClient({ initialRole = "STUDENT" }: { initialRole?: 
           <div style={{ display: "flex", gap: "6px" }}>
             <button
               type="button"
-              onClick={() => handleFillSample("STUDENT")}
+              onClick={() => handleFillSample("CONTRIBUTOR")}
               className="chip"
               style={{ fontSize: "10px", height: "24px", paddingInline: "6px", cursor: "pointer" }}
             >
@@ -233,17 +158,17 @@ export function RegisterFormClient({ initialRole = "STUDENT" }: { initialRole?: 
               alignItems: "center", 
               gap: "6px", 
               padding: "6px 8px", 
-              border: `2px solid ${role === "STUDENT" ? "var(--brand-500)" : "var(--machinery-border)"}`,
-              backgroundColor: role === "STUDENT" ? "var(--color-surface-subtle)" : "var(--color-surface-card)",
+              border: `2px solid ${role === "CONTRIBUTOR" ? "var(--brand-500)" : "var(--machinery-border)"}`,
+              backgroundColor: role === "CONTRIBUTOR" ? "var(--color-surface-subtle)" : "var(--color-surface-card)",
               cursor: "pointer"
             }}
           >
             <input 
               type="radio" 
               name="role" 
-              value="STUDENT" 
-              checked={role === "STUDENT"} 
-              onChange={() => setRole("STUDENT")}
+              value="CONTRIBUTOR"
+              checked={role === "CONTRIBUTOR"}
+              onChange={() => setRole("CONTRIBUTOR")}
               style={{ accentColor: "var(--brand-500)", margin: 0 }}
             />
             <div style={{ lineHeight: 1.2 }}>

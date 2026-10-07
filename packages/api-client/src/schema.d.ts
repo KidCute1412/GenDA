@@ -31,7 +31,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Register a student or an SME account */
+        /** Register a contributor or SME account pending email verification */
         post: operations["register"];
         delete?: never;
         options?: never;
@@ -84,6 +84,40 @@ export interface paths {
         put?: never;
         /** Sign in and issue HttpOnly access and refresh cookies */
         post: operations["login"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/email-verifications/resend": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Issue a replacement email-verification code after the resend cooldown */
+        post: operations["resendEmail"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/email-verifications/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Confirm a registered email with a six-digit one-time code */
+        post: operations["confirmEmail"];
         delete?: never;
         options?: never;
         head?: never;
@@ -218,7 +252,6 @@ export interface components {
             /** @enum {string|null} */
             studyYear?: "YEAR_1" | "YEAR_2" | "YEAR_3" | "YEAR_4" | "RECENT_GRADUATE" | null;
             skills: components["schemas"]["SkillCatalogItemResponse"][];
-            verificationStatus: string;
             complete: boolean;
         };
         RegisterRequest: {
@@ -227,7 +260,7 @@ export interface components {
             email: string;
             password: string;
             /** @enum {string} */
-            role: "STUDENT" | "SME";
+            role: "CONTRIBUTOR" | "SME";
             taxCode?: string;
             companyWebsite?: string;
         };
@@ -237,9 +270,10 @@ export interface components {
             email: string;
             name: string;
             /** @enum {string} */
-            role: "STUDENT" | "SME" | "ADMIN";
+            role: "CONTRIBUTOR" | "SME" | "ADMIN";
+            /** @enum {string} */
+            accountState: "PENDING_EMAIL_VERIFICATION" | "EMAIL_VERIFIED" | "ACTIVE" | "DISABLED";
             emailVerified: boolean;
-            studentVerificationStatus?: string;
             smeApprovalStatus?: string;
         };
         LoginRequest: {
@@ -247,6 +281,15 @@ export interface components {
             email: string;
             password: string;
             rememberDevice?: boolean;
+        };
+        ResendEmailVerificationRequest: {
+            /** Format: email */
+            email: string;
+        };
+        ConfirmEmailVerificationRequest: {
+            /** Format: email */
+            email: string;
+            code: string;
         };
         ApiError: {
             code: string;
@@ -444,6 +487,52 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["LoginRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["AuthUserResponse"];
+                };
+            };
+        };
+    };
+    resendEmail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResendEmailVerificationRequest"];
+            };
+        };
+        responses: {
+            /** @description Accepted */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    confirmEmail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConfirmEmailVerificationRequest"];
             };
         };
         responses: {

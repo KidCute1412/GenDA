@@ -11,7 +11,7 @@ export function WorkspaceRoleActions({ milestoneTitle, milestoneSubmitted, isFin
   if (!hydrated) return null;
 
   if (!session) return <Alert variant="warning" title="Cần đăng nhập">Đăng nhập đúng vai trò để thao tác trong không gian dự án.</Alert>;
-  if (session.role === "STUDENT") {
+  if (session.role === "CONTRIBUTOR") {
     return (
       <section className="card">
         <h2 style={{ fontSize: "var(--text-h3-size)" }}>KHU VỰC BÀN GIAO CỦA BẠN</h2>

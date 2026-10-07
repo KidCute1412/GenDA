@@ -33,7 +33,7 @@ public class StudentProfileService {
         return profiles.findByUserId(userId)
                 .map(profile -> toView(account, profile))
                 .orElseGet(() -> new StudentProfileView(account.id(), account.email(), account.displayName(),
-                        null, null, null, List.of(), account.studentVerificationStatus(), false));
+                        null, null, null, List.of(), false));
     }
 
     @Transactional
@@ -54,14 +54,14 @@ public class StudentProfileService {
         accounts.updateDisplayName(userId, displayName);
         profiles.save(profile);
         AccountProfile updatedAccount = new AccountProfile(account.id(), account.email(), displayName,
-                account.role(), account.studentVerificationStatus());
+                account.role());
         return toView(updatedAccount, profile);
     }
 
     private AccountProfile requireStudent(UUID userId) {
         AccountProfile account = accounts.get(userId);
-        if (!"STUDENT".equals(account.role())) {
-            throw new UsersException("STUDENT_ROLE_REQUIRED", "A student account is required");
+        if (!"CONTRIBUTOR".equals(account.role())) {
+            throw new UsersException("CONTRIBUTOR_ROLE_REQUIRED", "A contributor account is required");
         }
         return account;
     }
@@ -69,7 +69,7 @@ public class StudentProfileService {
     private StudentProfileView toView(AccountProfile account, StudentProfile profile) {
         List<SkillSummary> selectedSkills = skills.findByCodes(profile.skillCodes()).values().stream().toList();
         return new StudentProfileView(account.id(), account.email(), account.displayName(), profile.school(),
-                profile.major(), profile.studyYear(), selectedSkills, account.studentVerificationStatus(), true);
+                profile.major(), profile.studyYear(), selectedSkills, true);
     }
 
     private static List<String> normalizeSkillCodes(List<String> skillCodes) {

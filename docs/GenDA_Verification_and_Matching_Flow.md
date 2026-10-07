@@ -1,5 +1,7 @@
 # GenDA — Verification & Matching Flow
 
+> Trạng thái triển khai: actor identity là `CONTRIBUTOR`; account state và email OTP đã được triển khai. Registration tạo `PENDING_EMAIL_VERIFICATION`, gửi OTP 6 chữ số và không phát session. Confirm/resend, hash-only persistence, expiry, attempt limit, cooldown, source rate limit và UI nhập OTP đã hoạt động. SME sau OTP chỉ chuyển sang `EMAIL_VERIFIED`, không vượt qua gate duyệt doanh nghiệp.
+
 ## Project Creation — Complexity & Minimum Budget Guard
 
 Luồng tạo và duyệt dự án áp dụng hai lớp kiểm soát độc lập:
@@ -290,4 +292,4 @@ AI Matching vẫn thuộc V2.0.
 
 ## 9. Trạng thái triển khai
 
-Đây là flow đích đã chốt cho tài liệu. Code hiện tại vẫn dùng role `STUDENT`, profile sinh viên và cấp session ngay sau đăng ký student; email OTP, CV lifecycle, contributor eligibility và workflow admin xác minh SME hoàn chỉnh chưa được implement. Việc chuyển đổi phải cập nhật đồng bộ migration, backend, OpenAPI client, frontend routes/copy và tests; không đổi riêng một lớp.
+Đây là flow đích đã chốt cho tài liệu. Code hiện tại đã dùng role `CONTRIBUTOR`, account state chuẩn hóa, không còn student-verification gate, không cấp session khi đăng ký và đã hoàn thiện email OTP. Contributor-profile/CV lifecycle, contributor eligibility và workflow admin xác minh SME hoàn chỉnh chưa được implement. Các batch tiếp theo vẫn phải cập nhật đồng bộ migration, backend, OpenAPI client, frontend routes/copy và tests; không đổi riêng một lớp.

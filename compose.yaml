@@ -15,6 +15,15 @@ services:
       interval: 5s
       timeout: 5s
       retries: 20
+  mailpit:
+    image: axllent/mailpit:v1.21
+    ports:
+      - "127.0.0.1:${MAILPIT_PORT:-8025}:8025"
+    healthcheck:
+      test: ["CMD", "/mailpit", "readyz"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
   backend:
     mem_limit: 512m
     build:
@@ -34,10 +43,17 @@ services:
       AUTH_COOKIE_SAME_SITE: Lax
       OPENAPI_ENABLED: "true"
       SPRING_PROFILES_ACTIVE: demo
+      SMTP_HOST: mailpit
+      SMTP_PORT: 1025
+      SMTP_AUTH: "false"
+      SMTP_STARTTLS: "false"
+      AUTH_EMAIL_FROM: no-reply@genda.local
     ports:
       - "127.0.0.1:${BACKEND_PORT:-3001}:3001"
     depends_on:
       database:
+        condition: service_healthy
+      mailpit:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:3001/api/v1/health"]
