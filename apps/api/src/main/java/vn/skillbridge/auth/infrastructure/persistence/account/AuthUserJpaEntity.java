@@ -38,4 +38,8 @@ class AuthUserJpaEntity {
         this.companyWebsite = companyWebsite;
         this.active = active;
     }
+
+    void updateDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
 }

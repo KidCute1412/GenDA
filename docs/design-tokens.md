@@ -237,7 +237,7 @@ Component quan trọng nhất về mặt khả dụng, vì nó hiện thực hó
 | :--- | :--- | :--- | :--- | :--- |
 | `info` | `--color-status-progress-bg` | `--color-text-body` | 4px `--color-brand-decorative` | Hướng dẫn chung |
 | `warning` | `--color-status-warning-bg` | `--color-status-warning-text` | 4px `--color-status-warning` | **Banner Ký quỹ mô phỏng (FR-MIL-07)**, hồ sơ chờ duyệt |
-| `success` | `--color-status-verified-bg` | `--color-status-verified-text` | 4px `--color-status-verified` | Đã xác thực sinh viên |
+| `success` | `--color-status-verified-bg` | `--color-status-verified-text` | 4px `--color-status-verified` | Thành công / credential đã xác minh |
 | `danger` | `--color-status-danger-bg` | `--color-status-danger-text` | 4px `--color-status-danger` | Minh chứng bị từ chối, lỗi hệ thống |
 
 | Thuộc tính | Giá trị |

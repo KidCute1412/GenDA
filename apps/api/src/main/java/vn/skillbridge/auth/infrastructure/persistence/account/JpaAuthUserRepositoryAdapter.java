@@ -32,6 +32,13 @@ class JpaAuthUserRepositoryAdapter implements AuthUserRepository {
                 taxCode, companyWebsite, user.active()));
     }
 
+    @Override
+    public void updateDisplayName(UUID id, String displayName) {
+        AuthUserJpaEntity entity = repository.findById(id).orElseThrow();
+        entity.updateDisplayName(displayName);
+        repository.save(entity);
+    }
+
     private static AuthUser toDomain(AuthUserJpaEntity entity) {
         return new AuthUser(entity.id, entity.email, entity.passwordHash, entity.displayName,
                 UserRole.valueOf(entity.role), entity.emailVerified, entity.studentVerificationStatus,
