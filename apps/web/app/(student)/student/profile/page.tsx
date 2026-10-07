@@ -71,7 +71,8 @@ export default function StudentProfilePage() {
             </div>
             <StudentProfileEditor />
           </div>
-        </main>
+        </div>
+      </main>
       </StudentRouteGuard>
       <SiteFooter />
       <BottomNav />
