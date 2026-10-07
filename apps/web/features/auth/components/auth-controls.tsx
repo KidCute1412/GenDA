@@ -2,14 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { logout } from "../services/auth-api";
 import { useDemoSession } from "../hooks/use-demo-session";
 import { ICON_WEIGHT, SignOut } from "../../../components/ui/icons";
 import { UserMenu } from "./user-menu";
 
 export function AuthControls() {
-  const router = useRouter();
   const { session, hydrated } = useDemoSession();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
@@ -17,8 +15,10 @@ export function AuthControls() {
     setIsLoggingOut(true);
     try {
       await logout();
-      router.replace("/");
-      router.refresh();
+      // Tải lại hẳn trang chủ thay vì router.replace + router.refresh: refresh gọi ngay sau replace có thể
+      // hủy lượt chuyển trang, để người dùng kẹt ở trang cần đăng nhập (vd. /sme/projects). Tải lại cũng xóa
+      // sạch trạng thái của phiên cũ; `replace` để nút Quay lại không mở lại trang vừa rời.
+      window.location.replace("/");
     } catch {
       window.alert("Không thể đăng xuất. Vui lòng kiểm tra kết nối và thử lại.");
     } finally {
