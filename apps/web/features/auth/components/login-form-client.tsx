@@ -110,7 +110,7 @@ export function LoginFormClient() {
           {formError ? <p role="alert" style={{ margin: "4px 0 0", fontSize: "12px", color: "var(--color-danger-text)" }}>{formError}</p> : null}
         </div>
 
-        <button type="submit" disabled={isLoading || !captchaToken} className="btn--tactile-orange"
+        <button type="submit" disabled={isLoading || !captchaToken} className="btn--tactile-brand"
           style={{ width: "100%", height: "40px", fontSize: "12px", cursor: isLoading ? "wait" : !captchaToken ? "not-allowed" : "pointer", opacity: captchaToken ? 1 : 0.55 }}>
           {isLoading ? "ĐANG XÁC THỰC..." : "XÁC NHẬN ĐĂNG NHẬP"}
         </button>

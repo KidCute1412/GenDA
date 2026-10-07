@@ -66,7 +66,7 @@ Chi tiết giá trị và số đo tương phản: [`design.md` Mục 4.4.5](./d
 | :--- | :--- |
 | Hành động | `--color-action-primary`, `--color-action-primary-hover`, `--color-action-link` |
 | Thương hiệu phi văn bản | `--color-brand-decorative` |
-| Nhấn dạng chữ | `--color-accent-text` (chữ cam cỡ nhỏ), `--color-accent-strong` (nền cam có chữ trắng) |
+| Nhấn dạng chữ | `--color-accent-text` (chữ nhấn cỡ nhỏ), `--color-accent-strong` (nền nhấn có chữ trắng) |
 | Trạng thái xác thực | `--color-status-verified`, `--color-status-verified-text`, `--color-status-verified-bg` |
 | Trạng thái lưu ý | `--color-status-warning`, `--color-status-warning-text`, `--color-status-warning-bg` |
 | Trạng thái lỗi | `--color-status-danger`, `--color-status-danger-text`, `--color-status-danger-bg` |
@@ -340,7 +340,7 @@ Skeleton phải **mô phỏng đúng hình khối** của nội dung sắp hiể
 - [ ] Vòng focus không bị thanh dính hoặc thanh cố định che khuất (WCAG 2.2 AA 2.4.11).
 - [ ] Trạng thái không chỉ mã hóa bằng màu (kiểm thử ảnh xám).
 - [ ] Chữ < 24px dùng token màu có tương phản ≥ 4.5:1.
-- [ ] Không dùng `--color-brand-decorative` (coral-500) làm màu chữ thường hay nền nút — chữ cam cỡ nhỏ dùng `--color-accent-text`.
+- [ ] Không dùng `--color-brand-decorative` (coral-500) làm màu chữ thường hay nền nút — chữ nhấn cỡ nhỏ dùng `--color-accent-text`.
 - [ ] Chữ viết tay (`--font-hand`) chỉ ở nhãn phụ, $\ge$ 14px, không dùng cho nội dung, nhãn trường hay chữ trong nút.
 - [ ] Bóng mặc định là `--shadow-sm`; `--shadow-md`/`--shadow-lg` chỉ cho phần tử thật sự nổi (hover, hero, modal).
 - [ ] Cỡ chữ ô nhập ≥ 16px trên mobile.

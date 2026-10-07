@@ -26,7 +26,7 @@ export function LedgerProjectDetail({ id }: { id: string }) {
             title="KHÔNG TÌM THẤY DỰ ÁN"
             advice="Dự án này không tồn tại trong hệ thống hoặc đã bị gỡ bỏ."
             action={
-              <ButtonLink href="/projects" variant="primary" className="btn--tactile-orange">
+              <ButtonLink href="/projects" variant="primary" className="btn--tactile-brand">
                 Khám phá dự án khác
               </ButtonLink>
             }
@@ -70,14 +70,14 @@ export function LedgerProjectDetail({ id }: { id: string }) {
             </div>
 
             <section>
-              <h2 style={{ fontFamily: "ui-monospace, monospace", fontSize: "14px", textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--orange-500)" }}>
+              <h2 style={{ fontFamily: "ui-monospace, monospace", fontSize: "14px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--brand-500)" }}>
                 {"[01] BÀI TOÁN DOANH NGHIỆP"}
               </h2>
               <p style={{ marginTop: "var(--space-2)", maxWidth: "65ch", lineHeight: 1.6 }}>{project.problem}</p>
             </section>
 
             <section>
-              <h2 style={{ fontFamily: "ui-monospace, monospace", fontSize: "14px", textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--orange-500)" }}>
+              <h2 style={{ fontFamily: "ui-monospace, monospace", fontSize: "14px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--brand-500)" }}>
                 {"[02] TIÊU CHÍ NGHIỆM THU (ACCEPTANCE CRITERIA)"}
               </h2>
               <p className="text-muted" style={{ marginTop: "var(--space-1)", fontSize: "13px" }}>
@@ -93,7 +93,7 @@ export function LedgerProjectDetail({ id }: { id: string }) {
             </section>
 
             <section>
-              <h2 style={{ fontFamily: "ui-monospace, monospace", fontSize: "14px", textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--orange-500)" }}>
+              <h2 style={{ fontFamily: "ui-monospace, monospace", fontSize: "14px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--brand-500)" }}>
                 {"[03] LỘ TRÌNH GIẢI NGÂN THEO MỐC (ESCROW MILESTONES)"}
               </h2>
               <p className="text-muted" style={{ marginTop: "var(--space-1)", fontSize: "13px" }}>
@@ -137,7 +137,7 @@ export function LedgerProjectDetail({ id }: { id: string }) {
                 }}
               >
                 <span>TỔNG CỘNG NGÂN SÁCH MỐC</span>
-                <span style={{ fontSize: "1.2rem", color: "var(--orange-500)" }}>{formatVnd(milestoneTotal)}</span>
+                <span style={{ fontSize: "1.2rem", color: "var(--brand-500)" }}>{formatVnd(milestoneTotal)}</span>
               </div>
             </section>
           </div>

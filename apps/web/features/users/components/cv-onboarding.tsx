@@ -32,7 +32,7 @@ export function CvOnboarding({ next }: { next?: string }) {
       <CvUploader id="onboarding-cv" />
 
       {hasCv ? (
-        <Link href={safeNext(next)} className="btn--tactile-orange" style={{ height: "48px", textDecoration: "none" }}>
+        <Link href={safeNext(next)} className="btn--tactile-brand" style={{ height: "48px", textDecoration: "none" }}>
           XEM DỰ ÁN ĐANG TUYỂN
         </Link>
       ) : (

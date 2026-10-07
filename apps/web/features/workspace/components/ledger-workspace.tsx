@@ -35,7 +35,7 @@ export function LedgerWorkspace({ projectId }: { projectId?: string } = {}) {
             Bạn cần đăng nhập để truy cập không gian làm việc này. Vui lòng đăng nhập với tài khoản Doanh nghiệp hoặc Sinh viên.
           </Alert>
           <div style={{ marginTop: "var(--space-4)" }}>
-            <ButtonLink href="/login" variant="primary" className="btn--tactile-orange">
+            <ButtonLink href="/login" variant="primary" className="btn--tactile-brand">
               Đăng nhập ngay
             </ButtonLink>
           </div>
@@ -75,7 +75,7 @@ export function LedgerWorkspace({ projectId }: { projectId?: string } = {}) {
             title="CHƯA CÓ DỰ ÁN ĐANG THỰC HIỆN"
             advice="Chưa có dự án nào được giao hoặc chấp thuận cho tài khoản của bạn trong không gian làm việc này."
             action={
-              <ButtonLink href="/projects" variant="primary" className="btn--tactile-orange">
+              <ButtonLink href="/projects" variant="primary" className="btn--tactile-brand">
                 Xem danh sách dự án
               </ButtonLink>
             }
@@ -192,7 +192,7 @@ export function LedgerWorkspace({ projectId }: { projectId?: string } = {}) {
                     />
                     <div>
                       <Button
-                        className="btn--tactile-orange"
+                        className="btn--tactile-brand"
                         onClick={() =>
                           run(
                             submitDeliverable({
@@ -238,7 +238,7 @@ export function LedgerWorkspace({ projectId }: { projectId?: string } = {}) {
                         Yêu cầu sửa
                       </Button>
                       <Button
-                        className="btn--tactile-orange"
+                        className="btn--tactile-brand"
                         disabled={active.status !== "SUBMITTED"}
                         onClick={() =>
                           run(
@@ -305,7 +305,7 @@ export function LedgerWorkspace({ projectId }: { projectId?: string } = {}) {
                 />
                 <div>
                   <Button
-                    className="btn--tactile-orange"
+                    className="btn--tactile-brand"
                     disabled={reason.trim().length < 10}
                     onClick={() =>
                       run(
@@ -334,7 +334,7 @@ export function LedgerWorkspace({ projectId }: { projectId?: string } = {}) {
               <p className="text-caption" style={{ margin: 0, fontFamily: "ui-monospace, monospace" }}>
                 VAI TRÒ HIỆN TẠI
               </p>
-              <div style={{ fontWeight: 800, color: "var(--orange-500)", fontFamily: "ui-monospace, monospace" }}>
+              <div style={{ fontWeight: 800, color: "var(--brand-500)", fontFamily: "ui-monospace, monospace" }}>
                 {session.role} // {session.email}
               </div>
               <p className="text-muted" style={{ fontSize: "13px", margin: "var(--space-2) 0 0" }}>
