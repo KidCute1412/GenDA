@@ -10,6 +10,7 @@ import { Check, MagnifyingGlass } from "../../../components/ui/icons";
 import { CURRENT_STUDENT } from "../../../mocks/data";
 import { daysUntil, formatDate, formatVnd, matchScore } from "../../../lib/utils/format";
 import { browsePublishedProjects, listSkills } from "../../../features/projects/api";
+import { LedgerPublishedProjects } from "../../../features/projects/components/ledger-published-projects";
 
 export const dynamic = "force-dynamic";
 
@@ -91,17 +92,23 @@ export default async function ProjectsPage({
 
   const requestedPage = Number.parseInt(params.page ?? "1", 10);
   const currentPage = Number.isFinite(requestedPage) && requestedPage > 0 ? requestedPage : 1;
-  const [projectPage, filterableSkills] = await Promise.all([
-    browsePublishedProjects({
-      q: keyword || undefined,
-      skill: activeSkills.length > 0 ? activeSkills : undefined,
-      minBudget: bucket?.min,
-      maxBudget: bucket?.max,
-      page: currentPage,
-      pageSize: 12
-    }),
-    listSkills()
-  ]);
+  let projectPage: Awaited<ReturnType<typeof browsePublishedProjects>> = { data: [], page: currentPage, pageSize: 12, total: 0 };
+  let filterableSkills: Awaited<ReturnType<typeof listSkills>> = [];
+  try {
+    [projectPage, filterableSkills] = await Promise.all([
+      browsePublishedProjects({
+        q: keyword || undefined,
+        skill: activeSkills.length > 0 ? activeSkills : undefined,
+        minBudget: bucket?.min,
+        maxBudget: bucket?.max,
+        page: currentPage,
+        pageSize: 12
+      }),
+      listSkills()
+    ]);
+  } catch {
+    // Keep the page usable with browser-only demo-ledger data when the catalog API is unavailable.
+  }
   const results = projectPage.data;
   const pageCount = Math.max(1, Math.ceil(projectPage.total / projectPage.pageSize));
   const today = new Date().toISOString().slice(0, 10);
@@ -212,6 +219,7 @@ export default async function ProjectsPage({
 
         {/* --- Kết quả --- */}
         <div className="section--tight">
+          <LedgerPublishedProjects />
           <div className="enter" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px dashed var(--machinery-border)", paddingBottom: "var(--space-2)", marginBottom: "var(--space-4)", "--e": 6 } as CSSProperties}>
             <p style={{ fontFamily: "ui-monospace, monospace", fontSize: "12px", fontWeight: 700, margin: 0, textTransform: "uppercase" }} aria-live="polite">
               KẾT QUẢ QUÉT: <span style={{ color: "var(--orange-500)" }}>{projectPage.total}</span> DỰ ÁN

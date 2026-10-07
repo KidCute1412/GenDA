@@ -27,6 +27,26 @@ export function LoginFormClient() {
     setFormError("");
   }
 
+  async function loginDemo(accountEmail: string) {
+    fillDemo(accountEmail);
+    setIsLoading(true);
+    try {
+      const session = await login(accountEmail, DEMO_PASSWORD, false);
+      const destination = session.role === "SME" ? "/sme/projects" : session.role === "ADMIN" ? "/admin" : STUDENT_HOME;
+      router.replace(destination);
+      router.refresh();
+    } catch (error) {
+      if (error instanceof AuthApiError) {
+        const suffix = error.requestId ? ` Mã yêu cầu: ${error.requestId}.` : "";
+        setFormError(`${error.message}${suffix}`);
+      } else {
+        setFormError("Không thể kết nối tới hệ thống đăng nhập. Hãy thử lại.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     if (!captchaToken) {
@@ -72,14 +92,14 @@ export function LoginFormClient() {
           {"// TÀI KHOẢN DEMO, MẬT KHẨU: Demo@12345"}
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-          <button type="button" onClick={() => fillDemo("letuanloc.2203@hcmus.edu.vn")} className="chip">
+          <button type="button" onClick={() => void loginDemo("letuanloc.2203@hcmus.edu.vn")} className="chip">
             Sinh viên
           </button>
-          <button type="button" onClick={() => fillDemo("contact@coffeelab.vn")} className="chip">
+          <button type="button" onClick={() => void loginDemo("contact@coffeelab.vn")} className="chip">
             Doanh nghiệp
           </button>
-          <button type="button" onClick={() => fillDemo("admin@genda.vn")} className="chip">
-            Quản trị viên
+          <button type="button" onClick={() => void loginDemo("admin@genda.vn")} className="chip">
+            Quản trị
           </button>
         </div>
       </div>
