@@ -543,7 +543,9 @@ export interface operations {
             query?: never;
             header?: never;
             path?: never;
-            cookie?: never;
+            cookie?: {
+                genda_csrf?: string;
+            };
         };
         requestBody?: never;
         responses: {

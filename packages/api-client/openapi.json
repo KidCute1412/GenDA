@@ -376,6 +376,16 @@
         ],
         "summary": "Issue a CSRF token for cookie-authenticated mutations",
         "operationId": "csrf",
+        "parameters": [
+          {
+            "name": "genda_csrf",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
