@@ -14,12 +14,11 @@ public record StudentProfileResponse(
         @Schema(nullable = true) String major,
         @Schema(nullable = true) StudyYear studyYear,
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED) List<SkillCatalogItemResponse> skills,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED) String verificationStatus,
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED) boolean complete) {
 
     public static StudentProfileResponse from(StudentProfileView profile) {
         return new StudentProfileResponse(profile.userId(), profile.email(), profile.displayName(), profile.school(),
                 profile.major(), profile.studyYear(), profile.skills().stream().map(SkillCatalogItemResponse::from).toList(),
-                profile.verificationStatus(), profile.complete());
+                profile.complete());
     }
 }

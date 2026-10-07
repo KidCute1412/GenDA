@@ -8,9 +8,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import vn.skillbridge.auth.application.session.AuthCookieSettings;
 import vn.skillbridge.auth.application.session.AuthSettings;
+import vn.skillbridge.auth.application.emailverification.EmailVerificationSettings;
 
 @Configuration
-@EnableConfigurationProperties(AuthProperties.class)
+@EnableConfigurationProperties({AuthProperties.class, EmailVerificationProperties.class})
 public class AuthInfrastructureConfiguration {
     @Bean
     Clock authClock() {
@@ -30,5 +31,12 @@ public class AuthInfrastructureConfiguration {
     @Bean
     AuthCookieSettings authCookieSettings(AuthProperties properties) {
         return new AuthCookieSettings(properties.accessTtl(), properties.cookieSecure(), properties.cookieSameSite());
+    }
+
+    @Bean
+    EmailVerificationSettings emailVerificationSettings(EmailVerificationProperties properties) {
+        return new EmailVerificationSettings(properties.otpTtl(), properties.resendCooldown(),
+                properties.sourceRateWindow(), properties.confirmationSourceRateWindow(), properties.maxAttempts(),
+                properties.maxSendsPerSourceWindow(), properties.maxConfirmAttemptsPerSourceWindow());
     }
 }

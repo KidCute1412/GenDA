@@ -21,6 +21,7 @@ import org.springframework.security.web.method.annotation.AuthenticationPrincipa
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import vn.skillbridge.auth.application.session.AuthenticatedPrincipal;
+import vn.skillbridge.auth.domain.account.AccountState;
 import vn.skillbridge.platform.api.ApiExceptionHandler;
 import vn.skillbridge.users.application.SkillSummary;
 import vn.skillbridge.users.application.StudentProfileService;
@@ -38,8 +39,8 @@ class StudentProfileControllerTest {
 
     @BeforeEach
     void authenticateStudent() {
-        var principal = new AuthenticatedPrincipal(USER_ID, "student@example.com", "Student", "STUDENT",
-                true, "VERIFIED", null);
+        var principal = new AuthenticatedPrincipal(USER_ID, "student@example.com", "Student", "CONTRIBUTOR",
+                AccountState.ACTIVE, true, null);
         SecurityContextHolder.getContext().setAuthentication(
                 new UsernamePasswordAuthenticationToken(principal, null));
     }
@@ -99,6 +100,6 @@ class StudentProfileControllerTest {
     private StudentProfileView profile() {
         return new StudentProfileView(USER_ID, "student@example.com", "Lê Tuấn Lộc",
                 "ĐH Khoa học Tự nhiên", "Công nghệ Thông tin", StudyYear.YEAR_3,
-                List.of(new SkillSummary("react", "React")), "VERIFIED", true);
+                List.of(new SkillSummary("react", "React")), true);
     }
 }

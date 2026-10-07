@@ -24,7 +24,7 @@ Commit `packages/api-client/openapi.json` and generated `src/schema.d.ts` with A
 
 ## Authentication/authorization
 
-The current implementation exposes `/api/v1/auth`: `GET /csrf`, `POST /register`, `POST /login`, `POST /refresh`, `POST /logout`, and `GET /me`; it still accepts `STUDENT` and `SME` and issues a session immediately to students. This is legacy behavior to be replaced by the approved target contract below.
+The current implementation exposes `/api/v1/auth`: `GET /csrf`, `POST /register`, `POST /email-verifications/confirm`, `POST /email-verifications/resend`, `POST /login`, `POST /refresh`, `POST /logout`, and `GET /me`; registration accepts `CONTRIBUTOR` and `SME`. Registration returns `PENDING_EMAIL_VERIFICATION`, sends an OTP and issues no access/refresh cookies. Confirmation returns the updated account without cookies; the user signs in separately after all role gates pass. Login rejects pending/disabled accounts and refresh revokes a legacy session if its account can no longer sign in.
 
 The target registration contract accepts `CONTRIBUTOR` and `SME` and uses this sequence:
 
@@ -32,11 +32,11 @@ The target registration contract accepts `CONTRIBUTOR` and `SME` and uses this s
 2. `POST /api/v1/auth/email-verifications/confirm` accepts the registered email and OTP. A correct, unexpired, unused code verifies the mailbox. A contributor may then receive a normal session; an SME must also satisfy the existing admin-approval rule before sign-in.
 3. `POST /api/v1/auth/email-verifications/resend` issues a new OTP after the resend cooldown and invalidates the previous code.
 
-OTP expires after a configurable duration (10 minutes by default), permits at most five failed confirmation attempts, is one-time, and is subject to resend/confirmation rate limits. Only a hash and lifecycle metadata are persisted; raw OTP values are never stored or logged. Expected business failures use stable codes such as `EMAIL_VERIFICATION_REQUIRED`, `OTP_INVALID`, `OTP_EXPIRED`, `OTP_ATTEMPTS_EXCEEDED`, and `OTP_RESEND_TOO_SOON`.
+OTP expires after a configurable duration (10 minutes by default), permits at most five failed confirmation attempts, is one-time, and is subject to resend/confirmation rate limits. Only a hash and lifecycle metadata are persisted; raw OTP values are never stored or logged. Confirmation failures use stable codes such as `OTP_INVALID`, `OTP_EXPIRED`, `OTP_ATTEMPTS_EXCEEDED`, and `OTP_RATE_LIMITED`. Resend always returns `202 Accepted` for unknown, verified, cooling-down, rate-limited and delivery-failure outcomes so it does not reveal whether an account exists.
 
 After email verification and any role-specific approval, access and refresh JWTs are returned only as scoped `HttpOnly` cookies, never in JSON. Access expires after five minutes. Refresh expires after 24 hours, or seven days when `rememberDevice=true`, and rotates on use.
 
-For SME registrations, successful OTP confirmation moves the business-verification record to `PENDING`; it does not grant a full session. Admin-facing target endpoints list pending SME verifications and submit an approve or reject decision with a mandatory rejection reason. `users` owns the verification record and decision; `auth` queries its public application facade before issuing an SME session. Pending/rejected login attempts return stable `SME_NOT_APPROVED` information without credentials or sensitive evidence.
+For SME registrations, successful OTP confirmation keeps business verification `PENDING`, changes account state to `EMAIL_VERIFIED`, and does not grant a full session. Admin-facing target endpoints list pending SME verifications and submit an approve or reject decision with a mandatory rejection reason. `users` owns the verification record and decision; `auth` queries its public application facade before issuing an SME session. Pending/rejected login attempts return stable `SME_NOT_APPROVED` information without credentials or sensitive evidence.
 
 `POST /logout` is idempotent: it revokes the current refresh-session record when a valid refresh cookie exists, expires both authentication cookies using their original paths, and returns `204 No Content`. The access JWT remains stateless; the backend stores only the refresh-token fingerprint and revocation metadata, never the raw token.
 

@@ -14,32 +14,35 @@ class AuthUserJpaEntity {
     @Column(name = "password_hash", nullable = false, length = 100) String passwordHash;
     @Column(name = "display_name", nullable = false, length = 180) String displayName;
     @Column(nullable = false, length = 16) String role;
+    @Column(name = "account_state", nullable = false, length = 32) String accountState;
     @Column(name = "email_verified", nullable = false) boolean emailVerified;
-    @Column(name = "student_verification_status", length = 16) String studentVerificationStatus;
     @Column(name = "sme_approval_status", length = 16) String smeApprovalStatus;
     @Column(name = "tax_code", length = 14) String taxCode;
     @Column(name = "company_website", length = 512) String companyWebsite;
-    @Column(nullable = false) boolean active;
 
     protected AuthUserJpaEntity() {}
 
     AuthUserJpaEntity(UUID id, String email, String passwordHash, String displayName, String role,
-            boolean emailVerified, String studentVerificationStatus, String smeApprovalStatus,
-            String taxCode, String companyWebsite, boolean active) {
+            String accountState, boolean emailVerified, String smeApprovalStatus,
+            String taxCode, String companyWebsite) {
         this.id = id;
         this.email = email;
         this.passwordHash = passwordHash;
         this.displayName = displayName;
         this.role = role;
+        this.accountState = accountState;
         this.emailVerified = emailVerified;
-        this.studentVerificationStatus = studentVerificationStatus;
         this.smeApprovalStatus = smeApprovalStatus;
         this.taxCode = taxCode;
         this.companyWebsite = companyWebsite;
-        this.active = active;
     }
 
     void updateDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    void markEmailVerified(String accountState) {
+        this.emailVerified = true;
+        this.accountState = accountState;
     }
 }

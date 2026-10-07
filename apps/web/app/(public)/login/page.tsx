@@ -21,7 +21,7 @@ export default async function LoginPage({
 }) {
   const params = await searchParams;
   const isRegister = params.mode === "register";
-  const selectedRole = params.role === "sme" ? "SME" : "STUDENT";
+  const selectedRole = params.role === "sme" ? "SME" : "CONTRIBUTOR";
 
   return (
     <>

@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
 import vn.skillbridge.auth.application.account.AuthUserRepository;
+import vn.skillbridge.auth.domain.account.AccountState;
 import vn.skillbridge.auth.domain.account.AuthUser;
 import vn.skillbridge.auth.domain.account.UserRole;
 
@@ -28,8 +29,15 @@ class JpaAuthUserRepositoryAdapter implements AuthUserRepository {
     @Override
     public void create(AuthUser user, String taxCode, String companyWebsite) {
         repository.save(new AuthUserJpaEntity(user.id(), user.email(), user.passwordHash(), user.displayName(),
-                user.role().name(), user.emailVerified(), user.studentVerificationStatus(), user.smeApprovalStatus(),
-                taxCode, companyWebsite, user.active()));
+                user.role().name(), user.accountState().name(), user.emailVerified(), user.smeApprovalStatus(),
+                taxCode, companyWebsite));
+    }
+
+    @Override
+    public void markEmailVerified(UUID id, AccountState accountState) {
+        AuthUserJpaEntity entity = repository.findById(id).orElseThrow();
+        entity.markEmailVerified(accountState.name());
+        repository.save(entity);
     }
 
     @Override
@@ -41,7 +49,7 @@ class JpaAuthUserRepositoryAdapter implements AuthUserRepository {
 
     private static AuthUser toDomain(AuthUserJpaEntity entity) {
         return new AuthUser(entity.id, entity.email, entity.passwordHash, entity.displayName,
-                UserRole.valueOf(entity.role), entity.emailVerified, entity.studentVerificationStatus,
-                entity.smeApprovalStatus, entity.active);
+                UserRole.valueOf(entity.role), entity.emailVerified, AccountState.valueOf(entity.accountState),
+                entity.smeApprovalStatus);
     }
 }

@@ -20,9 +20,8 @@ import { CvUploader } from "../../users/components/cv-uploader";
  * không cần thư viện và không cần tự viết lại. <dialog> mở bằng showModal()
  * cũng ngầm mang role="dialog" và ngữ nghĩa modal, nên chỉ cần aria-labelledby.
  *
- * Chặn mềm theo BR-03: sinh viên chưa xác thực vẫn mở được hộp thoại để ĐỌC
- * yêu cầu, nhưng không gửi được đơn. Chặn ngay từ nút bấm sẽ khiến bạn ấy không
- * hiểu vì sao mình bị chặn.
+ * Contributor chưa xác minh email vẫn mở được hộp thoại để đọc yêu cầu, nhưng
+ * không gửi được đơn. Backend vẫn là nơi thực thi gate thật.
  *
  * Đơn ứng tuyển gửi kèm CV (PDF) của sinh viên; có thể thay CV ngay trong hộp thoại.
  */
@@ -32,14 +31,12 @@ export function ApplyButton({
   projectTitle,
   projectId,
   smeName,
-  budget,
-  verified
+  budget
 }: {
   projectTitle: string;
   projectId: string;
   smeName: string;
   budget: number;
-  verified: boolean;
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [status, setStatus] = useState<Status>("idle");
@@ -58,10 +55,10 @@ export function ApplyButton({
       ? "Thư ngỏ cần ít nhất 80 ký tự. Hãy nói rõ bạn đã làm gì tương tự và khi nào bạn rảnh."
       : undefined;
 
-  const isStudent = session?.role === "STUDENT";
+  const isStudent = session?.role === "CONTRIBUTOR";
   const hasVerifiedEmail = session?.emailVerified === true;
   const hasCv = Boolean(student?.cv);
-  const canSubmit = isStudent && (student?.studentVerified ?? verified) && hasVerifiedEmail && hasCv && letter.trim().length >= 80 && status === "idle";
+  const canSubmit = isStudent && hasVerifiedEmail && hasCv && letter.trim().length >= 80 && status === "idle";
 
   function open() {
     if (!isStudent) return;
@@ -139,18 +136,10 @@ export function ApplyButton({
               Doanh nghiệp chỉ chọn một bạn duy nhất cho dự án này, nên phần thư ngỏ là thứ tạo khác biệt.
             </p>
 
-            {!verified ? (
-              /* Chặn theo BR-03 — nền hổ phách + icon + chữ, ba lớp mã hóa */
-              <Alert variant="warning" title="Bạn cần xác thực tài khoản sinh viên trước">
-                Đây là cách chúng tôi bảo đảm với doanh nghiệp rằng người nhận việc đúng là sinh viên đang
-                theo học. Xác thực xong bạn quay lại nộp đơn được ngay, thường mất dưới 24 giờ.{" "}
-                <Link href="/student/profile">Xác thực hồ sơ của tôi</Link>
-              </Alert>
-            ) : null}
-
             {!hasVerifiedEmail ? (
               <Alert variant="warning" title="Bạn cần xác minh email trước">
-                Tài khoản đã đăng ký nhưng email chưa được kích hoạt. <Link href="/verify-email?token=genda-demo-valid-2026&next=%2Fprojects%3FemailVerified%3D1">Mở liên kết xác minh</Link> để tiếp tục.
+                Tài khoản đã đăng ký nhưng email chưa được kích hoạt.{" "}
+                <Link href={`/verify-email?email=${encodeURIComponent(session?.email ?? "")}`}>Nhập mã OTP</Link> để tiếp tục.
               </Alert>
             ) : null}
 
@@ -161,7 +150,7 @@ export function ApplyButton({
                 required
                 rows={7}
                 value={letter}
-                disabled={!verified || !hasVerifiedEmail}
+                disabled={!hasVerifiedEmail}
                 onChange={(event) => setLetter(event.target.value)}
                 onBlur={() => setTouched(true)}
                 error={letterError}
@@ -169,7 +158,7 @@ export function ApplyButton({
                 placeholder="Em đã làm một trang tương tự cho..."
               />
 
-              {verified && hasVerifiedEmail ? (
+              {hasVerifiedEmail ? (
                 <Field id="apply-cv" label="CV đính kèm (PDF)" required>
                   <CvUploader id="apply-cv" />
                   <p className="field__hint">Doanh nghiệp xem CV này cùng thư ngỏ. Thay CV ở đây cũng cập nhật CV trong hồ sơ của bạn.</p>
@@ -188,7 +177,7 @@ export function ApplyButton({
 
             {/* Nút disabled BẮT BUỘC đi kèm dòng giải thích lý do (BR-07,
                 design-tokens.md 3.1) — nếu không người dùng chỉ thấy nút xám. */}
-            {verified && hasVerifiedEmail && (letter.trim().length < 80 || !hasCv) ? (
+            {hasVerifiedEmail && (letter.trim().length < 80 || !hasCv) ? (
               <p className="hint-disabled" style={{ marginTop: "var(--space-3)", textAlign: "right" }}>
                 {!hasCv ? "Tải lên CV (PDF) để gửi được đơn." : "Viết thư ngỏ ít nhất 80 ký tự để gửi được đơn."}
               </p>
