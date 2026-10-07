@@ -10,19 +10,17 @@ import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletResponse;
-import vn.skillbridge.auth.application.AuthResult;
-import vn.skillbridge.auth.domain.AuthUser;
-import vn.skillbridge.auth.domain.UserRole;
-import vn.skillbridge.auth.infrastructure.AuthProperties;
+import vn.skillbridge.auth.application.session.AuthCookieSettings;
+import vn.skillbridge.auth.application.session.AuthResult;
+import vn.skillbridge.auth.domain.account.AuthUser;
+import vn.skillbridge.auth.domain.account.UserRole;
 
 class AuthCookieWriterTest {
     private static final Instant NOW = Instant.parse("2026-10-07T00:00:00Z");
 
     @Test
     void writesHttpOnlyScopedCookiesWithoutExposingTokensInTheBody() {
-        AuthProperties properties = new AuthProperties("a-secret-value-that-is-long-enough-for-hs256", "test",
-                Duration.ofMinutes(5), Duration.ofHours(24), Duration.ofDays(7), true, "None");
-        AuthCookieWriter writer = new AuthCookieWriter(properties, Clock.fixed(NOW, ZoneOffset.UTC));
+        AuthCookieWriter writer = writer();
         var user = new AuthUser(UUID.randomUUID(), "student@example.com", "hash", "Student", UserRole.STUDENT,
                 true, "VERIFIED", null, true);
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -39,9 +37,7 @@ class AuthCookieWriterTest {
 
     @Test
     void clearsBothCookiesUsingTheirOriginalPaths() {
-        AuthProperties properties = new AuthProperties("a-secret-value-that-is-long-enough-for-hs256", "test",
-                Duration.ofMinutes(5), Duration.ofHours(24), Duration.ofDays(7), true, "None");
-        AuthCookieWriter writer = new AuthCookieWriter(properties, Clock.fixed(NOW, ZoneOffset.UTC));
+        AuthCookieWriter writer = writer();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         writer.clear(response);
@@ -50,5 +46,20 @@ class AuthCookieWriterTest {
         assertThat(cookies).hasSize(2);
         assertThat(cookies.get(0)).contains("genda_access=", "Path=/api", "Max-Age=0", "HttpOnly");
         assertThat(cookies.get(1)).contains("genda_refresh=", "Path=/api/v1/auth", "Max-Age=0", "HttpOnly");
+    }
+
+    @Test
+    void writesReadableCsrfCookieWithApiScope() {
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        writer().writeCsrf(response, "csrf-token");
+
+        assertThat(response.getHeader("Set-Cookie")).contains("genda_csrf=csrf-token", "Path=/api/v1",
+                "Secure", "SameSite=None").doesNotContain("HttpOnly");
+    }
+
+    private static AuthCookieWriter writer() {
+        var settings = new AuthCookieSettings(Duration.ofMinutes(5), true, "None");
+        return new AuthCookieWriter(settings, Clock.fixed(NOW, ZoneOffset.UTC));
     }
 }

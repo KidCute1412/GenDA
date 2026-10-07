@@ -16,14 +16,14 @@ import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.anyCollection;
 
 class ProjectQueryServiceTest {
-    private final ProjectCatalog catalog = mock(ProjectCatalog.class);
+    private final PublishedProjectRepository projects = mock(PublishedProjectRepository.class);
     private final SkillQueryService skills = mock(SkillQueryService.class);
-    private final ProjectQueryService service = new ProjectQueryService(catalog, skills);
+    private final ProjectQueryService service = new ProjectQueryService(projects, skills);
 
     @Test
     void mapsSkillCodesAndPreservesPagingMetadata() {
         ProjectSearch search = new ProjectSearch(null, List.of("react"), null, null, 1, 12);
-        when(catalog.findPublished(search)).thenReturn(new ProjectPage<>(List.of(project()), 1, 12, 1));
+        when(projects.findPublished(search)).thenReturn(new ProjectPage<>(List.of(project()), 1, 12, 1));
         when(skills.findByCodes(anyCollection())).thenReturn(Map.of("react", new SkillSummary("react", "React")));
 
         ProjectPage<ProjectView> result = service.browse(search);
@@ -37,7 +37,7 @@ class ProjectQueryServiceTest {
 
     @Test
     void rejectsUnknownOrUnpublishedProject() {
-        when(catalog.findPublishedById("missing")).thenReturn(Optional.empty());
+        when(projects.findPublishedById("missing")).thenReturn(Optional.empty());
         assertThatThrownBy(() -> service.getPublished("missing"))
                 .isInstanceOf(ProjectNotFoundException.class);
     }

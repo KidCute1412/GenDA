@@ -23,7 +23,7 @@ class ProjectMilestoneJpaEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "project_id", nullable = false)
-    private ProjectJpaEntity project;
+    private PublishedProjectJpaEntity project;
 
     @Column(name = "public_id", nullable = false, length = 100)
     private String publicId;

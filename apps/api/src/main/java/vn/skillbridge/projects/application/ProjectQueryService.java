@@ -13,10 +13,10 @@ import vn.skillbridge.users.application.SkillSummary;
 @Service
 @Transactional(readOnly = true)
 public class ProjectQueryService {
-    private final ProjectCatalog projects;
+    private final PublishedProjectRepository projects;
     private final SkillQueryService skills;
 
-    public ProjectQueryService(ProjectCatalog projects, SkillQueryService skills) {
+    public ProjectQueryService(PublishedProjectRepository projects, SkillQueryService skills) {
         this.projects = projects;
         this.skills = skills;
     }

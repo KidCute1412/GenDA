@@ -12,20 +12,20 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 public class SkillQueryService {
-    private final SkillCatalog catalog;
+    private final SkillRepository skills;
 
-    public SkillQueryService(SkillCatalog catalog) {
-        this.catalog = catalog;
+    public SkillQueryService(SkillRepository skills) {
+        this.skills = skills;
     }
 
     public List<SkillSummary> listSkills() {
-        return catalog.findAll().stream()
+        return skills.findAll().stream()
                 .map(skill -> new SkillSummary(skill.code(), skill.name()))
                 .toList();
     }
 
     public Map<String, SkillSummary> findByCodes(Collection<String> codes) {
-        return catalog.findByCodes(codes).stream()
+        return skills.findByCodes(codes).stream()
                 .map(skill -> new SkillSummary(skill.code(), skill.name()))
                 .collect(Collectors.toMap(
                         SkillSummary::code,
