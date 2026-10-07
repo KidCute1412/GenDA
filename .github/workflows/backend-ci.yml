@@ -29,6 +29,7 @@ jobs:
       - name: Compose smoke test
         run: |
           cp .env.example .env
+          cp apps/api/.env.example apps/api/.env
           docker compose version
           docker compose config --quiet
           docker compose up --build --wait --wait-timeout 300 database backend
