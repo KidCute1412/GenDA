@@ -1,4 +1,5 @@
 import { expect, test, type Locator } from "@playwright/test";
+import { loginAs } from "./support/auth";
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
@@ -18,9 +19,7 @@ async function readUntil(gen: Locator, choice: string) {
 }
 
 test("Gen chào sinh viên lần đầu, nói tiếp điều quan trọng và không tự bật lại trong cùng phiên", async ({ page }) => {
-  await page.goto("/login");
-  await page.getByRole("button", { name: /SINH VIÊN$/i }).click();
-  await page.waitForURL(/\/projects/);
+  await loginAs(page, "student");
   await page.goto("/student/applications");
 
   const gen = page.getByRole("dialog", { name: "Gen" });
@@ -47,8 +46,7 @@ test("Gen chào sinh viên lần đầu, nói tiếp điều quan trọng và kh
 });
 
 test("Gen không xuất hiện với doanh nghiệp", async ({ page }) => {
-  await page.goto("/login");
-  await page.getByRole("button", { name: /DOANH NGHIỆP$/i }).click();
+  await loginAs(page, "sme");
   await page.goto("/sme/projects");
   await page.waitForTimeout(2000);
   await expect(page.getByRole("button", { name: /Mở trợ lý Gen/ })).toHaveCount(0);
