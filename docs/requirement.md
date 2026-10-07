@@ -21,6 +21,8 @@ MVP số hóa đúng một vòng đời: **SME đăng dự án → admin duyệt
 | Matching | Rule-based theo kỹ năng, không AI | Slides, mục MVP Roadmap |
 | Phí nền tảng | Không thu ở MVP | Slides, Business Model |
 
+**Mở rộng 2026-10-07: cơ hội ngắn.** Ngoài dự án, GenDA nhận tin **cộng tác viên** (làm theo buổi) và **sự kiện & workshop** (khán giả, người dùng thử, học viên thử) ở mọi lĩnh vực, thù lao từ 50.000đ theo buổi hoặc theo người. Các ràng buộc "1 người / dự án" và "1–5 triệu" ở bảng trên **chỉ áp cho dự án**. Cơ hội ngắn có vòng đời riêng (đăng ký một chạm, nhiều người một tin, không mốc bàn giao): yêu cầu ở mục 3.11 và [`opportunities.md`](./opportunities.md). Hiện là bản demo trên trình duyệt, chưa có backend.
+
 ## 2. Tác nhân
 
 | Tác nhân | Mô tả | Vai trò hệ thống |
@@ -144,6 +146,21 @@ Portfolio xác thực (FR-CERT-01…05) đã bị loại khỏi phạm vi. Năng
 | FR-AST-06 | Mỗi lời nhắc nêu dữ liệu đã dẫn tới nó ("Vì sao Gen nói vậy?"). | S |
 | FR-AST-07 | Trợ lý chỉ đọc dữ liệu của sinh viên đang đăng nhập, không hiển thị thông tin về ứng viên khác. | S |
 
+### 3.11 Cơ hội ngắn — tính năng `opportunities` (bản demo)
+
+Đặc tả đầy đủ, quy tắc BR-OPP và lý do tách khỏi dự án: [`opportunities.md`](./opportunities.md).
+
+| Mã | Yêu cầu | Mức |
+| --- | --- | --- |
+| FR-OPP-01 | Doanh nghiệp đã được duyệt đăng tin loại cộng tác viên hoặc sự kiện & workshop, gồm lĩnh vực, thù lao, số chỗ, hình thức, địa điểm, 1–5 buổi và điều kiện tham gia. | M |
+| FR-OPP-02 | Thù lao tối thiểu 50.000đ; sự kiện tính theo người, cộng tác viên tính theo buổi; luôn hiển thị kèm đơn vị. | M |
+| FR-OPP-03 | Tin chỉ gửi duyệt được khi người đăng cam kết không thu phí người tham gia; thẻ và trang chi tiết hiện nhãn "Không thu phí người tham gia". | M |
+| FR-OPP-04 | Quản trị viên duyệt hoặc từ chối tin (từ chối bắt buộc có lý do); tin chưa duyệt không công khai. | M |
+| FR-OPP-05 | Cá nhân đã xác minh email đăng ký một chạm, không CV. Sự kiện giữ chỗ ngay; cộng tác viên chờ chủ tin nhận hoặc từ chối. | M |
+| FR-OPP-06 | Hết chỗ thì đóng đăng ký; hủy đăng ký trả lại chỗ. | M |
+| FR-OPP-07 | Trang "Tìm cơ hội" có ba tab loại kèm số tin; tab cơ hội ngắn lọc theo lĩnh vực, thù lao, hình thức và nhóm theo ngày diễn ra. | M |
+| FR-OPP-08 | Người tham gia xem lịch đã đăng ký ở "Đơn của tôi"; chủ tin xem tin của mình kèm số người đã chốt và chờ duyệt. | M |
+
 ## 4. Quy tắc nghiệp vụ
 
 Bất biến áp dụng xuyên suốt mọi use case. Vi phạm trả về lỗi miền ổn định theo `docs/api-conventions.md`, không phải lỗi 500.
@@ -213,6 +230,7 @@ Ngoài ra, điều kiện đóng theo `docs/definition-of-done.md` phải đạt
 | FR-CERT-01…05 | `certificates` | `docs/domain-model.md`, `docs/authorization-matrix.md` |
 | FR-ADM-01…04 | `admin` | `docs/authorization-matrix.md` |
 | FR-AST-01…07 | `assistant` | `docs/assistant.md`, `docs/design.md` DD-11 |
+| FR-OPP-01…08 | `opportunities` (frontend demo) | `docs/opportunities.md`, `docs/design.md` DD-12 |
 | BR-01…14 | Tầng domain của module sở hữu | `docs/domain-model.md`, `docs/architecture.md` |
 | NFR-SEC, NFR-PRIV, NFR-AUD | Xuyên suốt | `docs/architecture.md`, `docs/authorization-matrix.md` |
 | NFR-PERF, NFR-DATA | `projects`, `applications`, `milestones` | `docs/database-conventions.md`, `docs/api-conventions.md` |
@@ -252,6 +270,7 @@ Các điểm cần quyết định trước khi module liên quan được imple
 | OQ-06 | **Đăng ký sàn TMĐT.** Mô tả dự án 2.3.8 nêu nghĩa vụ rà soát đăng ký website cung cấp dịch vụ TMĐT với Bộ Công Thương khi vận hành chính thức. Ảnh hưởng thời điểm mở public, không ảnh hưởng MVP pilot. | NĐ 52/2013, NĐ 85/2021 |
 | OQ-07 | **Lưu trữ tệp.** `docs/database-conventions.md` yêu cầu object storage nhưng chưa chọn nhà cung cấp; ràng buộc chi phí là NFR-OPS-01. Cần một ADR. | `docs/database-conventions.md` |
 | OQ-08 | **Lý do đóng đơn có cấu trúc.** Trợ lý hiện chỉ suy luận nguyên nhân trượt từ dữ liệu (FR-AST-02). Cho SME chọn một lý do có cấu trúc khi đơn bị đóng sẽ làm lời khuyên chính xác hơn, nhưng thêm một bước cho SME và đụng tới FR-APP-05 (đơn còn lại tự động `REJECTED`). Cần chốt trước khi dựng module `assistant` ở backend. | `docs/assistant.md` mục 7 |
+| OQ-09 | **Cơ hội ngắn lên backend.** Bản demo chưa có điểm danh, xác nhận đã trả thù lao và cách xử lý tiền cho khoản nhỏ nhiều người. Cần chốt trước khi dựng module `opportunities`: GenDA chỉ ghi nhận hay giữ tiền, và cổng CV ở `/projects` có chặn người chỉ muốn tham gia sự kiện hay không. | `docs/opportunities.md` mục 6 |
 
 ## 10. Giả định và rủi ro
 

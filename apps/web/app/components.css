@@ -3806,3 +3806,375 @@ li:first-child > .gen-choice .gen-choice__key {
     display: none;
   }
 }
+
+/* ==========================================================================
+   CƠ HỘI NGẮN — cộng tác viên, sự kiện & workshop (docs/opportunities.md)
+   Danh sách dùng lại khung .project-row để thù lao các loại tin nằm cùng một trục.
+   ========================================================================== */
+
+.tab__count {
+  min-width: 22px;
+  padding: 1px 6px;
+  border-radius: 2px;
+  background-color: var(--color-surface-subtle);
+  color: var(--color-text-heading);
+  font-size: 11px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.tab[aria-current="page"] .tab__count {
+  background-color: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+}
+
+.opp-tabs {
+  margin-bottom: var(--space-8);
+}
+
+.opp-tabs__intro {
+  margin: 0;
+  max-width: 72ch;
+  color: var(--color-text-muted);
+  font-size: var(--text-body-sm-size);
+}
+
+.opp-row__tagline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+/* Nhãn loại tin: chữ là lớp nghĩa chính, màu chỉ để quét nhanh */
+.opp-kind {
+  padding: 2px 6px;
+  border: 1.5px solid var(--machinery-border);
+  border-radius: 2px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.opp-kind--gig {
+  background-color: var(--color-surface-card);
+  color: var(--color-text-heading);
+}
+
+.opp-kind--event {
+  background-color: var(--brand-500);
+  border-color: var(--brand-500);
+  color: #ffffff;
+}
+
+.opp-row__title {
+  margin: var(--space-1) 0;
+  font-size: var(--text-h3-size);
+}
+
+.opp-row__title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.opp-row__title a:hover {
+  text-decoration: underline;
+}
+
+.opp-facts {
+  display: grid;
+  gap: 4px;
+  margin: var(--space-2) 0 0;
+  font-size: var(--text-body-sm-size);
+}
+
+.opp-facts > div {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: var(--space-2);
+}
+
+.opp-facts dt {
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  line-height: 1.9;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.opp-facts dd {
+  margin: 0;
+  color: var(--color-text-heading);
+  font-weight: 600;
+}
+
+.opp-nofee {
+  margin: var(--space-1) 0 0;
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--color-status-verified-text);
+}
+
+.opp-unit {
+  margin-left: 2px;
+  font-size: 0.6em;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.opp-slots {
+  margin: 0;
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-body);
+}
+
+.opp-slots--scarce {
+  color: var(--color-status-warning-text);
+}
+
+.opp-slots--full {
+  color: var(--color-status-danger-text);
+}
+
+.opp-filter {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.opp-filter legend {
+  margin-bottom: var(--space-2);
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.opp-results-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px dashed var(--machinery-border);
+  font-family: ui-monospace, monospace;
+}
+
+.opp-results-head p {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.opp-results-head span {
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.opp-group + .opp-group {
+  margin-top: var(--space-6);
+}
+
+.opp-group > .industrial-ruler {
+  margin: 0 0 var(--space-3);
+}
+
+.opp-sessions {
+  display: grid;
+  gap: var(--space-2);
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.opp-sessions li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  border: 2px solid var(--machinery-border);
+  background-color: var(--color-surface-card);
+  font-family: ui-monospace, monospace;
+  font-weight: 700;
+}
+
+.opp-sessions li.is-past {
+  opacity: 0.55;
+}
+
+/* Trạng thái đăng ký của chính người xem: nền màu nhóm + chữ mực (cùng bảng màu trang Đơn của tôi) */
+.opp-mine {
+  display: grid;
+  gap: 4px;
+  padding: var(--space-3) var(--space-4);
+  border: 2px solid var(--machinery-border);
+  color: #18181b;
+  font-size: var(--text-body-sm-size);
+}
+
+.opp-mine strong {
+  font-family: ui-monospace, monospace;
+  letter-spacing: 0.04em;
+}
+
+.opp-mine--confirmed { background-color: var(--app-status-accepted); }
+.opp-mine--pending { background-color: var(--app-status-pending); }
+
+.opp-trust {
+  padding: var(--space-4);
+  border: 2px solid var(--machinery-border);
+  background-color: var(--color-surface-card);
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+}
+
+.opp-trust strong {
+  color: var(--color-status-verified-text);
+}
+
+.opp-trust p {
+  margin: 4px 0 0;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.opp-people {
+  display: grid;
+  gap: var(--space-2);
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.opp-people li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border: 1.5px solid var(--color-border-subtle);
+  font-size: var(--text-body-sm-size);
+}
+
+.opp-people-details summary {
+  cursor: pointer;
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.opp-filter + .opp-filter {
+  margin-top: var(--space-3);
+}
+
+/* --- Form đăng tin --- */
+.opp-kind-choice {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.opp-kind-choice__grid {
+  display: grid;
+  gap: var(--space-3);
+}
+
+@media (min-width: 640px) {
+  .opp-kind-choice__grid { grid-template-columns: 1fr 1fr; }
+}
+
+.opp-kind-choice__option {
+  position: relative;
+  display: grid;
+  gap: 4px;
+  padding: var(--space-4);
+  border: 2px solid var(--color-border-subtle);
+  background-color: var(--color-surface-card);
+  cursor: pointer;
+}
+
+.opp-kind-choice__option[data-checked="true"] {
+  border-color: var(--brand-500);
+  box-shadow: inset 0 0 0 1px var(--brand-500);
+}
+
+.opp-kind-choice__option input {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+}
+
+.opp-kind-choice__option:focus-within {
+  outline: var(--focus-ring-width) solid var(--color-border-focus);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.opp-kind-choice__title {
+  font-weight: 800;
+  color: var(--color-text-heading);
+}
+
+.opp-kind-choice__text {
+  font-size: var(--text-body-sm-size);
+  color: var(--color-text-muted);
+}
+
+.opp-form__pair {
+  display: grid;
+  gap: var(--space-4);
+}
+
+@media (min-width: 640px) {
+  .opp-form__pair { grid-template-columns: 1fr 1fr; }
+}
+
+.opp-form__sessions {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.opp-form__session {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+}
+
+.opp-form__session > :first-child {
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 640px) {
+  .opp-form__session { grid-template-columns: 2fr 1fr 1fr auto; }
+  .opp-form__session > :first-child { grid-column: auto; }
+}
+
+.opp-form__session .field {
+  margin: 0;
+}
+
+.opp-form__commit {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+  padding: var(--space-4);
+  border: 2px solid var(--machinery-border);
+  background-color: var(--color-surface-subtle);
+  font-size: var(--text-body-sm-size);
+  cursor: pointer;
+}
+
+.opp-form__commit input {
+  margin-top: 3px;
+  flex-shrink: 0;
+}

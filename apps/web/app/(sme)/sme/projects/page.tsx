@@ -9,6 +9,7 @@ import { EmptyState } from "../../../../components/ui/feedback";
 import { PROJECTS, TODAY } from "../../../../mocks/data";
 import { daysUntil, formatDate, formatVnd } from "../../../../lib/utils/format";
 import { CreatedProjectsPanel } from "../../../../features/projects/components/created-projects-panel";
+import { MyOpportunitiesPanel } from "../../../../features/opportunities/components/my-opportunities-panel";
 import { LedgerApplicantQueue } from "../../../../features/applications/components/ledger-applicant-queue";
 import { RoleRouteGuard } from "../../../../features/auth/components/role-route-guard";
 
@@ -95,6 +96,8 @@ export default async function SmeProjectsPage({
               + ĐĂNG DỰ ÁN MỚI
             </Link>
           </div>
+
+          <MyOpportunitiesPanel />
 
           {/* THANH TAB LỌC TRẠNG THÁI KIỂU HARDWARE SWITCHER */}
           <div 
