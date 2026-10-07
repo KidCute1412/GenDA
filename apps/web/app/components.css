@@ -309,20 +309,20 @@
 /* --- Biến thể (DD-10 Neo-Industrial Ledger) --- */
 
 .btn--primary {
-  background-color: var(--orange-500);
+  background-color: var(--brand-500);
   color: #ffffff;
   border-color: var(--machinery-border);
   box-shadow: var(--shadow-press);
 }
 
 .btn--primary:hover {
-  background-color: var(--orange-600);
+  background-color: var(--brand-600);
   transform: translate(2px, 2px);
   box-shadow: var(--shadow-press-sm);
 }
 
 .btn--primary:active {
-  background-color: var(--orange-700);
+  background-color: var(--brand-700);
   transform: translate(3px, 3px);
   box-shadow: none;
 }
@@ -614,10 +614,10 @@
 .input:focus,
 .textarea:focus,
 .select:focus {
-  border-color: var(--orange-500);
+  border-color: var(--brand-500);
   outline: none;
   /* Vòng sáng cam nhạt quanh ô đang nhập thay cho bóng đen */
-  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.18);
+  box-shadow: 0 0 0 3px rgba(10, 40, 90, 0.18);
 }
 
 .textarea {
@@ -1054,7 +1054,7 @@
   font-family: ui-monospace, monospace;
   font-size: 9px;
   font-weight: 700;
-  background-color: var(--orange-500);
+  background-color: var(--brand-500);
   color: #ffffff;
   padding: 1px 5px;
   border-radius: 2px;
@@ -1135,7 +1135,7 @@
 .main-nav__link[aria-current="page"] {
   color: var(--color-text-heading);
   background-color: transparent;
-  box-shadow: inset 0 -3px 0 var(--orange-500);
+  box-shadow: inset 0 -3px 0 var(--brand-500);
 }
 
 .main-nav__badge {
@@ -1145,7 +1145,7 @@
   height: 18px;
   padding-inline: 5px;
   border-radius: 9px;
-  background-color: var(--orange-500);
+  background-color: var(--brand-500);
   color: #ffffff;
   font-size: 10px;
   font-weight: 800;
@@ -1181,7 +1181,7 @@
 }
 
 .icon-btn:focus-visible {
-  outline: 2px solid var(--orange-500);
+  outline: 2px solid var(--brand-500);
   outline-offset: 2px;
 }
 
@@ -1258,7 +1258,7 @@
 }
 
 .user-menu__item[aria-current="page"] {
-  box-shadow: inset 3px 0 0 var(--orange-500);
+  box-shadow: inset 3px 0 0 var(--brand-500);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1318,10 +1318,19 @@
   color: #ffffff;
 }
 
+/* Màu nhóm trạng thái riêng của trang "Đơn của tôi". Cả ba đều sáng nên luôn làm NỀN cho chữ mực,
+   không dùng làm màu chữ trên nền trắng (chữ mực trên vàng 13:1, ngọc 9:1, san hô 7,5:1). */
+:root {
+  --app-status-pending: #ffd166;
+  --app-status-accepted: #06d6a0;
+  --app-status-rejected: #ff7f50;
+  --app-status-withdrawn: #d4d4d8;
+}
+
 /* Số đếm của từng nhóm mang màu trạng thái để quét nhanh bằng mắt */
-.app-tab--pending .app-tab__count { background-color: #fef3c7; color: #92400e; }
-.app-tab--accepted .app-tab__count { background-color: #dcfce7; color: #166534; }
-.app-tab--rejected .app-tab__count { background-color: #fee2e2; color: #991b1b; }
+.app-tab--pending .app-tab__count { background-color: var(--app-status-pending); color: #18181b; }
+.app-tab--accepted .app-tab__count { background-color: var(--app-status-accepted); color: #18181b; }
+.app-tab--rejected .app-tab__count { background-color: var(--app-status-rejected); color: #18181b; }
 
 .app-card {
   display: grid;
@@ -1339,10 +1348,27 @@
 }
 
 /* Vạch màu bên trái theo nhóm trạng thái */
-.app-card--pending { border-left-color: #f59e0b; }
-.app-card--accepted { border-left-color: #16a34a; }
-.app-card--rejected { border-left-color: #dc2626; }
-.app-card--withdrawn { border-left-color: #a1a1aa; }
+.app-card--pending { border-left-color: var(--app-status-pending); }
+.app-card--accepted { border-left-color: var(--app-status-accepted); }
+.app-card--rejected { border-left-color: var(--app-status-rejected); }
+.app-card--withdrawn { border-left-color: var(--app-status-withdrawn); }
+
+/* Nhãn trạng thái trên thẻ đơn: chỉ nền màu + chữ, không icon */
+.app-status {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--badge-padding);
+  border-radius: var(--badge-radius);
+  color: #18181b;
+  font-size: var(--text-caption-size);
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.app-status--pending { background-color: var(--app-status-pending); }
+.app-status--accepted { background-color: var(--app-status-accepted); }
+.app-status--rejected { background-color: var(--app-status-rejected); }
+.app-status--withdrawn { background-color: var(--app-status-withdrawn); }
 
 .app-card__actions {
   display: flex;
@@ -1533,7 +1559,7 @@
 
 .tab[aria-selected="true"],
 .tab[aria-current="page"] {
-  background-color: var(--orange-500);
+  background-color: var(--brand-500);
   color: #ffffff;
   border-color: var(--machinery-border);
   box-shadow: none;
@@ -1624,8 +1650,8 @@
 
 .skill-pill--matched {
   background-color: var(--color-surface-subtle);
-  border-color: var(--orange-500);
-  color: var(--orange-600);
+  border-color: var(--brand-500);
+  color: var(--brand-600);
 }
 
 .skill-pill svg {
@@ -1694,7 +1720,7 @@
   display: inline-block;
   width: 14px;
   height: 14px;
-  background-color: var(--orange-500);
+  background-color: var(--brand-500);
   border-radius: 2px;
 }
 
@@ -1733,7 +1759,7 @@
   height: 0.85em;
   margin-left: 0.06em;
   vertical-align: -0.05em;
-  background-color: var(--orange-500);
+  background-color: var(--brand-500);
   animation: typewriter-caret 0.9s steps(1, end) var(--tw-delay, 0ms) 6 both;
 }
 
@@ -1816,7 +1842,7 @@
 
 .spec-panel .spec-panel__value {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  color: var(--orange-500);
+  color: var(--brand-500);
 }
 
 .spec-panel__label {
@@ -2002,7 +2028,7 @@
 }
 
 .module-bay:hover {
-  border-color: var(--orange-500);
+  border-color: var(--brand-500);
 }
 
 /* Khung tĩnh (vd. khung đăng nhập/đăng ký): không nhấc lên khi rê chuột */
@@ -2124,9 +2150,9 @@
 .auth-intro {
   --ink: #18181b;
   --ink-soft: rgba(24, 24, 27, 0.62);
-  --accent: #c2410c;
+  --accent: var(--brand-500);
   gap: var(--space-6);
-  background-color: #fed7aa;
+  background-color: var(--brand-100);
   color: var(--ink);
   isolation: isolate;
   transition: background-color var(--auth-dur, 0.9s) var(--auth-ease, ease), color var(--auth-dur, 0.9s) var(--auth-ease, ease);
@@ -2135,8 +2161,8 @@
 .auth-intro[data-mode="register"] {
   --ink: #ffffff;
   --ink-soft: rgba(255, 255, 255, 0.7);
-  --accent: #fb923c;
-  background-color: #1e1b4b;
+  --accent: var(--brand-300);
+  background-color: var(--brand-500);
 }
 
 .auth-intro::before,
@@ -2149,11 +2175,11 @@
 }
 
 .auth-intro::before {
-  background: radial-gradient(120% 85% at 50% 0%, #fff7ed 0%, #fed7aa 52%, #fdba74 100%);
+  background: radial-gradient(120% 85% at 50% 0%, var(--brand-50) 0%, var(--brand-100) 52%, var(--brand-200) 100%);
 }
 
 .auth-intro::after {
-  background: radial-gradient(120% 85% at 50% 0%, #3730a3 0%, #1e1b4b 50%, #0b1026 100%);
+  background: radial-gradient(120% 85% at 50% 0%, #1e4a8f 0%, var(--brand-500) 50%, var(--brand-700) 100%);
   opacity: 0;
   transition: opacity var(--auth-dur, 0.9s) var(--auth-ease, ease);
 }
@@ -2207,9 +2233,9 @@
   --dev-ink: #18181b;
   --key: #27272a;
   --key-shadow: #09090b;
-  --scr: #fb923c;
-  --led: #f97316;
-  --glow-c: rgba(249, 115, 22, 0.55);
+  --scr: var(--brand-300);
+  --led: var(--brand-400);
+  --glow-c: rgba(61, 99, 166, 0.5);
   --chip-bg: #ffffff;
   --chip-ink: #18181b;
   --fader: 18%;
@@ -2377,7 +2403,7 @@
 }
 
 .op-device__brand b {
-  color: var(--orange-500);
+  color: var(--led);
 }
 
 .op-device__mode {
@@ -2614,7 +2640,7 @@
 }
 
 .op-knob {
-  --knob: #f97316;
+  --knob: var(--brand-500);
   --a: 0deg;
   position: relative;
   width: 8.4cqw;
@@ -2739,7 +2765,7 @@
   width: 3.4cqw;
   height: 4.6cqw;
   border-radius: 0.7cqw;
-  background-color: var(--orange-500);
+  background-color: var(--led);
   box-shadow: 0 0.45cqw 0 rgba(0, 0, 0, 0.3);
   transform: translate(-50%, -50%);
   transition: left var(--auth-dur, 0.9s) var(--auth-ease, ease);
@@ -2782,7 +2808,7 @@
 .auth-intro[data-mode="register"] .op-chip--b { left: 3%; top: 83%; }
 .auth-intro[data-mode="register"] .op-chip--c { left: 2%; top: 3%; }
 
-.op-chip--a { color: var(--orange-500); }
+.op-chip--a { color: var(--brand-500); }
 .auth-intro[data-mode="register"] .op-chip--a { color: var(--led); }
 
 @keyframes op-chip {
@@ -2848,14 +2874,14 @@
 }
 
 /* Nút bấm Tactile Hardware (Kiểu nút bấm cơ khí của Teenage Engineering) */
-.btn--tactile-orange {
+.btn--tactile-brand {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
   height: 48px;
   padding-inline: var(--space-6);
-  background-color: var(--orange-500);
+  background-color: var(--brand-500);
   color: #ffffff;
   border: 2px solid var(--machinery-border);
   box-shadow: var(--shadow-press);
@@ -2870,10 +2896,10 @@
   transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.15s ease;
 }
 
-.btn--tactile-orange:hover {
+.btn--tactile-brand:hover {
   transform: translate(2px, 2px);
   box-shadow: var(--shadow-press-sm);
-  background-color: var(--orange-600);
+  background-color: var(--brand-600);
 }
 
 .btn--tactile-zinc {
@@ -3001,7 +3027,7 @@
   }
 }
 
-/* Số CỠ RẤT LỚN làm nhịp thị giác, tô màu cam nhạt.
+/* Số CỠ RẤT LỚN làm nhịp thị giác, tô màu nhạt.
    Thuần trang trí -> luôn aria-hidden, không bao giờ là nguồn thông tin duy
    nhất (design.md 4.9 "Ranh giới cần giữ"). */
 .editorial-list__num {
@@ -3109,7 +3135,7 @@
 }
 
 .project-row:hover {
-  border-color: var(--orange-500);
+  border-color: var(--brand-500);
 }
 
 @media (min-width: 768px) {
@@ -3242,7 +3268,7 @@
   left: -2px;
   right: -2px;
   height: 3px;
-  background-color: var(--orange-500);
+  background-color: var(--brand-500);
   transform-origin: right;
   transform: scaleX(0);
   opacity: 0;
@@ -3402,7 +3428,7 @@
 }
 
 .data-table tr:hover td {
-  background-color: rgba(249, 115, 22, 0.04);
+  background-color: rgba(10, 40, 90, 0.04);
 }
 
 /* Cột thời điểm dùng chữ số bảng để các hàng thẳng cột với nhau */
@@ -3412,3 +3438,743 @@
   font-size: 12px;
 }
 
+
+/* ==========================================================================
+   TRỢ LÝ GEN (features/assistant): hộp thoại kiểu game, design.md DD-11
+   Chân dung Gen đứng trong hộp và nhô lên khỏi mép trên: phần tử cắt qua ranh giới
+   khối (4.9.2 H.1). Không lớp phủ, không bẫy tiêu điểm: lời nhắc, không phải câu hỏi bắt buộc.
+   ========================================================================== */
+
+.gen-assistant {
+  --gen-z: calc(var(--z-sticky) + 10);
+  --gen-portrait-width: 176px;
+  --gen-bottom: var(--space-6);
+}
+
+@media (max-width: 767px) {
+  .gen-assistant {
+    --gen-portrait-width: 88px;
+    --gen-bottom: calc(var(--layout-bottom-nav-height) + env(safe-area-inset-bottom) + var(--space-3));
+  }
+}
+
+.gen-dialog {
+  position: fixed;
+  left: 50%;
+  bottom: var(--gen-bottom);
+  z-index: var(--gen-z);
+  width: min(760px, calc(100vw - 2 * var(--space-4)));
+  transform: translateX(-50%);
+}
+
+/* Đáy chân dung đặt trên viền đáy 2px của hộp, để viền vẫn liền một nét */
+.gen-dialog__stage {
+  position: absolute;
+  left: var(--space-4);
+  bottom: 2px;
+  z-index: 1;
+  width: var(--gen-portrait-width);
+  pointer-events: none;
+}
+
+.gen-dialog__portrait {
+  display: block;
+  width: 100%;
+  height: auto;
+  animation: gen-rise var(--duration-slow) ease-out both;
+}
+
+.gen-dialog__box {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5) var(--space-4) calc(var(--gen-portrait-width) + var(--space-8));
+  background-color: var(--color-surface-card);
+  border: 2px solid var(--machinery-border);
+  border-radius: 0;
+  color: var(--color-text-heading);
+  animation: gen-rise var(--duration-normal) ease-out both;
+}
+
+/* Thanh tên: bảng tên màu thương hiệu kiểu game, phần còn lại là mã máy đơn sắc */
+.gen-dialog__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.gen-dialog__name {
+  padding: 2px var(--space-2);
+  background-color: var(--color-action-primary);
+  border: 2px solid var(--machinery-border);
+  color: #ffffff; /* chữ trắng trên navy: 14,4:1 */
+  font-family: ui-monospace, monospace;
+  font-size: var(--text-body-sm-size);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.gen-dialog__role,
+.gen-dialog__counter {
+  color: var(--color-text-muted);
+  font-family: ui-monospace, monospace;
+  font-size: var(--text-caption-size);
+  letter-spacing: var(--tracking-label);
+  white-space: nowrap;
+}
+
+.gen-dialog__role {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gen-dialog__counter {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.gen-dialog__close {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin: calc(-1 * var(--space-2)) calc(-1 * var(--space-3)) calc(-1 * var(--space-2)) 0;
+  background: none;
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  color: var(--color-text-body);
+  cursor: pointer;
+}
+
+.gen-dialog__close:hover {
+  border-color: var(--machinery-border);
+}
+
+/* Vùng chữ giữ sẵn chỗ cho cả câu (phần chưa chạy chỉ ẩn), nên bố cục không nhảy khi chữ chạy */
+.gen-dialog__text {
+  min-height: calc(3 * var(--text-body-lg-height) * 1em);
+  font-size: var(--text-body-lg-size);
+  line-height: var(--text-body-lg-height);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  user-select: none;
+}
+
+.gen-dialog__ghost {
+  visibility: hidden;
+}
+
+.gen-dialog__advance {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.gen-dialog__next {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 44px;
+  padding-inline: var(--space-3);
+  background: var(--color-surface-card);
+  border: 2px solid var(--machinery-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-heading);
+  font-family: ui-monospace, monospace;
+  font-size: var(--text-caption-size);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.gen-dialog__next:hover {
+  border-color: var(--color-action-primary);
+}
+
+.gen-dialog__next:active,
+.gen-choice:active {
+  transform: translate(2px, 2px);
+}
+
+/* Lựa chọn đánh số như game; phím 1-4 chọn nhanh khi tiêu điểm ở trong hộp thoại */
+.gen-dialog__choices {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gen-choice {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: 44px;
+  padding: var(--space-2) var(--space-3);
+  background-color: var(--color-surface-card);
+  border: 2px solid var(--machinery-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-heading);
+  font: inherit;
+  font-weight: var(--weight-semibold);
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color var(--duration-fast) ease;
+}
+
+.gen-choice:hover {
+  border-color: var(--color-action-primary);
+}
+
+.gen-choice__key {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--machinery-border);
+  font-family: ui-monospace, monospace;
+  font-size: var(--text-caption-size);
+  font-weight: var(--weight-bold);
+}
+
+/* Lựa chọn đầu là lựa chọn Gen đề xuất */
+li:first-child > .gen-choice .gen-choice__key {
+  background-color: var(--color-action-primary);
+  color: #ffffff;
+}
+
+.gen-choice__tag {
+  margin-left: auto;
+  color: var(--color-accent-strong);
+  font-family: ui-monospace, monospace;
+  font-size: var(--text-caption-size);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-label);
+  white-space: nowrap;
+}
+
+.gen-dialog__why,
+.gen-dialog__demo {
+  color: var(--color-text-muted);
+  font-size: var(--text-body-sm-size);
+}
+
+.gen-dialog__why summary,
+.gen-dialog__demo summary {
+  width: fit-content;
+  min-height: 24px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.gen-dialog__why p,
+.gen-dialog__demo p {
+  margin: var(--space-2) 0 0;
+}
+
+.gen-dialog__footer {
+  display: grid;
+  gap: var(--space-2);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.gen-dialog__toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 32px;
+  color: var(--color-text-body);
+  font-size: var(--text-body-sm-size);
+  cursor: pointer;
+}
+
+.gen-dialog__toggle input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-action-primary);
+}
+
+.gen-dialog__demo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+/* Nút gọi Gen: phím phần cứng vuông, mặt Gen bên trong, huy hiệu số điều mới */
+.gen-launcher {
+  position: fixed;
+  right: var(--space-4);
+  bottom: var(--gen-bottom);
+  z-index: var(--gen-z);
+  width: 60px;
+  height: 60px;
+  padding: 0;
+  background-color: var(--color-surface-card);
+  border: 2px solid var(--machinery-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) ease;
+}
+
+.gen-launcher:hover {
+  border-color: var(--color-action-primary);
+}
+
+.gen-launcher:active {
+  transform: translate(2px, 2px);
+}
+
+.gen-launcher__face {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.gen-launcher__badge {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding-inline: 4px;
+  background-color: var(--color-action-primary);
+  border: 2px solid var(--machinery-border);
+  color: #ffffff;
+  font-family: ui-monospace, monospace;
+  font-size: var(--text-caption-size);
+  font-weight: var(--weight-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Chớp mắt MỘT lần mỗi câu thoại mới: không có vòng lặp vô hạn (4.12d) */
+.gen-portrait__eyes {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: gen-blink 220ms ease-in-out 120ms 1;
+}
+
+@keyframes gen-blink {
+  50% { transform: scaleY(0.1); }
+}
+
+@keyframes gen-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+@media (max-width: 767px) {
+  /* Màn hẹp: Gen đứng sau mép trên của hộp, nhường trọn bề ngang cho chữ */
+  .gen-dialog__stage {
+    left: var(--space-3);
+    bottom: calc(100% - 2px);
+  }
+
+  .gen-dialog__box {
+    padding: var(--space-3) var(--space-4) var(--space-4);
+  }
+
+  .gen-dialog__role {
+    display: none;
+  }
+
+  .gen-dialog__text {
+    min-height: calc(3 * var(--text-body-height) * 1em);
+    font-size: var(--text-body-size);
+    line-height: var(--text-body-height);
+  }
+}
+
+@media print {
+  .gen-assistant {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   CƠ HỘI NGẮN — cộng tác viên, sự kiện & workshop (docs/opportunities.md)
+   Danh sách dùng lại khung .project-row để thù lao các loại tin nằm cùng một trục.
+   ========================================================================== */
+
+.tab__count {
+  min-width: 22px;
+  padding: 1px 6px;
+  border-radius: 2px;
+  background-color: var(--color-surface-subtle);
+  color: var(--color-text-heading);
+  font-size: 11px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.tab[aria-current="page"] .tab__count {
+  background-color: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+}
+
+.opp-tabs {
+  margin-bottom: var(--space-8);
+}
+
+.opp-tabs__intro {
+  margin: 0;
+  max-width: 72ch;
+  color: var(--color-text-muted);
+  font-size: var(--text-body-sm-size);
+}
+
+.opp-row__tagline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+/* Nhãn loại tin: chữ là lớp nghĩa chính, màu chỉ để quét nhanh */
+.opp-kind {
+  padding: 2px 6px;
+  border: 1.5px solid var(--machinery-border);
+  border-radius: 2px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.opp-kind--gig {
+  background-color: var(--color-surface-card);
+  color: var(--color-text-heading);
+}
+
+.opp-kind--event {
+  background-color: var(--brand-500);
+  border-color: var(--brand-500);
+  color: #ffffff;
+}
+
+.opp-row__title {
+  margin: var(--space-1) 0;
+  font-size: var(--text-h3-size);
+}
+
+.opp-row__title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.opp-row__title a:hover {
+  text-decoration: underline;
+}
+
+.opp-facts {
+  display: grid;
+  gap: 4px;
+  margin: var(--space-2) 0 0;
+  font-size: var(--text-body-sm-size);
+}
+
+.opp-facts > div {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: var(--space-2);
+}
+
+.opp-facts dt {
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  line-height: 1.9;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.opp-facts dd {
+  margin: 0;
+  color: var(--color-text-heading);
+  font-weight: 600;
+}
+
+.opp-nofee {
+  margin: var(--space-1) 0 0;
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--color-status-verified-text);
+}
+
+.opp-unit {
+  margin-left: 2px;
+  font-size: 0.6em;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.opp-slots {
+  margin: 0;
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-body);
+}
+
+.opp-slots--scarce {
+  color: var(--color-status-warning-text);
+}
+
+.opp-slots--full {
+  color: var(--color-status-danger-text);
+}
+
+.opp-filter {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.opp-filter legend {
+  margin-bottom: var(--space-2);
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.opp-results-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px dashed var(--machinery-border);
+  font-family: ui-monospace, monospace;
+}
+
+.opp-results-head p {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.opp-results-head span {
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.opp-group + .opp-group {
+  margin-top: var(--space-6);
+}
+
+.opp-group > .industrial-ruler {
+  margin: 0 0 var(--space-3);
+}
+
+.opp-sessions {
+  display: grid;
+  gap: var(--space-2);
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.opp-sessions li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  border: 2px solid var(--machinery-border);
+  background-color: var(--color-surface-card);
+  font-family: ui-monospace, monospace;
+  font-weight: 700;
+}
+
+.opp-sessions li.is-past {
+  opacity: 0.55;
+}
+
+/* Trạng thái đăng ký của chính người xem: nền màu nhóm + chữ mực (cùng bảng màu trang Đơn của tôi) */
+.opp-mine {
+  display: grid;
+  gap: 4px;
+  padding: var(--space-3) var(--space-4);
+  border: 2px solid var(--machinery-border);
+  color: #18181b;
+  font-size: var(--text-body-sm-size);
+}
+
+.opp-mine strong {
+  font-family: ui-monospace, monospace;
+  letter-spacing: 0.04em;
+}
+
+.opp-mine--confirmed { background-color: var(--app-status-accepted); }
+.opp-mine--pending { background-color: var(--app-status-pending); }
+
+.opp-trust {
+  padding: var(--space-4);
+  border: 2px solid var(--machinery-border);
+  background-color: var(--color-surface-card);
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+}
+
+.opp-trust strong {
+  color: var(--color-status-verified-text);
+}
+
+.opp-trust p {
+  margin: 4px 0 0;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.opp-people {
+  display: grid;
+  gap: var(--space-2);
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.opp-people li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border: 1.5px solid var(--color-border-subtle);
+  font-size: var(--text-body-sm-size);
+}
+
+.opp-people-details summary {
+  cursor: pointer;
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.opp-filter + .opp-filter {
+  margin-top: var(--space-3);
+}
+
+/* --- Form đăng tin --- */
+.opp-kind-choice {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.opp-kind-choice__grid {
+  display: grid;
+  gap: var(--space-3);
+}
+
+@media (min-width: 640px) {
+  .opp-kind-choice__grid { grid-template-columns: 1fr 1fr; }
+}
+
+.opp-kind-choice__option {
+  position: relative;
+  display: grid;
+  gap: 4px;
+  padding: var(--space-4);
+  border: 2px solid var(--color-border-subtle);
+  background-color: var(--color-surface-card);
+  cursor: pointer;
+}
+
+.opp-kind-choice__option[data-checked="true"] {
+  border-color: var(--brand-500);
+  box-shadow: inset 0 0 0 1px var(--brand-500);
+}
+
+.opp-kind-choice__option input {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+}
+
+.opp-kind-choice__option:focus-within {
+  outline: var(--focus-ring-width) solid var(--color-border-focus);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.opp-kind-choice__title {
+  font-weight: 800;
+  color: var(--color-text-heading);
+}
+
+.opp-kind-choice__text {
+  font-size: var(--text-body-sm-size);
+  color: var(--color-text-muted);
+}
+
+.opp-form__pair {
+  display: grid;
+  gap: var(--space-4);
+}
+
+@media (min-width: 640px) {
+  .opp-form__pair { grid-template-columns: 1fr 1fr; }
+}
+
+.opp-form__sessions {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.opp-form__session {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+}
+
+.opp-form__session > :first-child {
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 640px) {
+  .opp-form__session { grid-template-columns: 2fr 1fr 1fr auto; }
+  .opp-form__session > :first-child { grid-column: auto; }
+}
+
+.opp-form__session .field {
+  margin: 0;
+}
+
+.opp-form__commit {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+  padding: var(--space-4);
+  border: 2px solid var(--machinery-border);
+  background-color: var(--color-surface-subtle);
+  font-size: var(--text-body-sm-size);
+  cursor: pointer;
+}
+
+.opp-form__commit input {
+  margin-top: 3px;
+  flex-shrink: 0;
+}

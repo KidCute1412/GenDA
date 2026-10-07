@@ -100,7 +100,7 @@ export default function HomePage() {
             </h1>
             
             <div className="cluster hero-cta" style={{ marginTop: "var(--space-8)", gap: "var(--space-4)" }}>
-              <Link href="/projects" className="btn--tactile-orange">
+              <Link href="/projects" className="btn--tactile-brand">
                 Tìm việc / Nhận dự án
                 <ArrowRight weight={ICON_WEIGHT} aria-hidden="true" />
               </Link>
@@ -200,7 +200,7 @@ export default function HomePage() {
         <section id="trust-layer" className="container section" style={{ borderTop: "2px solid var(--machinery-border)" }}>
           <div>
             <h2 style={{ display: "flex", alignItems: "center", gap: "12px", fontSize: "2rem", fontWeight: 800, textTransform: "uppercase" }}>
-              <span aria-hidden="true" style={{ width: "14px", height: "14px", flexShrink: 0, borderRadius: "2px", backgroundColor: "var(--orange-500)" }} />
+              <span aria-hidden="true" style={{ width: "14px", height: "14px", flexShrink: 0, borderRadius: "2px", backgroundColor: "var(--brand-500)" }} />
               Bốn Tầng Giao Kèo Niềm Tin
             </h2>
             <p className="lede" style={{ marginTop: "var(--space-3)", color: "var(--color-text-body)", maxWidth: "none" }}>
@@ -212,7 +212,7 @@ export default function HomePage() {
             <ol className="editorial-list" style={{ marginTop: "var(--space-8)" }}>
               {PILLARS.map((pillar, index) => (
                 <li key={pillar.title} className="editorial-list__item" style={{ borderTop: "1px solid var(--machinery-border)" }}>
-                  <span className="editorial-list__num editorial-list__num--bracket" aria-hidden="true" style={{ fontFamily: "ui-monospace, monospace", color: "var(--orange-500)", fontWeight: 800 }}>
+                  <span className="editorial-list__num editorial-list__num--bracket" aria-hidden="true" style={{ fontFamily: "ui-monospace, monospace", color: "var(--brand-500)", fontWeight: 800 }}>
                     <span className="editorial-list__bracket editorial-list__bracket--open">[</span>
                     <span className="editorial-list__digits">0{index + 1}</span>
                     <span className="editorial-list__bracket editorial-list__bracket--close">]</span>

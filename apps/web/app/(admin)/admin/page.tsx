@@ -10,6 +10,7 @@ import { formatDate, formatVnd } from "../../../lib/utils/format";
 import { AdminActionButtons } from "../../../features/admin/components/admin-action-buttons";
 import { LedgerAuditPanel } from "../../../features/admin/components/ledger-audit-panel";
 import { LedgerProjectQueue } from "../../../features/admin/components/ledger-project-queue";
+import { LedgerOpportunityQueue, LedgerOpportunityQueueCount } from "../../../features/admin/components/ledger-opportunity-queue";
 import { LedgerVerificationQueue } from "../../../features/admin/components/ledger-verification-queue";
 import { LedgerSmeQueue, LedgerSmeQueueCount } from "../../../features/admin/components/ledger-sme-queue";
 import { RoleRouteGuard } from "../../../features/auth/components/role-route-guard";
@@ -38,6 +39,7 @@ const TABS = [
   { key: "projects", label: "Duyệt dự án", code: "QUEUE.01" },
   { key: "students", label: "Duyệt thẻ sinh viên", code: "QUEUE.02" },
   { key: "smes", label: "Duyệt doanh nghiệp", code: "QUEUE.03" },
+  { key: "opportunities", label: "Duyệt tin ngắn", code: "QUEUE.04" },
   { key: "audit", label: "Nhật ký kiểm toán", code: "LEDGER.LOG" }
 ];
 
@@ -75,7 +77,7 @@ export default async function AdminPage({
             {/* Technical Breadcrumbs & Identity */}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "var(--space-2)", marginBottom: "var(--space-3)" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "8px", fontFamily: "ui-monospace, monospace", fontSize: "11px", color: "var(--color-text-muted)" }}>
-                <span style={{ color: "var(--orange-500)", fontWeight: 800 }}>OPS // TERMINAL</span>
+                <span style={{ color: "var(--brand-500)", fontWeight: 800 }}>OPS // TERMINAL</span>
                 <span>/</span>
                 <span>CONTROL_BAY</span>
                 <span>/</span>
@@ -113,7 +115,7 @@ export default async function AdminPage({
               >
                 <div>
                   <div style={{ fontFamily: "ui-monospace, monospace", fontSize: "10px", color: "var(--color-text-muted)" }}>CHỜ DUYỆT DỰ ÁN</div>
-                  <div className="num" style={{ fontSize: "1.25rem", fontWeight: 900, color: "var(--orange-500)" }}>{counts.projects}</div>
+                  <div className="num" style={{ fontSize: "1.25rem", fontWeight: 900, color: "var(--brand-500)" }}>{counts.projects}</div>
                 </div>
                 <div style={{ width: "1px", backgroundColor: "var(--machinery-border)", marginInline: "4px" }} />
                 <div>
@@ -154,11 +156,14 @@ export default async function AdminPage({
                     fontWeight: 800
                   }}
                 >
-                  {item.key === "smes" ? <LedgerSmeQueueCount /> : counts[item.key]}
+                  {item.key === "smes" ? <LedgerSmeQueueCount /> : item.key === "opportunities" ? <LedgerOpportunityQueueCount /> : counts[item.key]}
                 </span>
               </Link>
             ))}
           </nav>
+
+          {/* TAB 4: TIN CỘNG TÁC VIÊN / SỰ KIỆN (docs/opportunities.md) */}
+          {active === "opportunities" ? <LedgerOpportunityQueue /> : null}
 
           {/* TAB 1: HÀNG ĐỢI DUYỆT DỰ ÁN */}
           {active === "projects" ? <LedgerProjectQueue /> : null}

@@ -4,6 +4,8 @@ on:
   pull_request:
     paths:
       - "apps/web/**"
+      - "apps/api/**"
+      - "compose.yaml"
       - "packages/**"
       - "package.json"
       - "pnpm-lock.yaml"
@@ -14,6 +16,8 @@ on:
     branches: [main]
     paths:
       - "apps/web/**"
+      - "apps/api/**"
+      - "compose.yaml"
       - "packages/**"
       - "package.json"
       - "pnpm-lock.yaml"
@@ -92,8 +96,22 @@ jobs:
       - name: Install Playwright Chromium
         run: pnpm --filter @genda/web exec playwright install --with-deps chromium
 
+      # Đăng nhập là API thật: e2e cần database + backend (profile demo seed sẵn tài khoản demo)
+      - name: Set up Docker Compose
+        uses: docker/setup-compose-action@v2
+        with:
+          version: v5.0.2
+
+      - name: Start backend
+        run: |
+          cp .env.example .env
+          docker compose up --build --wait --wait-timeout 300 database backend
+
       - name: Run Playwright tests
         run: pnpm --filter @genda/web test:e2e
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:3001
+          API_INTERNAL_URL: http://localhost:3001
 
       - name: Upload Playwright report
         if: failure()
@@ -103,3 +121,9 @@ jobs:
           path: apps/web/playwright-report/
           if-no-files-found: ignore
           retention-days: 7
+
+      - name: Backend logs and cleanup
+        if: always()
+        run: |
+          docker compose logs backend database || true
+          docker compose down || true

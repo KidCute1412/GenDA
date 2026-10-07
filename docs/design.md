@@ -1412,7 +1412,7 @@ Các quyết định dưới đây phát sinh khi dựng mã nguồn, không có
 >
 > **Các trụ cột thiết kế chính:**
 > 1. **Chất liệu cơ khí & Sổ cái:** Khung lưới cơ khí (Engineered Blueprint Grid), viền đen dứt khoát 2px (`#18181B`), đổ bóng cứng xúc giác (`box-shadow: 4px 4px 0px #18181B`), góc vuông cơ học dứt khoát (`0px` cho module bays, `4px` cho nút).
-> 2. **Điểm nhấn Công nghiệp:** Màu **Safety Orange / International Orange (`#F97316`)** làm điểm nhấn tactile duy nhất.
+> 2. **Điểm nhấn Công nghiệp:** Màu **Navy thương hiệu (`#0A285A`)** làm điểm nhấn tactile duy nhất (đổi từ Safety Orange `#F97316` ngày 2026-10-07). Dải token `--brand-50…700`; trên nền tối dùng `--brand-300`.
 > 3. **Typography kỹ thuật:** Sử dụng `Be Vietnam Pro` cho tiêu đề in hoa đanh thép kết hợp `Monospace` cho thông số, số tiền, ngày hạn chót và mã bay (`BAY-01 // ACTIVE`).
 > 4. **Hỗ trợ Song hành Light & Dark Mode:** Hỗ trợ mượt mà cả chế độ Off-White sáng kỹ thuật và chế độ Anodized Carbon tối huyền bí.
 >
@@ -1423,6 +1423,36 @@ Các quyết định dưới đây phát sinh khi dựng mã nguồn, không có
 > **Quyết định.** `/phap-ly/*` và `/ho-tro/*` dựng sẵn khung trang, tiêu đề, đường dẫn và phần tóm tắt phạm vi, nhưng **cố ý không có nội dung pháp lý**; thay vào đó nói thẳng rằng văn bản đang chờ ban hành.
 >
 > **Lý do.** Quy chế sàn và chính sách bảo mật là văn bản ràng buộc quyền lợi người dùng. Một bản nháp nghe hợp lý rất dễ trôi thẳng vào bản chạy thật mà không ai rà lại, và khi đó nền tảng đang tuyên bố những điều chưa ai duyệt. Nói rõ "đang hoàn thiện" đúng tinh thần Trust-First hơn là đăng một văn bản có vẻ đầy đủ.
+
+> #### Quyết định thiết kế DD-11: Trợ lý Gen hiện ra như hộp thoại trong game, với một nhân vật vẽ riêng
+>
+> **Bối cảnh.** GenDA thêm trợ lý tìm việc Gen ([`assistant.md`](./assistant.md)): đọc tình trạng của sinh viên và lên tiếng khi có điều đáng nói. Câu hỏi thiết kế là trợ lý *trông* thế nào. Ô chat góc màn hình là khuôn mẫu ai cũng đã thấy và dễ bị lờ đi; toast thì quá ngắn cho một lời khuyên có lý lẽ.
+>
+> **Quyết định: lời nhắc hiện ra như hộp thoại trong game visual novel.** Một nhân vật có tên, có biểu cảm, đứng trên mép hộp thoại; chữ chạy từng ký tự; câu cuối mở các lựa chọn đánh số. Hình thức này tạo cảm giác có một người đang nói chuyện với sinh viên, đúng vai "chị khóa trên" của Gen, và giữ lời khuyên đủ dài mà vẫn chia nhỏ được từng câu.
+>
+> **Nhân vật** là tài sản nhận diện vẽ riêng bằng SVG, thuộc ngoại lệ "được phép tự vẽ" ở [Mục 4.10](#410-hệ-thống-biểu-tượng-icon-system), luôn `aria-hidden`. Phong cách anime 2D phẳng, viền mực đậm như viền cơ khí 2px của DD-10. Gen là cô gái tai cáo tóc chàm `#4647AE` dài, mắt xanh lá, cardigan len kem mặc ngoài sơ mi trắng thắt nơ navy, cúc màu tóc, tay chống cằm. Tóc chàm là màu riêng của nhân vật: cùng họ xanh với màu thương hiệu navy nên hài hòa với giao diện, nhưng sáng hơn để nhân vật vẫn nổi lên trên hộp thoại. Không dùng nhân vật 3D vì [Mục 4.9.1](#491-làm-ấm-mà-không-rơi-lại-vào-khuôn-mẫu) cấm minh họa người kiểu 3D bong bóng; không dùng model của bên thứ ba vì vướng điều khoản thương mại và không mang nhận diện GenDA. Bảng màu nhân vật cố ý không đổi theo chế độ tối: viền mực riêng giúp nhân vật đứng được trên mọi nền.
+>
+> **Ngoại lệ có kiểm soát với [Mục 4.12](#412-chuyển-động-motion).** Ba chuyển động riêng của Gen đều có lý do nói được thành lời và đều **hữu hạn**:
+> 1. *Chữ chạy* (24ms mỗi ký tự): lý do "đang nói". Bấm là hiện hết ngay (4.12e). Vùng chữ giữ sẵn chỗ cho cả câu nên không làm bố cục nhảy.
+> 2. *Khẩu hình đóng mở*: chỉ chạy khi chữ đang chạy, dừng ngay khi câu hiện đủ. Cùng với chữ chạy là đúng hai phần tử chuyển động (4.12d).
+> 3. *Chớp mắt một lần* mỗi câu mới: `animation-iteration-count: 1`, không có vòng lặp vô hạn.
+>
+> Với `prefers-reduced-motion`, chữ hiện ngay cả câu và khẩu hình đứng yên (cờ được kiểm tra trong JavaScript, vì hai chuyển động này điều khiển bằng JS); chớp mắt và trượt vào đã nằm trong khối CSS toàn cục.
+>
+> **Ranh giới bất biến.** Hộp thoại không modal, không lớp phủ, không bẫy tiêu điểm; tự bật thì không giành tiêu điểm. Tự bật nhiều nhất một lần mỗi phiên. Nguyên câu được đọc một lần qua vùng `aria-live="polite"`, chữ đang chạy ẩn với trình đọc màn hình. Mọi vùng bấm ≥ 44px. Bảng tên dùng chữ trắng trên nền navy thương hiệu (14,4:1). Hộp thoại vuông góc 0px, viền 2px, không đổ bóng, đúng DD-10.
+>
+> **Điều kiện xem lại.** (1) Chỉ số "tỷ lệ tắt tự bật" ở [`assistant.md`](./assistant.md) mục 8 tăng cao trong pilot: hạ tần suất trước, đổi hình thức sau. (2) Có ngân sách họa sĩ: nâng nhân vật lên Live2D **từ chính thiết kế này**, giữ nguyên bảng màu và phụ kiện nhận diện.
+
+
+> #### Quyết định thiết kế DD-12: "Tìm cơ hội" chia tab theo loại, thẻ có một dòng thông tin cố định
+>
+> **Bối cảnh.** GenDA mở rộng sang cơ hội ngắn ([`opportunities.md`](./opportunities.md)): cộng tác viên trả theo buổi và sự kiện, workshop trả theo người, từ 50.000đ, ở mọi lĩnh vực. Đặt chung với dự án 1–5 triệu trong một danh sách làm người xem phải đọc từng thẻ mới biết đó là việc trọn gói hay một buổi khán giả, và không so được 150k/người với 3 triệu trọn gói.
+>
+> **Quyết định.** (1) **Loại là tab, lĩnh vực là bộ lọc.** Trang "Tìm cơ hội" có ba tab: Dự án, Cộng tác viên, Sự kiện & workshop, mỗi tab kèm số tin đang mở và một câu nói rõ loại đó nhận tiền và đăng ký thế nào. Lĩnh vực (Truyền thông, F&B, Giáo dục…) là chip lọc bên trong tab. (2) **Một dòng thông tin cố định.** Thẻ cơ hội dùng lại khung cột của danh sách dự án (mục 4.9): bên trái là lịch rồi hình thức/địa điểm; cột phải là thù lao **luôn kèm đơn vị** (`/người`, `/buổi`) rồi số chỗ còn. Mắt quét dọc một cột là so được. (3) **Xếp theo ngày diễn ra**, nhóm "Trong 7 ngày tới / 7–14 ngày tới / Sau đó", vì với việc theo buổi câu hỏi đầu tiên là "khi nào". (4) **Nhãn loại** là chữ (`SỰ KIỆN`, `CỘNG TÁC VIÊN`), màu nền chỉ để quét nhanh. (5) **Nhãn "Không thu phí người tham gia"** trên mọi thẻ và một khối cảnh báo trên trang chi tiết, vì tin "tuyển cộng tác viên / khán giả" là kiểu lừa đảo phổ biến.
+>
+> **Đánh đổi.** Thêm một tầng điều hướng (tab) trước danh sách dự án. Chấp nhận được vì tab mặc định vẫn là Dự án, đường dẫn `/projects` cũ không đổi.
+>
+> **Điều kiện xem lại.** Khi một loại chiếm áp đảo lượt xem trong pilot, cân nhắc đặt loại đó làm tab mặc định.
 
 ---
 
@@ -1446,6 +1476,9 @@ Bảng này trả lời câu hỏi *"quy định ở mục nào thì nằm ở t
 | Mục 8.1 / 8.2 / 8.3 — Skeleton, Empty, Error | `apps/web/components/ui/feedback.tsx` |
 | Mục 8.6 — Loading gắn vào route | `apps/web/app/(public)/projects/loading.tsx` |
 | Mục 8.6 — Error gắn vào route | `apps/web/app/error.tsx` |
+| DD-11 — hộp thoại kiểu game của trợ lý Gen | `apps/web/features/assistant/components/gen-dialogue.tsx`, mục "TRỢ LÝ GEN" trong `apps/web/app/components.css` |
+| DD-11 — nhân vật Gen | `apps/web/features/assistant/components/gen-portrait.tsx` |
+| DD-12 — tab loại cơ hội, thẻ cơ hội ngắn | `apps/web/features/opportunities/components/`, mục "CƠ HỘI NGẮN" trong `apps/web/app/components.css` |
 | Màn hình 1 — Trang chủ | `apps/web/app/page.tsx` |
 | Màn hình 2 — Hồ sơ Contributor | Target: `apps/web/app/(contributor)/contributor/profile/page.tsx`; hiện tại: `apps/web/app/(student)/student/profile/page.tsx` |
 | Màn hình 3 — Wizard đăng dự án | `apps/web/features/projects/components/project-wizard.tsx` |

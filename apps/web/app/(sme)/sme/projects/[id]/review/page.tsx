@@ -89,15 +89,15 @@ export default async function ReviewApplicantsPage({ params }: { params: Promise
                     style={{ 
                       padding: "var(--space-6)",
                       backgroundColor: "var(--color-surface-card)",
-                      borderColor: applicant.shortlisted ? "var(--orange-500)" : "var(--machinery-border)"
+                      borderColor: applicant.shortlisted ? "var(--brand-500)" : "var(--machinery-border)"
                     }}
                   >
-                    <div className="module-bay__header" style={{ borderColor: applicant.shortlisted ? "var(--orange-500)" : "var(--machinery-border)" }}>
-                      <span className="module-bay__id" style={{ backgroundColor: applicant.shortlisted ? "var(--orange-500)" : "var(--machinery-border)" }}>
+                    <div className="module-bay__header" style={{ borderColor: applicant.shortlisted ? "var(--brand-500)" : "var(--machinery-border)" }}>
+                      <span className="module-bay__id" style={{ backgroundColor: applicant.shortlisted ? "var(--brand-500)" : "var(--machinery-border)" }}>
                         CANDIDATE // {applicant.id.toUpperCase()}
                       </span>
                       {applicant.shortlisted ? (
-                        <span style={{ color: "var(--orange-500)", fontWeight: 800, fontFamily: "ui-monospace, monospace", fontSize: "11px" }}>
+                        <span style={{ color: "var(--brand-500)", fontWeight: 800, fontFamily: "ui-monospace, monospace", fontSize: "11px" }}>
                           ★ ĐÃ ĐÁNH DẤU RÚT GỌN
                         </span>
                       ) : (
@@ -143,7 +143,7 @@ export default async function ReviewApplicantsPage({ params }: { params: Promise
                           <span style={{ fontSize: "10px", fontFamily: "ui-monospace, monospace", color: "var(--color-text-muted)" }}>
                             ĐỘ PHÙ HỢP:
                           </span>
-                          <strong className="num" style={{ fontSize: "1.25rem", fontWeight: 900, color: "var(--orange-500)" }}>
+                          <strong className="num" style={{ fontSize: "1.25rem", fontWeight: 900, color: "var(--brand-500)" }}>
                             {score.percent}%
                           </strong>
                         </div>
@@ -165,12 +165,12 @@ export default async function ReviewApplicantsPage({ params }: { params: Promise
                               fontSize: "11px", 
                               height: "26px", 
                               paddingInline: "8px", 
-                              borderColor: needed ? "var(--orange-500)" : "var(--machinery-border)",
+                              borderColor: needed ? "var(--brand-500)" : "var(--machinery-border)",
                               backgroundColor: needed ? "var(--color-surface-subtle)" : "transparent",
                               fontWeight: needed ? 700 : 500
                             }}
                           >
-                            {needed ? <Check weight={ICON_WEIGHT} aria-hidden="true" style={{ color: "var(--orange-500)", marginRight: "4px" }} /> : null}
+                            {needed ? <Check weight={ICON_WEIGHT} aria-hidden="true" style={{ color: "var(--brand-500)", marginRight: "4px" }} /> : null}
                             {skill}
                           </span>
                         );

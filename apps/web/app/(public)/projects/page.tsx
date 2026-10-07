@@ -10,12 +10,16 @@ import { Check, MagnifyingGlass } from "../../../components/ui/icons";
 import { CURRENT_STUDENT } from "../../../mocks/data";
 import { daysUntil, formatDate, formatVnd, matchScore } from "../../../lib/utils/format";
 import { browsePublishedProjects, listSkills } from "../../../features/projects/api";
+import { LedgerPublishedProjects } from "../../../features/projects/components/ledger-published-projects";
+import { OpportunityBrowser } from "../../../features/opportunities/components/opportunity-browser";
+import { OpportunityTypeTabs } from "../../../features/opportunities/components/opportunity-type-tabs";
+import { kindFromParam } from "../../../features/opportunities/model";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Dự án đang tuyển",
-  description: "Tìm mini-project phù hợp với kỹ năng của bạn, ngân sách từ 1 đến 5 triệu đồng."
+  title: "Tìm cơ hội",
+  description: "Dự án trọn gói 1–5 triệu, việc cộng tác viên theo buổi và sự kiện, workshop trả thù lao từ 50.000đ."
 };
 
 /**
@@ -29,6 +33,10 @@ export const metadata: Metadata = {
  * Bộ lọc chạy hoàn toàn bằng tham số URL nên màn hình này vẫn là Server
  * Component: không cần JavaScript phía client, và người dùng chia sẻ được đường
  * dẫn kèm bộ lọc đang bật.
+ *
+ * Trang là "Tìm cơ hội" với ba tab loại (docs/opportunities.md): Dự án (mặc định, nội dung bên
+ * dưới), Cộng tác viên (?type=gig) và Sự kiện & workshop (?type=event). Hai tab sau đọc ledger demo
+ * nên dùng hòn đảo client OpportunityBrowser và không gọi API dự án.
  */
 
 const BUDGET_BUCKETS = [
@@ -37,7 +45,7 @@ const BUDGET_BUCKETS = [
   { key: "3-5", label: "3 đến 5 triệu", min: 3_000_000, max: 5_000_000 }
 ];
 
-type SearchParams = { q?: string; skill?: string | string[]; budget?: string; page?: string };
+type SearchParams = { q?: string; skill?: string | string[]; budget?: string; page?: string; type?: string };
 
 function toList(value: string | string[] | undefined): string[] {
   if (!value) return [];
@@ -84,6 +92,25 @@ export default async function ProjectsPage({
   searchParams: Promise<SearchParams>;
 }) {
   const params = await searchParams;
+  const kind = kindFromParam(params.type);
+
+  if (kind) {
+    // Số dự án cho nhãn tab; backend không chạy thì tab vẫn dùng được, chỉ thiếu con số
+    const projectCount = await browsePublishedProjects({ page: 1, pageSize: 1 }).then((page) => page.total, () => undefined);
+    return (
+      <>
+        <SiteHeader hideOnMobile />
+        <main id="main-content" className="container has-bottom-nav projects-page" style={{ paddingTop: "var(--space-8)" }}>
+          <PageHead />
+          <OpportunityTypeTabs active={kind} projectCount={projectCount} />
+          <OpportunityBrowser kind={kind} />
+        </main>
+        <SiteFooter />
+        <BottomNav />
+      </>
+    );
+  }
+
   const activeSkills = toList(params.skill);
   const keyword = (params.q ?? "").trim();
   const bucket = BUDGET_BUCKETS.find((b) => b.key === params.budget);
@@ -112,11 +139,9 @@ export default async function ProjectsPage({
 
       {/* projects-page: chạy hiệu ứng vào trang (vạch quét + các khối hiện lần lượt), xem components.css */}
       <main id="main-content" className="container has-bottom-nav projects-page" style={{ paddingTop: "var(--space-8)" }}>
-        <div className="section--tight projects-page__head" style={{ borderBottom: "2px solid var(--machinery-border)", paddingBottom: "var(--space-6)", marginBottom: "var(--space-8)" }}>
-          <h1 className="industrial-display projects-page__title" style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}>
-            DỰ ÁN ĐANG TUYỂN
-          </h1>
-        </div>
+        <LedgerPublishedProjects />
+        <PageHead />
+        <OpportunityTypeTabs active="PROJECT" projectCount={projectPage.total} />
 
         {/* --- Thanh tìm kiếm & bộ lọc --- */}
         <div className="enter" style={{ marginBottom: "var(--space-8)", "--e": 4 } as CSSProperties}>
@@ -135,7 +160,7 @@ export default async function ProjectsPage({
                 placeholder="Nhập từ khóa kỹ thuật (ví dụ: React, Figma, SEO)..."
                 style={{ fontFamily: "ui-monospace, monospace" }}
               />
-              <button type="submit" className="btn--tactile-orange" style={{ height: "42px", paddingInline: "var(--space-5)" }}>
+              <button type="submit" className="btn--tactile-brand" style={{ height: "42px", paddingInline: "var(--space-5)" }}>
                 <MagnifyingGlass weight="bold" aria-hidden="true" />
                 TÌM KIẾM
               </button>
@@ -214,7 +239,7 @@ export default async function ProjectsPage({
         <div className="section--tight">
           <div className="enter" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px dashed var(--machinery-border)", paddingBottom: "var(--space-2)", marginBottom: "var(--space-4)", "--e": 6 } as CSSProperties}>
             <p style={{ fontFamily: "ui-monospace, monospace", fontSize: "12px", fontWeight: 700, margin: 0, textTransform: "uppercase" }} aria-live="polite">
-              KẾT QUẢ QUÉT: <span style={{ color: "var(--orange-500)" }}>{projectPage.total}</span> DỰ ÁN
+              KẾT QUẢ QUÉT: <span style={{ color: "var(--brand-500)" }}>{projectPage.total}</span> DỰ ÁN
             </p>
             <span style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px", color: "var(--color-text-muted)" }}>
               SORT: DEADLINE ASC
@@ -298,9 +323,9 @@ export default async function ProjectsPage({
                           fontFamily: "ui-monospace, monospace",
                           fontSize: "12px",
                           fontWeight: 800,
-                          backgroundColor: score.percent >= 70 ? "rgba(249, 115, 22, 0.15)" : "var(--color-surface-subtle)",
-                          color: score.percent >= 70 ? "var(--orange-500)" : "var(--color-text-muted)",
-                          border: `1px solid ${score.percent >= 70 ? "var(--orange-500)" : "var(--machinery-border)"}`,
+                          backgroundColor: score.percent >= 70 ? "rgba(10, 40, 90, 0.15)" : "var(--color-surface-subtle)",
+                          color: score.percent >= 70 ? "var(--brand-500)" : "var(--color-text-muted)",
+                          border: `1px solid ${score.percent >= 70 ? "var(--brand-500)" : "var(--machinery-border)"}`,
                           padding: "2px 6px",
                           borderRadius: "2px"
                         }}>
@@ -353,5 +378,15 @@ export default async function ProjectsPage({
       <SiteFooter />
       <BottomNav />
     </>
+  );
+}
+
+function PageHead() {
+  return (
+    <div className="section--tight projects-page__head" style={{ borderBottom: "2px solid var(--machinery-border)", paddingBottom: "var(--space-6)", marginBottom: "var(--space-6)" }}>
+      <h1 className="industrial-display projects-page__title" style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}>
+        CƠ HỘI ĐANG MỞ
+      </h1>
+    </div>
   );
 }

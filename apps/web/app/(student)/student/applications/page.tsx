@@ -4,10 +4,11 @@ import { SiteFooter } from "../../../../components/layout/site-footer";
 import { BottomNav } from "../../../../components/layout/bottom-nav";
 import { StudentRouteGuard } from "../../../../features/auth/components/student-route-guard";
 import { ApplicationsBoard } from "../../../../features/applications/components/applications-board";
+import { MyRegistrations } from "../../../../features/opportunities/components/my-registrations";
 
 export const metadata: Metadata = {
   title: "Đơn của tôi",
-  description: "Theo dõi trạng thái các đơn ứng tuyển bạn đã gửi."
+  description: "Theo dõi đơn ứng tuyển dự án và lịch cộng tác viên, sự kiện bạn đã đăng ký."
 };
 
 /**
@@ -32,6 +33,7 @@ export default function ApplicationsPage() {
           </div>
 
           <ApplicationsBoard />
+          <MyRegistrations />
         </div>
       </main>
       </StudentRouteGuard>

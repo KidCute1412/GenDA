@@ -2,6 +2,7 @@ import "./globals.css";
 import "./components.css";
 import type { Metadata, Viewport } from "next";
 import { Be_Vietnam_Pro } from "next/font/google";
+import { AssistantHost } from "../features/assistant/components/assistant-host";
 
 /**
  * Phông chữ duy nhất: Be Vietnam Pro (Clean Modern SaaS - DD-09).
@@ -46,6 +47,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           Bỏ qua tới nội dung chính
         </a>
         {children}
+        {/* Trợ lý Gen: chỉ hiện với phiên sinh viên, đứng ngoài từng trang để theo sinh viên qua mọi màn hình */}
+        <AssistantHost />
       </body>
     </html>
   );

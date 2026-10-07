@@ -2,7 +2,9 @@
 
 import { PROJECTS, MY_APPLICATIONS, SAMPLE_CV_PATH } from "../../mocks/data";
 import { normalizeTaxCode, normalizeWebsite, validateSmeIdentity } from "../../lib/utils/sme-identity";
-import type { DemoApplication, DemoAudit, DemoLedger, DemoMilestone, DemoProject, DemoResult, DemoRole, DemoSubmission, DemoUser } from "./types";
+import { createSeedOpportunities } from "../opportunities/seed";
+import { KIND_META, activeRegistration, isOver, slotsLeft, toIsoDate, validateOpportunity, type OpportunityDraft } from "../opportunities/model";
+import type { DemoApplication, DemoAudit, DemoLedger, DemoMilestone, DemoProject, DemoResult, DemoRole, DemoSubmission, DemoUser, RegistrationStatus } from "./types";
 
 const KEY = "genda-demo:ledger:v2";
 const NOTICE_KEY = "genda-demo:ledger-reset-notice";
@@ -23,7 +25,8 @@ export function createSeedLedger(): DemoLedger {
   const projects: DemoProject[] = PROJECTS.map((project) => ({ id: project.id, ownerId: "sme-coffee", title: project.title, smeName: project.smeName, budget: project.budget, deadline: project.deadline, skills: project.skills, summary: project.summary, problem: project.problem, acceptance: project.acceptance, status: project.status as DemoProject["status"], milestoneIds: project.milestones.map((m) => `${project.id}:${m.id}`), createdAt: "2026-09-01" }));
   const milestones: DemoMilestone[] = PROJECTS.flatMap((project) => project.milestones.map((m) => ({ ...m, id: `${project.id}:${m.id}`, projectId: project.id, status: m.status as DemoMilestone["status"], escrow: m.escrow })));
   const applications: DemoApplication[] = MY_APPLICATIONS.map((a) => ({ id: a.id, projectId: a.projectId, studentId: "student-loc", coverLetter: "Đơn ứng tuyển dữ liệu mẫu", cv: accounts[0].cv, status: a.status, submittedAt: a.submittedAt }));
-  return { version: 2, users: accounts, projects, milestones, applications, submissions: [], reviews: [], audits: [], uiState: {} };
+  const { opportunities, registrations } = createSeedOpportunities(toIsoDate(new Date()));
+  return { version: 2, users: accounts, projects, milestones, applications, submissions: [], reviews: [], opportunities, registrations, audits: [], uiState: {} };
 }
 
 function load(): DemoLedger {
@@ -39,6 +42,8 @@ function load(): DemoLedger {
         delete (parsed as Partial<Record<"portfolios", unknown>>).portfolios;
         // Ledger lưu trước khi có CV: tài khoản dựng sẵn coi như đã nộp CV, chỉ tài khoản mới tạo phải nộp
         parsed.users.forEach((user) => { user.cv ??= accounts.find((seed) => seed.id === user.id)?.cv; });
+        // Ledger lưu trước khi có cơ hội ngắn: thêm dữ liệu mẫu, giữ nguyên mọi thứ khác
+        if (!parsed.opportunities || !parsed.registrations) Object.assign(parsed, createSeedOpportunities(toIsoDate(new Date())));
         return (memory = parsed);
       }
     }
@@ -153,4 +158,173 @@ export function reviewMilestone(input: { email: string; milestoneId: string; dec
 export function advanceEscrow(email: string, milestoneId: string) { return update((draft) => { const user = actor(draft, email); const milestone = draft.milestones.find((m) => m.id === milestoneId); const project = draft.projects.find((p) => p.id === milestone?.projectId); if (!user || !milestone || !project) return fail("NOT_FOUND", "Không tìm thấy milestone."); if (milestone.escrow === "PENDING_FUNDING") { if (user.role !== "SME" || user.id !== project.ownerId) return fail("NOT_OWNER", "Chỉ SME sở hữu được xác nhận funding."); milestone.escrow = "FUNDED"; } else if (milestone.escrow === "FUNDED") { if (user.role !== "ADMIN") return fail("WRONG_ROLE", "Chỉ Admin được xác nhận release."); milestone.escrow = "RELEASED"; } else return fail("INVALID_TRANSITION", "Quỹ đã hoàn tất."); audit(draft, user.id, "ADVANCE_ESCROW", milestone.id); return { ok: true, value: undefined }; }); }
 export function submitReview(input: { email: string; projectId: string; rating: number; comment: string }) { return update((draft) => { const user = actor(draft, input.email); const project = draft.projects.find((p) => p.id === input.projectId); const accepted = draft.applications.find((a) => a.projectId === input.projectId && a.status === "ACCEPTED"); if (!user || !project || user.id !== project.ownerId) return fail("NOT_OWNER", "Bạn không sở hữu dự án này."); if (project.status !== "COMPLETED" || !accepted) return fail("INVALID_TRANSITION", "Dự án chưa hoàn tất."); if (draft.reviews.some((r) => r.projectId === input.projectId)) return fail("INVALID_TRANSITION", "Đánh giá chỉ được gửi một lần."); const review = { id: crypto.randomUUID(), projectId: project.id, studentId: accepted.studentId, rating: input.rating, comment: input.comment, createdAt: new Date().toISOString() }; draft.reviews.push(review); audit(draft, user.id, "SUBMIT_REVIEW", project.id); return { ok: true, value: undefined }; }); }
 
+/* ==========================================================================
+   CƠ HỘI NGẮN: cộng tác viên và sự kiện/workshop (docs/opportunities.md)
+   ========================================================================== */
+
+const today = () => toIsoDate(new Date());
+
+/** Đơn vị đã duyệt đăng tin; tin vào hàng đợi duyệt của quản trị viên như dự án (FR-OPP-01, FR-OPP-04). */
+export function createOpportunity(input: OpportunityDraft & { ownerEmail: string }): DemoResult<string> {
+  let id = "";
+  const { ownerEmail, noFeeCommitment, ...draft } = input;
+  const result = update((ledger) => {
+    const user = actor(ledger, ownerEmail);
+    if (!user) return fail("AUTH_REQUIRED", "Cần đăng nhập.");
+    if (user.role !== "SME") return fail("WRONG_ROLE", "Chỉ doanh nghiệp được đăng tin.");
+    if (!isSmeApproved(user)) return fail("SME_NOT_APPROVED", "Tài khoản doanh nghiệp chưa được quản trị viên duyệt.");
+    if (!user.emailVerified) return fail("EMAIL_NOT_VERIFIED", "Cần xác minh email.");
+    const problem = validateOpportunity({ ...draft, noFeeCommitment }, today());
+    if (problem) return fail("INVALID_INPUT", problem);
+    id = `o-${crypto.randomUUID()}`;
+    ledger.opportunities.push({
+      ...draft,
+      title: draft.title.trim(),
+      summary: draft.summary.trim(),
+      details: draft.details.trim(),
+      location: draft.location.trim(),
+      requirements: draft.requirements.map((item) => item.trim()).filter(Boolean),
+      id,
+      ownerId: user.id,
+      orgName: user.name,
+      payUnit: KIND_META[draft.kind].payUnit,
+      status: "PENDING_REVIEW",
+      createdAt: new Date().toISOString()
+    });
+    audit(ledger, user.id, "SUBMIT_OPPORTUNITY", id);
+    return { ok: true, value: undefined };
+  });
+  return result.ok ? { ok: true, value: id } : result;
+}
+
+export function moderateOpportunity(email: string, opportunityId: string, decision: "approve" | "reject", reason?: string): DemoResult {
+  return update((ledger) => {
+    const admin = actor(ledger, email);
+    if (admin?.role !== "ADMIN") return fail("WRONG_ROLE", "Chỉ quản trị viên được duyệt tin.");
+    const opportunity = ledger.opportunities.find((item) => item.id === opportunityId);
+    if (!opportunity) return fail("NOT_FOUND", "Không tìm thấy tin.");
+    if (opportunity.status !== "PENDING_REVIEW") return fail("INVALID_TRANSITION", "Tin không ở trạng thái chờ duyệt.");
+    if (decision === "reject" && !reason?.trim()) return fail("REASON_REQUIRED", "Từ chối phải có lý do.");
+    opportunity.status = decision === "approve" ? "PUBLISHED" : "REJECTED";
+    opportunity.rejectionReason = decision === "reject" ? reason?.trim() : undefined;
+    audit(ledger, admin.id, decision === "approve" ? "APPROVE_OPPORTUNITY" : "REJECT_OPPORTUNITY", opportunityId, reason);
+    return { ok: true, value: undefined };
+  });
+}
+
+/**
+ * Đăng ký nhanh, không thư ngỏ, không CV (FR-OPP-05). Sự kiện giữ chỗ ngay; cộng tác viên chờ đơn vị
+ * đăng tin chọn. Hết chỗ, hết buổi hoặc đã đăng ký thì chặn.
+ */
+export function registerForOpportunity(email: string, opportunityId: string): DemoResult<RegistrationStatus> {
+  let status: RegistrationStatus = "PENDING";
+  const result = update((ledger) => {
+    const user = actor(ledger, email);
+    if (!user) return fail("AUTH_REQUIRED", "Cần đăng nhập để đăng ký.");
+    if (user.role !== "STUDENT") return fail("WRONG_ROLE", "Chỉ tài khoản cá nhân được đăng ký.");
+    if (!user.emailVerified) return fail("EMAIL_NOT_VERIFIED", "Cần xác minh email trước khi đăng ký.");
+    const opportunity = ledger.opportunities.find((item) => item.id === opportunityId);
+    if (opportunity?.status !== "PUBLISHED") return fail("INVALID_TRANSITION", "Tin này không nhận đăng ký.");
+    if (isOver(opportunity, today())) return fail("INVALID_TRANSITION", "Các buổi của tin này đã diễn ra.");
+    if (activeRegistration(ledger.registrations, opportunityId, user.id)) return fail("DUPLICATE_REGISTRATION", "Bạn đã đăng ký tin này.");
+    if (slotsLeft(opportunity, ledger.registrations) === 0) return fail("OPPORTUNITY_FULL", "Đã hết chỗ.");
+    status = opportunity.kind === "EVENT" ? "CONFIRMED" : "PENDING";
+    const id = `r-${crypto.randomUUID()}`;
+    ledger.registrations.push({ id, opportunityId, userId: user.id, name: user.name, status, createdAt: new Date().toISOString() });
+    audit(ledger, user.id, "REGISTER_OPPORTUNITY", id);
+    return { ok: true, value: undefined };
+  });
+  return result.ok ? { ok: true, value: status } : result;
+}
+
+/** Người đăng ký tự hủy khi đăng ký còn hiệu lực; chỗ được trả lại cho người khác. */
+export function cancelRegistration(email: string, registrationId: string): DemoResult {
+  return update((ledger) => {
+    const user = actor(ledger, email);
+    const registration = ledger.registrations.find((item) => item.id === registrationId);
+    if (!user || !registration) return fail("NOT_FOUND", "Không tìm thấy đăng ký.");
+    if (registration.userId !== user.id) return fail("NOT_OWNER", "Bạn không sở hữu đăng ký này.");
+    if (registration.status !== "PENDING" && registration.status !== "CONFIRMED") return fail("INVALID_TRANSITION", "Đăng ký này đã khép lại.");
+    registration.status = "CANCELLED";
+    audit(ledger, user.id, "CANCEL_REGISTRATION", registrationId);
+    return { ok: true, value: undefined };
+  });
+}
+
+/** Đơn vị đăng tin cộng tác viên chọn hoặc từ chối người đăng ký; đã đủ người thì không nhận thêm. */
+export function decideRegistration(email: string, registrationId: string, decision: "confirm" | "decline"): DemoResult {
+  return update((ledger) => {
+    const user = actor(ledger, email);
+    const registration = ledger.registrations.find((item) => item.id === registrationId);
+    const opportunity = ledger.opportunities.find((item) => item.id === registration?.opportunityId);
+    if (!user || !registration || !opportunity) return fail("NOT_FOUND", "Không tìm thấy đăng ký.");
+    if (user.role !== "SME" || user.id !== opportunity.ownerId) return fail("NOT_OWNER", "Bạn không sở hữu tin này.");
+    if (registration.status !== "PENDING") return fail("INVALID_TRANSITION", "Đăng ký này không chờ duyệt.");
+    if (decision === "confirm" && slotsLeft(opportunity, ledger.registrations) === 0) return fail("OPPORTUNITY_FULL", "Đã đủ người, không nhận thêm được.");
+    registration.status = decision === "confirm" ? "CONFIRMED" : "DECLINED";
+    audit(ledger, user.id, decision === "confirm" ? "CONFIRM_REGISTRATION" : "DECLINE_REGISTRATION", registrationId);
+    return { ok: true, value: undefined };
+  });
+}
+
 if (typeof window !== "undefined") window.addEventListener("storage", (event) => { if (event.key === KEY) { memory = null; listeners.forEach((listener) => listener()); } });
+
+/**
+ * Kịch bản demo cho trợ lý Gen (features/assistant): dựng nhanh những tình huống ngoài đời
+ * phải chờ nhiều ngày mới có. Chỉ dành cho bản demo, backend không có tương đương.
+ * - `rejections`: thêm 3 đơn bị từ chối, lệch kỹ năng và dùng lại cùng một thư ngỏ.
+ * - `away-news`: một dự án mới khớp kỹ năng và một đơn vừa vào danh sách rút gọn (đi kèm giả lập vắng mặt).
+ * - `changes`: mốc đang làm bị yêu cầu sửa, còn 2 ngày tới hạn.
+ */
+export type AssistantScenario = "rejections" | "away-news" | "changes";
+export function seedAssistantScenario(email: string, scenario: AssistantScenario): DemoResult {
+  return update((draft) => {
+    const student = actor(draft, email);
+    if (student?.role !== "STUDENT") return fail("WRONG_ROLE", "Kịch bản này dành cho tài khoản sinh viên.");
+    const now = Date.now();
+    const daysAgo = (days: number) => new Date(now - days * 86_400_000).toISOString();
+    const dateIn = (days: number) => new Date(now + days * 86_400_000).toISOString().slice(0, 10);
+    const addProject = (input: Pick<DemoProject, "title" | "smeName" | "budget" | "skills" | "summary" | "status">, createdDaysAgo: number) => {
+      const id = `p-demo-${crypto.randomUUID().slice(0, 8)}`;
+      const half = Math.round(input.budget / 2);
+      const milestones: DemoMilestone[] = [
+        { id: `${id}:m1`, projectId: id, order: 1, title: "Bản nháp đầu tiên", budget: half, deadline: dateIn(10), criteria: "Doanh nghiệp duyệt hướng làm", status: "PENDING", escrow: "PENDING_FUNDING" },
+        { id: `${id}:m2`, projectId: id, order: 2, title: "Bàn giao hoàn chỉnh", budget: input.budget - half, deadline: dateIn(24), criteria: "Đạt toàn bộ tiêu chí nghiệm thu", status: "PENDING", escrow: "PENDING_FUNDING" }
+      ];
+      draft.milestones.push(...milestones);
+      draft.projects.push({ ...input, id, ownerId: "sme-coffee", deadline: dateIn(24), problem: input.summary, acceptance: ["Đạt toàn bộ tiêu chí nghiệm thu"], milestoneIds: milestones.map((m) => m.id), createdAt: daysAgo(createdDaysAgo) });
+      return id;
+    };
+
+    if (scenario === "rejections") {
+      const letter = "Em rất muốn tham gia dự án này. Em là người chăm chỉ, ham học hỏi và luôn hoàn thành công việc đúng hạn.";
+      const closed: Array<[Pick<DemoProject, "title" | "smeName" | "budget" | "skills" | "summary" | "status">, number]> = [
+        [{ title: "Thiết kế menu và standee mùa Giáng sinh", smeName: "Tiệm bánh Mây", budget: 2_000_000, skills: ["Figma", "Thiết kế đồ họa"], summary: "Bộ menu và standee cho mùa lễ cuối năm.", status: "IN_PROGRESS" }, 12],
+        [{ title: "Chạy quảng cáo Meta cho đợt khai trương", smeName: "Spa Hoa Cúc", budget: 3_500_000, skills: ["Quảng cáo Meta", "Content Marketing", "Figma"], summary: "Lên nội dung và chạy quảng cáo hai tuần khai trương.", status: "IN_PROGRESS" }, 8],
+        [{ title: "Làm lại giao diện trang đặt lịch khám", smeName: "Phòng khám thú y An Bình", budget: 4_000_000, skills: ["Figma", "UI/UX", "React"], summary: "Đơn giản hóa luồng đặt lịch khám trên điện thoại.", status: "IN_PROGRESS" }, 4]
+      ];
+      closed.forEach(([project, days]) => {
+        const projectId = addProject(project, days + 3);
+        draft.applications.push({ id: `a-demo-${crypto.randomUUID().slice(0, 8)}`, projectId, studentId: student.id, coverLetter: letter, cv: student.cv, status: "REJECTED", submittedAt: daysAgo(days) });
+      });
+    } else if (scenario === "away-news") {
+      addProject({ title: "Landing page đặt bàn cho quán bún bò", smeName: "Bún bò Cô Ba", budget: 3_000_000, skills: ["Next.js", "React", "UI/UX"], summary: "Trang giới thiệu thực đơn và nhận đặt bàn trước qua điện thoại.", status: "PUBLISHED" }, 2);
+      const pending = draft.applications.find((a) => a.studentId === student.id && a.status === "SUBMITTED");
+      const project = draft.projects.find((p) => p.id === pending?.projectId);
+      if (pending && project) {
+        pending.status = "SHORTLISTED";
+        draft.audits.unshift({ id: crypto.randomUUID(), at: daysAgo(3), actorId: project.ownerId, action: "SHORTLISTED", targetId: pending.id });
+      }
+    } else {
+      const assigned = draft.applications.find((a) => a.studentId === student.id && a.status === "ACCEPTED");
+      const project = draft.projects.find((p) => p.id === assigned?.projectId && p.status === "IN_PROGRESS");
+      const milestone = project && project.milestoneIds.map((id) => draft.milestones.find((m) => m.id === id)).find((m) => m && m.status !== "ACCEPTED");
+      if (!project || !milestone) return fail("NOT_FOUND", "Không có mốc nào đang làm để giả lập.");
+      milestone.status = "CHANGES_REQUESTED";
+      milestone.deadline = dateIn(2);
+      draft.submissions.push({ id: crypto.randomUUID(), milestoneId: milestone.id, studentId: student.id, link: "https://example.com/ban-chay-thu", note: "Em gửi bản chạy thử.", files: [], submittedAt: daysAgo(2), feedback: "Cỡ chữ phần mô tả trên điện thoại còn nhỏ, nút đặt hàng bị che bởi thanh điều hướng. Nhờ em chỉnh lại giúp." });
+      draft.audits.unshift({ id: crypto.randomUUID(), at: daysAgo(1), actorId: project.ownerId, action: "REQUEST_CHANGES", targetId: milestone.id, reason: "Cỡ chữ và vị trí nút đặt hàng" });
+    }
+    return { ok: true, value: undefined };
+  });
+}

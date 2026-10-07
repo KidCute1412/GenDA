@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { StatusBadge } from "../../../components/ui/status-badge";
 import { formatDate, formatVnd } from "../../../lib/utils/format";
 import { WithdrawApplicationButton } from "./withdraw-application-button";
 import {
@@ -29,12 +28,16 @@ const NEXT_STEP: Record<ApplicationStatus, string> = {
   WITHDRAWN: "Bạn đã rút đơn này."
 };
 
-/** Nhãn trạng thái theo ngữ cảnh đơn ứng tuyển (nhãn mặc định của badge dành cho mốc). */
-const STATUS_LABEL: Partial<Record<ApplicationStatus, string>> = {
+/**
+ * Nhãn trạng thái theo ngữ cảnh đơn ứng tuyển. Trang này hiện nhãn bằng nền màu nhóm + chữ, không
+ * icon như StatusBadge dùng chung: vạch màu bên trái thẻ và chữ đã đủ phân biệt trạng thái.
+ */
+const STATUS_LABEL: Record<ApplicationStatus, string> = {
   SUBMITTED: "Đang chờ duyệt",
   SHORTLISTED: "Vào danh sách rút gọn",
   ACCEPTED: "Được nhận",
-  REJECTED: "Không được nhận"
+  REJECTED: "Không được nhận",
+  WITHDRAWN: "Đã rút đơn"
 };
 
 type TabKey = "all" | ApplicationGroupKey;
@@ -77,7 +80,7 @@ export function ApplicationsBoard() {
         <p className="text-muted" style={{ marginBlock: "var(--space-2) var(--space-5)" }}>
           Tìm một dự án hợp kỹ năng của bạn, ngân sách 1–5 triệu, có mốc bàn giao rõ ràng.
         </p>
-        <Link href="/projects" className="btn--tactile-orange" style={{ height: "42px", fontSize: "12px" }}>
+        <Link href="/projects" className="btn--tactile-brand" style={{ height: "42px", fontSize: "12px" }}>
           Tìm dự án đang tuyển
         </Link>
       </div>
@@ -114,9 +117,9 @@ export function ApplicationsBoard() {
               <article key={application.id} className={`app-card app-card--${group}`}>
                 <div className="stack" style={{ gap: "6px", minWidth: 0 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
-                    <StatusBadge status={application.status} label={STATUS_LABEL[application.status]} />
+                    <span className={`app-status app-status--${group}`}>{STATUS_LABEL[application.status]}</span>
                     <span style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px", color: "var(--color-text-muted)" }}>
-                      Nộp ngày {formatDate(application.submittedAt)}
+                      Nộp ngày {formatDate(application.submittedAt.slice(0, 10))}
                     </span>
                   </div>
 
@@ -133,7 +136,7 @@ export function ApplicationsBoard() {
 
                 <div className="app-card__actions">
                   {application.status === "ACCEPTED" ? (
-                    <Link href={`/workspace/${application.projectId}`} className="btn--tactile-orange" style={{ height: "36px", fontSize: "11px" }}>
+                    <Link href={`/workspace/${application.projectId}`} className="btn--tactile-brand" style={{ height: "36px", fontSize: "11px" }}>
                       Vào workspace
                     </Link>
                   ) : null}

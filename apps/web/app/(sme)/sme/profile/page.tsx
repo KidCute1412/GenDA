@@ -42,7 +42,7 @@ export default function SmeProfilePage() {
 
                 <div className="stack stack--sm">
                   <div className="cluster" style={{ gap: "var(--space-3)" }}>
-                    <Briefcase weight={ICON_WEIGHT} aria-hidden="true" style={{ width: 24, height: 24, color: "var(--orange-500)" }} />
+                    <Briefcase weight={ICON_WEIGHT} aria-hidden="true" style={{ width: 24, height: 24, color: "var(--brand-500)" }} />
                     <h2 style={{ fontSize: "1.35rem", fontWeight: 800, margin: 0, textTransform: "uppercase" }}>The Coffee Lab</h2>
                   </div>
                   <p className="text-muted" style={{ margin: 0, fontSize: "13px" }}>

@@ -9,6 +9,7 @@ import { EmptyState } from "../../../../components/ui/feedback";
 import { PROJECTS, TODAY } from "../../../../mocks/data";
 import { daysUntil, formatDate, formatVnd } from "../../../../lib/utils/format";
 import { CreatedProjectsPanel } from "../../../../features/projects/components/created-projects-panel";
+import { MyOpportunitiesPanel } from "../../../../features/opportunities/components/my-opportunities-panel";
 import { LedgerApplicantQueue } from "../../../../features/applications/components/ledger-applicant-queue";
 import { RoleRouteGuard } from "../../../../features/auth/components/role-route-guard";
 
@@ -89,12 +90,14 @@ export default async function SmeProjectsPage({
             
             <Link 
               href="/sme/projects/new" 
-              className="btn--tactile-orange"
+              className="btn--tactile-brand"
               style={{ height: "42px", fontSize: "12px", textDecoration: "none" }}
             >
               + ĐĂNG DỰ ÁN MỚI
             </Link>
           </div>
+
+          <MyOpportunitiesPanel />
 
           {/* THANH TAB LỌC TRẠNG THÁI KIỂU HARDWARE SWITCHER */}
           <div 
@@ -135,7 +138,7 @@ export default async function SmeProjectsPage({
                       padding: "1px 6px", 
                       fontSize: "10px", 
                       borderRadius: "2px",
-                      backgroundColor: isSelected ? "var(--orange-500)" : "var(--color-surface-subtle)",
+                      backgroundColor: isSelected ? "var(--brand-500)" : "var(--color-surface-subtle)",
                       color: isSelected ? "#ffffff" : "var(--color-text-muted)"
                     }}
                   >
@@ -155,7 +158,7 @@ export default async function SmeProjectsPage({
                 title="CHƯA CÓ DỰ ÁN NÀO Ở MỤC NÀY"
                 advice="Khi bạn đăng một bài toán mới, hệ thống sẽ hỗ trợ lưu nháp, kiểm duyệt tiêu chí nghiệm thu rồi xuất bản cho sinh viên nộp đơn."
                 action={
-                  <Link href="/sme/projects/new" className="btn--tactile-orange" style={{ height: "40px", fontSize: "12px", textDecoration: "none" }}>
+                  <Link href="/sme/projects/new" className="btn--tactile-brand" style={{ height: "40px", fontSize: "12px", textDecoration: "none" }}>
                     ĐĂNG DỰ ÁN ĐẦU TIÊN
                   </Link>
                 }
@@ -225,7 +228,7 @@ export default async function SmeProjectsPage({
                         <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "4px" }}>
                           <Link
                             href={action.href}
-                            className={action.variant === "primary" ? "btn--tactile-orange" : "btn--tactile-zinc"}
+                            className={action.variant === "primary" ? "btn--tactile-brand" : "btn--tactile-zinc"}
                             style={{ height: "36px", fontSize: "11px", textDecoration: "none" }}
                           >
                             {action.label.toUpperCase()}

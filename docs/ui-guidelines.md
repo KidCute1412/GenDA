@@ -20,7 +20,7 @@ Phong cách chính thức của dự án là: **Neo-Industrial Ledger (Teenage E
    - **Phản hồi nút bấm cơ học**: Nút khi bấm hoặc hover sẽ lún xuống như một phím switch cơ khí thực thụ (`transform: translate(2px, 2px)`).
 
 3. **Màu nhấn Công nghiệp (Hardware Accent)**:
-   - Điểm nhấn độc bản duy nhất: **Safety Orange / International Orange (`#F97316`)** — lấy cảm hứng từ nút xoay và chi tiết cơ khí của Teenage Engineering.
+   - Điểm nhấn độc bản duy nhất: **màu thương hiệu Navy (`#0A285A`)**, token `--brand-500`. Trên nền tối (màn hình thiết bị, dải tối) dùng sắc nhạt `--brand-300` (`#7F9FD6`) để chữ và đèn không chìm.
    - Các màu khác: Chỉ dùng trong trạng thái dữ liệu (Xanh lục cho nghiệm thu, Đỏ cho từ chối, Hổ phách cho lưu ý).
 
 4. **Hỗ trợ Song song Light Mode & Dark Mode**:
@@ -37,8 +37,8 @@ Phong cách chính thức của dự án là: **Neo-Industrial Ledger (Teenage E
 | `--color-surface-card` | `#FFFFFF` | `#18181B` | Nền Module Bay |
 | `--machinery-border` | `#18181B` (đen đanh thép) | `#3F3F46` (viền nhôm phay xước) | Viền cơ khí 2px |
 | `--machinery-shadow` | `#18181B` | `#000000` | Màu gốc cho bóng; dùng qua `--shadow-press` / `--shadow-press-sm`, chỉ cho nút chính |
-| `--color-action-primary` | `#F97316` (Safety Orange) | `#F97316` (Safety Orange) | Màu công tắc / CTA chính |
-| `--color-action-primary-hover` | `#EA580C` | `#FB923C` | Hover công tắc |
+| `--color-action-primary` | `#0A285A` (Navy, `--brand-500`) | `#0A285A` (Navy) | Màu công tắc / CTA chính |
+| `--color-action-primary-hover` | `#071F47` (`--brand-600`) | `#3D63A6` (`--brand-400`) | Hover công tắc |
 | `--color-text-heading` | `#09090B` | `#F4F4F5` | Tiêu đề in hoa cơ khí |
 | `--color-text-body` | `#52525B` | `#A1A1AA` | Văn bản nội dung |
 | `--color-text-muted` | `#71717A` | `#71717A` | Thông số kỹ thuật / ID |
@@ -72,8 +72,8 @@ Phong cách chính thức của dự án là: **Neo-Industrial Ledger (Teenage E
 
 ### 3.3. Tactile Hardware Buttons (Nút bấm cơ khí)
 ```tsx
-// Nút màu Safety Orange (Hành động chính)
-<Link href="/projects" className="btn--tactile-orange">
+// Nút màu thương hiệu Navy (Hành động chính)
+<Link href="/projects" className="btn--tactile-brand">
   Nhận dự án
 </Link>
 
@@ -95,7 +95,7 @@ Bạn là Frontend Engineer tuân thủ nghiêm ngặt Design System Neo-Industr
 
 Yêu cầu bất biến:
 1. Thẩm mỹ: Cỗ máy cơ khí chính xác (Teenage Engineering Metaphor). Góc vuông sắc dứt khoát, viền 2px (#18181B trong light mode, #3F3F46 trong dark mode), chỉ nút hành động chính có bóng nhấn nhạt (var(--shadow-press)); khung, thẻ, tab, chip không đổ bóng.
-2. Màu nhấn duy nhất: Safety Orange (#F97316) cho CTA chính và điểm nhấn kỹ thuật.
+2. Màu nhấn duy nhất: Navy thương hiệu (#0A285A, `--brand-500`) cho CTA chính và điểm nhấn kỹ thuật; trên nền tối dùng `--brand-300`.
 3. Typography: Dùng Be Vietnam Pro cho tiêu đề in hoa dứt khoát; bắt buộc dùng Monospace cho số tiền, mã ID (BAY-01), hạn chót, trạng thái kỹ thuật ([x], [ ]).
 4. Hỗ trợ 100% Light Mode và Dark Mode qua các biến CSS (--color-surface-page, --machinery-border, --color-text-heading).
 5. TUYỆT ĐỐI CẤM: Nút viên thuốc tròn 9999px, bóng đổ mờ nhòe kiểu SaaS đại trà, font viết tay, nền kem cũ.

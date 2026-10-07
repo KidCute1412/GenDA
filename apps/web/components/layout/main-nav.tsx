@@ -24,7 +24,7 @@ export function MainNav() {
 
   const navItems: NavItem[] =
     !hydrated || !session
-      ? [{ href: "/projects", label: "Tìm dự án" }]
+      ? [{ href: "/projects", label: "Tìm cơ hội" }]
       : session.role === "SME"
         ? [
             { href: "/sme/projects", label: "Dự án của tôi", matches: (p) => (p.startsWith("/sme/projects") && p !== "/sme/projects/new") || p.startsWith("/workspace/") },
@@ -33,7 +33,7 @@ export function MainNav() {
         : session.role === "ADMIN"
           ? [{ href: "/admin", label: "Quản trị" }]
           : [
-              { href: "/projects", label: "Tìm dự án" },
+              { href: "/projects", label: "Tìm cơ hội" },
               { href: "/student/applications", label: "Đơn của tôi", badge: pending, matches: (p) => p.startsWith("/student/applications") || p.startsWith("/workspace/") }
             ];
 
