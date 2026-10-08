@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import io.swagger.v3.oas.annotations.media.Schema;
+import vn.skillbridge.platform.api.dto.ApiError;
 import java.util.UUID;
 
 @RestControllerAdvice
@@ -51,8 +51,4 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 new ApiError("INTERNAL_ERROR", "Unexpected server error", requestId));
     }
 
-    public record ApiError(
-            @Schema(requiredMode = Schema.RequiredMode.REQUIRED) String code,
-            @Schema(requiredMode = Schema.RequiredMode.REQUIRED) String message,
-            @Schema(requiredMode = Schema.RequiredMode.REQUIRED) String requestId) {}
 }

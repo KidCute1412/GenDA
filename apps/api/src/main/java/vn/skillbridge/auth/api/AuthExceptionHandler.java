@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import vn.skillbridge.auth.application.AuthException;
-import vn.skillbridge.platform.api.ApiExceptionHandler.ApiError;
+import vn.skillbridge.platform.api.dto.ApiError;
 
 @RestControllerAdvice(assignableTypes = AuthController.class)
 public class AuthExceptionHandler {

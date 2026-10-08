@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vn.skillbridge.users.api.dto.SkillCatalogItemResponse;
 import vn.skillbridge.users.application.SkillQueryService;
-import vn.skillbridge.platform.api.ApiExceptionHandler.ApiError;
+import vn.skillbridge.platform.api.dto.ApiError;
 
 @RestController
 @RequestMapping("/api/v1/skills")

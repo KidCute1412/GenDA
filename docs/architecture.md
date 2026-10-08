@@ -41,6 +41,29 @@ One application/JAR, one relational database. Organize packages under `vn.skillb
 Create packages only when working behavior exists; do not add empty scaffolding. Every business module starts with the same four layers:
 
 ```text
+apps/api/
+  pom.xml, mvnw, mvnw.cmd, .mvn/       Maven build and wrapper
+  package.json                        pnpm-to-Maven commands, no Node server
+  Dockerfile                          deployment artifact
+  src/
+    main/
+      java/vn/skillbridge/
+        SkillBridgeApplication.java   composition root / bootstrap
+        auth/                         accounts, sessions, email verification
+        users/                        profiles and canonical skills
+        projects/                     published-project catalog and milestone plans
+        platform/                     operational HTTP, shared configuration
+      resources/
+        application.yml
+        db/migration/                 immutable Flyway history
+        db/demo/                      local demo data only
+    test/java/vn/skillbridge/          unit, HTTP, configuration and architecture tests
+  target/                             ignored Java build output
+```
+
+There is no separate `src/modules`, `src/shared` or `src/config` source root. The former NestJS scaffolding is retired. Keep Maven/pnpm integration; do not recreate a second backend source tree. `platform` contains only working operational concerns and does not need empty application/domain layers.
+
+```text
 <module>/
   api/             HTTP controllers, request/response DTOs and exception mapping
     dto/           transport-only request and response models
@@ -66,16 +89,20 @@ auth/
   application/
     account/                     login, registration, password and user repository port
     session/                     token issuance, refresh, logout and session repository port
+    emailverification/           OTP issuance, confirmation, limits and outbound ports
     AuthException.java           error shared by auth use cases
   domain/
     account/                     AuthUser, UserRole and RegistrationIdentity
     session/                     RefreshSession and its usability rule
+    emailverification/           EmailVerificationChallenge
   infrastructure/
     config/                      AuthProperties and auth bean configuration
     security/                    JWT, BCrypt, CSRF and Spring Security implementations
+    email/                       SMTP implementation of the email-sender port
     persistence/
       account/                   auth-user JPA mapping and repository adapter
       session/                   refresh-session JPA mapping and repository adapter
+      emailverification/         OTP challenge/attempt mappings and repository adapter
 ```
 
 The package communicates ownership, so avoid repeating layer names inside capability names. For example, use `application.session.SessionService`, not `application.session.SessionApplicationService`.
@@ -104,12 +131,40 @@ Use `Repository` consistently for persistent aggregate access. Reserve `Store` f
 ### Backend dependency direction
 
 - Controller -> application use case -> domain and application port; infrastructure implements application ports.
-- Domain imports no Spring, JPA, servlet, HTTP, application or infrastructure types.
-- Application may use Spring transaction/service annotations, but never imports HTTP DTOs, JPA entities, Spring Data interfaces or infrastructure adapters.
+- Domain depends only on Java standard types (excluding JDBC) and its own domain models. It imports no framework, Jakarta, Hibernate, HTTP, application or infrastructure types, nor another module's private domain models.
+- Application may use Spring transaction/service annotations, but never imports HTTP DTOs, JPA entities, Spring Data interfaces, JDBC, servlet, Spring MVC/security types or infrastructure adapters.
 - Infrastructure may depend inward on application ports and domain models. JPA entities are mapped to domain/application models inside the adapter and never leave infrastructure.
 - Cross-module calls use public application facades with IDs and explicit models. Never access another module's private repositories/entities or mutate its tables directly.
 - Shared kernel contains only demonstrated shared concepts. No speculative event bus, Spring Modulith, queue or Redis.
-- ArchUnit checks domain purity and application dependency direction. Add concrete cross-module checks as real modules appear; review ownership as well as tests.
+- ArchUnit checks domain purity, layer placement/direction, published cross-module dependencies, platform independence and module cycles. Non-empty production layers are required for the checks; test/bootstrap code may wire implementations explicitly. Infrastructure does not depend on API code.
+
+### Published module interfaces
+
+Java `public` visibility does not make a type a supported module interface. Only the following cross-module dependencies are published; `ArchitectureTest.PUBLIC_DEPENDENCIES` is the executable allowlist. Existing services serve as facades directly, without additional wrappers. Everything else, including repository ports in application packages, is internal to its module.
+
+| Caller | Published target types | Purpose |
+| --- | --- | --- |
+| `users.application` | `auth.application.account.AccountProfileService`, `AccountProfile` | Read account identity and update display name |
+| `users.api` | `auth.application.session.AuthenticatedPrincipal` | Obtain the authenticated caller ID |
+| `projects.application` | `users.application.SkillQueryService`, `SkillSummary` | Resolve canonical skill codes |
+| `projects.api` | `users.application.SkillSummary` | Map resolved skills to HTTP DTOs |
+| Business `api` packages | `platform.api.dto.ApiError` | Shared error response and OpenAPI schema |
+
+Current business dependencies are `projects -> users -> auth`. Business API packages also consume the shared error DTO in `platform`; shared UTC clock and CORS configuration live in `platform.infrastructure.config`. Platform has no business dependencies. Do not use `platform` to hold business services or domain repository ports.
+
+Two transitional implementation details remain: the contributor profile still has `StudentProfile` names and required student fields, and SME identity/approval data still resides in auth persistence with legacy `APPROVED` naming. The target profile/education and SME-verification ownership described above requires separate behavior/contract/data migrations. Do not extend these legacy models to implement new education or business-review workflows.
+
+When implementing SME verification, redesign the identity/approval call direction before connecting `auth` to `users`: simply adding a reverse call to the current `users -> auth` dependency creates a forbidden cycle. A new published interface is not permission to bypass ownership or the cycle rule.
+
+### Adding backend behavior
+
+1. Choose the business owner from the ownership table. Create a module only with working behavior; place classes in its four layers, grouping by capability only when needed.
+2. For a profile change, put request/response DTOs and controller mapping in `users.api`, the command/use case and transaction in `users.application`, rules in `users.domain`, and JPA mapping/adapter in `users.infrastructure.persistence`. Keep business validation in domain/application; validate HTTP input in the DTO as well.
+3. Call the owner's repository port from the use case. An adapter implements that port and maps JPA types internally. For cross-module work, use a published service/model above; never another module's repositories, domain models or tables.
+4. Add rule/use-case tests beside the owning package, MockMvc tests for the HTTP contract, and PostgreSQL integration tests for changed persistence/transactions. Update Flyway and generated OpenAPI client together when required.
+5. To publish a new cross-module interface, document its caller, target and purpose in this table and update the single ArchUnit allowlist in the same change. Verify that the dependency is acyclic; run architecture regression tests and Maven `verify` before review.
+
+The composition root initializes TLS and starts Spring; it is not a business module. Test-only `fixtureauth` and `fixtureusers` packages deliberately violate boundaries to validate ArchUnit rules and are excluded from production scans. Do not add exceptions or `.allowEmptyShould(true)` to hide a missing production layer or a failing rule.
 
 ## API and authorization
 

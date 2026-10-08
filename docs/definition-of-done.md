@@ -6,7 +6,7 @@ A task is done only when:
 - API contract, database schema, and relevant docs are updated;
 - unit/integration/contract/E2E coverage is added at the appropriate layer;
 - lint, typecheck, tests, and production builds pass;
+- ArchUnit and its rule regression tests pass; new module interfaces/dependencies are documented and explicitly allowed, with no cycles or private repository access across modules;
 - migrations and seed behavior are reviewed;
 - errors and state transitions are observable and auditable;
 - no secrets, generated credentials, or unrelated refactors are included.
-
