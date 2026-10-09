@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import vn.skillbridge.auth.application.session.AuthenticatedPrincipal;
-import vn.skillbridge.platform.api.ApiExceptionHandler.ApiError;
+import vn.skillbridge.platform.api.dto.ApiError;
 import vn.skillbridge.projects.api.dto.ManagedProjectResponse;
 import vn.skillbridge.projects.api.dto.ProjectDraftRequest;
 import vn.skillbridge.projects.application.authoring.ProjectAuthoringService;

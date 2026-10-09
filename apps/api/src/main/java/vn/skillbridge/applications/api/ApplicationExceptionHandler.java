@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import vn.skillbridge.applications.application.ApplicationException;
 import vn.skillbridge.applications.domain.ApplicationRuleViolation;
-import vn.skillbridge.platform.api.ApiExceptionHandler.ApiError;
+import vn.skillbridge.platform.api.dto.ApiError;
 
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE + 2)

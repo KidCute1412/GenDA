@@ -7,7 +7,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import vn.skillbridge.platform.api.ApiExceptionHandler.ApiError;
+import vn.skillbridge.platform.api.dto.ApiError;
 import vn.skillbridge.projects.application.InvalidProjectFilterException;
 import vn.skillbridge.projects.application.ProjectException;
 import vn.skillbridge.projects.application.ProjectNotFoundException;
