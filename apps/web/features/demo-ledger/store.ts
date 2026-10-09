@@ -42,7 +42,9 @@ function load(): DemoLedger {
         delete (parsed as Partial<Record<"portfolios", unknown>>).portfolios;
         // Ledger lưu trước khi có CV: tài khoản dựng sẵn coi như đã nộp CV, chỉ tài khoản mới tạo phải nộp
         parsed.users.forEach((user) => {
-          user.cv ??= accounts.find((seed) => seed.id === user.id)?.cv;
+          // Ledger lưu trước khi đổi vai trò STUDENT thành CONTRIBUTOR
+          if ((user.role as string) === "STUDENT") user.role = "CONTRIBUTOR";
+          user.cv ??=accounts.find((seed) => seed.id === user.id)?.cv;
           user.accountState ??= user.emailVerified
             ? user.role === "SME" && user.smeApprovalStatus !== "APPROVED" ? "EMAIL_VERIFIED" : "ACTIVE"
             : "PENDING_EMAIL_VERIFICATION";
