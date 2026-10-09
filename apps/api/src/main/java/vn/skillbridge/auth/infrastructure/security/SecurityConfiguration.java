@@ -30,7 +30,10 @@ public class SecurityConfiguration {
                                 "/api/v1/auth/register",
                                 "/api/v1/auth/email-verifications/**",
                                 "/api/v1/auth/refresh", "/api/v1/auth/logout").permitAll()
-                        .requestMatchers("/api/v1/users/me/profile").hasRole("CONTRIBUTOR")
+                        .requestMatchers("/api/v1/users/me/**").hasRole("CONTRIBUTOR")
+                        .requestMatchers("/api/v1/applications/**").hasRole("CONTRIBUTOR")
+                        .requestMatchers("/api/v1/sme/**").hasRole("SME")
+                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .exceptionHandling(errors -> errors.authenticationEntryPoint((request, response, exception) -> {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

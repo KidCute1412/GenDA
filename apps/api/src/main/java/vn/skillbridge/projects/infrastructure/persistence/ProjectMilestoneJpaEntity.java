@@ -23,7 +23,7 @@ class ProjectMilestoneJpaEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "project_id", nullable = false)
-    private PublishedProjectJpaEntity project;
+    private ProjectJpaEntity project;
 
     @Column(name = "public_id", nullable = false, length = 100)
     private String publicId;
@@ -31,13 +31,12 @@ class ProjectMilestoneJpaEntity {
     @Column(name = "position", nullable = false)
     private int position;
 
-    @Column(nullable = false, length = 180)
+    @Column(length = 180)
     private String title;
 
     @Column(nullable = false)
     private long budget;
 
-    @Column(nullable = false)
     private LocalDate deadline;
 
     @ElementCollection(fetch = FetchType.LAZY)
@@ -47,6 +46,18 @@ class ProjectMilestoneJpaEntity {
     private List<String> criteria = new ArrayList<>();
 
     protected ProjectMilestoneJpaEntity() {}
+
+    ProjectMilestoneJpaEntity(UUID id, ProjectJpaEntity project, String publicId, int position, String title,
+            long budget, LocalDate deadline, List<String> criteria) {
+        this.id = id;
+        this.project = project;
+        this.publicId = publicId;
+        this.position = position;
+        this.title = title;
+        this.budget = budget;
+        this.deadline = deadline;
+        this.criteria = new ArrayList<>(criteria);
+    }
 
     String publicId() { return publicId; }
     int position() { return position; }

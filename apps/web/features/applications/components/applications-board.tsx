@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Alert } from "../../../components/ui/alert";
 import { formatDate, formatVnd } from "../../../lib/utils/format";
 import { WithdrawApplicationButton } from "./withdraw-application-button";
 import {
@@ -43,8 +44,9 @@ const STATUS_LABEL: Record<ApplicationStatus, string> = {
 type TabKey = "all" | ApplicationGroupKey;
 
 export function ApplicationsBoard() {
-  const { hydrated, items } = useMyApplications();
+  const { hydrated, loading, error, items } = useMyApplications();
   const [tab, setTab] = useState<TabKey>("all");
+  const [actionError, setActionError] = useState<string | null>(null);
 
   // Đọc tab từ URL sau khi gắn vào trang (trang được dựng tĩnh nên không đọc lúc render)
   useEffect(() => {
@@ -60,8 +62,11 @@ export function ApplicationsBoard() {
     window.history.replaceState(null, "", url);
   }
 
-  if (!hydrated) {
+  if (!hydrated || loading) {
     return <p className="text-muted">Đang tải đơn ứng tuyển…</p>;
+  }
+  if (error) {
+    return <Alert variant="danger" title="Chưa tải được đơn ứng tuyển">{error}</Alert>;
   }
 
   const counts = Object.fromEntries(
@@ -78,7 +83,7 @@ export function ApplicationsBoard() {
       <div className="module-bay" style={{ padding: "var(--space-10)", textAlign: "center" }}>
         <h2 style={{ fontSize: "1.25rem", margin: 0 }}>Bạn chưa nộp đơn nào</h2>
         <p className="text-muted" style={{ marginBlock: "var(--space-2) var(--space-5)" }}>
-          Tìm một dự án hợp kỹ năng của bạn, ngân sách 1–5 triệu, có mốc bàn giao rõ ràng.
+          Tìm một dự án hợp kỹ năng của bạn, ngân sách 1-5 triệu, có mốc bàn giao rõ ràng.
         </p>
         <Link href="/projects" className="btn--tactile-brand" style={{ height: "42px", fontSize: "12px" }}>
           Tìm dự án đang tuyển
@@ -89,6 +94,7 @@ export function ApplicationsBoard() {
 
   return (
     <div className="stack" style={{ gap: "var(--space-5)" }}>
+      {actionError ? <Alert variant="danger" title="Chưa rút được đơn" live="assertive">{actionError}</Alert> : null}
       <div className="app-tabs" role="tablist" aria-label="Lọc đơn theo trạng thái">
         {tabs.map((item) => (
           <button
@@ -129,19 +135,19 @@ export function ApplicationsBoard() {
                     </Link>
                   </h2>
                   <p className="text-muted" style={{ margin: 0, fontSize: "13px" }}>
-                    {application.smeName} · <strong className="num" style={{ color: "var(--color-text-heading)" }}>{formatVnd(application.budget)}</strong>
+                    {application.smeName}{application.budget ? <> · <strong className="num" style={{ color: "var(--color-text-heading)" }}>{formatVnd(application.budget)}</strong></> : null}
                   </p>
                   <p style={{ margin: 0, fontSize: "13px", color: "var(--color-text-body)" }}>{NEXT_STEP[application.status]}</p>
                 </div>
 
                 <div className="app-card__actions">
                   {application.status === "ACCEPTED" ? (
-                    <Link href={`/workspace/${application.projectId}`} className="btn--tactile-brand" style={{ height: "36px", fontSize: "11px" }}>
+                    <Link href={`/workspace/${application.projectId}?ledger=1`} className="btn--tactile-brand" style={{ height: "36px", fontSize: "11px" }}>
                       Vào workspace
                     </Link>
                   ) : null}
                   {application.status === "SUBMITTED" || application.status === "SHORTLISTED" ? (
-                    <WithdrawApplicationButton applicationId={application.id} />
+                    <WithdrawApplicationButton applicationId={application.id} onError={setActionError} />
                   ) : null}
                   <Link href={`/projects/${application.projectId}`} className="btn--tactile-zinc" style={{ height: "34px", fontSize: "11px" }}>
                     Xem đề bài

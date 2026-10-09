@@ -1,7 +1,7 @@
-INSERT INTO projects (id, public_id, title, sme_name, sme_industry, sme_size, sme_contact, budget, deadline, status, summary, problem, created_at) VALUES
-('20000000-0000-0000-0000-000000000001', 'p-coffee-lab', 'Landing page cho chiến dịch cà phê mới', 'The Coffee Lab', 'F&B', '11-50 nhân sự', 'hello@thecoffeelab.vn', 4000000, '2026-12-20', 'PUBLISHED', 'Thiết kế và phát triển landing page responsive cho chiến dịch ra mắt sản phẩm cà phê mới.', 'Doanh nghiệp cần một trang đích tải nhanh, dễ đo lường và nhất quán với bộ nhận diện hiện tại.', '2026-09-01T08:00:00Z'),
-('20000000-0000-0000-0000-000000000002', 'p-zen', 'Bộ nhận diện social cho Zen Yoga', 'Zen Yoga Studio', 'Sức khỏe', '1-10 nhân sự', 'studio@zenyoga.vn', 2500000, '2026-12-12', 'PUBLISHED', 'Xây dựng bộ template social và hướng dẫn sử dụng cho đội ngũ vận hành của studio.', 'Các bài đăng hiện thiếu tính nhất quán, khó tái sử dụng và chưa truyền tải được tinh thần thương hiệu.', '2026-09-03T08:00:00Z'),
-('20000000-0000-0000-0000-000000000003', 'p-minh-chau', 'Kế hoạch nội dung SEO quý I', 'Minh Châu Homestay', 'Du lịch', '1-10 nhân sự', 'contact@minhchauhomestay.vn', 3000000, '2027-01-05', 'PUBLISHED', 'Nghiên cứu từ khóa và xây dựng kế hoạch nội dung SEO thực thi được cho ba tháng.', 'Website có nội dung rời rạc và chưa có lộ trình từ khóa gắn với nhu cầu đặt phòng.', '2026-09-05T08:00:00Z')
+INSERT INTO projects (id, public_id, title, sme_name, sme_industry, sme_size, sme_contact, budget, deadline, status, summary, problem, created_at, complexity, published_at) VALUES
+('20000000-0000-0000-0000-000000000001', 'p-coffee-lab', 'Landing page cho chiến dịch cà phê mới', 'The Coffee Lab', 'F&B', '11-50 nhân sự', 'hello@thecoffeelab.vn', 4000000, '2026-12-20', 'PUBLISHED', 'Thiết kế và phát triển landing page responsive cho chiến dịch ra mắt sản phẩm cà phê mới.', 'Doanh nghiệp cần một trang đích tải nhanh, dễ đo lường và nhất quán với bộ nhận diện hiện tại.', '2026-09-01T08:00:00Z', 'HIGH', '2026-09-01T08:00:00Z'),
+('20000000-0000-0000-0000-000000000002', 'p-zen', 'Bộ nhận diện social cho Zen Yoga', 'Zen Yoga Studio', 'Sức khỏe', '1-10 nhân sự', 'studio@zenyoga.vn', 2500000, '2026-12-12', 'PUBLISHED', 'Xây dựng bộ template social và hướng dẫn sử dụng cho đội ngũ vận hành của studio.', 'Các bài đăng hiện thiếu tính nhất quán, khó tái sử dụng và chưa truyền tải được tinh thần thương hiệu.', '2026-09-03T08:00:00Z', 'MEDIUM', '2026-09-03T08:00:00Z'),
+('20000000-0000-0000-0000-000000000003', 'p-minh-chau', 'Kế hoạch nội dung SEO quý I', 'Minh Châu Homestay', 'Du lịch', '1-10 nhân sự', 'contact@minhchauhomestay.vn', 3000000, '2027-01-05', 'PUBLISHED', 'Nghiên cứu từ khóa và xây dựng kế hoạch nội dung SEO thực thi được cho ba tháng.', 'Website có nội dung rời rạc và chưa có lộ trình từ khóa gắn với nhu cầu đặt phòng.', '2026-09-05T08:00:00Z', 'MEDIUM', '2026-09-05T08:00:00Z')
 ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO project_skills (project_id, position, skill_code) VALUES
@@ -41,3 +41,7 @@ INSERT INTO project_milestone_plan_criteria (milestone_plan_id, position, criter
 ('30000000-0000-0000-0000-000000000005', 0, 'Tối thiểu 50 từ khóa được phân nhóm.'),
 ('30000000-0000-0000-0000-000000000006', 0, 'Có brief rõ ràng cho từng nội dung ưu tiên.')
 ON CONFLICT DO NOTHING;
+
+-- The Coffee Lab demo SME owns its catalog project, so its applicants can be reviewed after login.
+UPDATE projects SET owner_id = '40000000-0000-0000-0000-000000000002'
+WHERE id = '20000000-0000-0000-0000-000000000001' AND owner_id IS NULL;

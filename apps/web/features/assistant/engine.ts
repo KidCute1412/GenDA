@@ -308,7 +308,7 @@ const cvMissing: Rule = (s) => {
     tier: "coach",
     title: "Nộp CV để bắt đầu",
     lines: [
-      { expression: "neutral", text: "Bạn cần nộp CV dạng PDF trước khi xem và ứng tuyển dự án. Tệp tối đa 2 MB." },
+      { expression: "neutral", text: "Bạn xem được mọi dự án, nhưng cần CV dạng PDF để gửi đơn. Tệp tối đa 2 MB." },
       { expression: "wink", text: "Chưa có CV cũng đừng lo: một trang, ghi rõ kỹ năng và một hai việc bạn từng làm là đủ để bắt đầu." }
     ],
     choices: [{ label: "Nộp CV", href: "/student/cv" }],

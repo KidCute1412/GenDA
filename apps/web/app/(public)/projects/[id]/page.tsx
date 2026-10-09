@@ -236,6 +236,7 @@ export default async function ProjectDetailPage({
                 <ApplyButton
                   projectTitle={project.title}
                   projectId={project.id}
+                  complexity={project.complexity}
                   smeName={project.smeName}
                   budget={project.budget}
                 />

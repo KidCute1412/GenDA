@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import vn.skillbridge.projects.api.dto.ProjectCreationPolicyResponse;
 import vn.skillbridge.projects.api.dto.ProjectDetailResponse;
 import vn.skillbridge.projects.api.dto.ProjectPageResponse;
 import vn.skillbridge.projects.application.ProjectQueryService;
@@ -46,6 +47,15 @@ public class ProjectController {
             @RequestParam(defaultValue = "12") @Min(1) @Max(100) int pageSize) {
         return ProjectPageResponse.from(queries.browse(
                 new ProjectSearch(q, skill, minBudget, maxBudget, page, pageSize)));
+    }
+
+    @GetMapping("/creation-policy")
+    @Operation(summary = "Get the server-owned project level budget policy used when creating projects")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Current project creation policy")
+    })
+    public ProjectCreationPolicyResponse creationPolicy() {
+        return ProjectCreationPolicyResponse.from(queries.creationPolicy());
     }
 
     @GetMapping("/{projectId}")

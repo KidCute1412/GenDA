@@ -17,6 +17,9 @@ export {
   ArrowCounterClockwise,
   XCircle,
   CircleDashed,
+  // Hạng contributor: mức dự án đã mở / còn khóa
+  Lock,
+  LockOpen,
   SealCheck,
   ShieldCheck,
   // --- Ngữ nghĩa thông báo ---
@@ -28,6 +31,9 @@ export {
   MagnifyingGlass,
   Paperclip,
   LinkSimple,
+  Plus,
+  PencilSimple,
+  Trash,
   ArrowRight,
   CaretRight,
   X,

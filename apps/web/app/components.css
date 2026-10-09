@@ -4178,3 +4178,720 @@ li:first-child > .gen-choice .gen-choice__key {
   margin-top: 3px;
   flex-shrink: 0;
 }
+
+/* --------------------------------------------------------------------------
+   Chọn mức độ dự án (project level) trong wizard đăng dự án — design.md 7.3
+   -------------------------------------------------------------------------- */
+.level-choice {
+  margin: 0 0 var(--space-field-group);
+  padding: 0;
+  border: 0;
+}
+
+.level-choice__grid {
+  display: grid;
+  gap: var(--space-3);
+}
+
+@media (min-width: 900px) {
+  .level-choice__grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.level-choice__option {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  padding: var(--space-4);
+  padding-right: var(--space-8);
+  border: 2px solid var(--color-border-subtle);
+  background-color: var(--color-surface-card);
+  cursor: pointer;
+}
+
+.level-choice__option[data-checked="true"] {
+  border-color: var(--brand-500);
+  box-shadow: inset 0 0 0 1px var(--brand-500);
+}
+
+.level-choice__option input {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+}
+
+.level-choice__option:focus-within {
+  outline: var(--focus-ring-width) solid var(--color-border-focus);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.level-choice__title {
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--color-text-heading);
+}
+
+.level-choice__range {
+  font-weight: 700;
+  color: var(--brand-500);
+}
+
+.level-choice__text {
+  font-size: var(--text-body-sm-size);
+  color: var(--color-text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Hạng contributor và thanh kinh nghiệm (FR-APP-12)
+   Mỗi hạng đặt ba biến --tier-ink / --tier-tint / --tier-glint cho mọi phần tử con.
+   -------------------------------------------------------------------------- */
+.tier-insignia--bronze,
+.tier-badge--bronze,
+.xp-meter--bronze,
+.xp-card--bronze {
+  --tier-ink: var(--tier-bronze-ink);
+  --tier-tint: var(--tier-bronze-tint);
+  --tier-glint: var(--tier-bronze-glint);
+}
+
+.tier-insignia--silver,
+.tier-badge--silver,
+.xp-meter--silver,
+.xp-card--silver {
+  --tier-ink: var(--tier-silver-ink);
+  --tier-tint: var(--tier-silver-tint);
+  --tier-glint: var(--tier-silver-glint);
+}
+
+.tier-insignia--gold,
+.tier-badge--gold,
+.xp-meter--gold,
+.xp-card--gold {
+  --tier-ink: var(--tier-gold-ink);
+  --tier-tint: var(--tier-gold-tint);
+  --tier-glint: var(--tier-gold-glint);
+}
+
+.tier-insignia {
+  display: block;
+  flex-shrink: 0;
+}
+
+.tier-insignia__plate { fill: var(--tier-ink); }
+.tier-insignia__rim { fill: none; stroke: var(--tier-glint); stroke-width: 1.5; }
+.tier-insignia__chevron { fill: none; stroke: #ffffff; stroke-width: 5; stroke-linecap: square; stroke-linejoin: miter; }
+.tier-insignia__rivet { fill: var(--tier-glint); }
+
+.tier-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px 2px 4px;
+  border: 2px solid var(--tier-ink);
+  border-radius: var(--radius-sm);
+  background-color: var(--tier-tint);
+  color: var(--tier-ink);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* --- Thanh XP: dãy đèn LED ------------------------------------------------ */
+.xp-meter {
+  display: grid;
+  gap: 6px;
+}
+
+.xp-meter__scale {
+  display: flex;
+  justify-content: space-between;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.xp-meter__track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 3px;
+  height: 18px;
+  padding: 3px;
+  border: 2px solid var(--machinery-border);
+  background-color: var(--color-surface-card);
+}
+
+.xp-meter--compact .xp-meter__track { height: 12px; padding: 2px; gap: 2px; }
+
+.xp-meter__segment {
+  background-color: var(--color-surface-subtle);
+  box-shadow: inset 0 0 0 1px var(--color-border-subtle);
+}
+
+.xp-meter__segment[data-lit] {
+  background-color: var(--tier-ink);
+  box-shadow: inset 0 3px 0 var(--tier-glint);
+  animation: xp-segment-on var(--duration-slow) ease-out both;
+  animation-delay: calc(var(--segment) * 24ms);
+}
+
+@keyframes xp-segment-on {
+  from { opacity: 0; transform: scaleY(0.4); }
+  to { opacity: 1; transform: scaleY(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xp-meter__segment[data-lit] { animation: none; }
+}
+
+.xp-meter__line {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-heading);
+}
+
+/* --- Khối hạng đầu trang hồ sơ ------------------------------------------- */
+.xp-card {
+  position: relative;
+  display: grid;
+  gap: var(--space-6);
+  padding: var(--space-6);
+  padding-top: calc(var(--space-6) + 8px);
+  border: 2px solid var(--machinery-border);
+  background-color: var(--color-surface-card);
+  overflow: hidden;
+}
+
+/* Dải màu hạng ở mép trên, có vạch nghiêng mờ (design.md 4.9.2 H5: độ mờ <= 5%). */
+.xp-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 8px;
+  background-color: var(--tier-ink);
+  pointer-events: none;
+}
+
+.xp-card::after {
+  content: "";
+  position: absolute;
+  inset: 8px 0 0 auto;
+  width: min(45%, 420px);
+  background-image: repeating-linear-gradient(135deg, var(--tier-ink) 0 2px, transparent 2px 14px);
+  opacity: 0.05;
+  pointer-events: none;
+}
+
+.xp-card > * { position: relative; }
+
+.xp-card__identity {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.xp-card__plate {
+  display: grid;
+  place-items: center;
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+  border: 2px solid var(--tier-ink);
+  background-color: var(--tier-tint);
+}
+
+.xp-card__headline { display: grid; gap: 2px; min-width: 0; }
+
+.xp-card__name {
+  margin: 0;
+  font-weight: 700;
+  color: var(--color-text-body);
+  overflow-wrap: anywhere;
+}
+
+.xp-card__tier {
+  margin: 0;
+  font-size: var(--text-h2-size);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: var(--tier-ink);
+}
+
+.xp-card__total {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color: var(--color-text-heading);
+}
+
+/* Con số lớn gấp ~3.5 lần chữ nội dung: điểm vào của mắt (design.md 4.9.2 H2). */
+.xp-card__xp {
+  font-size: clamp(2.75rem, 7vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.xp-card__unit { font-size: 14px; font-weight: 800; color: var(--color-text-muted); }
+
+.xp-card__progress { display: grid; gap: var(--space-3); align-content: center; }
+
+.xp-card__hint { margin: 0; max-width: 60ch; color: var(--color-text-body); }
+
+.xp-card__cap {
+  justify-self: start;
+  margin: 0;
+  padding: 2px 8px;
+  border: 1px dashed var(--color-border-subtle);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.xp-card__cap[data-reached] { border-style: solid; border-color: var(--tier-ink); color: var(--tier-ink); }
+
+.xp-card__disclaimer { margin: 0; color: var(--color-text-muted); }
+
+@media (min-width: 900px) {
+  .xp-card {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    column-gap: var(--space-10);
+  }
+  .xp-card .unlock-ladder,
+  .xp-card__disclaimer { grid-column: 1 / -1; }
+}
+
+/* --- Ba khoang mức dự án: đã mở / còn khóa -------------------------------- */
+.unlock-ladder {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 640px) {
+  .unlock-ladder { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+.unlock-slot {
+  display: grid;
+  gap: 4px;
+  padding: var(--space-4);
+  border: 2px solid var(--machinery-border);
+  background-color: var(--color-surface-card);
+}
+
+.unlock-slot[data-unlocked="false"] {
+  border-style: dashed;
+  border-color: var(--color-border-subtle);
+  background-image: repeating-linear-gradient(135deg, var(--color-surface-subtle) 0 6px, transparent 6px 12px);
+}
+
+.unlock-slot__state {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--brand-500);
+}
+
+.unlock-slot[data-unlocked="false"] .unlock-slot__state { color: var(--color-text-muted); }
+
+.unlock-slot__level {
+  font-size: var(--text-h4-size);
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--color-text-heading);
+}
+
+.unlock-slot[data-unlocked="false"] .unlock-slot__level { color: var(--color-text-body); }
+
+.unlock-slot__meta { font-size: 12px; color: var(--color-text-muted); }
+
+/* --- Nhật ký XP ------------------------------------------------------------ */
+.xp-log {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.xp-log__row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding-block: var(--space-3);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.xp-log__gain {
+  min-width: 4.5rem;
+  padding: 2px 6px;
+  border: 2px solid var(--machinery-border);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
+  color: var(--color-text-heading);
+}
+
+.xp-log__gain[data-capped] {
+  border-style: dashed;
+  border-color: var(--color-border-subtle);
+  color: var(--color-text-muted);
+}
+
+.xp-log__body { display: grid; min-width: 0; }
+.xp-log__title { overflow-wrap: anywhere; color: var(--color-text-heading); }
+.xp-log__done { color: var(--color-status-verified); }
+
+.xp-log__more summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--color-action-link);
+}
+
+/* --- Checklist sẵn sàng ứng tuyển ----------------------------------------- */
+.quest {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border: 2px solid var(--machinery-border);
+  background-color: var(--color-surface-card);
+}
+
+.quest__header { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-3); }
+
+.quest__title {
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--color-text-heading);
+}
+
+.quest__count {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--brand-500);
+}
+
+.quest__bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; height: 8px; }
+.quest__bar span { background-color: var(--color-surface-subtle); box-shadow: inset 0 0 0 1px var(--color-border-subtle); }
+.quest__bar span[data-done] { background-color: var(--color-status-verified); box-shadow: none; }
+
+.quest__list { display: grid; gap: var(--space-2); margin: 0; padding: 0; list-style: none; }
+
+.quest__item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-body-sm-size);
+}
+
+.quest__icon { color: var(--color-text-muted); }
+.quest__item[data-done="true"] .quest__icon { color: var(--color-status-verified); }
+.quest__item[data-done="false"] .quest__label { font-weight: 700; color: var(--color-text-heading); }
+
+.quest__status {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--color-status-verified-text);
+}
+
+.quest__fix { font-weight: 700; white-space: nowrap; }
+.quest__note { margin: 0; font-size: 13px; color: var(--color-text-muted); }
+
+/* --- Trang hồ sơ ----------------------------------------------------------- */
+.profile-grid { display: grid; gap: var(--space-6); align-items: start; }
+
+@media (min-width: 1024px) {
+  .profile-grid { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); }
+}
+
+.profile-section__title {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-h3-size);
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.choice-pills { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+
+.choice-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 var(--space-3);
+  border: 2px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-card);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.choice-pill[data-checked] { border-color: var(--brand-500); box-shadow: inset 0 0 0 1px var(--brand-500); color: var(--brand-500); }
+.choice-pill:focus-within { outline: var(--focus-ring-width) solid var(--color-border-focus); outline-offset: var(--focus-ring-offset); }
+.choice-pill input { accent-color: var(--brand-500); }
+
+.edu-list { display: grid; gap: var(--space-3); margin: 0; padding: 0; list-style: none; }
+
+.edu-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 2px solid var(--color-border-subtle);
+}
+
+.edu-card__main { display: grid; gap: 2px; min-width: 0; }
+.edu-card__school { color: var(--color-text-heading); overflow-wrap: anywhere; }
+.edu-card__note { margin: var(--space-1) 0 0; font-size: var(--text-body-sm-size); color: var(--color-text-body); }
+
+/* Nhãn trung tính: không màu, không icon xác thực (design.md 7.2). */
+.edu-card__self {
+  justify-self: start;
+  margin-top: var(--space-1);
+  padding: 0 6px;
+  border: 1px solid var(--color-border-subtle);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.edu-card__actions { display: flex; flex-wrap: wrap; gap: var(--space-1); flex-shrink: 0; }
+
+.edu-form {
+  padding: var(--space-4);
+  border: 2px solid var(--brand-500);
+  background-color: var(--color-surface-subtle);
+}
+
+.edu-form__grid { display: grid; gap: 0 var(--space-4); }
+
+@media (min-width: 640px) {
+  .edu-form__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.cv-card {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 2px solid var(--machinery-border);
+  background-color: var(--color-surface-subtle);
+}
+
+.cv-card[data-busy] { opacity: 0.7; }
+.cv-card__file { display: flex; gap: var(--space-3); align-items: flex-start; }
+.cv-card__icon { flex-shrink: 0; margin-top: 2px; }
+.cv-card__name { display: block; overflow-wrap: anywhere; color: var(--color-text-heading); }
+
+.cv-card__status {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-text-body);
+}
+
+.cv-card__status svg { flex-shrink: 0; margin-top: 2px; color: var(--color-status-verified); }
+
+/* --- Yêu cầu hạng cạnh nút Ứng tuyển ---------------------------------------- */
+.level-req {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border: 2px solid var(--machinery-border);
+  font-size: 13px;
+}
+
+.level-req[data-locked] { border-style: dashed; }
+
+.level-req__level {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--color-text-heading);
+}
+
+.tier-gate {
+  display: grid;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  padding: var(--space-4);
+  border: 2px dashed var(--machinery-border);
+  background-color: var(--color-surface-subtle);
+}
+
+/* --------------------------------------------------------------------------
+   Xét duyệt ứng viên phía SME (design.md 7.5, FR-APP-03..05)
+   -------------------------------------------------------------------------- */
+.applicant-list {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.applicant-card {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-5) var(--space-6);
+  border: 2px solid var(--machinery-border);
+  background-color: var(--color-surface-card);
+}
+
+.applicant-card .module-bay__header { margin-bottom: 0; }
+.applicant-card[data-status="SHORTLISTED"] { border-color: var(--brand-500); }
+.applicant-card[data-status="ACCEPTED"] { border-color: var(--color-status-verified); }
+.applicant-card[data-status="REJECTED"] { border-style: dashed; border-color: var(--color-border-subtle); }
+.applicant-card[data-status="REJECTED"] .applicant-card__name { color: var(--color-text-body); }
+
+.applicant-card__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-transform: uppercase;
+}
+
+.applicant-card[data-status="SHORTLISTED"] .applicant-card__status { color: var(--brand-500); }
+.applicant-card[data-status="ACCEPTED"] .applicant-card__status { color: var(--color-status-verified-text); }
+
+.applicant-card__top {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-4);
+}
+
+.applicant-card__name {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.applicant-card__xp {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--color-text-heading);
+}
+
+.applicant-card__match {
+  display: grid;
+  justify-items: end;
+  gap: 2px;
+  padding: var(--space-2) var(--space-3);
+  border: 2px solid var(--machinery-border);
+  background-color: var(--color-surface-subtle);
+}
+
+.applicant-card__match strong {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 1.5rem;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--brand-500);
+}
+
+.applicant-card__match-label {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--color-text-muted);
+}
+
+.applicant-card__record-label {
+  margin: 0 0 calc(-1 * var(--space-3));
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* Lịch sử hoàn thành trên GenDA: ba ô số như mặt đồng hồ đếm. */
+.applicant-card__record {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 3px;
+  max-width: 420px;
+  margin: 0;
+}
+
+.applicant-card__record div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-2);
+  padding: 4px 8px;
+  border: 1px solid var(--color-border-subtle);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+}
+
+.applicant-card__record dt { color: var(--color-text-muted); text-transform: uppercase; }
+.applicant-card__record dd { margin: 0; font-weight: 800; color: var(--color-text-heading); }
+
+.applicant-card__letter {
+  margin: 0;
+  max-width: 75ch;
+  padding: var(--space-3) var(--space-4);
+  border-left: 3px solid var(--machinery-border);
+  background-color: var(--color-surface-subtle);
+  font-size: var(--text-body-sm-size);
+  line-height: 1.55;
+  white-space: pre-line;
+}
+
+.applicant-card__education summary {
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-action-link);
+}
+
+.applicant-card__education ul {
+  display: grid;
+  gap: var(--space-1);
+  margin: var(--space-2) 0 0;
+  padding-left: var(--space-5);
+  font-size: 13px;
+}
+
+.applicant-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: 2px solid var(--machinery-border);
+}

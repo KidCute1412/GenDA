@@ -185,6 +185,19 @@
   --color-surface-achieve: var(--brand-50);
   --color-surface-achieve-strong: var(--brand-100);
 
+  /* --- Hạng contributor (Đồng / Bạc / Vàng) ---
+     *-ink: nền huy hiệu chữ trắng và đèn đã sáng của thanh XP (chữ trắng >= 6.5:1).
+     *-tint: nền nhạt (chữ *-ink trên nền này >= 5.8:1). *-glint: vệt sáng trang trí, không mang chữ. */
+  --tier-bronze-ink: #8a4b1f;
+  --tier-bronze-tint: #f7ece3;
+  --tier-bronze-glint: #c27a43;
+  --tier-silver-ink: #4f5866;
+  --tier-silver-tint: #eef0f3;
+  --tier-silver-glint: #a3acb9;
+  --tier-gold-ink: #7a5800;
+  --tier-gold-tint: #fbf3d6;
+  --tier-gold-glint: #d9ab2b;
+
   /* --- Đường viền & Bóng cơ khí --- */
   --machinery-border: #18181b;
   --machinery-shadow: #18181b;
@@ -507,4 +520,10 @@ button {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* reCAPTCHA v3: huy hiệu nổi của Google che nút ở góc màn hình. Google cho phép ẩn khi biểu mẫu ghi rõ
+   dòng "được bảo vệ bởi reCAPTCHA" kèm hai liên kết chính sách (xem RecaptchaField). */
+.grecaptcha-badge {
+  visibility: hidden;
 }

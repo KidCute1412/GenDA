@@ -6,7 +6,7 @@ import Link from "next/link";
 import { TextField } from "../../../components/ui/field";
 import { PasswordField } from "./password-field";
 import { AuthApiError, login } from "../services/auth-api";
-import { RecaptchaField, verifyRecaptcha } from "./recaptcha-field";
+import { RECAPTCHA_ENABLED, RecaptchaField, verifyRecaptcha } from "./recaptcha-field";
 
 const STUDENT_HOME = "/projects";
 const DEMO_PASSWORD = "Demo@12345";
@@ -19,6 +19,8 @@ export function LoginFormClient() {
   const [isLoading, setIsLoading] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [captchaKey, setCaptchaKey] = useState(0);
+  // reCAPTCHA đang tạm tắt (RECAPTCHA_ENABLED): khi đó biểu mẫu không chờ token.
+  const captchaReady = !RECAPTCHA_ENABLED || Boolean(captchaToken);
   const [formError, setFormError] = useState("");
 
   function fillDemo(accountEmail: string) {
@@ -29,15 +31,15 @@ export function LoginFormClient() {
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
-    if (!captchaToken) {
-      setFormError("Hãy hoàn thành bước xác minh chống người máy trước khi đăng nhập.");
+    if (!captchaReady) {
+      setFormError("Bước xác minh chống người máy chưa xong. Đợi vài giây rồi đăng nhập lại.");
       return;
     }
     setFormError("");
     setIsLoading(true);
 
     try {
-      if (!(await verifyRecaptcha(captchaToken))) {
+      if (RECAPTCHA_ENABLED && !(await verifyRecaptcha(captchaToken ?? "", "login"))) {
         throw new AuthApiError("RECAPTCHA_FAILED", "Xác minh reCAPTCHA không thành công hoặc đã hết hạn.");
       }
       const session = await login(email, password, rememberDevice);
@@ -113,12 +115,14 @@ export function LoginFormClient() {
         </div>
 
         <div>
-          <RecaptchaField key={captchaKey} onChange={(token) => { setCaptchaToken(token); if (token) setFormError(""); }} />
+          {RECAPTCHA_ENABLED ? (
+            <RecaptchaField key={captchaKey} action="login" onChange={(token) => { setCaptchaToken(token); if (token) setFormError(""); }} />
+          ) : null}
           {formError ? <p role="alert" style={{ margin: "4px 0 0", fontSize: "12px", color: "var(--color-danger-text)" }}>{formError}</p> : null}
         </div>
 
-        <button type="submit" disabled={isLoading || !captchaToken} className="btn--tactile-brand"
-          style={{ width: "100%", height: "40px", fontSize: "12px", cursor: isLoading ? "wait" : !captchaToken ? "not-allowed" : "pointer", opacity: captchaToken ? 1 : 0.55 }}>
+        <button type="submit" disabled={isLoading || !captchaReady} className="btn--tactile-brand"
+          style={{ width: "100%", height: "40px", fontSize: "12px", cursor: isLoading ? "wait" : !captchaReady ? "not-allowed" : "pointer", opacity: captchaReady ? 1 : 0.55 }}>
           {isLoading ? "ĐANG XÁC THỰC..." : "XÁC NHẬN ĐĂNG NHẬP"}
         </button>
       </form>
