@@ -33,7 +33,14 @@ class DemoAuthSeed implements ApplicationRunner {
                         "SME", "ACTIVE", true, "APPROVED", "0316789012", null),
                 new AuthUserJpaEntity(UUID.fromString("40000000-0000-0000-0000-000000000003"),
                         "admin@genda.vn", passwordEncoder.encode(DEMO_PASSWORD), "Đỗ Minh Triết",
-                        "ADMIN", "ACTIVE", true, null, null, null));
+                        "ADMIN", "ACTIVE", true, null, null, null),
+                // One contributor per tier besides Lộc (SILVER): BRONZE and GOLD.
+                new AuthUserJpaEntity(UUID.fromString("40000000-0000-0000-0000-000000000004"),
+                        "tranminhanh@demo.genda.vn", passwordEncoder.encode(DEMO_PASSWORD), "Trần Minh Anh",
+                        "CONTRIBUTOR", "ACTIVE", true, null, null, null),
+                new AuthUserJpaEntity(UUID.fromString("40000000-0000-0000-0000-000000000005"),
+                        "phamgiahuy@demo.genda.vn", passwordEncoder.encode(DEMO_PASSWORD), "Phạm Gia Huy",
+                        "CONTRIBUTOR", "ACTIVE", true, null, null, null));
         seeds.stream().filter(seed -> !users.existsById(seed.id)).forEach(users::save);
     }
 }

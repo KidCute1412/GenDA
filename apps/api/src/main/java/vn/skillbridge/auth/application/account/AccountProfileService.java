@@ -4,6 +4,8 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.skillbridge.auth.application.AuthException;
+import vn.skillbridge.auth.domain.account.AccountState;
+import vn.skillbridge.auth.domain.account.UserRole;
 
 @Service
 public class AccountProfileService {
@@ -18,6 +20,26 @@ public class AccountProfileService {
         var account = accounts.findById(userId)
                 .orElseThrow(() -> new AuthException("ACCOUNT_NOT_FOUND", "Account does not exist"));
         return new AccountProfile(account.id(), account.email(), account.displayName(), account.role().name());
+    }
+
+    @Transactional(readOnly = true)
+    public AccountStanding standing(UUID userId) {
+        var account = accounts.findById(userId)
+                .orElseThrow(() -> new AuthException("ACCOUNT_NOT_FOUND", "Account does not exist"));
+        return new AccountStanding(account.accountState() == AccountState.ACTIVE, account.emailVerified());
+    }
+
+    /** Facade for modules that act on behalf of an SME: the account must currently be allowed to sign in. */
+    @Transactional(readOnly = true)
+    public boolean isApprovedSme(UUID userId) {
+        return accounts.findById(userId).filter(account -> account.role() == UserRole.SME && account.canSignIn())
+                .isPresent();
+    }
+
+    @Transactional(readOnly = true)
+    public boolean isActiveAdmin(UUID userId) {
+        return accounts.findById(userId).filter(account -> account.role() == UserRole.ADMIN && account.canSignIn())
+                .isPresent();
     }
 
     @Transactional

@@ -79,6 +79,6 @@ Ledger đã lưu trước khi có tính năng này được bổ sung dữ liệ
 1. **Backend.** Khi chuyển lên Spring Boot: module `opportunities` riêng (không nhét vào `projects`), bảng `opportunities`, `opportunity_sessions`, `opportunity_registrations`; kiểm tra quyền và số chỗ ở backend trong cùng giao dịch để hai người không cùng lấy chỗ cuối.
 2. **Điểm danh và xác nhận đã trả thù lao.** Bản demo dừng ở đăng ký. Bước kế: chủ tin điểm danh từng buổi, người tham gia xác nhận đã nhận thù lao; hai bước này là nền cho đánh giá hai chiều.
 3. **Thanh toán khoản nhỏ.** Ký quỹ mô phỏng của dự án không hợp với khoản 50k nhiều người. Cần chốt: GenDA chỉ ghi nhận, hay giữ tiền; nếu giữ tiền thì phí giao dịch trên khoản nhỏ.
-4. **Cổng CV ở `/projects`.** Layout của `/projects` vẫn chuyển sinh viên chưa có CV sang trang nộp CV, nên người chưa có CV chưa vào được tab sự kiện dù đăng ký sự kiện không cần CV. Nên dời cổng CV sang lúc ứng tuyển dự án (khớp hướng "xem trước, chặn lúc nộp" trong tài liệu flow mới).
+4. **Cổng CV ở `/projects` (đã gỡ 2026-10-09).** `/projects` không còn chuyển người chưa có CV sang trang nộp CV; CV, hồ sơ và hạng chỉ được kiểm tra lúc ứng tuyển dự án, đúng hướng "xem trước, chặn lúc nộp". Đăng ký sự kiện vẫn không cần CV.
 5. **Vai trò.** Bản demo cho vai trò `STUDENT` đăng ký. Khi chuyển sang vai trò chung `CONTRIBUTOR` (tài liệu flow mới), quy tắc giữ nguyên.
 6. **Gen.** Trợ lý có thể nhắc "buổi bạn đăng ký diễn ra ngày mai" và gợi ý sự kiện cho người mới chưa đủ kinh nghiệm nhận dự án.

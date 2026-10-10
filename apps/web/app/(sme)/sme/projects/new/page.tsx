@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { SiteHeader } from "../../../../../components/layout/site-header";
 import { SiteFooter } from "../../../../../components/layout/site-footer";
 import { BottomNav } from "../../../../../components/layout/bottom-nav";
+import { RoleRouteGuard } from "../../../../../features/auth/components/role-route-guard";
 import { ProjectWizard } from "../../../../../features/projects/components/project-wizard";
 
 export const metadata: Metadata = {
@@ -18,29 +19,30 @@ export const metadata: Metadata = {
  */
 export default function NewProjectPage() {
   return (
-    <>
-      <SiteHeader hideOnMobile />
+    <RoleRouteGuard role="SME">
+      <>
+        <SiteHeader hideOnMobile />
 
-      <main id="main-content" className="industrial-canvas has-bottom-nav" style={{ paddingBottom: "var(--space-16)" }}>
-        <div className="container" style={{ paddingTop: "var(--space-6)", maxWidth: "800px" }}>
-          
-          <div style={{ marginBottom: "var(--space-6)" }}>
-            <h1 style={{ fontSize: "clamp(1.75rem, 3.5vw, 2.5rem)", fontWeight: 900, textTransform: "uppercase", margin: "var(--space-1) 0" }}>
-              ĐĂNG DỰ ÁN MỚI
-            </h1>
-            <p className="text-muted" style={{ margin: 0, fontSize: "13px" }}>
-              Ba bước, khoảng năm phút. Hệ thống tự động lưu nháp giữa chừng để bạn có thể quay lại bổ sung bất kỳ lúc nào.
-            </p>
+        <main id="main-content" className="industrial-canvas has-bottom-nav" style={{ paddingBottom: "var(--space-16)" }}>
+          <div className="container" style={{ paddingTop: "var(--space-6)", maxWidth: "960px" }}>
+            <div style={{ marginBottom: "var(--space-6)" }}>
+              <h1 style={{ fontSize: "clamp(1.75rem, 3.5vw, 2.5rem)", fontWeight: 900, textTransform: "uppercase", margin: "var(--space-1) 0" }}>
+                ĐĂNG DỰ ÁN MỚI
+              </h1>
+              <p className="text-muted" style={{ margin: 0, fontSize: "13px" }}>
+                Ba bước, khoảng năm phút. Bạn lưu bản nháp được ở bất kỳ bước nào rồi quay lại bổ sung sau.
+              </p>
+            </div>
+
+            <div className="module-bay" style={{ padding: "clamp(var(--space-3), 4vw, var(--space-8))", backgroundColor: "var(--color-surface-card)" }}>
+              <ProjectWizard />
+            </div>
           </div>
+        </main>
 
-          <div className="module-bay" style={{ padding: "var(--space-8)", backgroundColor: "var(--color-surface-card)" }}>
-            <ProjectWizard />
-          </div>
-        </div>
-      </main>
-
-      <SiteFooter />
-      <BottomNav />
-    </>
+        <SiteFooter />
+        <BottomNav />
+      </>
+    </RoleRouteGuard>
   );
 }

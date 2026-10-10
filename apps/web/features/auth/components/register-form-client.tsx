@@ -6,7 +6,7 @@ import Link from "next/link";
 import { TextField } from "../../../components/ui/field";
 import { PasswordField } from "../../../features/auth/components/password-field";
 import { AuthApiError, registerAccount } from "../services/auth-api";
-import { RecaptchaField, verifyRecaptcha } from "./recaptcha-field";
+import { RECAPTCHA_ENABLED, RecaptchaField, verifyRecaptcha } from "./recaptcha-field";
 import { isValidTaxCode, isValidWebsite, validateSmeIdentity } from "../../../lib/utils/sme-identity";
 
 export function RegisterFormClient({ initialRole = "CONTRIBUTOR" }: { initialRole?: "CONTRIBUTOR" | "SME" }) {
@@ -27,6 +27,8 @@ export function RegisterFormClient({ initialRole = "CONTRIBUTOR" }: { initialRol
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   // Đổi key để gắn lại widget reCAPTCHA (bắt giải lại) khi xác minh thất bại
   const [captchaKey, setCaptchaKey] = useState(0);
+  // reCAPTCHA đang tạm tắt (RECAPTCHA_ENABLED): khi đó biểu mẫu không chờ token.
+  const captchaReady = !RECAPTCHA_ENABLED || Boolean(captchaToken);
   const [formError, setFormError] = useState("");
 
   function handleFillSample(targetRole: "CONTRIBUTOR" | "SME") {
@@ -58,18 +60,18 @@ export function RegisterFormClient({ initialRole = "CONTRIBUTOR" }: { initialRol
       setFormError("Bạn cần đồng ý với Quy chế sàn và Chính sách bảo mật để tạo tài khoản.");
       return;
     }
-    if (!captchaToken) {
-      setFormError("Hãy tick ô reCAPTCHA \"Tôi không phải người máy\" trước khi tạo tài khoản.");
+    if (!captchaReady) {
+      setFormError("Bước xác minh chống người máy chưa xong. Đợi vài giây rồi bấm tạo tài khoản lại.");
       return;
     }
     setFormError("");
     setIsLoading(true);
 
-    if (!(await verifyRecaptcha(captchaToken))) {
+    if (RECAPTCHA_ENABLED && !(await verifyRecaptcha(captchaToken ?? "", "register"))) {
       setIsLoading(false);
       setCaptchaToken(null);
       setCaptchaKey((key) => key + 1);
-      setFormError("Xác minh reCAPTCHA không thành công hoặc đã hết hạn. Hãy tick lại rồi thử lần nữa.");
+      setFormError("Xác minh reCAPTCHA không thành công hoặc đã hết hạn. Hãy thử lại lần nữa.");
       return;
     }
 
@@ -337,13 +339,16 @@ export function RegisterFormClient({ initialRole = "CONTRIBUTOR" }: { initialRol
           </span>
         </label>
 
-        <RecaptchaField
-          key={captchaKey}
-          onChange={(token) => {
-            setCaptchaToken(token);
-            if (token) setFormError("");
-          }}
-        />
+        {RECAPTCHA_ENABLED ? (
+          <RecaptchaField
+            key={captchaKey}
+            action="register"
+            onChange={(token) => {
+              setCaptchaToken(token);
+              if (token) setFormError("");
+            }}
+          />
+        ) : null}
 
         {formError ? (
           <p role="alert" style={{ margin: 0, fontSize: "12px", color: "var(--color-danger-text, #b91c1c)" }}>
@@ -353,15 +358,15 @@ export function RegisterFormClient({ initialRole = "CONTRIBUTOR" }: { initialRol
 
         <button
           type="submit"
-          disabled={isLoading || !agreed || !captchaToken}
+          disabled={isLoading || !agreed || !captchaReady}
           className="btn--tactile-brand"
           style={{
             width: "100%",
             height: "40px",
             fontSize: "12px",
             marginTop: "4px",
-            cursor: isLoading ? "wait" : !agreed || !captchaToken ? "not-allowed" : "pointer",
-            opacity: agreed && captchaToken ? 1 : 0.55
+            cursor: isLoading ? "wait" : !agreed || !captchaReady ? "not-allowed" : "pointer",
+            opacity: agreed && captchaReady ? 1 : 0.55
           }}
         >
           {isLoading ? "ĐANG TẠO TÀI KHOẢN..." : "TẠO TÀI KHOẢN MỚI"}

@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
+import vn.skillbridge.projects.domain.ProjectBudgetPolicy;
+import vn.skillbridge.projects.domain.ProjectComplexity;
 import vn.skillbridge.projects.domain.ProjectMilestone;
 import vn.skillbridge.projects.domain.PublishedProject;
 import vn.skillbridge.users.application.SkillQueryService;
@@ -18,7 +20,8 @@ import static org.mockito.ArgumentMatchers.anyCollection;
 class ProjectQueryServiceTest {
     private final PublishedProjectRepository projects = mock(PublishedProjectRepository.class);
     private final SkillQueryService skills = mock(SkillQueryService.class);
-    private final ProjectQueryService service = new ProjectQueryService(projects, skills);
+    private final ProjectQueryService service = new ProjectQueryService(projects, skills,
+            ProjectBudgetPolicy.standard());
 
     @Test
     void mapsSkillCodesAndPreservesPagingMetadata() {
@@ -42,10 +45,22 @@ class ProjectQueryServiceTest {
                 .isInstanceOf(ProjectNotFoundException.class);
     }
 
+    @Test
+    void exposesTheInclusiveBudgetRangeOfEveryLevel() {
+        ProjectCreationPolicyView policy = service.creationPolicy();
+
+        assertThat(policy.minimumBudget()).isEqualTo(1_000_000);
+        assertThat(policy.maximumBudget()).isEqualTo(5_000_000);
+        assertThat(policy.levels()).containsExactly(
+                new ProjectCreationPolicyView.LevelView(ProjectComplexity.BASIC, 1_000_000, 1_500_000),
+                new ProjectCreationPolicyView.LevelView(ProjectComplexity.MEDIUM, 1_500_000, 3_500_000),
+                new ProjectCreationPolicyView.LevelView(ProjectComplexity.HIGH, 3_500_000, 5_000_000));
+    }
+
     private PublishedProject project() {
         return new PublishedProject(
                 "p-test", "Test project", "Test SME", "Technology", "1-10", "test@example.com",
-                2_000_000, LocalDate.of(2027, 1, 1), "Summary", "Problem", List.of("react"),
+                ProjectComplexity.MEDIUM, 2_000_000, LocalDate.of(2027, 1, 1), "Summary", "Problem", List.of("react"),
                 List.of("Done"), List.of(new ProjectMilestone("m1", 1, "First", 2_000_000,
                         LocalDate.of(2027, 1, 1), List.of("Done"))));
     }

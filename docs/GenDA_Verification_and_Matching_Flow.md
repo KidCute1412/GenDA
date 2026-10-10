@@ -2,7 +2,7 @@
 
 > Trạng thái triển khai: actor identity là `CONTRIBUTOR`; account state và email OTP đã được triển khai. Registration tạo `PENDING_EMAIL_VERIFICATION`, gửi OTP 6 chữ số và không phát session. Confirm/resend, hash-only persistence, expiry, attempt limit, cooldown, source rate limit và UI nhập OTP đã hoạt động. SME sau OTP chỉ chuyển sang `EMAIL_VERIFIED`, không vượt qua gate duyệt doanh nghiệp.
 
-## Project Creation — Complexity & Minimum Budget Guard
+## Project Creation — Complexity & Budget Range Guard
 
 Luồng tạo và duyệt dự án áp dụng hai lớp kiểm soát độc lập:
 
@@ -13,10 +13,10 @@ Tạo project DRAFT, khai báo scope/deliverables/skills/deadline/milestones
         ↓
 Chọn complexity: BASIC / MEDIUM / HIGH
         ↓
-Hệ thống hiển thị minimum budget tương ứng
+Hệ thống hiển thị khoảng ngân sách tương ứng
         ↓
-Budget >= minimumBudget(complexity)?
-        ├─ Không → chặn gửi duyệt; SME tăng budget hoặc điều chỉnh scope/level
+minBudget(level) <= budget <= maxBudget(level)?
+        ├─ Không → chặn gửi duyệt; SME chỉnh budget hoặc điều chỉnh scope/level
         └─ Có    → chuyển PENDING_REVIEW
                          ↓
              Admin đối chiếu scope với complexity
@@ -24,42 +24,68 @@ Budget >= minimumBudget(complexity)?
         └─ Phù hợp       → PUBLISHED
 ```
 
-| Project level | Minimum budget | Điều kiện tự ứng tuyển |
+| Project level | Khoảng ngân sách (VNĐ) | Điều kiện tự ứng tuyển |
 |---|---:|---|
-| `BASIC` | `BASIC_MIN` | Không yêu cầu lịch sử dự án |
-| `MEDIUM` | `MEDIUM_MIN` | Có ít nhất 1 experience point **hoặc** được SME của project chủ động mời |
-| `HIGH` | `HIGH_MIN` | Có ít nhất 3 experience points **và** đã hoàn thành ít nhất 1 project `MEDIUM` |
+| `BASIC` | 1.000.000 – 1.500.000 | Mọi hạng, kể cả hạng Đồng mặc định |
+| `MEDIUM` | 1.500.000 – 3.500.000 | Hạng Bạc trở lên **hoặc** được SME của project chủ động mời |
+| `HIGH` | 3.500.000 – 5.000.000 | Chỉ hạng Vàng |
 
-Các ngưỡng phải thỏa `BASIC_MIN < MEDIUM_MIN < HIGH_MIN` và nằm trong khoảng ngân sách MVP 1.000.000-5.000.000 VNĐ. Giá trị cụ thể chưa được tự giả định trong tài liệu này; cần chốt tại OQ-08 trước khi triển khai.
+Khoảng ngân sách theo level đã chốt ngày 2026-10-09 (OQ-08). Cả hai đầu mút đều được tính: 1.500.000 hợp lệ cho cả `BASIC` lẫn `MEDIUM`, 3.500.000 hợp lệ cho cả `MEDIUM` lẫn `HIGH`. Ba khoảng nối liền nhau và phủ đúng khoảng ngân sách MVP 1.000.000–5.000.000 VNĐ (BR-10). Giá trị là policy phía server; frontend chỉ hiển thị policy lấy từ backend.
 
-Minimum budget chỉ ngăn trường hợp chọn complexity cao nhưng trả ngân sách quá thấp. Nó không tự ngăn SME cố tình gắn nhãn `BASIC` cho một scope thực tế phức tạp. Vì vậy admin phải đánh giá scope, deliverables, kỹ năng yêu cầu, deadline và milestones trước khi publish. Admin không được âm thầm đổi nội dung, complexity hoặc budget thay SME; SME phải tự thu hẹp scope hoặc chọn level/budget phù hợp rồi gửi duyệt lại.
+Khoảng ngân sách chặn hai trường hợp: chọn level cao nhưng trả dưới sàn của level đó, và chọn level thấp với ngân sách vượt trần của level đó (ví dụ 2.000.000 không thể khai `BASIC`). Nó không tự ngăn SME gắn nhãn `BASIC` cho một scope thực tế phức tạp với ngân sách 1–1,5 triệu. Vì vậy admin phải đánh giá scope, deliverables, kỹ năng yêu cầu, deadline và milestones trước khi publish. Admin không được âm thầm đổi nội dung, complexity hoặc budget thay SME; SME phải tự thu hẹp scope hoặc chọn level/budget phù hợp rồi gửi duyệt lại.
 
 Quyết định này thay thế quan điểm legacy chấp nhận rủi ro SME tự khai complexity thấp. Backend là nguồn chính sách duy nhất và phải kiểm tra lại ở cả `DRAFT → PENDING_REVIEW` lẫn `PENDING_REVIEW → PUBLISHED`.
 
 ### Project level đồng thời điều khiển eligibility
 
-Target model không dùng `GENERAL` như một project type riêng. SME chọn một `projectLevel = BASIC | MEDIUM | HIGH`; level đó đồng thời quyết định độ phức tạp, minimum budget và yêu cầu kinh nghiệm khi ứng tuyển.
+Target model không dùng `GENERAL` như một project type riêng. SME chọn một `projectLevel = BASIC | MEDIUM | HIGH`; level đó đồng thời quyết định độ phức tạp, khoảng ngân sách và yêu cầu kinh nghiệm khi ứng tuyển.
 
-Không yêu cầu contributor phải từng hoàn thành project **cùng level** mới được ứng tuyển level đó, vì điều này tạo vòng lặp không thể mở khóa. Kinh nghiệm được tích lũy từ level thấp lên:
+Không yêu cầu contributor phải từng hoàn thành project **cùng level** mới được ứng tuyển level đó, vì điều này tạo vòng lặp không thể mở khóa. Kinh nghiệm được tích lũy từ level thấp lên thành điểm kinh nghiệm (XP), và XP quy ra **hạng** của contributor:
 
 ```text
-Hoàn thành BASIC  = +1 experience point
-Hoàn thành MEDIUM = +2 experience points
-Hoàn thành HIGH   = +3 experience points
+Hoàn thành BASIC  = +1 XP   (XP từ BASIC chỉ được tính tối đa 10)
+Hoàn thành MEDIUM = +2 XP
+Hoàn thành HIGH   = +3 XP
 ```
+
+### Hạng contributor và thanh kinh nghiệm
+
+Đã chốt ngày 2026-10-09. Hạng là bậc giới hạn level dự án mà contributor được **tự** ứng tuyển:
+
+| Hạng | XP tối thiểu | Tự ứng tuyển được | Lộ trình điển hình |
+|---|---:|---|---|
+| Đồng (`BRONZE`) | 0 | `BASIC` | Hạng mặc định của mọi contributor |
+| Bạc (`SILVER`) | 10 | `BASIC`, `MEDIUM` | Khoảng 10 project `BASIC` |
+| Vàng (`GOLD`) | 30 | `BASIC`, `MEDIUM`, `HIGH` | Thêm 20 XP sau hạng Bạc, tức khoảng 10 project `MEDIUM` |
+
+XP từ `BASIC` có trần 10 điểm, bằng đúng ngưỡng hạng Bạc. Trần này có hai tác dụng:
+
+- 20 XP còn lại để lên Vàng phải đến từ `MEDIUM`, vì hạng Bạc chưa tự ứng tuyển được `HIGH`. Hạng Vàng vì thế luôn có nghĩa contributor đã hoàn thành ít nhất 10 project `MEDIUM`. Điều kiện này thay cho điều kiện cũ "đã hoàn thành ít nhất 1 project `MEDIUM`".
+- Người đã lên hạng không còn lý do lấy project `BASIC` chỉ để cày điểm, chiếm chỗ của người mới.
+
+Contributor hạng cao vẫn được ứng tuyển `BASIC`. Project đó vẫn vào lịch sử hoàn thành nhưng không cộng XP khi XP từ `BASIC` đã chạm trần.
+
+Quy tắc khác:
+
+- Trong MVP, hạng không bị giảm.
+- Không có hạng trên Vàng; XP vẫn tiếp tục được cộng.
+- Ngưỡng hạng, trọng số XP và trần `BASIC` là policy phía server, giống khoảng ngân sách. Frontend lấy chúng từ backend để vẽ thanh kinh nghiệm và không tự quyết quyền ứng tuyển.
+- Hạng phản ánh lịch sử hoàn thành trên GenDA, không phải xác minh kỹ năng. Giao diện không gọi hạng là "đã xác thực".
+
+Thanh kinh nghiệm hiển thị hạng hiện tại, XP và khoảng còn thiếu tới hạng kế tiếp, ví dụ "Hạng Đồng · 7/10 XP · còn 3 XP để lên Bạc". Thanh xuất hiện ở hồ sơ contributor và ở dự án mà contributor chưa đủ hạng. SME thấy hạng và XP của từng ứng viên khi xét đơn.
 
 Baseline policy cho MVP:
 
 ```text
-Người mới
+Người mới: hạng Đồng, 0 XP
    ↓
-Ứng tuyển và hoàn thành BASIC (+1 điểm)
+Hoàn thành project BASIC (+1 XP mỗi project, tối đa 10 XP)
    ↓
-Đủ điều kiện tự ứng tuyển MEDIUM
+10 XP → hạng Bạc: tự ứng tuyển được MEDIUM
    ↓
-Hoàn thành MEDIUM (tổng tối thiểu 3 điểm)
+Hoàn thành project MEDIUM (+2 XP mỗi project)
    ↓
-Đủ điều kiện tự ứng tuyển HIGH
+30 XP → hạng Vàng: tự ứng tuyển được HIGH
 ```
 
 Một project chỉ được tính vào kinh nghiệm khi thỏa toàn bộ điều kiện:
@@ -83,15 +109,15 @@ accountActive && emailVerified && profileComplete && cv.status == READY?
              ↓
         Kiểm tra projectLevel
         ├─ BASIC  → cho submit application
-        ├─ MEDIUM → score >= 1 hoặc có SME invitation hợp lệ
-        └─ HIGH   → score >= 3 và completedMediumProjects >= 1
+        ├─ MEDIUM → tier >= SILVER hoặc có SME invitation hợp lệ
+        └─ HIGH   → tier == GOLD
 ```
 
-Contributor không đủ điều kiện vẫn xem được toàn bộ nội dung project. Giao diện khóa hành động submit và nêu chính xác điều kiện còn thiếu, ví dụ: “Bạn cần hoàn thành thêm 1 project BASIC để ứng tuyển project MEDIUM.”
+Contributor không đủ điều kiện vẫn xem được toàn bộ nội dung project. Giao diện khóa hành động submit và nêu chính xác điều kiện còn thiếu, ví dụ: “Dự án Trung bình cần hạng Bạc. Bạn đang ở hạng Đồng (7/10 XP), còn 3 XP nữa.”
 
 ### SME invitation cho MEDIUM
 
-SME có thể mời một contributor chưa đủ experience point vào project `MEDIUM` của chính mình. Cơ chế này hỗ trợ người đã có kinh nghiệm bên ngoài nhưng mới tham gia GenDA, nhưng không bỏ qua email verification, profile completeness hoặc CV `READY`.
+SME có thể mời một contributor chưa đạt hạng Bạc vào project `MEDIUM` của chính mình. Cơ chế này hỗ trợ người đã có kinh nghiệm bên ngoài nhưng mới tham gia GenDA, nhưng không bỏ qua email verification, profile completeness hoặc CV `READY`.
 
 ```text
 SME chọn contributor chưa đủ lịch sử
@@ -108,7 +134,7 @@ eligibilitySource = SME_INVITATION
 
 Lời mời chỉ cho phép đi vào quy trình ứng tuyển, không tự động `ACCEPTED` và không tự động giao project. Hệ thống ghi lại SME, project, contributor, thời điểm gửi/chấp nhận và điều kiện được miễn để phục vụ audit.
 
-Trong MVP, lời mời của SME không vượt qua gate của `HIGH`. Contributor chỉ được ứng tuyển `HIGH` khi đạt cả experience point và lịch sử hoàn thành `MEDIUM`. Ngoại lệ dựa trên kinh nghiệm ngoài GenDA chỉ được bổ sung sau khi có một quy trình xác minh năng lực riêng; admin hiện không duyệt nội dung CV để cấp ngoại lệ này.
+Trong MVP, lời mời của SME không vượt qua gate của `HIGH`. Contributor chỉ được ứng tuyển `HIGH` khi đạt hạng Vàng. Project `MEDIUM` hoàn thành nhờ lời mời vẫn cộng 2 XP như bình thường. Ngoại lệ dựa trên kinh nghiệm ngoài GenDA chỉ được bổ sung sau khi có một quy trình xác minh năng lực riêng; admin hiện không duyệt nội dung CV để cấp ngoại lệ này.
 
 ## 1. Quyết định phạm vi
 
@@ -292,4 +318,4 @@ AI Matching vẫn thuộc V2.0.
 
 ## 9. Trạng thái triển khai
 
-Đây là flow đích đã chốt cho tài liệu. Code hiện tại đã dùng role `CONTRIBUTOR`, account state chuẩn hóa, không còn student-verification gate, không cấp session khi đăng ký và đã hoàn thiện email OTP. Contributor-profile/CV lifecycle, contributor eligibility và workflow admin xác minh SME hoàn chỉnh chưa được implement. Các batch tiếp theo vẫn phải cập nhật đồng bộ migration, backend, OpenAPI client, frontend routes/copy và tests; không đổi riêng một lớp.
+Đây là flow đích đã chốt cho tài liệu. Code hiện tại đã dùng role `CONTRIBUTOR`, account state chuẩn hóa, không còn student-verification gate, không cấp session khi đăng ký và đã hoàn thiện email OTP. Luồng SME tạo nháp → gửi duyệt → admin xuất bản hoặc trả về (kèm lý do, level đề xuất và audit) cùng khoảng ngân sách theo level đã được implement ở backend và frontend. Contributor profile (nền tảng, chuyên môn, kỹ năng), học vấn tự khai, CV PDF kiểm tra kỹ thuật đồng bộ, checklist sẵn sàng ứng tuyển và XP/hạng Đồng-Bạc-Vàng (suy ra từ sổ `contributor_experience_records`) đã được implement ở backend và frontend. Module applications đã có API: backend kiểm tra checklist chung và hạng theo level khi nhận đơn, SME xét ứng viên xếp theo độ khớp kỹ năng, rút gọn và chấp nhận đúng một người (các đơn còn lại tự `REJECTED`, dự án sang `IN_PROGRESS` trong cùng transaction). SME invitation cho `MEDIUM` chưa được implement. Sổ kinh nghiệm chỉ được ghi bởi use case hoàn tất dự án, chưa tồn tại; bản demo seed sẵn lịch sử cho ba tài khoản mẫu. Workflow admin xác minh SME hoàn chỉnh chưa được implement. Các batch tiếp theo vẫn phải cập nhật đồng bộ migration, backend, OpenAPI client, frontend routes/copy và tests; không đổi riêng một lớp.

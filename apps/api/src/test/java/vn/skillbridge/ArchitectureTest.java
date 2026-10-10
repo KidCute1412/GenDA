@@ -2,6 +2,7 @@ package vn.skillbridge;
 
 import com.tngtech.archunit.base.DescribedPredicate;
 import com.tngtech.archunit.core.domain.JavaClass;
+import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
@@ -11,9 +12,11 @@ import com.tngtech.archunit.lang.ConditionEvents;
 import com.tngtech.archunit.lang.SimpleConditionEvent;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 import static com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @AnalyzeClasses(packages = "vn.skillbridge", importOptions = ImportOption.DoNotIncludeTests.class)
 class ArchitectureTest {
@@ -21,13 +24,41 @@ class ArchitectureTest {
     private static final Map<String, Set<String>> PUBLIC_DEPENDENCIES = Map.of(
             "users.application", Set.of(
                     "vn.skillbridge.auth.application.account.AccountProfileService",
-                    "vn.skillbridge.auth.application.account.AccountProfile"),
-            "users.api", Set.of("vn.skillbridge.auth.application.session.AuthenticatedPrincipal"),
+                    "vn.skillbridge.auth.application.account.AccountProfile",
+                    "vn.skillbridge.auth.application.account.AccountStanding"),
             "projects.application", Set.of(
                     "vn.skillbridge.users.application.SkillQueryService",
-                    "vn.skillbridge.users.application.SkillSummary"),
+                    "vn.skillbridge.users.application.SkillSummary",
+                    "vn.skillbridge.auth.application.account.AccountProfileService",
+                    "vn.skillbridge.auth.application.account.AccountProfile"),
             "projects.api", Set.of("vn.skillbridge.users.application.SkillSummary"),
-            "*.api", Set.of("vn.skillbridge.platform.api.dto.ApiError"));
+            "applications.application", Set.of(
+                    "vn.skillbridge.auth.application.account.AccountProfileService",
+                    "vn.skillbridge.auth.application.account.AccountProfile",
+                    "vn.skillbridge.users.application.SkillQueryService",
+                    "vn.skillbridge.users.application.SkillSummary",
+                    "vn.skillbridge.users.application.CvFile",
+                    "vn.skillbridge.users.application.eligibility.ContributorEligibilityService",
+                    "vn.skillbridge.users.application.eligibility.ApplicantProfile",
+                    "vn.skillbridge.users.application.eligibility.ApplicationEligibility",
+                    "vn.skillbridge.projects.application.staffing.ProjectStaffingService",
+                    "vn.skillbridge.projects.application.staffing.StaffingProject",
+                    "vn.skillbridge.matching.domain.SkillMatch"),
+            "applications.api", Set.of(
+                    "vn.skillbridge.users.application.SkillSummary",
+                    "vn.skillbridge.users.application.CvFile",
+                    "vn.skillbridge.users.application.eligibility.ApplicantProfile",
+                    "vn.skillbridge.users.application.eligibility.ApplicantProfile$Cv",
+                    "vn.skillbridge.users.application.eligibility.ApplicantProfile$Education",
+                    "vn.skillbridge.projects.application.staffing.StaffingProject",
+                    "vn.skillbridge.matching.domain.SkillMatch"),
+            "admin.api", Set.of(
+                    "vn.skillbridge.projects.application.moderation.ProjectModerationService",
+                    "vn.skillbridge.projects.api.dto.ManagedProjectResponse",
+                    "vn.skillbridge.projects.domain.ProjectComplexity"),
+            "*.api", Set.of(
+                    "vn.skillbridge.platform.api.dto.ApiError",
+                    "vn.skillbridge.auth.application.session.AuthenticatedPrincipal"));
 
     private static final DescribedPredicate<JavaClass> BUSINESS_CLASSES = new DescribedPredicate<>(
             "belong to a business module") {
@@ -115,6 +146,16 @@ class ArchitectureTest {
                     }
                 }
             });
+
+    /** springdoc names schemas by simple class name, so two DTOs with one name silently merge in the client. */
+    @ArchTest
+    static void apiDtoNamesAreUnique(JavaClasses classes) {
+        Map<String, Long> names = classes.stream()
+                .filter(type -> type.getPackageName().contains(".api"))
+                .filter(type -> type.getSimpleName().endsWith("Response") || type.getSimpleName().endsWith("Request"))
+                .collect(Collectors.groupingBy(JavaClass::getSimpleName, Collectors.counting()));
+        assertThat(names).allSatisfy((name, count) -> assertThat(count).as(name).isEqualTo(1L));
+    }
 
     private static String module(JavaClass type) {
         return type.getPackageName().split("\\.")[2];

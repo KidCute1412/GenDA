@@ -10,7 +10,6 @@ import { Check, MagnifyingGlass } from "../../../components/ui/icons";
 import { CURRENT_STUDENT } from "../../../mocks/data";
 import { daysUntil, formatDate, formatVnd, matchScore } from "../../../lib/utils/format";
 import { browsePublishedProjects, listSkills } from "../../../features/projects/api";
-import { LedgerPublishedProjects } from "../../../features/projects/components/ledger-published-projects";
 import { OpportunityBrowser } from "../../../features/opportunities/components/opportunity-browser";
 import { OpportunityTypeTabs } from "../../../features/opportunities/components/opportunity-type-tabs";
 import { kindFromParam } from "../../../features/opportunities/model";
@@ -139,7 +138,6 @@ export default async function ProjectsPage({
 
       {/* projects-page: chạy hiệu ứng vào trang (vạch quét + các khối hiện lần lượt), xem components.css */}
       <main id="main-content" className="container has-bottom-nav projects-page" style={{ paddingTop: "var(--space-8)" }}>
-        <LedgerPublishedProjects />
         <PageHead />
         <OpportunityTypeTabs active="PROJECT" projectCount={projectPage.total} />
 

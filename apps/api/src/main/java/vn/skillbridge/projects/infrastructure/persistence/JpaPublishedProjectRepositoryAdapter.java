@@ -6,15 +6,15 @@ import org.springframework.stereotype.Repository;
 import vn.skillbridge.projects.application.ProjectPage;
 import vn.skillbridge.projects.application.ProjectSearch;
 import vn.skillbridge.projects.application.PublishedProjectRepository;
-import vn.skillbridge.projects.domain.ProjectMilestone;
+import vn.skillbridge.projects.domain.ProjectComplexity;
 import vn.skillbridge.projects.domain.PublishedProject;
 
 @Repository
 class JpaPublishedProjectRepositoryAdapter implements PublishedProjectRepository {
     private static final String PUBLISHED = "PUBLISHED";
-    private final SpringDataPublishedProjectRepository repository;
+    private final SpringDataProjectRepository repository;
 
-    JpaPublishedProjectRepositoryAdapter(SpringDataPublishedProjectRepository repository) {
+    JpaPublishedProjectRepositoryAdapter(SpringDataProjectRepository repository) {
         this.repository = repository;
     }
 
@@ -35,17 +35,13 @@ class JpaPublishedProjectRepositoryAdapter implements PublishedProjectRepository
         return repository.findByPublicIdAndStatus(projectId, PUBLISHED).map(this::toDomain);
     }
 
-    private PublishedProject toDomain(PublishedProjectJpaEntity entity) {
+    // Published rows are complete: the schema rejects missing scope fields outside DRAFT.
+    private PublishedProject toDomain(ProjectJpaEntity entity) {
         return new PublishedProject(
                 entity.publicId(), entity.title(), entity.smeName(), entity.smeIndustry(), entity.smeSize(),
-                entity.smeContact(), entity.budget(), entity.deadline(), entity.summary(), entity.problem(),
-                entity.skillCodes(), entity.acceptanceCriteria(),
-                entity.milestones().stream().map(this::toDomain).toList());
-    }
-
-    private ProjectMilestone toDomain(ProjectMilestoneJpaEntity entity) {
-        return new ProjectMilestone(
-                entity.publicId(), entity.position(), entity.title(), entity.budget(), entity.deadline(),
-                entity.criteria());
+                entity.smeContact(), ProjectComplexity.valueOf(entity.complexity()), entity.budget(),
+                entity.deadline(), entity.summary(), entity.problem(), entity.skillCodes(),
+                entity.acceptanceCriteria(),
+                entity.milestones().stream().map(ProjectPersistenceMapper::toMilestone).toList());
     }
 }

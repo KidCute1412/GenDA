@@ -11,11 +11,158 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** View the authenticated student's profile */
+        /** View the authenticated contributor's profile */
         get: operations["get"];
-        /** Replace the authenticated student's editable profile information */
+        /** Replace the contributor's self-declared background, specialization and skills */
         put: operations["update"];
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/me/education/{educationId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Replace one of the contributor's education entries */
+        put: operations["update_1"];
+        post?: never;
+        /** Delete one of the contributor's education entries */
+        delete: operations["delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/me/cv": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Current CV metadata */
+        get: operations["current"];
+        /**
+         * Upload or replace the CV (PDF, at most 2 MB)
+         * @description A technically rejected file returns 422 CV_REJECTED_TECHNICAL with details.reason and leaves the current CV unchanged.
+         */
+        put: operations["upload"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sme/projects/{projectId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get one of the authenticated SME's projects */
+        get: operations["get_1"];
+        /** Replace the content of an owned draft project */
+        put: operations["update_2"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/me/education": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List the contributor's self-declared education, newest period first */
+        get: operations["list"];
+        put?: never;
+        /** Add an education entry */
+        post: operations["add"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sme/projects": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List the authenticated SME's projects in every state, most recently updated first */
+        get: operations["list_1"];
+        put?: never;
+        /** Create a draft project */
+        post: operations["create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sme/projects/{projectId}/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Submit an owned draft for admin review (DRAFT -> PENDING_REVIEW) */
+        post: operations["submit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sme/applications/{applicationId}/shortlist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Move a submitted application to the shortlist */
+        post: operations["shortlist"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sme/applications/{applicationId}/accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Accept one applicant
+         * @description Starts the project with this contributor and rejects every other open application in the same transaction. The response reveals the accepted contributor's contact email.
+         */
+        post: operations["accept"];
         delete?: never;
         options?: never;
         head?: never;
@@ -124,6 +271,179 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/applications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Apply to a published project
+         * @description 422 APPLICATION_NOT_ELIGIBLE lists details.missing (ACCOUNT_INACTIVE, EMAIL_NOT_VERIFIED, PROFILE_INCOMPLETE, CV_NOT_READY, TIER_REQUIRED) with requiredTier, currentTier and missingXp.
+         */
+        post: operations["apply"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/applications/{applicationId}/withdraw": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Withdraw an application that is still under review */
+        post: operations["withdraw"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/projects/{projectId}/return": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Return a project to its SME as a draft with a mandatory reason (PENDING_REVIEW -> DRAFT) */
+        post: operations["returnToDraft"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/projects/{projectId}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Publish a project pending review (PENDING_REVIEW -> PUBLISHED) */
+        post: operations["publish"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/me/readiness": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Application readiness checklist: account, email, profile and CV */
+        get: operations["readiness"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/me/experience": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** XP, tier, unlocked project levels and completed-project history */
+        get: operations["experience"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/me/cv/file": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Download the contributor's own CV */
+        get: operations["file"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sme/projects/{projectId}/applications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Applicants of an owned project, best skill match first */
+        get: operations["applicants"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sme/applications/{applicationId}/cv": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The applicant's current READY CV */
+        get: operations["cv"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sme/applications/counts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Open and total application counts for owned projects */
+        get: operations["counts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/skills": {
         parameters: {
             query?: never;
@@ -132,7 +452,7 @@ export interface paths {
             cookie?: never;
         };
         /** List the canonical skill catalog */
-        get: operations["list"];
+        get: operations["list_2"];
         put?: never;
         post?: never;
         delete?: never;
@@ -167,6 +487,23 @@ export interface paths {
         };
         /** Get one published project */
         get: operations["detail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/creation-policy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get the server-owned project level budget policy used when creating projects */
+        get: operations["creationPolicy"];
         put?: never;
         post?: never;
         delete?: never;
@@ -226,33 +563,269 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/applications/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The contributor's applications, newest first */
+        get: operations["mine"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/projects/pending": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List projects waiting for review, oldest submission first */
+        get: operations["pending"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        UpdateStudentProfileRequest: {
+        UpdateContributorProfileRequest: {
             displayName: string;
-            school: string;
-            major: string;
             /** @enum {string} */
-            studyYear: "YEAR_1" | "YEAR_2" | "YEAR_3" | "YEAR_4" | "RECENT_GRADUATE";
+            backgroundType: "STUDENT" | "RECENT_GRADUATE" | "WORKING_PROFESSIONAL" | "FREELANCER" | "CAREER_SWITCHER" | "OTHER";
+            specialization: string;
             skillCodes: string[];
+        };
+        ContributorProfileResponse: {
+            /** Format: uuid */
+            userId: string;
+            email: string;
+            displayName: string;
+            /** @enum {string|null} */
+            backgroundType?: "STUDENT" | "RECENT_GRADUATE" | "WORKING_PROFESSIONAL" | "FREELANCER" | "CAREER_SWITCHER" | "OTHER" | null;
+            specialization?: string | null;
+            skills: components["schemas"]["SkillCatalogItemResponse"][];
+            complete: boolean;
         };
         SkillCatalogItemResponse: {
             code: string;
             name: string;
         };
-        StudentProfileResponse: {
+        EducationRequest: {
+            institution: string;
+            fieldOfStudy: string;
+            /** @enum {string} */
+            level: "HIGH_SCHOOL" | "VOCATIONAL" | "COLLEGE" | "BACHELOR" | "MASTER" | "DOCTORATE" | "SHORT_COURSE" | "OTHER";
+            degreeName?: string;
+            /**
+             * @description Month the entry started, YYYY-MM
+             * @example 2023-09
+             */
+            startMonth: string;
+            /**
+             * @description Month it ended, or the expected end while studying, YYYY-MM
+             * @example 2027-06
+             */
+            endMonth?: string;
+            /** @enum {string} */
+            status: "CURRENTLY_STUDYING" | "GRADUATED" | "COMPLETED" | "NOT_COMPLETED";
+            description?: string;
+        };
+        EducationResponse: {
             /** Format: uuid */
-            userId: string;
-            email: string;
+            id: string;
+            institution: string;
+            fieldOfStudy: string;
+            /** @enum {string} */
+            level: "HIGH_SCHOOL" | "VOCATIONAL" | "COLLEGE" | "BACHELOR" | "MASTER" | "DOCTORATE" | "SHORT_COURSE" | "OTHER";
+            degreeName?: string | null;
+            /** @example 2023-09 */
+            startMonth?: string | null;
+            /** @example 2027-06 */
+            endMonth?: string | null;
+            /** @enum {string} */
+            status: "CURRENTLY_STUDYING" | "GRADUATED" | "COMPLETED" | "NOT_COMPLETED";
+            description?: string | null;
+            /** @description Always true: GenDA does not verify education entries */
+            selfDeclared: boolean;
+        };
+        ApiError: {
+            code: string;
+            message: string;
+            requestId: string;
+            details?: {
+                [key: string]: unknown;
+            };
+        };
+        CvResponse: {
+            fileName: string;
+            /** Format: int32 */
+            sizeBytes: number;
+            /** Format: int32 */
+            pageCount: number;
+            /**
+             * @description READY means technically valid; the content is not verified by GenDA
+             * @enum {string}
+             */
+            status: "UPLOADING" | "PROCESSING" | "READY";
+            /** Format: date-time */
+            uploadedAt: string;
+        };
+        MilestonePlanRequest: {
+            title?: string;
+            /** Format: int64 */
+            budget: number;
+            /** Format: date */
+            deadline?: string;
+            criteria: string[];
+        };
+        ProjectDraftRequest: {
+            title: string;
+            summary?: string;
+            problem?: string;
+            industry?: string;
+            smeSize?: string;
+            /** @enum {string} */
+            complexity?: "BASIC" | "MEDIUM" | "HIGH";
+            /** Format: int64 */
+            budget?: number;
+            /** Format: date */
+            deadline?: string;
+            skillCodes: string[];
+            acceptanceCriteria: string[];
+            milestones: components["schemas"]["MilestonePlanRequest"][];
+        };
+        ManagedProjectResponse: {
+            id: string;
+            /** @enum {string} */
+            status: "DRAFT" | "PENDING_REVIEW" | "PUBLISHED" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
+            title: string;
+            summary?: string;
+            problem?: string;
+            industry?: string;
+            smeSize?: string;
+            smeName: string;
+            smeContact: string;
+            /** @enum {string} */
+            complexity?: "BASIC" | "MEDIUM" | "HIGH";
+            /** Format: int64 */
+            budget?: number;
+            /** Format: date */
+            deadline?: string;
+            skills: components["schemas"]["SkillResponse"][];
+            acceptanceCriteria: string[];
+            milestones: components["schemas"]["MilestonePlanResponse"][];
+            /** @description What blocks submission today; empty when the project could enter review */
+            submissionIssues: ("SUMMARY_REQUIRED" | "PROBLEM_REQUIRED" | "INDUSTRY_REQUIRED" | "SME_SIZE_REQUIRED" | "COMPLEXITY_REQUIRED" | "BUDGET_REQUIRED" | "DEADLINE_REQUIRED" | "DEADLINE_NOT_IN_FUTURE" | "SKILLS_REQUIRED" | "ACCEPTANCE_CRITERIA_REQUIRED" | "MILESTONES_REQUIRED" | "MILESTONE_TITLE_REQUIRED" | "MILESTONE_BUDGET_REQUIRED" | "MILESTONE_DEADLINE_REQUIRED" | "MILESTONE_DEADLINE_NOT_IN_FUTURE" | "MILESTONE_DEADLINE_AFTER_PROJECT" | "MILESTONE_BUDGET_MISMATCH" | "BUDGET_OUTSIDE_LEVEL_RANGE")[];
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** Format: date-time */
+            submittedAt?: string;
+            /** Format: date-time */
+            publishedAt?: string;
+            /** @description Present while the latest review decision returned the project to draft */
+            latestReturn?: components["schemas"]["ProjectReturnResponse"];
+        };
+        MilestonePlanResponse: {
+            id: string;
+            /** Format: int32 */
+            order: number;
+            title?: string;
+            /** Format: int64 */
+            budget: number;
+            /** Format: date */
+            deadline?: string;
+            criteria: string[];
+        };
+        ProjectReturnResponse: {
+            reason: string;
+            /** @enum {string} */
+            suggestedComplexity?: "BASIC" | "MEDIUM" | "HIGH";
+            /** Format: date-time */
+            returnedAt: string;
+        };
+        SkillResponse: {
+            code: string;
+            name: string;
+        };
+        ApplicantCompletedResponse: {
+            /** Format: int32 */
+            basic: number;
+            /** Format: int32 */
+            medium: number;
+            /** Format: int32 */
+            high: number;
+        };
+        ApplicantCvResponse: {
+            fileName: string;
+            /** Format: int32 */
+            sizeBytes: number;
+            /** Format: int32 */
+            pageCount: number;
+            /** Format: date-time */
+            uploadedAt: string;
+        };
+        ApplicantEducationResponse: {
+            institution: string;
+            fieldOfStudy: string;
+            level: string;
+            degreeName?: string | null;
+            startMonth?: string | null;
+            endMonth?: string | null;
+            status: string;
+        };
+        ApplicantMatchResponse: {
+            /** Format: int32 */
+            percent: number;
+            /** Format: int32 */
+            matchedSkills: number;
+            /** Format: int32 */
+            totalSkills: number;
+        };
+        ApplicantResponse: {
+            /** Format: uuid */
+            applicationId: string;
+            /** @enum {string} */
+            status: "SUBMITTED" | "SHORTLISTED" | "ACCEPTED" | "REJECTED" | "WITHDRAWN";
+            /** @enum {string} */
+            eligibilitySource: "SELF" | "SME_INVITATION";
+            /** Format: date-time */
+            submittedAt: string;
+            coverLetter: string;
             displayName: string;
-            school?: string | null;
-            major?: string | null;
-            /** @enum {string|null} */
-            studyYear?: "YEAR_1" | "YEAR_2" | "YEAR_3" | "YEAR_4" | "RECENT_GRADUATE" | null;
-            skills: components["schemas"]["SkillCatalogItemResponse"][];
-            complete: boolean;
+            /** @description Revealed only once the application is ACCEPTED */
+            contactEmail?: string | null;
+            backgroundType?: string | null;
+            specialization?: string | null;
+            skills: components["schemas"]["ApplicantSkillResponse"][];
+            education: components["schemas"]["ApplicantEducationResponse"][];
+            /** @enum {string} */
+            tier: "BRONZE" | "SILVER" | "GOLD";
+            /** Format: int32 */
+            totalXp: number;
+            completedProjects: components["schemas"]["ApplicantCompletedResponse"];
+            match: components["schemas"]["ApplicantMatchResponse"];
+            cv?: components["schemas"]["ApplicantCvResponse"];
+        };
+        ApplicantSkillResponse: {
+            code: string;
+            name: string;
+            /** @description Required by the project */
+            matched: boolean;
         };
         RegisterRequest: {
             name: string;
@@ -291,10 +864,122 @@ export interface components {
             email: string;
             code: string;
         };
-        ApiError: {
+        CreateApplicationRequest: {
+            projectId: string;
+            coverLetter: string;
+        };
+        ContributorApplicationResponse: {
+            /** Format: uuid */
+            id: string;
+            projectId: string;
+            projectTitle: string;
+            smeName: string;
+            /** Format: int64 */
+            budget?: number | null;
+            /** @enum {string} */
+            complexity: "BASIC" | "MEDIUM" | "HIGH";
+            projectStatus: string;
+            /** @enum {string} */
+            status: "SUBMITTED" | "SHORTLISTED" | "ACCEPTED" | "REJECTED" | "WITHDRAWN";
+            coverLetter: string;
+            /** Format: date-time */
+            submittedAt: string;
+            /** Format: date-time */
+            decidedAt?: string | null;
+        };
+        ReturnProjectRequest: {
+            reason: string;
+            /** @enum {string} */
+            suggestedComplexity?: "BASIC" | "MEDIUM" | "HIGH";
+        };
+        ApplicationReadinessResponse: {
+            accountActive: boolean;
+            emailVerified: boolean;
+            profileComplete: boolean;
+            cvReady: boolean;
+            ready: boolean;
+        };
+        ExperienceResponse: {
+            /** Format: int32 */
+            totalXp: number;
+            /** @enum {string} */
+            tier: "BRONZE" | "SILVER" | "GOLD";
+            /** Format: int32 */
+            tierMinimumXp: number;
+            /**
+             * @description Null at the top tier
+             * @enum {string|null}
+             */
+            nextTier?: "BRONZE" | "SILVER" | "GOLD" | null;
+            /** Format: int32 */
+            nextTierMinimumXp?: number | null;
+            /** Format: int32 */
+            xpToNextTier: number;
+            /** Format: int32 */
+            basicXpCounted: number;
+            /** Format: int32 */
+            basicXpCap: number;
+            tiers: components["schemas"]["TierResponse"][];
+            levels: components["schemas"]["LevelResponse"][];
+            /** @description Newest first */
+            history: components["schemas"]["HistoryResponse"][];
+        };
+        HistoryResponse: {
+            projectTitle: string;
+            smeName: string;
+            /** @enum {string} */
+            level: "BASIC" | "MEDIUM" | "HIGH";
+            /** Format: date-time */
+            completedAt: string;
+            /** Format: int32 */
+            xpAwarded: number;
+            /** @description True when the BASIC XP cap reduced this project's XP */
+            capped: boolean;
+        };
+        LevelResponse: {
+            /** @enum {string} */
+            level: "BASIC" | "MEDIUM" | "HIGH";
+            /** Format: int32 */
+            xpPerProject: number;
+            /** @enum {string} */
+            requiredTier: "BRONZE" | "SILVER" | "GOLD";
+            unlocked: boolean;
+            /** Format: int32 */
+            completedProjects: number;
+        };
+        TierResponse: {
+            /** @enum {string} */
+            tier: "BRONZE" | "SILVER" | "GOLD";
+            /** Format: int32 */
+            minimumXp: number;
+            selfApplyLevels: ("BASIC" | "MEDIUM" | "HIGH")[];
+        };
+        ApplicantProjectSkillResponse: {
             code: string;
-            message: string;
-            requestId: string;
+            name: string;
+        };
+        ProjectApplicantsResponse: {
+            projectId: string;
+            projectTitle: string;
+            projectStatus: string;
+            /** @enum {string} */
+            complexity: "BASIC" | "MEDIUM" | "HIGH";
+            projectSkills: components["schemas"]["ApplicantProjectSkillResponse"][];
+            /** @description Best skill match first; withdrawn applications are omitted */
+            applicants: components["schemas"]["ApplicantResponse"][];
+        };
+        ApplicationCountResponse: {
+            projectId: string;
+            /**
+             * Format: int32
+             * @description Awaiting the SME's decision
+             */
+            open: number;
+            /**
+             * Format: int32
+             * @description Every application except withdrawn ones
+             */
+            total: number;
         };
         ProjectPageResponse: {
             data: components["schemas"]["ProjectSummaryResponse"][];
@@ -310,16 +995,14 @@ export interface components {
             title: string;
             smeName: string;
             smeIndustry: string;
+            /** @enum {string} */
+            complexity: "BASIC" | "MEDIUM" | "HIGH";
             /** Format: int64 */
             budget: number;
             /** Format: date */
             deadline: string;
             summary: string;
             skills: components["schemas"]["SkillResponse"][];
-        };
-        SkillResponse: {
-            code: string;
-            name: string;
         };
         MilestoneResponse: {
             id: string;
@@ -339,6 +1022,8 @@ export interface components {
             smeIndustry: string;
             smeSize: string;
             smeContact: string;
+            /** @enum {string} */
+            complexity: "BASIC" | "MEDIUM" | "HIGH";
             /** Format: int64 */
             budget: number;
             /** Format: date */
@@ -348,6 +1033,21 @@ export interface components {
             skills: components["schemas"]["SkillResponse"][];
             acceptanceCriteria: string[];
             milestones: components["schemas"]["MilestoneResponse"][];
+        };
+        LevelPolicyResponse: {
+            /** @enum {string} */
+            complexity: "BASIC" | "MEDIUM" | "HIGH";
+            /** Format: int64 */
+            minimumBudget: number;
+            /** Format: int64 */
+            maximumBudget: number;
+        };
+        ProjectCreationPolicyResponse: {
+            /** Format: int64 */
+            minimumBudget: number;
+            /** Format: int64 */
+            maximumBudget: number;
+            levels: components["schemas"]["LevelPolicyResponse"][];
         };
         HealthResponse: {
             /** @enum {string} */
@@ -382,7 +1082,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StudentProfileResponse"];
+                    "*/*": components["schemas"]["ContributorProfileResponse"];
                 };
             };
         };
@@ -396,7 +1096,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["UpdateStudentProfileRequest"];
+                "application/json": components["schemas"]["UpdateContributorProfileRequest"];
             };
         };
         responses: {
@@ -406,7 +1106,410 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StudentProfileResponse"];
+                    "*/*": components["schemas"]["ContributorProfileResponse"];
+                };
+            };
+        };
+    };
+    update_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                educationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EducationRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["EducationResponse"];
+                };
+            };
+        };
+    };
+    delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                educationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    current: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The current CV */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CvResponse"];
+                };
+            };
+            /** @description No CV uploaded yet */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    upload: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    file: string;
+                };
+            };
+        };
+        responses: {
+            /** @description The new READY CV */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CvResponse"];
+                };
+            };
+            /** @description Rejected by technical validation */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    get_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Owned project */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ManagedProjectResponse"];
+                };
+            };
+            /** @description Project not found or not owned */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    update_2: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProjectDraftRequest"];
+            };
+        };
+        responses: {
+            /** @description Draft saved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ManagedProjectResponse"];
+                };
+            };
+            /** @description Invalid draft content */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Project not found or not owned */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Project is no longer a draft */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["EducationResponse"][];
+                };
+            };
+        };
+    };
+    add: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EducationRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["EducationResponse"];
+                };
+            };
+        };
+    };
+    list_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Owned projects */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ManagedProjectResponse"][];
+                };
+            };
+            /** @description Not an approved SME */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProjectDraftRequest"];
+            };
+        };
+        responses: {
+            /** @description Draft created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ManagedProjectResponse"];
+                };
+            };
+            /** @description Invalid draft content */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Not an approved SME */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    submit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Project is pending review */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ManagedProjectResponse"];
+                };
+            };
+            /** @description Project not found or not owned */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Project is not a draft */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Draft incomplete or budget outside the level range */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    shortlist: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                applicationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApplicantResponse"];
+                };
+            };
+        };
+    };
+    accept: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                applicationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApplicantResponse"];
                 };
             };
         };
@@ -547,7 +1650,281 @@ export interface operations {
             };
         };
     };
-    list: {
+    apply: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateApplicationRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ContributorApplicationResponse"];
+                };
+            };
+        };
+    };
+    withdraw: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                applicationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ContributorApplicationResponse"];
+                };
+            };
+        };
+    };
+    returnToDraft: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReturnProjectRequest"];
+            };
+        };
+        responses: {
+            /** @description Project returned to draft */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ManagedProjectResponse"];
+                };
+            };
+            /** @description Missing or invalid reason */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Project not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Project is not pending review */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    publish: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Project published */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ManagedProjectResponse"];
+                };
+            };
+            /** @description Project not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Project is not pending review */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Project no longer satisfies the publication rules */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    readiness: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApplicationReadinessResponse"];
+                };
+            };
+        };
+    };
+    experience: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ExperienceResponse"];
+                };
+            };
+        };
+    };
+    file: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/pdf": string;
+                };
+            };
+        };
+    };
+    applicants: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ProjectApplicantsResponse"];
+                };
+            };
+        };
+    };
+    cv: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                applicationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/pdf": string;
+                };
+            };
+        };
+    };
+    counts: {
+        parameters: {
+            query: {
+                projectId: string[];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApplicationCountResponse"][];
+                };
+            };
+        };
+    };
+    list_2: {
         parameters: {
             query?: never;
             header?: never;
@@ -661,6 +2038,26 @@ export interface operations {
             };
         };
     };
+    creationPolicy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current project creation policy */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ProjectCreationPolicyResponse"];
+                };
+            };
+        };
+    };
     health: {
         parameters: {
             query?: never;
@@ -728,6 +2125,55 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["CsrfResponse"];
+                };
+            };
+        };
+    };
+    mine: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ContributorApplicationResponse"][];
+                };
+            };
+        };
+    };
+    pending: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Review queue */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ManagedProjectResponse"][];
+                };
+            };
+            /** @description Not an admin */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiError"];
                 };
             };
         };

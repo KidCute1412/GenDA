@@ -23,7 +23,8 @@ class ApiErrorContractTest {
                   "properties": {
                     "code": {"type": "string"},
                     "message": {"type": "string"},
-                    "requestId": {"type": "string"}
+                    "requestId": {"type": "string"},
+                    "details": {"type": "object", "additionalProperties": {"type": "object"}}
                   },
                   "required": ["code", "message", "requestId"]
                 }

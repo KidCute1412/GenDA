@@ -8,9 +8,9 @@
     "/api/v1/users/me/profile": {
       "get": {
         "tags": [
-          "student-profile-controller"
+          "contributor-profile-controller"
         ],
-        "summary": "View the authenticated student's profile",
+        "summary": "View the authenticated contributor's profile",
         "operationId": "get",
         "responses": {
           "200": {
@@ -18,7 +18,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/StudentProfileResponse"
+                  "$ref": "#/components/schemas/ContributorProfileResponse"
                 }
               }
             }
@@ -32,15 +32,15 @@
       },
       "put": {
         "tags": [
-          "student-profile-controller"
+          "contributor-profile-controller"
         ],
-        "summary": "Replace the authenticated student's editable profile information",
+        "summary": "Replace the contributor's self-declared background, specialization and skills",
         "operationId": "update",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateStudentProfileRequest"
+                "$ref": "#/components/schemas/UpdateContributorProfileRequest"
               }
             }
           },
@@ -52,7 +52,588 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/StudentProfileResponse"
+                  "$ref": "#/components/schemas/ContributorProfileResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users/me/education/{educationId}": {
+      "put": {
+        "tags": [
+          "education-controller"
+        ],
+        "summary": "Replace one of the contributor's education entries",
+        "operationId": "update_1",
+        "parameters": [
+          {
+            "name": "educationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EducationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EducationResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "education-controller"
+        ],
+        "summary": "Delete one of the contributor's education entries",
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "educationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users/me/cv": {
+      "get": {
+        "tags": [
+          "cv-controller"
+        ],
+        "summary": "Current CV metadata",
+        "operationId": "current",
+        "responses": {
+          "200": {
+            "description": "The current CV",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CvResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No CV uploaded yet",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "cv-controller"
+        ],
+        "summary": "Upload or replace the CV (PDF, at most 2 MB)",
+        "description": "A technically rejected file returns 422 CV_REJECTED_TECHNICAL with details.reason and leaves the current CV unchanged.",
+        "operationId": "upload",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "required": [
+                  "file"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The new READY CV",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CvResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected by technical validation",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/sme/projects/{projectId}": {
+      "get": {
+        "tags": [
+          "sme-project-controller"
+        ],
+        "summary": "Get one of the authenticated SME's projects",
+        "operationId": "get_1",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Owned project",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManagedProjectResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Project not found or not owned",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "sme-project-controller"
+        ],
+        "summary": "Replace the content of an owned draft project",
+        "operationId": "update_2",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectDraftRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Draft saved",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManagedProjectResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid draft content",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Project not found or not owned",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Project is no longer a draft",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users/me/education": {
+      "get": {
+        "tags": [
+          "education-controller"
+        ],
+        "summary": "List the contributor's self-declared education, newest period first",
+        "operationId": "list",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EducationResponse"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "education-controller"
+        ],
+        "summary": "Add an education entry",
+        "operationId": "add",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EducationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EducationResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/sme/projects": {
+      "get": {
+        "tags": [
+          "sme-project-controller"
+        ],
+        "summary": "List the authenticated SME's projects in every state, most recently updated first",
+        "operationId": "list_1",
+        "responses": {
+          "200": {
+            "description": "Owned projects",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ManagedProjectResponse"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not an approved SME",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "sme-project-controller"
+        ],
+        "summary": "Create a draft project",
+        "operationId": "create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectDraftRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Draft created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManagedProjectResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid draft content",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not an approved SME",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/sme/projects/{projectId}/submit": {
+      "post": {
+        "tags": [
+          "sme-project-controller"
+        ],
+        "summary": "Submit an owned draft for admin review (DRAFT -> PENDING_REVIEW)",
+        "operationId": "submit",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project is pending review",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManagedProjectResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Project not found or not owned",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Project is not a draft",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Draft incomplete or budget outside the level range",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/sme/applications/{applicationId}/shortlist": {
+      "post": {
+        "tags": [
+          "sme-application-controller"
+        ],
+        "summary": "Move a submitted application to the shortlist",
+        "operationId": "shortlist",
+        "parameters": [
+          {
+            "name": "applicationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicantResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/sme/applications/{applicationId}/accept": {
+      "post": {
+        "tags": [
+          "sme-application-controller"
+        ],
+        "summary": "Accept one applicant",
+        "description": "Starts the project with this contributor and rejects every other open application in the same transaction. The response reveals the accepted contributor's contact email.",
+        "operationId": "accept",
+        "parameters": [
+          {
+            "name": "applicationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicantResponse"
                 }
               }
             }
@@ -237,13 +818,424 @@
         }
       }
     },
+    "/api/v1/applications": {
+      "post": {
+        "tags": [
+          "application-controller"
+        ],
+        "summary": "Apply to a published project",
+        "description": "422 APPLICATION_NOT_ELIGIBLE lists details.missing (ACCOUNT_INACTIVE, EMAIL_NOT_VERIFIED, PROFILE_INCOMPLETE, CV_NOT_READY, TIER_REQUIRED) with requiredTier, currentTier and missingXp.",
+        "operationId": "apply",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateApplicationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContributorApplicationResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/applications/{applicationId}/withdraw": {
+      "post": {
+        "tags": [
+          "application-controller"
+        ],
+        "summary": "Withdraw an application that is still under review",
+        "operationId": "withdraw",
+        "parameters": [
+          {
+            "name": "applicationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContributorApplicationResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/admin/projects/{projectId}/return": {
+      "post": {
+        "tags": [
+          "admin-project-controller"
+        ],
+        "summary": "Return a project to its SME as a draft with a mandatory reason (PENDING_REVIEW -> DRAFT)",
+        "operationId": "returnToDraft",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReturnProjectRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Project returned to draft",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManagedProjectResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing or invalid reason",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Project not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Project is not pending review",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/admin/projects/{projectId}/publish": {
+      "post": {
+        "tags": [
+          "admin-project-controller"
+        ],
+        "summary": "Publish a project pending review (PENDING_REVIEW -> PUBLISHED)",
+        "operationId": "publish",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project published",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManagedProjectResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Project not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Project is not pending review",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Project no longer satisfies the publication rules",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users/me/readiness": {
+      "get": {
+        "tags": [
+          "contributor-standing-controller"
+        ],
+        "summary": "Application readiness checklist: account, email, profile and CV",
+        "operationId": "readiness",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationReadinessResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users/me/experience": {
+      "get": {
+        "tags": [
+          "contributor-standing-controller"
+        ],
+        "summary": "XP, tier, unlocked project levels and completed-project history",
+        "operationId": "experience",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExperienceResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users/me/cv/file": {
+      "get": {
+        "tags": [
+          "cv-controller"
+        ],
+        "summary": "Download the contributor's own CV",
+        "operationId": "file",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/sme/projects/{projectId}/applications": {
+      "get": {
+        "tags": [
+          "sme-application-controller"
+        ],
+        "summary": "Applicants of an owned project, best skill match first",
+        "operationId": "applicants",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectApplicantsResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/sme/applications/{applicationId}/cv": {
+      "get": {
+        "tags": [
+          "sme-application-controller"
+        ],
+        "summary": "The applicant's current READY CV",
+        "operationId": "cv",
+        "parameters": [
+          {
+            "name": "applicationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/sme/applications/counts": {
+      "get": {
+        "tags": [
+          "sme-application-controller"
+        ],
+        "summary": "Open and total application counts for owned projects",
+        "operationId": "counts",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ApplicationCountResponse"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
     "/api/v1/skills": {
       "get": {
         "tags": [
           "skill-controller"
         ],
         "summary": "List the canonical skill catalog",
-        "operationId": "list",
+        "operationId": "list_2",
         "responses": {
           "200": {
             "description": "Canonical skill catalog",
@@ -427,6 +1419,27 @@
         }
       }
     },
+    "/api/v1/projects/creation-policy": {
+      "get": {
+        "tags": [
+          "project-controller"
+        ],
+        "summary": "Get the server-owned project level budget policy used when creating projects",
+        "operationId": "creationPolicy",
+        "responses": {
+          "200": {
+            "description": "Current project creation policy",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectCreationPolicyResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/health": {
       "get": {
         "tags": [
@@ -514,11 +1527,79 @@
           }
         }
       }
+    },
+    "/api/v1/applications/me": {
+      "get": {
+        "tags": [
+          "application-controller"
+        ],
+        "summary": "The contributor's applications, newest first",
+        "operationId": "mine",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ContributorApplicationResponse"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/admin/projects/pending": {
+      "get": {
+        "tags": [
+          "admin-project-controller"
+        ],
+        "summary": "List projects waiting for review, oldest submission first",
+        "operationId": "pending",
+        "responses": {
+          "200": {
+            "description": "Review queue",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ManagedProjectResponse"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not an admin",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
     }
   },
   "components": {
     "schemas": {
-      "UpdateStudentProfileRequest": {
+      "UpdateContributorProfileRequest": {
         "type": "object",
         "properties": {
           "displayName": {
@@ -526,25 +1607,21 @@
             "maxLength": 180,
             "minLength": 0
           },
-          "school": {
-            "type": "string",
-            "maxLength": 180,
-            "minLength": 0
-          },
-          "major": {
-            "type": "string",
-            "maxLength": 180,
-            "minLength": 0
-          },
-          "studyYear": {
+          "backgroundType": {
             "type": "string",
             "enum": [
-              "YEAR_1",
-              "YEAR_2",
-              "YEAR_3",
-              "YEAR_4",
-              "RECENT_GRADUATE"
+              "STUDENT",
+              "RECENT_GRADUATE",
+              "WORKING_PROFESSIONAL",
+              "FREELANCER",
+              "CAREER_SWITCHER",
+              "OTHER"
             ]
+          },
+          "specialization": {
+            "type": "string",
+            "maxLength": 180,
+            "minLength": 0
           },
           "skillCodes": {
             "type": "array",
@@ -558,29 +1635,13 @@
           }
         },
         "required": [
+          "backgroundType",
           "displayName",
-          "major",
-          "school",
           "skillCodes",
-          "studyYear"
+          "specialization"
         ]
       },
-      "SkillCatalogItemResponse": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "code",
-          "name"
-        ]
-      },
-      "StudentProfileResponse": {
+      "ContributorProfileResponse": {
         "type": "object",
         "properties": {
           "userId": {
@@ -593,29 +1654,24 @@
           "displayName": {
             "type": "string"
           },
-          "school": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "major": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "studyYear": {
+          "backgroundType": {
             "type": [
               "string",
               "null"
             ],
             "enum": [
-              "YEAR_1",
-              "YEAR_2",
-              "YEAR_3",
-              "YEAR_4",
-              "RECENT_GRADUATE"
+              "STUDENT",
+              "RECENT_GRADUATE",
+              "WORKING_PROFESSIONAL",
+              "FREELANCER",
+              "CAREER_SWITCHER",
+              "OTHER"
+            ]
+          },
+          "specialization": {
+            "type": [
+              "string",
+              "null"
             ]
           },
           "skills": {
@@ -634,6 +1690,779 @@
           "email",
           "skills",
           "userId"
+        ]
+      },
+      "SkillCatalogItemResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "name"
+        ]
+      },
+      "EducationRequest": {
+        "type": "object",
+        "properties": {
+          "institution": {
+            "type": "string",
+            "maxLength": 180,
+            "minLength": 0
+          },
+          "fieldOfStudy": {
+            "type": "string",
+            "maxLength": 180,
+            "minLength": 0
+          },
+          "level": {
+            "type": "string",
+            "enum": [
+              "HIGH_SCHOOL",
+              "VOCATIONAL",
+              "COLLEGE",
+              "BACHELOR",
+              "MASTER",
+              "DOCTORATE",
+              "SHORT_COURSE",
+              "OTHER"
+            ]
+          },
+          "degreeName": {
+            "type": "string",
+            "maxLength": 180,
+            "minLength": 0
+          },
+          "startMonth": {
+            "type": "string",
+            "description": "Month the entry started, YYYY-MM",
+            "example": "2023-09",
+            "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+          },
+          "endMonth": {
+            "type": "string",
+            "description": "Month it ended, or the expected end while studying, YYYY-MM",
+            "example": "2027-06",
+            "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "CURRENTLY_STUDYING",
+              "GRADUATED",
+              "COMPLETED",
+              "NOT_COMPLETED"
+            ]
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 0
+          }
+        },
+        "required": [
+          "fieldOfStudy",
+          "institution",
+          "level",
+          "startMonth",
+          "status"
+        ]
+      },
+      "EducationResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "institution": {
+            "type": "string"
+          },
+          "fieldOfStudy": {
+            "type": "string"
+          },
+          "level": {
+            "type": "string",
+            "enum": [
+              "HIGH_SCHOOL",
+              "VOCATIONAL",
+              "COLLEGE",
+              "BACHELOR",
+              "MASTER",
+              "DOCTORATE",
+              "SHORT_COURSE",
+              "OTHER"
+            ]
+          },
+          "degreeName": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "startMonth": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "example": "2023-09"
+          },
+          "endMonth": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "example": "2027-06"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "CURRENTLY_STUDYING",
+              "GRADUATED",
+              "COMPLETED",
+              "NOT_COMPLETED"
+            ]
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "selfDeclared": {
+            "type": "boolean",
+            "description": "Always true: GenDA does not verify education entries"
+          }
+        },
+        "required": [
+          "fieldOfStudy",
+          "id",
+          "institution",
+          "level",
+          "selfDeclared",
+          "status"
+        ]
+      },
+      "ApiError": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "requestId": {
+            "type": "string"
+          },
+          "details": {
+            "type": "object",
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "code",
+          "message",
+          "requestId"
+        ]
+      },
+      "CvResponse": {
+        "type": "object",
+        "properties": {
+          "fileName": {
+            "type": "string"
+          },
+          "sizeBytes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "status": {
+            "type": "string",
+            "description": "READY means technically valid; the content is not verified by GenDA",
+            "enum": [
+              "UPLOADING",
+              "PROCESSING",
+              "READY"
+            ]
+          },
+          "uploadedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "fileName",
+          "pageCount",
+          "sizeBytes",
+          "status",
+          "uploadedAt"
+        ]
+      },
+      "MilestonePlanRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 180,
+            "minLength": 0
+          },
+          "budget": {
+            "type": "integer",
+            "format": "int64",
+            "maximum": 5000000,
+            "minimum": 0
+          },
+          "deadline": {
+            "type": "string",
+            "format": "date"
+          },
+          "criteria": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 500,
+              "minLength": 0
+            },
+            "maxItems": 10,
+            "minItems": 0
+          }
+        },
+        "required": [
+          "budget",
+          "criteria"
+        ]
+      },
+      "ProjectDraftRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 180,
+            "minLength": 0
+          },
+          "summary": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 0
+          },
+          "problem": {
+            "type": "string",
+            "maxLength": 5000,
+            "minLength": 0
+          },
+          "industry": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 0
+          },
+          "smeSize": {
+            "type": "string",
+            "maxLength": 80,
+            "minLength": 0
+          },
+          "complexity": {
+            "type": "string",
+            "enum": [
+              "BASIC",
+              "MEDIUM",
+              "HIGH"
+            ]
+          },
+          "budget": {
+            "type": "integer",
+            "format": "int64",
+            "maximum": 5000000,
+            "minimum": 1000000
+          },
+          "deadline": {
+            "type": "string",
+            "format": "date"
+          },
+          "skillCodes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 64,
+              "minLength": 0
+            },
+            "maxItems": 5,
+            "minItems": 0
+          },
+          "acceptanceCriteria": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 500,
+              "minLength": 0
+            },
+            "maxItems": 10,
+            "minItems": 0
+          },
+          "milestones": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MilestonePlanRequest"
+            },
+            "maxItems": 10,
+            "minItems": 0
+          }
+        },
+        "required": [
+          "acceptanceCriteria",
+          "milestones",
+          "skillCodes",
+          "title"
+        ]
+      },
+      "ManagedProjectResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "PENDING_REVIEW",
+              "PUBLISHED",
+              "IN_PROGRESS",
+              "COMPLETED",
+              "CANCELLED"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "problem": {
+            "type": "string"
+          },
+          "industry": {
+            "type": "string"
+          },
+          "smeSize": {
+            "type": "string"
+          },
+          "smeName": {
+            "type": "string"
+          },
+          "smeContact": {
+            "type": "string"
+          },
+          "complexity": {
+            "type": "string",
+            "enum": [
+              "BASIC",
+              "MEDIUM",
+              "HIGH"
+            ]
+          },
+          "budget": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "deadline": {
+            "type": "string",
+            "format": "date"
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SkillResponse"
+            }
+          },
+          "acceptanceCriteria": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "milestones": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MilestonePlanResponse"
+            }
+          },
+          "submissionIssues": {
+            "type": "array",
+            "description": "What blocks submission today; empty when the project could enter review",
+            "items": {
+              "type": "string",
+              "enum": [
+                "SUMMARY_REQUIRED",
+                "PROBLEM_REQUIRED",
+                "INDUSTRY_REQUIRED",
+                "SME_SIZE_REQUIRED",
+                "COMPLEXITY_REQUIRED",
+                "BUDGET_REQUIRED",
+                "DEADLINE_REQUIRED",
+                "DEADLINE_NOT_IN_FUTURE",
+                "SKILLS_REQUIRED",
+                "ACCEPTANCE_CRITERIA_REQUIRED",
+                "MILESTONES_REQUIRED",
+                "MILESTONE_TITLE_REQUIRED",
+                "MILESTONE_BUDGET_REQUIRED",
+                "MILESTONE_DEADLINE_REQUIRED",
+                "MILESTONE_DEADLINE_NOT_IN_FUTURE",
+                "MILESTONE_DEADLINE_AFTER_PROJECT",
+                "MILESTONE_BUDGET_MISMATCH",
+                "BUDGET_OUTSIDE_LEVEL_RANGE"
+              ]
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "submittedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "latestReturn": {
+            "$ref": "#/components/schemas/ProjectReturnResponse",
+            "description": "Present while the latest review decision returned the project to draft"
+          }
+        },
+        "required": [
+          "acceptanceCriteria",
+          "createdAt",
+          "id",
+          "milestones",
+          "skills",
+          "smeContact",
+          "smeName",
+          "status",
+          "submissionIssues",
+          "title",
+          "updatedAt"
+        ]
+      },
+      "MilestonePlanResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "order": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string"
+          },
+          "budget": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "deadline": {
+            "type": "string",
+            "format": "date"
+          },
+          "criteria": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "budget",
+          "criteria",
+          "id",
+          "order"
+        ]
+      },
+      "ProjectReturnResponse": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string"
+          },
+          "suggestedComplexity": {
+            "type": "string",
+            "enum": [
+              "BASIC",
+              "MEDIUM",
+              "HIGH"
+            ]
+          },
+          "returnedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "reason",
+          "returnedAt"
+        ]
+      },
+      "SkillResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "name"
+        ]
+      },
+      "ApplicantCompletedResponse": {
+        "type": "object",
+        "properties": {
+          "basic": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "medium": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "high": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "basic",
+          "high",
+          "medium"
+        ]
+      },
+      "ApplicantCvResponse": {
+        "type": "object",
+        "properties": {
+          "fileName": {
+            "type": "string"
+          },
+          "sizeBytes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "uploadedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "fileName",
+          "pageCount",
+          "sizeBytes",
+          "uploadedAt"
+        ]
+      },
+      "ApplicantEducationResponse": {
+        "type": "object",
+        "properties": {
+          "institution": {
+            "type": "string"
+          },
+          "fieldOfStudy": {
+            "type": "string"
+          },
+          "level": {
+            "type": "string"
+          },
+          "degreeName": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "startMonth": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "endMonth": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "fieldOfStudy",
+          "institution",
+          "level",
+          "status"
+        ]
+      },
+      "ApplicantMatchResponse": {
+        "type": "object",
+        "properties": {
+          "percent": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "matchedSkills": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalSkills": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "matchedSkills",
+          "percent",
+          "totalSkills"
+        ]
+      },
+      "ApplicantResponse": {
+        "type": "object",
+        "properties": {
+          "applicationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "SUBMITTED",
+              "SHORTLISTED",
+              "ACCEPTED",
+              "REJECTED",
+              "WITHDRAWN"
+            ]
+          },
+          "eligibilitySource": {
+            "type": "string",
+            "enum": [
+              "SELF",
+              "SME_INVITATION"
+            ]
+          },
+          "submittedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "coverLetter": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "contactEmail": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Revealed only once the application is ACCEPTED"
+          },
+          "backgroundType": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "specialization": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApplicantSkillResponse"
+            }
+          },
+          "education": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApplicantEducationResponse"
+            }
+          },
+          "tier": {
+            "type": "string",
+            "enum": [
+              "BRONZE",
+              "SILVER",
+              "GOLD"
+            ]
+          },
+          "totalXp": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "completedProjects": {
+            "$ref": "#/components/schemas/ApplicantCompletedResponse"
+          },
+          "match": {
+            "$ref": "#/components/schemas/ApplicantMatchResponse"
+          },
+          "cv": {
+            "type": "null",
+            "$ref": "#/components/schemas/ApplicantCvResponse"
+          }
+        },
+        "required": [
+          "applicationId",
+          "completedProjects",
+          "coverLetter",
+          "displayName",
+          "education",
+          "eligibilitySource",
+          "match",
+          "skills",
+          "status",
+          "submittedAt",
+          "tier",
+          "totalXp"
+        ]
+      },
+      "ApplicantSkillResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "matched": {
+            "type": "boolean",
+            "description": "Required by the project"
+          }
+        },
+        "required": [
+          "code",
+          "matched",
+          "name"
         ]
       },
       "RegisterRequest": {
@@ -783,23 +2612,416 @@
           "email"
         ]
       },
-      "ApiError": {
+      "CreateApplicationRequest": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 0
+          },
+          "coverLetter": {
+            "type": "string",
+            "maxLength": 4000,
+            "minLength": 0
+          }
+        },
+        "required": [
+          "coverLetter",
+          "projectId"
+        ]
+      },
+      "ContributorApplicationResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "projectId": {
+            "type": "string"
+          },
+          "projectTitle": {
+            "type": "string"
+          },
+          "smeName": {
+            "type": "string"
+          },
+          "budget": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "complexity": {
+            "type": "string",
+            "enum": [
+              "BASIC",
+              "MEDIUM",
+              "HIGH"
+            ]
+          },
+          "projectStatus": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "SUBMITTED",
+              "SHORTLISTED",
+              "ACCEPTED",
+              "REJECTED",
+              "WITHDRAWN"
+            ]
+          },
+          "coverLetter": {
+            "type": "string"
+          },
+          "submittedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "decidedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "complexity",
+          "coverLetter",
+          "id",
+          "projectId",
+          "projectStatus",
+          "projectTitle",
+          "smeName",
+          "status",
+          "submittedAt"
+        ]
+      },
+      "ReturnProjectRequest": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 10
+          },
+          "suggestedComplexity": {
+            "type": "string",
+            "enum": [
+              "BASIC",
+              "MEDIUM",
+              "HIGH"
+            ]
+          }
+        },
+        "required": [
+          "reason"
+        ]
+      },
+      "ApplicationReadinessResponse": {
+        "type": "object",
+        "properties": {
+          "accountActive": {
+            "type": "boolean"
+          },
+          "emailVerified": {
+            "type": "boolean"
+          },
+          "profileComplete": {
+            "type": "boolean"
+          },
+          "cvReady": {
+            "type": "boolean"
+          },
+          "ready": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "accountActive",
+          "cvReady",
+          "emailVerified",
+          "profileComplete",
+          "ready"
+        ]
+      },
+      "ExperienceResponse": {
+        "type": "object",
+        "properties": {
+          "totalXp": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tier": {
+            "type": "string",
+            "enum": [
+              "BRONZE",
+              "SILVER",
+              "GOLD"
+            ]
+          },
+          "tierMinimumXp": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nextTier": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Null at the top tier",
+            "enum": [
+              "BRONZE",
+              "SILVER",
+              "GOLD"
+            ]
+          },
+          "nextTierMinimumXp": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "xpToNextTier": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "basicXpCounted": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "basicXpCap": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tiers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TierResponse"
+            }
+          },
+          "levels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LevelResponse"
+            }
+          },
+          "history": {
+            "type": "array",
+            "description": "Newest first",
+            "items": {
+              "$ref": "#/components/schemas/HistoryResponse"
+            }
+          }
+        },
+        "required": [
+          "basicXpCap",
+          "basicXpCounted",
+          "history",
+          "levels",
+          "tier",
+          "tierMinimumXp",
+          "tiers",
+          "totalXp",
+          "xpToNextTier"
+        ]
+      },
+      "HistoryResponse": {
+        "type": "object",
+        "properties": {
+          "projectTitle": {
+            "type": "string"
+          },
+          "smeName": {
+            "type": "string"
+          },
+          "level": {
+            "type": "string",
+            "enum": [
+              "BASIC",
+              "MEDIUM",
+              "HIGH"
+            ]
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "xpAwarded": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "capped": {
+            "type": "boolean",
+            "description": "True when the BASIC XP cap reduced this project's XP"
+          }
+        },
+        "required": [
+          "capped",
+          "completedAt",
+          "level",
+          "projectTitle",
+          "smeName",
+          "xpAwarded"
+        ]
+      },
+      "LevelResponse": {
+        "type": "object",
+        "properties": {
+          "level": {
+            "type": "string",
+            "enum": [
+              "BASIC",
+              "MEDIUM",
+              "HIGH"
+            ]
+          },
+          "xpPerProject": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "requiredTier": {
+            "type": "string",
+            "enum": [
+              "BRONZE",
+              "SILVER",
+              "GOLD"
+            ]
+          },
+          "unlocked": {
+            "type": "boolean"
+          },
+          "completedProjects": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "completedProjects",
+          "level",
+          "requiredTier",
+          "unlocked",
+          "xpPerProject"
+        ]
+      },
+      "TierResponse": {
+        "type": "object",
+        "properties": {
+          "tier": {
+            "type": "string",
+            "enum": [
+              "BRONZE",
+              "SILVER",
+              "GOLD"
+            ]
+          },
+          "minimumXp": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "selfApplyLevels": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "BASIC",
+                "MEDIUM",
+                "HIGH"
+              ]
+            }
+          }
+        },
+        "required": [
+          "minimumXp",
+          "selfApplyLevels",
+          "tier"
+        ]
+      },
+      "ApplicantProjectSkillResponse": {
         "type": "object",
         "properties": {
           "code": {
             "type": "string"
           },
-          "message": {
-            "type": "string"
-          },
-          "requestId": {
+          "name": {
             "type": "string"
           }
         },
         "required": [
           "code",
-          "message",
-          "requestId"
+          "name"
+        ]
+      },
+      "ProjectApplicantsResponse": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string"
+          },
+          "projectTitle": {
+            "type": "string"
+          },
+          "projectStatus": {
+            "type": "string"
+          },
+          "complexity": {
+            "type": "string",
+            "enum": [
+              "BASIC",
+              "MEDIUM",
+              "HIGH"
+            ]
+          },
+          "projectSkills": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApplicantProjectSkillResponse"
+            }
+          },
+          "applicants": {
+            "type": "array",
+            "description": "Best skill match first; withdrawn applications are omitted",
+            "items": {
+              "$ref": "#/components/schemas/ApplicantResponse"
+            }
+          }
+        },
+        "required": [
+          "applicants",
+          "complexity",
+          "projectId",
+          "projectSkills",
+          "projectStatus",
+          "projectTitle"
+        ]
+      },
+      "ApplicationCountResponse": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string"
+          },
+          "open": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Awaiting the SME's decision"
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Every application except withdrawn ones"
+          }
+        },
+        "required": [
+          "open",
+          "projectId",
+          "total"
         ]
       },
       "ProjectPageResponse": {
@@ -846,6 +3068,14 @@
           "smeIndustry": {
             "type": "string"
           },
+          "complexity": {
+            "type": "string",
+            "enum": [
+              "BASIC",
+              "MEDIUM",
+              "HIGH"
+            ]
+          },
           "budget": {
             "type": "integer",
             "format": "int64"
@@ -866,6 +3096,7 @@
         },
         "required": [
           "budget",
+          "complexity",
           "deadline",
           "id",
           "skills",
@@ -873,21 +3104,6 @@
           "smeName",
           "summary",
           "title"
-        ]
-      },
-      "SkillResponse": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "code",
-          "name"
         ]
       },
       "MilestoneResponse": {
@@ -948,6 +3164,14 @@
           "smeContact": {
             "type": "string"
           },
+          "complexity": {
+            "type": "string",
+            "enum": [
+              "BASIC",
+              "MEDIUM",
+              "HIGH"
+            ]
+          },
           "budget": {
             "type": "integer",
             "format": "int64"
@@ -984,6 +3208,7 @@
         "required": [
           "acceptanceCriteria",
           "budget",
+          "complexity",
           "deadline",
           "id",
           "milestones",
@@ -995,6 +3220,56 @@
           "smeSize",
           "summary",
           "title"
+        ]
+      },
+      "LevelPolicyResponse": {
+        "type": "object",
+        "properties": {
+          "complexity": {
+            "type": "string",
+            "enum": [
+              "BASIC",
+              "MEDIUM",
+              "HIGH"
+            ]
+          },
+          "minimumBudget": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "maximumBudget": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "complexity",
+          "maximumBudget",
+          "minimumBudget"
+        ]
+      },
+      "ProjectCreationPolicyResponse": {
+        "type": "object",
+        "properties": {
+          "minimumBudget": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "maximumBudget": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "levels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LevelPolicyResponse"
+            }
+          }
+        },
+        "required": [
+          "levels",
+          "maximumBudget",
+          "minimumBudget"
         ]
       },
       "HealthResponse": {

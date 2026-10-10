@@ -6,12 +6,12 @@ if (Test-Path -LiteralPath $statePath) {
     $state = Get-Content -LiteralPath $statePath -Raw | ConvertFrom-Json
     $running = Get-Process -Id $state.processId -ErrorAction SilentlyContinue
     if ($running) {
-        $command = (Get-CimInstance Win32_Process -Filter ("ProcessId = " + $state.processId)).CommandLine
-        if ($running.StartTime.ToUniversalTime().ToString('o') -ne $state.startedAt -or $command.Trim() -notmatch 'compose watch --no-up$') {
-            throw 'Recorded watcher PID no longer identifies this project watcher; refusing to stop it.'
+        $command = [string](Get-CimInstance Win32_Process -Filter ("ProcessId = " + $state.processId)).CommandLine
+        # A reused PID means the recorded watcher already exited; drop the stale state without touching that process.
+        if ($running.StartTime.ToUniversalTime().ToString('o') -eq $state.startedAt -and $command.Trim() -match 'compose watch --no-up$') {
+            & taskkill.exe /PID $state.processId /T /F | Out-Null
+            if ($LASTEXITCODE -ne 0) { throw 'Could not stop the previous Compose watcher.' }
         }
-        & taskkill.exe /PID $state.processId /T /F | Out-Null
-        if ($LASTEXITCODE -ne 0) { throw 'Could not stop the previous Compose watcher.' }
     }
     Remove-Item -LiteralPath $statePath
 }

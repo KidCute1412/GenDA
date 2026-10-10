@@ -10,6 +10,7 @@ public record PublishedProject(
         String smeIndustry,
         String smeSize,
         String smeContact,
+        ProjectComplexity complexity,
         long budget,
         LocalDate deadline,
         String summary,

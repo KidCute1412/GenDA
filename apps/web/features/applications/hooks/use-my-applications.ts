@@ -1,17 +1,21 @@
 "use client";
 
-import { useDemoLedger } from "../../demo-ledger/use-demo-ledger";
+import { useCallback, useEffect, useState } from "react";
 import { useDemoSession } from "../../auth/hooks/use-demo-session";
-import { MY_APPLICATIONS, type Application } from "../../../mocks/data";
+import { listMyApplications, type ApplicationStatus, type MyApplication } from "../services/applications-api";
 
-export type ApplicationStatus = Application["status"];
+export type { ApplicationStatus, MyApplication };
 
-/** Đơn ứng tuyển của sinh viên đang đăng nhập, kèm thông tin dự án để hiển thị. */
-export type MyApplication = Application;
+/** Phát sau khi gửi hoặc rút đơn, để bảng đơn và số đếm trên menu tải lại. */
+export const APPLICATIONS_CHANGED_EVENT = "genda:applications-changed";
+
+export function announceApplicationsChanged() {
+  window.dispatchEvent(new Event(APPLICATIONS_CHANGED_EVENT));
+}
 
 /**
- * Nhóm trạng thái theo câu hỏi thật của sinh viên: "đơn nào còn đang chờ, đơn nào được
- * nhận, đơn nào trượt". SUBMITTED và SHORTLISTED đều là "đang chờ doanh nghiệp quyết".
+ * Nhóm trạng thái theo câu hỏi thật của contributor: "đơn nào còn đang chờ, đơn nào được nhận, đơn nào trượt".
+ * SUBMITTED và SHORTLISTED đều là "đang chờ doanh nghiệp quyết".
  */
 export const APPLICATION_GROUPS = [
   { key: "pending", label: "Đang chờ duyệt", statuses: ["SUBMITTED", "SHORTLISTED"] },
@@ -26,33 +30,40 @@ export function groupOf(status: ApplicationStatus): ApplicationGroupKey {
   return APPLICATION_GROUPS.find((group) => (group.statuses as readonly ApplicationStatus[]).includes(status))?.key ?? "pending";
 }
 
-/**
- * Một nguồn duy nhất: ledger demo (đã gồm sẵn các đơn mẫu lẫn đơn sinh viên vừa nộp).
- * Thông tin dự án lấy từ ledger, thiếu thì lấy từ dữ liệu mẫu.
- */
-export function useMyApplications(): { hydrated: boolean; isStudent: boolean; items: MyApplication[] } {
-  const ledger = useDemoLedger();
+/** Đơn ứng tuyển của contributor đang đăng nhập, từ API (FR-APP-07). */
+export function useMyApplications(): {
+  hydrated: boolean;
+  isStudent: boolean;
+  loading: boolean;
+  error: string | null;
+  items: MyApplication[];
+  reload: () => Promise<void>;
+} {
   const { session, hydrated } = useDemoSession();
   const isStudent = session?.role === "CONTRIBUTOR";
-  if (!hydrated || !isStudent) return { hydrated, isStudent, items: [] };
+  const [items, setItems] = useState<MyApplication[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const student = ledger.users.find((user) => user.email === session.email);
-  const items = ledger.applications
-    .filter((application) => application.studentId === student?.id)
-    .map((application) => {
-      const project = ledger.projects.find((item) => item.id === application.projectId);
-      const sample = MY_APPLICATIONS.find((item) => item.id === application.id);
-      return {
-        id: application.id,
-        projectId: application.projectId,
-        projectTitle: project?.title ?? sample?.projectTitle ?? "Dự án",
-        smeName: project?.smeName ?? sample?.smeName ?? "",
-        budget: project?.budget ?? sample?.budget ?? 0,
-        submittedAt: application.submittedAt,
-        status: application.status as ApplicationStatus
-      };
-    })
-    .sort((a, b) => b.submittedAt.localeCompare(a.submittedAt));
+  const reload = useCallback(async () => {
+    try {
+      setItems(await listMyApplications());
+      setError(null);
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Không thể tải đơn ứng tuyển của bạn.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-  return { hydrated, isStudent, items };
+  useEffect(() => {
+    if (!hydrated) return;
+    if (!isStudent) { setItems([]); setLoading(false); return; }
+    void reload();
+    const refresh = () => void reload();
+    window.addEventListener(APPLICATIONS_CHANGED_EVENT, refresh);
+    return () => window.removeEventListener(APPLICATIONS_CHANGED_EVENT, refresh);
+  }, [hydrated, isStudent, reload]);
+
+  return { hydrated, isStudent, loading, error, items, reload };
 }

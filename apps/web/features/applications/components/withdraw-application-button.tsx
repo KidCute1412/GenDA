@@ -1,19 +1,34 @@
 "use client";
 
-import { useDemoLedger } from "../../demo-ledger/use-demo-ledger";
-import { setApplicationStatus } from "../../demo-ledger/store";
-import { useDemoSession } from "../../auth/hooks/use-demo-session";
+import { useState } from "react";
 import { Button } from "../../../components/ui/button";
+import { announceApplicationsChanged } from "../hooks/use-my-applications";
+import { withdrawApplication } from "../services/applications-api";
 
-export function WithdrawApplicationButton({ applicationId }: { applicationId: string }) {
-  const ledger = useDemoLedger();
-  const { session } = useDemoSession();
-  const withdrawn = ledger.applications.find((application) => application.id === applicationId)?.status === "WITHDRAWN";
+/** Rút đơn còn đang chờ (FR-APP-06). Bấm hai lần để tránh rút nhầm. */
+export function WithdrawApplicationButton({ applicationId, onError }: { applicationId: string; onError?: (message: string) => void }) {
+  const [confirming, setConfirming] = useState(false);
+  const [busy, setBusy] = useState(false);
 
-  return withdrawn ? (
-    <span className="badge badge--neutral">ĐÃ RÚT ĐƠN</span>
+  async function withdraw() {
+    setBusy(true);
+    try {
+      await withdrawApplication(applicationId);
+      announceApplicationsChanged();
+    } catch (error) {
+      onError?.(error instanceof Error ? error.message : "Không thể rút đơn.");
+    } finally {
+      setBusy(false);
+      setConfirming(false);
+    }
+  }
+
+  return confirming ? (
+    <Button type="button" variant="danger" size="sm" loading={busy} onClick={() => void withdraw()}>
+      XÁC NHẬN RÚT ĐƠN
+    </Button>
   ) : (
-    <Button type="button" variant="outline" size="sm" onClick={() => setApplicationStatus(session?.email ?? "", applicationId, "WITHDRAWN")}>
+    <Button type="button" variant="outline" size="sm" onClick={() => setConfirming(true)}>
       RÚT ĐƠN NÀY
     </Button>
   );

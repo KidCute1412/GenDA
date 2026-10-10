@@ -3,23 +3,12 @@ import type { Metadata } from "next";
 import { SiteHeader } from "../../../components/layout/site-header";
 import { SiteFooter } from "../../../components/layout/site-footer";
 import { BottomNav } from "../../../components/layout/bottom-nav";
-import { StatusBadge } from "../../../components/ui/status-badge";
-import { EmptyState } from "../../../components/ui/feedback";
-import { AUDIT_LOG, PROJECTS } from "../../../mocks/data";
-import { formatDate, formatVnd } from "../../../lib/utils/format";
-import { AdminActionButtons } from "../../../features/admin/components/admin-action-buttons";
+import { AUDIT_LOG } from "../../../mocks/data";
 import { LedgerAuditPanel } from "../../../features/admin/components/ledger-audit-panel";
-import { LedgerProjectQueue } from "../../../features/admin/components/ledger-project-queue";
+import { ProjectReviewQueue, ProjectReviewQueueCount } from "../../../features/admin/components/project-review-queue";
 import { LedgerOpportunityQueue, LedgerOpportunityQueueCount } from "../../../features/admin/components/ledger-opportunity-queue";
 import { LedgerSmeQueue, LedgerSmeQueueCount } from "../../../features/admin/components/ledger-sme-queue";
 import { RoleRouteGuard } from "../../../features/auth/components/role-route-guard";
-import { 
-  Check, 
-  CheckCircle, 
-  ShieldCheck, 
-  WarningCircle, 
-  ICON_WEIGHT 
-} from "../../../components/ui/icons";
 
 export const metadata: Metadata = {
   title: "Bảng điều khiển quản trị // GENDA-OPS",
@@ -47,10 +36,7 @@ export default async function AdminPage({
   const { tab } = await searchParams;
   const active = TABS.find((item) => item.key === tab)?.key ?? "projects";
 
-  const pendingProjects = PROJECTS.filter((project) => project.status === "PENDING_REVIEW");
-
   const counts: Record<string, number> = {
-    projects: pendingProjects.length,
     audit: AUDIT_LOG.length
   };
 
@@ -110,7 +96,7 @@ export default async function AdminPage({
               >
                 <div>
                   <div style={{ fontFamily: "ui-monospace, monospace", fontSize: "10px", color: "var(--color-text-muted)" }}>CHỜ DUYỆT DỰ ÁN</div>
-                  <div className="num" style={{ fontSize: "1.25rem", fontWeight: 900, color: "var(--brand-500)" }}>{counts.projects}</div>
+                  <div className="num" style={{ fontSize: "1.25rem", fontWeight: 900, color: "var(--brand-500)" }}><ProjectReviewQueueCount /></div>
                 </div>
                 <div style={{ width: "1px", backgroundColor: "var(--machinery-border)", marginInline: "4px" }} />
                 <div>
@@ -146,7 +132,7 @@ export default async function AdminPage({
                     fontWeight: 800
                   }}
                 >
-                  {item.key === "smes" ? <LedgerSmeQueueCount /> : item.key === "opportunities" ? <LedgerOpportunityQueueCount /> : counts[item.key]}
+                  {item.key === "projects" ? <ProjectReviewQueueCount /> : item.key === "smes" ? <LedgerSmeQueueCount /> : item.key === "opportunities" ? <LedgerOpportunityQueueCount /> : counts[item.key]}
                 </span>
               </Link>
             ))}
@@ -156,155 +142,7 @@ export default async function AdminPage({
           {active === "opportunities" ? <LedgerOpportunityQueue /> : null}
 
           {/* TAB 1: HÀNG ĐỢI DUYỆT DỰ ÁN */}
-          {active === "projects" ? <LedgerProjectQueue /> : null}
-          {active === "projects" ? (
-            pendingProjects.length === 0 ? (
-              <EmptyState
-                title="Hàng đợi dự án trống"
-                advice="Hiện không có dự án nào đang chờ thẩm định. Dự án mới từ doanh nghiệp sẽ xuất hiện tại đây kèm thời điểm gửi."
-              />
-            ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-6)" }}>
-                {pendingProjects.map((project) => {
-                  const total = project.milestones.reduce((sum, m) => sum + m.budget, 0);
-                  const balanced = total === project.budget;
-
-                  return (
-                    <article key={project.id} className="module-bay" style={{ padding: "var(--space-6)" }}>
-                      <div className="module-bay__header" style={{ borderColor: "var(--machinery-border)" }}>
-                        <span className="module-bay__id">
-                          SUBMISSION // {project.id.toUpperCase()}
-                        </span>
-                        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                          <span style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px", color: "var(--color-text-muted)" }}>
-                            HẠN DỰ KIẾN: {project.deadline}
-                          </span>
-                          <StatusBadge status={project.status} />
-                        </div>
-                      </div>
-
-                      {/* Thông tin chính dự án */}
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "var(--space-4)" }}>
-                        <div style={{ maxWidth: "75ch" }}>
-                          <div style={{ fontFamily: "ui-monospace, monospace", fontSize: "12px", color: "var(--color-text-muted)", marginBottom: "4px" }}>
-                            DOANH NGHIỆP: <strong style={{ color: "var(--color-text-heading)" }}>{project.smeName}</strong> ({project.smeIndustry} • {project.smeSize}) • LH: {project.smeContact}
-                          </div>
-                          <h2 style={{ fontSize: "1.35rem", fontWeight: 800, textTransform: "uppercase", margin: "4px 0 var(--space-3)" }}>
-                            {project.title}
-                          </h2>
-                          <p style={{ color: "var(--color-text-body)", fontSize: "14px", lineHeight: 1.6 }}>
-                            {project.problem}
-                          </p>
-                        </div>
-
-                        <div 
-                          style={{ 
-                            border: "2px solid var(--machinery-border)", 
-                            backgroundColor: "var(--color-surface-subtle)", 
-                            padding: "12px 16px", 
-                            minWidth: "200px",
-                            textAlign: "right"
-                          }}
-                        >
-                          <span style={{ fontSize: "10px", fontFamily: "ui-monospace, monospace", color: "var(--color-text-muted)", display: "block" }}>
-                            TỔNG NGÂN SÁCH DỰ ÁN
-                          </span>
-                          <span className="num" style={{ fontSize: "1.45rem", fontWeight: 900, color: "var(--color-text-heading)" }}>
-                            {formatVnd(project.budget)}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Tiêu chí nghiệm thu */}
-                      <div style={{ marginTop: "var(--space-5)", padding: "var(--space-4)", backgroundColor: "var(--color-surface-subtle)", border: "1px solid var(--machinery-border)" }}>
-                        <div style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px", fontWeight: 700, textTransform: "uppercase", color: "var(--color-text-heading)", marginBottom: "8px" }}>
-                          {"// TIÊU CHÍ NGHIỆM THU DO DOANH NGHIỆP KHAI BÁO:"}
-                        </div>
-                        <ul style={{ margin: 0, paddingLeft: "var(--space-4)", fontSize: "13px", color: "var(--color-text-body)" }}>
-                          {project.acceptance.map((item) => (
-                            <li key={item} style={{ marginBottom: "4px" }}>{item}</li>
-                          ))}
-                        </ul>
-                      </div>
-
-                      {/* Bảng kiểm tra bất biến mốc bàn giao FR-MIL-02 */}
-                      <div 
-                        style={{ 
-                          marginTop: "var(--space-4)", 
-                          border: "2px solid var(--machinery-border)",
-                          backgroundColor: "var(--color-surface-card)"
-                        }}
-                      >
-                        <div 
-                          style={{ 
-                            padding: "8px 14px", 
-                            backgroundColor: "var(--color-surface-subtle)", 
-                            borderBottom: "1px solid var(--machinery-border)",
-                            fontFamily: "ui-monospace, monospace",
-                            fontSize: "11px",
-                            fontWeight: 800,
-                            display: "flex",
-                            justifyContent: "space-between"
-                          }}
-                        >
-                          <span>KIỂM TRA BẤT BIẾN MỐC BÀN GIAO (FR-MIL-02)</span>
-                          <span style={{ color: balanced ? "var(--color-status-verified-text)" : "var(--color-status-danger-text)" }}>
-                            {balanced ? "✓ TỶ LỆ KHỚP 100%" : "⚠ LỆCH NGÂN SÁCH"}
-                          </span>
-                        </div>
-
-                        <div style={{ padding: "var(--space-3) var(--space-4)" }}>
-                          {project.milestones.map((milestone) => (
-                            <div 
-                              key={milestone.id} 
-                              className="num" 
-                              style={{ 
-                                display: "flex", 
-                                justifyContent: "space-between", 
-                                fontSize: "13px", 
-                                paddingBlock: "4px",
-                                borderBottom: "1px dashed var(--machinery-border)" 
-                              }}
-                            >
-                              <span style={{ color: "var(--color-text-muted)" }}>
-                                MỐC {milestone.order}: {milestone.title} (Hạn: {formatDate(milestone.deadline)})
-                              </span>
-                              <span style={{ fontWeight: 700 }}>{formatVnd(milestone.budget)}</span>
-                            </div>
-                          ))}
-
-                          <div 
-                            className="num" 
-                            style={{ 
-                              display: "flex", 
-                              justifyContent: "space-between", 
-                              paddingTop: "8px", 
-                              fontWeight: 800, 
-                              fontSize: "14px" 
-                            }}
-                          >
-                            <span>TỔNG CỘNG CÁC MỐC</span>
-                            <span 
-                              style={{ 
-                                color: balanced ? "var(--color-status-verified-text)" : "var(--color-status-danger-text)" 
-                              }}
-                            >
-                              {formatVnd(total)} / {formatVnd(project.budget)} {balanced ? "(ĐẠT CHUẨN)" : "(SAI LỆCH)"}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Nút hành động */}
-                      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "var(--space-6)", paddingTop: "var(--space-4)", borderTop: "2px solid var(--machinery-border)" }}>
-                        <AdminActionButtons targetId={`project:${project.id}`} approveLabel="DUYỆT XUẤT BẢN" />
-                      </div>
-                    </article>
-                  );
-                })}
-              </div>
-            )
-          ) : null}
+          {active === "projects" ? <ProjectReviewQueue /> : null}
 
           {/* TAB: HÀNG ĐỢI DUYỆT ĐĂNG KÝ DOANH NGHIỆP */}
           {active === "smes" ? <LedgerSmeQueue /> : null}
