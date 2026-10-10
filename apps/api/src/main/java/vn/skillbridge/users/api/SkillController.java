@@ -9,6 +9,7 @@ import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import vn.skillbridge.users.api.dto.SkillCatalogItemResponse;
 import vn.skillbridge.users.application.SkillQueryService;
 import vn.skillbridge.platform.api.ApiExceptionHandler.ApiError;
 
@@ -29,11 +30,7 @@ public class SkillController {
     })
     public List<SkillCatalogItemResponse> list() {
         return queries.listSkills().stream()
-                .map(skill -> new SkillCatalogItemResponse(skill.code(), skill.name()))
+                .map(SkillCatalogItemResponse::from)
                 .toList();
     }
-
-    public record SkillCatalogItemResponse(
-            @Schema(requiredMode = Schema.RequiredMode.REQUIRED) String code,
-            @Schema(requiredMode = Schema.RequiredMode.REQUIRED) String name) {}
 }

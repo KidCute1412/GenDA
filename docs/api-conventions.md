@@ -24,9 +24,11 @@ Commit `packages/api-client/openapi.json` and generated `src/schema.d.ts` with A
 
 ## Authentication/authorization
 
-Real backend auth is not implemented in the scaffold; browser demo sessions are not credentials. Choose identity/session contract before adding protected business endpoints. API security and use cases enforce role, ownership, assignments and lifecycle.
+Authentication endpoints live under `/api/v1/auth`: `GET /csrf`, `POST /register`, `POST /login`, `POST /refresh`, `POST /logout`, and `GET /me`. Registration accepts only `STUDENT` and `SME`; students receive a session immediately while newly registered SMEs remain `PENDING` without a session until approval. Access and refresh JWTs are returned only as scoped `HttpOnly` cookies, never in JSON. Access expires after five minutes. Refresh expires after 24 hours, or seven days when `rememberDevice=true`, and rotates on use.
 
-CORS uses exact origins. Current health requests do not use credentialed cookies; adding cookie authentication requires a reviewed CORS/CSRF/session design.
+`POST /logout` is idempotent: it revokes the current refresh-session record when a valid refresh cookie exists, expires both authentication cookies using their original paths, and returns `204 No Content`. The access JWT remains stateless; the backend stores only the refresh-token fingerprint and revocation metadata, never the raw token.
+
+Unsafe API requests require the `X-CSRF-Token` value issued by `GET /auth/csrf`; the browser also sends its matching CSRF cookie. Browser calls use credentials and CORS permits credentials only for exact configured origins. Production cross-site cookies require `AUTH_COOKIE_SECURE=true` and `AUTH_COOKIE_SAME_SITE=None`.
 
 ## Compatibility
 

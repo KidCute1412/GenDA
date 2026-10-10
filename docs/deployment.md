@@ -18,9 +18,10 @@ Review the **Free** Docker service and privately fill:
 SPRING_DATASOURCE_URL=jdbc:postgresql://<session-pooler-host>:5432/postgres?sslmode=require&connectTimeout=10&socketTimeout=30
 SPRING_DATASOURCE_USERNAME=<session-pooler-username>
 SPRING_DATASOURCE_PASSWORD=<database-password>
+AUTH_JWT_SECRET=<at-least-32-random-bytes>
 ```
 
-Blueprint already sets `PORT=10000`, `DB_POOL_SIZE=3`, production OpenAPI disabled, and `CORS_ALLOWED_ORIGINS=https://gen-da-web.lok1412.site`.
+Blueprint sets `PORT=10000`, `DB_POOL_SIZE=3`, production OpenAPI disabled, exact CORS origin, a generated JWT secret, and secure `SameSite=None` auth cookies. Prefer a custom API subdomain under the same parent site when available so browser privacy controls do not treat authentication cookies as third-party cookies.
 
 Apply and wait for **Live**. Open `https://<service>.onrender.com/api/v1/health`; expect `{ "status": "ok", "service": "genda-api" }`.
 
