@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import { Briefcase, FileText, House, ICON_WEIGHT, UserCircle } from "../ui/icons";
+import { useDemoSession } from "../../features/auth/hooks/use-demo-session";
 
 /**
  * Mobile Bottom Navigation — bốn tab, chỉ hiện dưới breakpoint md.
@@ -11,17 +14,26 @@ import { Briefcase, FileText, House, ICON_WEIGHT, UserCircle } from "../ui/icons
  * Mỗi tab có cả icon và nhãn chữ: icon một mình không đủ tường minh, và nhãn
  * chữ là thứ duy nhất trình đọc màn hình đọc được.
  */
-const TABS = [
+const STUDENT_TABS = [
   { href: "/", label: "Trang chủ", icon: House },
   { href: "/projects", label: "Dự án", icon: Briefcase },
   { href: "/student/applications", label: "Đơn của tôi", icon: FileText },
   { href: "/student/profile", label: "Hồ sơ", icon: UserCircle }
 ];
 
+const SME_TABS = [
+  { href: "/", label: "Trang chủ", icon: House },
+  { href: "/sme/projects", label: "Dự án của tôi", icon: Briefcase },
+  { href: "/sme/projects/new", label: "Đăng dự án", icon: FileText },
+  { href: "/student/profile", label: "Hồ sơ", icon: UserCircle }
+];
+
 export function BottomNav({ current }: { current?: string }) {
+  const { session, hydrated } = useDemoSession();
+  const tabs = hydrated && session?.role === "SME" ? SME_TABS : STUDENT_TABS;
   return (
     <nav className="bottom-nav" aria-label="Điều hướng nhanh">
-      {TABS.map((tab) => {
+      {tabs.map((tab) => {
         const Icon = tab.icon;
         return (
           <Link

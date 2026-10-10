@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { Button } from "../../../components/ui/button";
 import { Alert } from "../../../components/ui/alert";
+import { useDemoPersistedState } from "../../../lib/hooks/use-demo-persisted-state";
 
 /**
  * Modal Xác nhận Quan trọng cho hành động KHÔNG THỂ ĐẢO NGƯỢC
@@ -25,6 +26,11 @@ export function AcceptApplicantButton({
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [pending, setPending] = useState(false);
+  const [accepted, setAccepted] = useDemoPersistedState(`accepted-applicant:${applicantName}`, false);
+
+  if (accepted) {
+    return <Alert variant="success" title="Đã chọn ứng viên">Dự án đã chuyển sang đang thực hiện. Các ứng viên còn lại đã nhận thông báo kết quả.</Alert>;
+  }
 
   return (
     <>
@@ -88,6 +94,7 @@ export function AcceptApplicantButton({
               window.setTimeout(() => {
                 setPending(false);
                 dialogRef.current?.close();
+                setAccepted(true);
               }, 800);
             }}
           >

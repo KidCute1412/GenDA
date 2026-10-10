@@ -10,7 +10,12 @@ import { CheckCircle, ICON_WEIGHT } from "../../../components/ui/icons";
 import { SkillMultiSelect } from "./skill-multi-select";
 import { BudgetInput } from "./budget-input";
 import { MilestoneEditor } from "../../milestones/components/milestone-editor";
+import { DraftSaveButton } from "./draft-save-button";
 import { TODAY } from "../../../mocks/data";
+import { useDemoPersistedState } from "../../../lib/hooks/use-demo-persisted-state";
+import { getDemoSession } from "../../auth/services/demo-session";
+import { useDemoSession } from "../../auth/hooks/use-demo-session";
+import type { CreatedProject } from "./created-projects-panel";
 
 /**
  * Màn hình 3 — Wizard Đăng Dự án (docs/design.md 7.3).
@@ -37,6 +42,9 @@ export function ProjectWizard() {
   const [step, setStep] = useState(0);
   const [budget, setBudget] = useState(2_000_000);
   const [submitted, setSubmitted] = useState(false);
+  const [, setCreatedProjects] = useDemoPersistedState<CreatedProject[]>("projects:created", []);
+  const { session, hydrated } = useDemoSession();
+  const hasVerifiedEmail = session?.emailVerified === true;
   const headingRef = useRef<HTMLHeadingElement>(null);
   const stepsRef = useRef<HTMLDivElement>(null);
   // Bỏ qua lần chạy đầu: không cướp tiêu điểm của người dùng khi trang vừa tải.
@@ -84,9 +92,38 @@ export function ProjectWizard() {
   }
 
   return (
+    <>
+      {hydrated && session?.role !== "SME" ? (
+        <Alert variant="warning" title="Chỉ doanh nghiệp được đăng dự án">
+          Hãy đăng nhập bằng tài khoản doanh nghiệp để tạo và gửi dự án đi duyệt.
+        </Alert>
+      ) : null}
+      {!hasVerifiedEmail ? (
+        <Alert variant="warning" title="Cần xác minh email trước khi gửi dự án">
+          Bạn vẫn có thể điền nội dung để chuẩn bị, nhưng chỉ gửi duyệt được sau khi mở liên kết xác minh email. <Link href="/verify-email?token=genda-demo-valid-2026&next=%2Fsme%2Fprojects%2Fnew%3FemailVerified%3D1">Xác minh email</Link>
+        </Alert>
+      ) : null}
     <form
       onSubmit={(event) => {
         event.preventDefault();
+        const currentSession = getDemoSession();
+        if (!hasVerifiedEmail || currentSession?.role !== "SME") return;
+        const form = event.currentTarget;
+        const title = form.querySelector<HTMLInputElement>("#project-title")?.value.trim() ?? "Dự án chưa đặt tên";
+        const deadline = form.querySelector<HTMLInputElement>("#project-deadline")?.value ?? "";
+        const projectBudget = Number(form.querySelector<HTMLInputElement>('input[name="budget"]')?.value ?? budget);
+        setCreatedProjects((current) => [
+          ...current,
+          {
+            id: `p-${Date.now()}`,
+            title,
+            budget: projectBudget,
+            deadline,
+            createdAt: new Date().toLocaleDateString("vi-VN"),
+            ownerEmail: currentSession.email,
+            status: "PENDING_REVIEW"
+          }
+        ]);
         setSubmitted(true);
       }}
     >
@@ -235,14 +272,13 @@ export function ProjectWizard() {
             </Button>
           ) : (
             <span className="cluster">
-              <Button type="button" variant="secondary">
-                Lưu bản nháp
-              </Button>
-              <Button type="submit">Gửi duyệt</Button>
+              <DraftSaveButton />
+              <Button type="submit" disabled={!hasVerifiedEmail || (hydrated && session?.role !== "SME")}>Gửi duyệt</Button>
             </span>
           )}
         </div>
       </div>
     </form>
+    </>
   );
 }

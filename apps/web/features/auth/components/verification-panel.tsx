@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Button } from "../../../components/ui/button";
 import { Dropzone } from "../../../components/ui/dropzone";
 import { TextField } from "../../../components/ui/field";
+import { Alert } from "../../../components/ui/alert";
+import { useDemoPersistedState } from "../../../lib/hooks/use-demo-persisted-state";
 
 /**
  * Hai phương thức nộp minh chứng sinh viên (docs/design.md 7.2, FR-USR-02).
@@ -22,6 +24,7 @@ const TABS = [
 
 export function VerificationPanel() {
   const [active, setActive] = useState("email");
+  const [submitted, setSubmitted] = useDemoPersistedState("student-verification:submitted", false);
 
   function onKeyDown(event: React.KeyboardEvent) {
     const index = TABS.findIndex((tab) => tab.id === active);
@@ -31,6 +34,7 @@ export function VerificationPanel() {
 
   return (
     <div>
+      {submitted ? <Alert variant="success" title="Đã gửi minh chứng" live="polite">Hồ sơ của bạn đang chờ quản trị viên xét duyệt. Chúng tôi sẽ gửi email khi có kết quả.</Alert> : null}
       <div className="tabs" role="tablist" aria-label="Cách nộp minh chứng" onKeyDown={onKeyDown}>
         {TABS.map((tab) => (
           <button
@@ -59,7 +63,7 @@ export function VerificationPanel() {
             placeholder="mssv@hcmus.edu.vn"
             hint="Chúng tôi gửi mã xác minh tới hộp thư này. Chỉ chấp nhận tên miền của các trường tại TP.HCM."
           />
-          <Button type="submit">Gửi mã xác minh</Button>
+          <Button type="button" onClick={() => setSubmitted(true)}>Gửi mã xác minh</Button>
         </div>
       ) : (
         <div role="tabpanel" id="panel-card" aria-labelledby="tab-card">
@@ -74,7 +78,7 @@ export function VerificationPanel() {
           <p className="field__hint" style={{ marginBottom: "var(--space-5)" }}>
             Ảnh thẻ chỉ dùng để xác minh và không hiển thị công khai ở bất kỳ đâu.
           </p>
-          <Button type="submit">Gửi minh chứng</Button>
+          <Button type="button" onClick={() => setSubmitted(true)}>Gửi minh chứng</Button>
         </div>
       )}
     </div>
