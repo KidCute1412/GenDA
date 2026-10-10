@@ -1,17 +1,10 @@
 import Link from "next/link";
 import { BrandMark } from "../ui/icons";
 import { ButtonLink } from "../ui/button";
+import { ThemeToggle } from "./theme-toggle";
 
 /**
  * Top Navigation Bar (docs/design.md Mục 6, nhóm pattern 1).
- *
- * Hai ràng buộc cứng về bố cục:
- *  - Điều hướng phải nằm gọn trên MỘT dòng ở desktop.
- *  - Chiều cao tối đa 80px; ở đây giữ 64px để thanh không ăn mất viewport.
- *
- * Dưới breakpoint md, các liên kết chữ ẩn đi và nhường cho Bottom Navigation
- * bốn tab — sinh viên (85% dùng smartphone) thao tác bằng ngón cái ở đáy màn
- * hình, không với lên đỉnh màn hình.
  */
 const LINKS = [
   { href: "/projects", label: "Khám phá dự án" },
@@ -24,7 +17,8 @@ export function SiteHeader({ current }: { current?: string }) {
       <div className="container site-header__inner">
         <Link href="/" className="brand">
           <BrandMark />
-          GenDA
+          <span>GenDA</span>
+          <span className="brand__tag">SYS.26</span>
         </Link>
 
         <nav className="site-header__nav" aria-label="Điều hướng chính">
@@ -41,12 +35,33 @@ export function SiteHeader({ current }: { current?: string }) {
         </nav>
 
         <div className="cluster" style={{ gap: "var(--space-2)" }}>
-          <ButtonLink href="/login" variant="ghost" size="sm">
+          <ThemeToggle />
+          <Link 
+            href="/login" 
+            style={{ 
+              fontFamily: "ui-monospace, monospace", 
+              fontSize: "12px", 
+              fontWeight: 700, 
+              color: "var(--color-text-body)", 
+              textTransform: "uppercase", 
+              padding: "6px 12px", 
+              textDecoration: "none" 
+            }}
+          >
             Đăng nhập
-          </ButtonLink>
-          <ButtonLink href="/register" size="sm">
+          </Link>
+          <Link 
+            href="/register" 
+            className="btn--tactile-orange" 
+            style={{ 
+              height: "36px", 
+              paddingInline: "var(--space-4)", 
+              fontSize: "12px",
+              boxShadow: "2px 2px 0px var(--machinery-shadow)"
+            }}
+          >
             Tham gia
-          </ButtonLink>
+          </Link>
         </div>
       </div>
     </header>
