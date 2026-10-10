@@ -55,7 +55,7 @@ export default async function ProjectDetailPage({
 
   return (
     <>
-      <SiteHeader current="/projects" />
+      <SiteHeader hideOnMobile />
 
       <main id="main-content" className="container has-bottom-nav" style={{ paddingTop: "var(--space-8)" }}>
         <div className="industrial-ruler">
@@ -292,7 +292,7 @@ export default async function ProjectDetailPage({
       </main>
 
       <SiteFooter />
-      <BottomNav current="/projects" />
+      <BottomNav />
     </>
   );
 }

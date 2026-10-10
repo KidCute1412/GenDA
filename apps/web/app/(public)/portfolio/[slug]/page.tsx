@@ -74,7 +74,7 @@ export default async function PortfolioPage({ params }: { params: Promise<{ slug
 
   return (
     <>
-      <SiteHeader />
+      <SiteHeader hideOnMobile />
 
       <main id="main-content" className="industrial-canvas has-bottom-nav" style={{ paddingBottom: "var(--space-16)" }}>
         
