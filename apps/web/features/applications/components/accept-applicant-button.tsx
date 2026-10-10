@@ -28,16 +28,33 @@ export function AcceptApplicantButton({
 
   return (
     <>
-      <Button onClick={() => dialogRef.current?.showModal()}>Chấp nhận ứng viên này</Button>
+      <Button 
+        onClick={() => dialogRef.current?.showModal()}
+        className="btn--tactile-orange"
+        style={{ height: "36px", fontSize: "11px" }}
+      >
+        Chấp nhận ứng viên này
+      </Button>
 
       <dialog ref={dialogRef} className="dialog" aria-labelledby="accept-title">
-        <h2 id="accept-title">Chọn {applicantName} cho dự án này?</h2>
+        <div className="module-bay__header" style={{ borderColor: "var(--orange-500)", marginBottom: "var(--space-4)" }}>
+          <span className="module-bay__id" style={{ backgroundColor: "var(--orange-500)", color: "#ffffff" }}>
+            ACTION // IRREVERSIBLE
+          </span>
+          <span style={{ color: "var(--orange-500)", fontWeight: 800, fontFamily: "ui-monospace, monospace", fontSize: "11px" }}>
+            XÁC NHẬN GIAO DỰ ÁN
+          </span>
+        </div>
 
-        <p style={{ marginBlock: "var(--space-3) var(--space-4)" }}>
+        <h2 id="accept-title" style={{ fontSize: "1.25rem", fontWeight: 800, textTransform: "uppercase" }}>
+          Chọn {applicantName} cho dự án này?
+        </h2>
+
+        <p style={{ marginBlock: "var(--space-3) var(--space-4)", fontSize: "13px" }}>
           Khi bạn xác nhận, ba việc xảy ra ngay và không hoàn tác được:
         </p>
 
-        <ul style={{ paddingLeft: "var(--space-5)", marginBottom: "var(--space-4)" }}>
+        <ul style={{ paddingLeft: "var(--space-5)", marginBottom: "var(--space-4)", fontSize: "13px" }}>
           <li style={{ marginBottom: "var(--space-2)" }}>
             Dự án chuyển sang trạng thái đang thực hiện và ngừng nhận đơn mới.
           </li>
@@ -52,12 +69,19 @@ export function AcceptApplicantButton({
           đổi người được nữa.
         </Alert>
 
-        <div className="dialog__actions">
-          <Button variant="outline" onClick={() => dialogRef.current?.close()}>
+        <div className="dialog__actions" style={{ marginTop: "var(--space-6)" }}>
+          <Button 
+            variant="outline" 
+            onClick={() => dialogRef.current?.close()}
+            className="btn--tactile-zinc"
+            style={{ height: "40px", fontSize: "12px" }}
+          >
             Để tôi xem lại
           </Button>
           <Button
             loading={pending}
+            className="btn--tactile-orange"
+            style={{ height: "40px", fontSize: "12px" }}
             onClick={() => {
               setPending(true);
               // Bản dựng giao diện: mô phỏng độ trễ của giao dịch trên máy chủ.

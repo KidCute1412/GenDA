@@ -65,89 +65,210 @@ export default async function SmeProjectsPage({
     <>
       <SiteHeader />
 
-      <main id="main-content" className="container">
-        <nav aria-label="Đường dẫn phân cấp">
-          <ol className="breadcrumbs">
-            <li>
-              <Link href="/">Trang chủ</Link>
-            </li>
-            <li aria-hidden="true">/</li>
-            <li aria-current="page">Dự án của tôi</li>
-          </ol>
-        </nav>
+      <main id="main-content" className="industrial-canvas" style={{ paddingBottom: "var(--space-16)" }}>
+        {/* THANH THƯỚC ĐO KỸ THUẬT & ĐIỀU HƯỚNG */}
+        <div style={{ borderBottom: "2px solid var(--machinery-border)", backgroundColor: "var(--color-surface-card)" }}>
+          <div className="container" style={{ paddingBlock: "10px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
+            <nav aria-label="Đường dẫn phân cấp" style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px" }}>
+              <ol className="breadcrumbs" style={{ margin: 0, padding: 0 }}>
+                <li>
+                  <Link href="/" style={{ color: "var(--color-text-muted)", textDecoration: "none" }}>HOME</Link>
+                </li>
+                <li aria-hidden="true" style={{ color: "var(--color-text-muted)" }}>/</li>
+                <li>
+                  <span style={{ color: "var(--color-text-muted)" }}>SME PORTAL</span>
+                </li>
+                <li aria-hidden="true" style={{ color: "var(--color-text-muted)" }}>/</li>
+                <li aria-current="page" style={{ fontWeight: 700, color: "var(--orange-500)" }}>PROJECTS // MANAGER</li>
+              </ol>
+            </nav>
 
-        <div className="section--tight cluster cluster--between">
-          <div>
-            <h1>Dự án của tôi</h1>
-            <p className="text-muted" style={{ marginTop: "var(--space-2)" }}>
-              Quản lý các bài toán bạn đã đăng và theo dõi tiến độ từng dự án.
-            </p>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", fontFamily: "ui-monospace, monospace", fontSize: "11px" }}>
+              <span className="badge badge--verified" style={{ margin: 0 }}>
+                ORG: THE COFFEE LAB
+              </span>
+              <span style={{ color: "var(--color-text-muted)" }}>
+                TOTAL: {PROJECTS.length} PROJECTS
+              </span>
+            </div>
           </div>
-          <ButtonLink href="/sme/projects/new">Đăng dự án mới</ButtonLink>
         </div>
 
-        <nav className="tabs" aria-label="Lọc theo trạng thái">
-          {TABS.map((item) => {
-            const count = PROJECTS.filter((project) => item.match(project.status)).length;
-            return (
-              <Link
-                key={item.key}
-                href={item.key === "all" ? "/sme/projects" : `/sme/projects?tab=${item.key}`}
-                className="tab"
-                aria-current={item.key === activeTab.key ? "page" : undefined}
-              >
-                {item.label}
-                <span className="text-caption num">{count}</span>
-              </Link>
-            );
-          })}
-        </nav>
+        <div className="container" style={{ paddingTop: "var(--space-6)" }}>
+          
+          {/* HEADER TRANG SME */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "var(--space-4)", marginBottom: "var(--space-6)" }}>
+            <div>
+              <div className="industrial-ruler">ENTERPRISE CONSOLE // QUẢN LÝ DỰ ÁN</div>
+              <h1 style={{ fontSize: "clamp(1.75rem, 3.5vw, 2.5rem)", fontWeight: 900, textTransform: "uppercase", margin: "var(--space-1) 0" }}>
+                DỰ ÁN CỦA TÔI
+              </h1>
+              <p className="text-muted" style={{ margin: 0, fontSize: "13px", maxWidth: "68ch" }}>
+                Kiểm soát vòng đời bài toán kỹ thuật từ lúc lập đề bài, xét duyệt ứng viên đến giám sát nghiệm thu mốc và giải ngân ký quỹ.
+              </p>
+            </div>
+            
+            <Link 
+              href="/sme/projects/new" 
+              className="btn--tactile-orange"
+              style={{ height: "42px", fontSize: "12px", textDecoration: "none" }}
+            >
+              + ĐĂNG DỰ ÁN MỚI
+            </Link>
+          </div>
 
-        {projects.length === 0 ? (
-          <EmptyState
-            title="Chưa có dự án nào ở mục này"
-            advice="Khi bạn đăng một bài toán mới, nó sẽ đi qua bản nháp, chờ duyệt, rồi mới hiện ra cho sinh viên ứng tuyển."
-            action={<ButtonLink href="/sme/projects/new">Đăng dự án mới</ButtonLink>}
-          />
-        ) : (
-          <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
-            {projects.map((project) => {
-              const action = primaryAction(project);
+          {/* THANH TAB LỌC TRẠNG THÁI KIỂU HARDWARE SWITCHER */}
+          <div 
+            style={{ 
+              display: "flex", 
+              gap: "4px", 
+              overflowX: "auto", 
+              paddingBottom: "8px", 
+              marginBottom: "var(--space-6)",
+              borderBottom: "2px solid var(--machinery-border)"
+            }}
+          >
+            {TABS.map((item) => {
+              const count = PROJECTS.filter((project) => item.match(project.status)).length;
+              const isSelected = item.key === activeTab.key;
               return (
-                <li key={project.id} className="project-row">
-                  <div className="stack stack--sm">
-                    <p className="cluster">
-                      <StatusBadge status={project.status} />
-                      {project.status === "PUBLISHED" && project.applicantCount > 0 ? (
-                        <span className="text-caption num">
-                          {project.applicantCount} người đã ứng tuyển
-                        </span>
-                      ) : null}
-                    </p>
-
-                    <h2 style={{ fontSize: "var(--text-h4-size)" }}>{project.title}</h2>
-
-                    <p className="text-muted num" style={{ margin: 0 }}>
-                      {project.milestones.length} mốc bàn giao, hạn {formatDate(project.deadline)}
-                      {project.status === "PUBLISHED" || project.status === "IN_PROGRESS"
-                        ? `, còn ${daysUntil(project.deadline, TODAY)} ngày`
-                        : ""}
-                    </p>
-                  </div>
-
-                  <div className="project-row__meta stack stack--sm">
-                    <p className="project-row__money">{formatVnd(project.budget)}</p>
-                    <p style={{ margin: 0 }}>
-                      <Link href={action.href} className={`btn btn--${action.variant} btn--sm`}>
-                        {action.label}
-                      </Link>
-                    </p>
-                  </div>
-                </li>
+                <Link
+                  key={item.key}
+                  href={item.key === "all" ? "/sme/projects" : `/sme/projects?tab=${item.key}`}
+                  className="chip"
+                  aria-current={isSelected ? "page" : undefined}
+                  style={{
+                    height: "34px",
+                    paddingInline: "12px",
+                    fontSize: "11px",
+                    fontFamily: "ui-monospace, monospace",
+                    textDecoration: "none",
+                    whiteSpace: "nowrap",
+                    backgroundColor: isSelected ? "var(--machinery-border)" : "var(--color-surface-card)",
+                    color: isSelected ? "#ffffff" : "var(--color-text-body)",
+                    borderColor: "var(--machinery-border)"
+                  }}
+                >
+                  <span>{item.label}</span>
+                  <span 
+                    style={{ 
+                      marginLeft: "6px", 
+                      padding: "1px 6px", 
+                      fontSize: "10px", 
+                      borderRadius: "2px",
+                      backgroundColor: isSelected ? "var(--orange-500)" : "var(--color-surface-subtle)",
+                      color: isSelected ? "#ffffff" : "var(--color-text-muted)"
+                    }}
+                  >
+                    {count}
+                  </span>
+                </Link>
               );
             })}
-          </ul>
-        )}
+          </div>
+
+          {/* NỘI DUNG DANH SÁCH DỰ ÁN */}
+          {projects.length === 0 ? (
+            <div className="module-bay" style={{ padding: "var(--space-10)", textAlign: "center" }}>
+              <EmptyState
+                title="CHƯA CÓ DỰ ÁN NÀO Ở MỤC NÀY"
+                advice="Khi bạn đăng một bài toán mới, hệ thống sẽ hỗ trợ lưu nháp, kiểm duyệt tiêu chí nghiệm thu rồi xuất bản cho sinh viên nộp đơn."
+                action={
+                  <Link href="/sme/projects/new" className="btn--tactile-orange" style={{ height: "40px", fontSize: "12px", textDecoration: "none" }}>
+                    ĐĂNG DỰ ÁN ĐẦU TIÊN
+                  </Link>
+                }
+              />
+            </div>
+          ) : (
+            <div className="stack" style={{ gap: "var(--space-4)" }}>
+              {projects.map((project) => {
+                const action = primaryAction(project);
+                return (
+                  <article 
+                    key={project.id} 
+                    className="module-bay"
+                    style={{ 
+                      padding: "var(--space-5) var(--space-6)",
+                      backgroundColor: "var(--color-surface-card)"
+                    }}
+                  >
+                    <div className="module-bay__header">
+                      <span className="module-bay__id">PROJECT // {project.id.toUpperCase()}</span>
+                      <span style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px", color: "var(--color-text-muted)" }}>
+                        HẠN CHÓT: {formatDate(project.deadline)}
+                      </span>
+                    </div>
+
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "var(--space-4)", alignItems: "center" }}>
+                      
+                      {/* Cột thông tin */}
+                      <div className="stack" style={{ gap: "6px" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+                          <StatusBadge status={project.status} />
+                          {project.status === "PUBLISHED" && project.applicantCount > 0 ? (
+                            <span className="badge badge--progress" style={{ margin: 0 }}>
+                              {project.applicantCount} ỨNG VIÊN ĐÃ NỘP
+                            </span>
+                          ) : null}
+                        </div>
+
+                        <h2 style={{ fontSize: "1.25rem", fontWeight: 800, margin: 0, textTransform: "uppercase" }}>
+                          <Link
+                            href={`/projects/${project.id}`}
+                            style={{ color: "inherit", textDecoration: "none" }}
+                          >
+                            {project.title}
+                          </Link>
+                        </h2>
+
+                        <p className="text-muted" style={{ margin: 0, fontSize: "12px", fontFamily: "ui-monospace, monospace" }}>
+                          {project.milestones.length} MỐC BÀN GIAO // {project.skills.join(" • ")}
+                          {project.status === "PUBLISHED" || project.status === "IN_PROGRESS"
+                            ? ` (CÒN ${daysUntil(project.deadline, TODAY)} NGÀY)`
+                            : ""}
+                        </p>
+                      </div>
+
+                      {/* Cột ngân sách & Nút hành động */}
+                      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", justifyContent: "center", gap: "8px" }}>
+                        <div style={{ textAlign: "right" }}>
+                          <span style={{ fontSize: "10px", fontFamily: "ui-monospace, monospace", color: "var(--color-text-muted)", display: "block" }}>
+                            NGÂN SÁCH DỰ ÁN:
+                          </span>
+                          <strong className="num" style={{ fontSize: "1.35rem", fontWeight: 900, color: "var(--color-text-heading)" }}>
+                            {formatVnd(project.budget)}
+                          </strong>
+                        </div>
+
+                        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "4px" }}>
+                          <Link
+                            href={action.href}
+                            className={action.variant === "primary" ? "btn--tactile-orange" : "btn--tactile-zinc"}
+                            style={{ height: "36px", fontSize: "11px", textDecoration: "none" }}
+                          >
+                            {action.label.toUpperCase()}
+                          </Link>
+
+                          {project.status !== "DRAFT" ? (
+                            <Link
+                              href={`/projects/${project.id}`}
+                              className="chip"
+                              style={{ height: "36px", fontSize: "11px", textDecoration: "none", backgroundColor: "var(--color-surface-subtle)" }}
+                            >
+                              Xem trang công khai
+                            </Link>
+                          ) : null}
+                        </div>
+                      </div>
+
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </main>
 
       <SiteFooter />
