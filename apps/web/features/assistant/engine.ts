@@ -316,44 +316,6 @@ const cvMissing: Rule = (s) => {
   };
 };
 
-const verification: Rule = (s) => {
-  const status = s.user?.verificationStatus ?? (s.user?.studentVerified ? "VERIFIED" : "UNVERIFIED");
-  if (!s.user || status === "VERIFIED") return null;
-  const base = { kind: "VERIFICATION" as const, key: `verify:${status}:${s.user.verificationReason ?? ""}`, choices: [{ label: "Mở hồ sơ", href: "/student/profile" }] };
-  if (status === "PENDING") {
-    return {
-      ...base,
-      tier: "news",
-      title: "Minh chứng đang chờ duyệt",
-      lines: [{ expression: "neutral", text: "Minh chứng sinh viên của bạn đang chờ quản trị viên duyệt. Có kết quả là mình báo ngay." }],
-      reason: `Hồ sơ của bạn đang ở trạng thái xác minh ${quote("chờ duyệt")}.`
-    };
-  }
-  if (status === "REJECTED") {
-    return {
-      ...base,
-      tier: "coach",
-      title: "Minh chứng chưa được duyệt",
-      lines: [
-        { expression: "concerned", text: "Minh chứng sinh viên của bạn chưa được duyệt, nên bạn chưa ứng tuyển được." },
-        { expression: "thinking", text: s.user.verificationReason ? `Lý do quản trị viên ghi: ${quote(s.user.verificationReason)}` : "Quản trị viên chưa ghi lý do cụ thể." },
-        { expression: "wink", text: "Sửa đúng điểm đó rồi gửi lại là được. Email tên miền trường thường là cách nhanh nhất." }
-      ],
-      reason: `Hồ sơ của bạn đang ở trạng thái xác minh ${quote("bị từ chối")}.`
-    };
-  }
-  return {
-    ...base,
-    tier: "coach",
-    title: "Xác minh là sinh viên",
-    lines: [
-      { expression: "concerned", text: "Hồ sơ của bạn chưa được xác minh là sinh viên, nên bạn chưa ứng tuyển được." },
-      { expression: "neutral", text: "Bạn chỉ cần một trong hai: email tên miền trường, hoặc ảnh thẻ sinh viên còn hạn." }
-    ],
-    reason: `Hồ sơ của bạn đang ở trạng thái xác minh ${quote("chưa xác minh")}.`
-  };
-};
-
 /* --------------------------------------------------------------------------
    Huấn luyện: nộp mãi không được, chờ quá lâu, hồ sơ mỏng
    -------------------------------------------------------------------------- */
@@ -499,7 +461,7 @@ const skillsFew: Rule = (s) => {
    -------------------------------------------------------------------------- */
 
 const matchSuggestion: Rule = (s) => {
-  if (!s.user?.cv || (s.user.verificationStatus ?? (s.user.studentVerified ? "VERIFIED" : "UNVERIFIED")) !== "VERIFIED") return null;
+  if (!s.user?.cv || !s.user.emailVerified || s.user.accountState !== "ACTIVE") return null;
   const applied = new Set(s.applications.map((application) => application.projectId));
   const since = s.previousVisitAt ? Date.parse(s.previousVisitAt) : null;
   const candidates = s.ledger.projects
@@ -530,12 +492,12 @@ const matchSuggestion: Rule = (s) => {
 };
 
 /** Thứ tự trong mảng là thứ tự ưu tiên giữa các quy tắc cùng bậc. */
-const RULES: Rule[] = [intro, welcomeBack, changesRequested, deadlineSoon, acceptedStart, shortlisted, projectCompleted, cvMissing, verification, rejectionCoach, longWait, skillsFew, matchSuggestion];
+const RULES: Rule[] = [intro, welcomeBack, changesRequested, deadlineSoon, acceptedStart, shortlisted, projectCompleted, cvMissing, rejectionCoach, longWait, skillsFew, matchSuggestion];
 
 /** Mọi điều Gen muốn nói với sinh viên lúc này, việc quan trọng nhất đứng đầu. */
 export function buildStudentInsights(ctx: InsightContext): Insight[] {
   const s = scope(ctx);
-  if (s.user?.role !== "STUDENT") return [];
+  if (s.user?.role !== "CONTRIBUTOR") return [];
   return RULES.map((rule) => rule(s))
     .filter((insight): insight is Insight => insight !== null)
     .map((insight, order) => ({ insight, order }))

@@ -17,8 +17,7 @@ public class AccountProfileService {
     public AccountProfile get(UUID userId) {
         var account = accounts.findById(userId)
                 .orElseThrow(() -> new AuthException("ACCOUNT_NOT_FOUND", "Account does not exist"));
-        return new AccountProfile(account.id(), account.email(), account.displayName(), account.role().name(),
-                account.studentVerificationStatus());
+        return new AccountProfile(account.id(), account.email(), account.displayName(), account.role().name());
     }
 
     @Transactional

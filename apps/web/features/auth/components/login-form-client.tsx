@@ -48,8 +48,15 @@ export function LoginFormClient() {
       setCaptchaToken(null);
       setCaptchaKey((value) => value + 1);
       if (error instanceof AuthApiError) {
+        if (error.code === "EMAIL_VERIFICATION_REQUIRED") {
+          router.push(`/verify-email?email=${encodeURIComponent(email)}`);
+          return;
+        }
         const suffix = error.requestId ? ` Mã yêu cầu: ${error.requestId}.` : "";
-        setFormError(`${error.message}${suffix}`);
+        const message = error.code === "SME_NOT_APPROVED"
+          ? "Email đã được xác minh nhưng doanh nghiệp vẫn đang chờ GenDA duyệt."
+          : error.message;
+        setFormError(`${message}${suffix}`);
       } else {
         setFormError("Không thể kết nối tới hệ thống đăng nhập. Hãy thử lại.");
       }

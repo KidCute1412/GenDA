@@ -17,6 +17,7 @@ Creates local `.env` if missing, starts frontend/backend/PostgreSQL, waits for h
 | Backend readiness | http://localhost:3001/api/v1/health |
 | OpenAPI | http://localhost:3001/api/v1/openapi |
 | PostgreSQL | localhost:15432 |
+| Mailpit inbox | http://localhost:8025 |
 
 Database credentials and host ports are in root `.env`. Internal database port stays 5432. The unusual host port avoids existing PostgreSQL services on this development machine.
 
@@ -58,4 +59,4 @@ From `apps/api`, run `mvnw.cmd verify` (Windows) or `sh mvnw verify` (Linux). Co
 
 If Playwright's browser is missing, install Chromium with `corepack pnpm --filter @genda/web exec playwright install chromium`. The existing `PLAYWRIGHT_CHROME_PATH` override can use installed Chrome when download is unavailable.
 
-The backend also serves student/SME registration, authentication and the read-only skill/project catalog. Docker Compose activates the local-only `demo` profile, which seeds three login accounts with password `Demo@12345`: `letuanloc.2203@hcmus.edu.vn`, `contact@coffeelab.vn`, and `admin@genda.vn`. Email verification, matching, applications and later workflows remain sample/local browser behavior. Set a unique `AUTH_JWT_SECRET` of at least 32 bytes outside local development.
+The backend also serves contributor/SME registration, email OTP verification, authentication and the read-only skill/project catalog. Docker Compose routes verification mail to Mailpit and activates the local-only `demo` profile, which seeds three `ACTIVE` login accounts with password `Demo@12345`. New registrations remain pending until the OTP shown in Mailpit is confirmed at `/verify-email`. Matching, applications and later workflows remain sample/local browser behavior. Set a unique `AUTH_JWT_SECRET` of at least 32 bytes outside local development.

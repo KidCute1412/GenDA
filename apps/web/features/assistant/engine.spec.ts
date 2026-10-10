@@ -130,14 +130,6 @@ describe("trợ lý Gen: bộ quy tắc", () => {
     });
   });
 
-  it("sinh viên chưa xác minh được nhắc xác minh, không được gợi ý dự án", () => {
-    const ledger = createSeedLedger();
-    const result = kinds(context(ledger, { userId: "student-unverified" }));
-    expect(result).toContain("VERIFICATION");
-    expect(result).toContain("SKILLS_FEW");
-    expect(result).not.toContain("MATCH_SUGGESTION");
-  });
-
   it("đo được thư ngỏ dùng lại", () => {
     expect(letterSimilarity("Em rất muốn tham gia dự án này", "Em rất muốn tham gia dự án này.")).toBe(1);
     expect(letterSimilarity("Em từng làm landing page cho quán cà phê", "Em mạnh SEO và viết bài chuẩn từ khóa")).toBeLessThan(0.2);

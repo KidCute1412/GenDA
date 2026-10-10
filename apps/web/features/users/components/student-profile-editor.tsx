@@ -27,36 +27,13 @@ type Errors = Partial<Record<"displayName" | "school" | "major" | "studyYear" | 
 
 const EMPTY_FORM: FormState = { displayName: "", school: "", major: "", studyYear: "", skillCodes: [] };
 
-const VERIFICATION = {
-  UNVERIFIED: {
-    variant: "info" as const,
-    title: "Bạn chưa xác thực tài khoản sinh viên",
-    body: "Bạn có thể hoàn thiện hồ sơ ngay bây giờ. Xác thực sinh viên là bước riêng trước khi nộp đơn ứng tuyển."
-  },
-  PENDING: {
-    variant: "warning" as const,
-    title: "Minh chứng đang được xem xét",
-    body: "Bạn vẫn có thể cập nhật hồ sơ trong lúc chờ kết quả xác thực."
-  },
-  VERIFIED: {
-    variant: "success" as const,
-    title: "Tài khoản sinh viên đã được xác thực",
-    body: "Trạng thái xác thực được giữ riêng với các thông tin hồ sơ bạn có thể chỉnh sửa."
-  },
-  REJECTED: {
-    variant: "danger" as const,
-    title: "Minh chứng chưa được chấp nhận",
-    body: "Thông tin hồ sơ vẫn có thể cập nhật. Vui lòng gửi lại minh chứng ở luồng xác thực khi tính năng này khả dụng."
-  }
-};
-
 function initialForm(profile: StudentProfile): FormState {
   return {
     displayName: profile.displayName,
     school: profile.school ?? "",
     major: profile.major ?? "",
     studyYear: profile.studyYear ?? "",
-    skillCodes: profile.skills.map((skill) => skill.code)
+    skillCodes: profile.skills.map((skill: SkillCatalogItem) => skill.code)
   };
 }
 
@@ -64,11 +41,11 @@ function validate(form: FormState): Errors {
   const errors: Errors = {};
   if (!form.displayName.trim()) errors.displayName = "Nhập họ và tên của bạn.";
   else if (form.displayName.trim().length > 180) errors.displayName = "Họ và tên không được vượt quá 180 ký tự.";
-  if (!form.school.trim()) errors.school = "Nhập trường bạn đang theo học.";
-  else if (form.school.trim().length > 180) errors.school = "Tên trường không được vượt quá 180 ký tự.";
-  if (!form.major.trim()) errors.major = "Nhập ngành học hiện tại.";
-  else if (form.major.trim().length > 180) errors.major = "Tên ngành không được vượt quá 180 ký tự.";
-  if (!form.studyYear) errors.studyYear = "Chọn năm học hiện tại.";
+  if (!form.school.trim()) errors.school = "Nhập cơ sở đào tạo của bạn.";
+  else if (form.school.trim().length > 180) errors.school = "Tên cơ sở đào tạo không được vượt quá 180 ký tự.";
+  if (!form.major.trim()) errors.major = "Nhập chuyên môn hoặc ngành học của bạn.";
+  else if (form.major.trim().length > 180) errors.major = "Chuyên môn hoặc ngành học không được vượt quá 180 ký tự.";
+  if (!form.studyYear) errors.studyYear = "Chọn giai đoạn học tập hiện tại.";
   if (form.skillCodes.length === 0) errors.skills = "Chọn ít nhất một kỹ năng.";
   return errors;
 }
@@ -152,12 +129,13 @@ export function StudentProfileEditor() {
   }
   if (!profile) return null;
 
-  const verification = VERIFICATION[profile.verificationStatus as keyof typeof VERIFICATION] ?? VERIFICATION.UNVERIFIED;
   const atSkillLimit = form.skillCodes.length >= 8;
 
   return (
     <div className="stack stack--lg" style={{ maxWidth: "880px" }}>
-      <Alert variant={verification.variant} title={verification.title}>{verification.body}</Alert>
+      <Alert variant="info" title="Thông tin nền tảng tự khai">
+        Thông tin học tập và chuyên môn giúp doanh nghiệp hiểu bối cảnh của bạn. GenDA không xác minh tư cách sinh viên và không gắn huy hiệu xác thực cho các thông tin này.
+      </Alert>
 
       {!profile.complete ? (
         <Alert variant="warning" title="Hồ sơ chưa hoàn chỉnh">
@@ -169,15 +147,15 @@ export function StudentProfileEditor() {
         <section className="module-bay" style={{ padding: "var(--space-6)" }}>
           <div className="module-bay__header">
             <span className="module-bay__id">MODULE // 01</span>
-            <span>Thông tin cơ bản</span>
+            <span>Thông tin cá nhân và nền tảng</span>
           </div>
           <div className="stack" style={{ gap: "var(--space-4)" }}>
             <TextField id="profile-email" label="Email đăng nhập" value={profile.email} readOnly disabled />
-            <TextField id="profile-name" label="Họ và tên sinh viên" required autoComplete="name" value={form.displayName} error={errors.displayName} onChange={(event) => updateField("displayName", event.target.value)} />
-            <TextField id="profile-school" label="Trường đang theo học" required value={form.school} error={errors.school} onChange={(event) => updateField("school", event.target.value)} />
-            <TextField id="profile-major" label="Ngành học hiện tại" required value={form.major} error={errors.major} onChange={(event) => updateField("major", event.target.value)} />
-            <SelectField id="profile-study-year" label="Năm học hiện tại" required value={form.studyYear} error={errors.studyYear} onChange={(event) => updateField("studyYear", event.target.value as StudyYear | "")}>
-              <option value="">Chọn năm học</option>
+            <TextField id="profile-name" label="Họ và tên" required autoComplete="name" value={form.displayName} error={errors.displayName} onChange={(event) => updateField("displayName", event.target.value)} />
+            <TextField id="profile-school" label="Cơ sở đào tạo (tự khai)" required value={form.school} error={errors.school} onChange={(event) => updateField("school", event.target.value)} />
+            <TextField id="profile-major" label="Chuyên môn hoặc ngành học" required value={form.major} error={errors.major} onChange={(event) => updateField("major", event.target.value)} />
+            <SelectField id="profile-study-year" label="Giai đoạn học tập" required value={form.studyYear} error={errors.studyYear} onChange={(event) => updateField("studyYear", event.target.value as StudyYear | "")}>
+              <option value="">Chọn giai đoạn học tập</option>
               <option value="YEAR_1">Năm 1</option>
               <option value="YEAR_2">Năm 2</option>
               <option value="YEAR_3">Năm 3</option>
@@ -225,10 +203,10 @@ export function StudentProfileEditor() {
         <section className="module-bay" style={{ padding: "var(--space-6)" }}>
           <div className="module-bay__header">
             <span className="module-bay__id">MODULE // 03</span>
-            <span>CV sinh viên</span>
+            <span>CV ứng tuyển</span>
           </div>
-          <p className="text-muted">CV được quản lý ở luồng riêng và không được ghi nhận giả như một phần của lần lưu hồ sơ này.</p>
-          <ButtonLink href="/student/cv" variant="outline">Đi đến trang CV</ButtonLink>
+          <p className="text-muted">CV được quản lý ở luồng riêng và là tài liệu tự khai để doanh nghiệp xem khi xét đơn. GenDA không dùng CV như một huy hiệu xác minh năng lực.</p>
+          <ButtonLink href="/student/cv" variant="outline">Quản lý CV</ButtonLink>
         </section>
 
         {saveError ? (
@@ -247,7 +225,7 @@ export function StudentProfileEditor() {
 
 function ProfileSkeleton() {
   return (
-    <div className="stack stack--lg" style={{ maxWidth: "880px" }} aria-busy="true" aria-label="Đang tải hồ sơ">
+    <div className="stack stack--lg" style={{ maxWidth: "880px" }} aria-busy="true" aria-label="Đang tải hồ sơ contributor">
       <Skeleton height="5rem" />
       <section className="module-bay" style={{ padding: "var(--space-6)" }}>
         <div className="stack">

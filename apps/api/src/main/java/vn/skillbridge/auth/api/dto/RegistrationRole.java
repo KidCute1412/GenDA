@@ -1,6 +1,6 @@
 package vn.skillbridge.auth.api.dto;
 
 public enum RegistrationRole {
-    STUDENT,
+    CONTRIBUTOR,
     SME
 }

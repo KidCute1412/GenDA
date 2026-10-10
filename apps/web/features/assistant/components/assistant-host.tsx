@@ -46,7 +46,7 @@ export function AssistantHost() {
   const pathname = usePathname();
   const { session, hydrated } = useDemoSession();
   const ledger = useDemoLedger();
-  const user = session?.role === "STUDENT" ? ledger.users.find((candidate) => candidate.email === session.email) : undefined;
+  const user = session?.role === "CONTRIBUTOR" ? ledger.users.find((candidate) => candidate.email === session.email) : undefined;
   const userId = user?.id;
   const quiet = QUIET_ROUTES.some((route) => pathname?.startsWith(route));
 

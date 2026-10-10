@@ -14,6 +14,7 @@ import java.util.UUID;
 import javax.crypto.SecretKey;
 import org.springframework.stereotype.Component;
 import vn.skillbridge.auth.application.session.TokenService;
+import vn.skillbridge.auth.domain.account.AccountState;
 import vn.skillbridge.auth.domain.account.AuthUser;
 import vn.skillbridge.auth.infrastructure.config.AuthProperties;
 
@@ -35,8 +36,8 @@ public class JwtTokenService implements TokenService {
                 .issuer(issuer).subject(user.id().toString()).issuedAt(Date.from(now)).expiration(Date.from(now.plus(ttl)))
                 .id(UUID.randomUUID().toString()).claim("typ", "access").claim("email", user.email())
                 .claim("name", user.displayName()).claim("role", user.role().name())
+                .claim("accountState", user.accountState().name())
                 .claim("emailVerified", user.emailVerified())
-                .claim("studentVerificationStatus", user.studentVerificationStatus())
                 .claim("smeApprovalStatus", user.smeApprovalStatus()).signWith(key).compact();
     }
 
@@ -58,8 +59,9 @@ public class JwtTokenService implements TokenService {
         Claims claims = parse(token, "access");
         return new AccessTokenClaims(UUID.fromString(claims.getSubject()), claims.get("email", String.class),
                 claims.get("name", String.class), claims.get("role", String.class),
+                AccountState.valueOf(claims.get("accountState", String.class)),
                 Boolean.TRUE.equals(claims.get("emailVerified", Boolean.class)),
-                claims.get("studentVerificationStatus", String.class), claims.get("smeApprovalStatus", String.class));
+                claims.get("smeApprovalStatus", String.class));
     }
 
     @Override

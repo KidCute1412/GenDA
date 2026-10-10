@@ -37,29 +37,17 @@ export const BUDGET_MAX = 5_000_000;
    Sinh viên đang đăng nhập
    ========================================================================== */
 
-/**
- * Bốn trạng thái xác thực. Khai báo thành union rõ ràng thay vì để TypeScript
- * suy ra literal từ giá trị mẫu: màn hình hồ sơ phải dựng được banner cho CẢ
- * BỐN trạng thái, nếu kiểu bị thu hẹp về đúng giá trị đang dùng thì ba nhánh
- * còn lại sẽ bị báo là mã chết và dễ bị xóa nhầm.
- */
-export type VerificationStatus = "UNVERIFIED" | "PENDING" | "VERIFIED" | "REJECTED";
-
 export const CURRENT_STUDENT: {
   name: string;
   school: string;
   major: string;
   year: string;
-  verification: VerificationStatus;
-  schoolEmail: string;
   skills: string[];
 } = {
   name: "Lê Tuấn Lộc",
   school: "ĐH Khoa học Tự nhiên, ĐHQG-HCM",
   major: "Công nghệ Thông tin",
   year: "Sinh viên năm 3",
-  verification: "VERIFIED",
-  schoolEmail: "letuanloc.2203@hcmus.edu.vn",
   skills: ["React", "Next.js", "TypeScript", "Figma"]
 };
 
@@ -525,30 +513,6 @@ export const DELIVERY_HISTORY: DeliveryEvent[] = [
 /* ==========================================================================
    Hàng đợi quản trị (FR-ADM-01..04)
    ========================================================================== */
-
-export const PENDING_VERIFICATIONS = [
-  {
-    id: "v-diep",
-    name: "Võ Ngọc Diệp",
-    school: "ĐH Sư phạm Kỹ thuật TP.HCM",
-    method: "Ảnh thẻ sinh viên",
-    submittedAt: "2026-09-17"
-  },
-  {
-    id: "v-huy",
-    name: "Trần Đức Huy",
-    school: "ĐH FPT TP.HCM",
-    method: "Email trường (@fpt.edu.vn)",
-    submittedAt: "2026-09-17"
-  },
-  {
-    id: "v-quyen",
-    name: "Đinh Bảo Quyên",
-    school: "ĐH Ngoại thương CS2",
-    method: "Ảnh thẻ sinh viên",
-    submittedAt: "2026-09-16"
-  }
-];
 
 export type AuditEntry = {
   id: string;

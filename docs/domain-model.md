@@ -2,7 +2,7 @@
 
 ## Implementation status
 
-This document describes the approved target domain. The current code still uses `STUDENT` and `student_profiles`; migration to `CONTRIBUTOR` must be delivered as a coordinated code, data, API-client, route and test change.
+This document describes the approved target domain. The account actor is `CONTRIBUTOR`; the account lifecycle is represented by `PENDING_EMAIL_VERIFICATION`, `EMAIL_VERIFIED`, `ACTIVE`, and `DISABLED`. Email OTP persistence, delivery, confirmation and resend are implemented, while the former `studentVerificationStatus` flow is removed. The legacy `student_profiles` table/name remains temporarily.
 
 ## Actors
 

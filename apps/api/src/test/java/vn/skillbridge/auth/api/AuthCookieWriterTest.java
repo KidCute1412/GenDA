@@ -13,6 +13,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import vn.skillbridge.auth.application.session.AuthCookieSettings;
 import vn.skillbridge.auth.application.session.AuthResult;
 import vn.skillbridge.auth.domain.account.AuthUser;
+import vn.skillbridge.auth.domain.account.AccountState;
 import vn.skillbridge.auth.domain.account.UserRole;
 
 class AuthCookieWriterTest {
@@ -21,8 +22,8 @@ class AuthCookieWriterTest {
     @Test
     void writesHttpOnlyScopedCookiesWithoutExposingTokensInTheBody() {
         AuthCookieWriter writer = writer();
-        var user = new AuthUser(UUID.randomUUID(), "student@example.com", "hash", "Student", UserRole.STUDENT,
-                true, "VERIFIED", null, true);
+        var user = new AuthUser(UUID.randomUUID(), "student@example.com", "hash", "Student", UserRole.CONTRIBUTOR,
+                true, AccountState.ACTIVE, null);
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         writer.write(response, new AuthResult(user, "access-token", "refresh-token", NOW.plus(Duration.ofDays(7))));

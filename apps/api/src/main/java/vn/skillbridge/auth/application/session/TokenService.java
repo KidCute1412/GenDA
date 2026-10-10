@@ -3,6 +3,7 @@ package vn.skillbridge.auth.application.session;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
+import vn.skillbridge.auth.domain.account.AccountState;
 import vn.skillbridge.auth.domain.account.AuthUser;
 
 public interface TokenService {
@@ -13,6 +14,6 @@ public interface TokenService {
     String fingerprint(String token);
 
     record RefreshTokenClaims(UUID userId, UUID sessionId) {}
-    record AccessTokenClaims(UUID userId, String email, String displayName, String role, boolean emailVerified,
-            String studentVerificationStatus, String smeApprovalStatus) {}
+    record AccessTokenClaims(UUID userId, String email, String displayName, String role, AccountState accountState,
+            boolean emailVerified, String smeApprovalStatus) {}
 }

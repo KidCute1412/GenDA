@@ -19,7 +19,6 @@ export type InsightKind =
   | "SHORTLISTED"
   | "PROJECT_COMPLETED"
   | "CV_MISSING"
-  | "VERIFICATION"
   | "REJECTION_STREAK"
   | "LONG_WAIT"
   | "SKILLS_FEW"

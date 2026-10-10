@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import vn.skillbridge.auth.application.AuthException;
 import vn.skillbridge.auth.application.session.SessionIssuer;
+import vn.skillbridge.auth.domain.account.AccountState;
 import vn.skillbridge.auth.domain.account.AuthUser;
 import vn.skillbridge.auth.domain.account.UserRole;
 
@@ -24,8 +25,8 @@ class LoginServiceTest {
     @BeforeEach
     void setUp() {
         service = new LoginService(accounts, passwords, sessions);
-        user = new AuthUser(UUID.randomUUID(), "student@example.com", "hash", "Student", UserRole.STUDENT,
-                true, "VERIFIED", null, true);
+        user = new AuthUser(UUID.randomUUID(), "student@example.com", "hash", "Student", UserRole.CONTRIBUTOR,
+                true, AccountState.ACTIVE, null);
         when(accounts.findByEmail("student@example.com")).thenReturn(Optional.of(user));
         when(passwords.matches("Password@1", "hash")).thenReturn(true);
     }
@@ -45,5 +46,29 @@ class LoginServiceTest {
                 .isInstanceOf(AuthException.class)
                 .extracting(exception -> ((AuthException) exception).code())
                 .isEqualTo("INVALID_CREDENTIALS");
+    }
+
+    @Test
+    void rejectsAnAccountPendingEmailVerification() {
+        user = new AuthUser(user.id(), user.email(), user.passwordHash(), user.displayName(), user.role(),
+                false, AccountState.PENDING_EMAIL_VERIFICATION, null);
+        when(accounts.findByEmail("student@example.com")).thenReturn(Optional.of(user));
+
+        assertThatThrownBy(() -> service.login("student@example.com", "Password@1", false))
+                .isInstanceOf(AuthException.class)
+                .extracting(exception -> ((AuthException) exception).code())
+                .isEqualTo("EMAIL_VERIFICATION_REQUIRED");
+    }
+
+    @Test
+    void rejectsADisabledAccount() {
+        user = new AuthUser(user.id(), user.email(), user.passwordHash(), user.displayName(), user.role(),
+                true, AccountState.DISABLED, null);
+        when(accounts.findByEmail("student@example.com")).thenReturn(Optional.of(user));
+
+        assertThatThrownBy(() -> service.login("student@example.com", "Password@1", false))
+                .isInstanceOf(AuthException.class)
+                .extracting(exception -> ((AuthException) exception).code())
+                .isEqualTo("ACCOUNT_DISABLED");
     }
 }
