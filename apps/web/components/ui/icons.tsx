@@ -30,6 +30,7 @@ export {
   LinkSimple,
   ArrowRight,
   CaretRight,
+  X,
   Eye,
   EyeSlash,
   Star,

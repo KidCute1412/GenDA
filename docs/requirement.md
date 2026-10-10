@@ -130,6 +130,20 @@ Portfolio xác thực (FR-CERT-01…05) đã bị loại khỏi phạm vi. Năng
 | FR-ADM-03 | Quản trị viên xem nhật ký chuyển trạng thái của một dự án để xử lý khiếu nại. | M |
 | FR-ADM-04 | Quản trị viên khóa hoặc mở khóa một tài khoản kèm lý do bắt buộc. | S |
 
+### 3.10 Trợ lý tìm việc — module `assistant`
+
+Đặc tả đầy đủ: [`assistant.md`](./assistant.md). Trợ lý là **hệ quy tắc**, không dùng AI, cùng ràng buộc với matching ở mục 1. Mọi yêu cầu ở đây là `S`: bỏ đi không ảnh hưởng vòng đời MVP.
+
+| ID | Yêu cầu | Ưu tiên |
+| --- | --- | --- |
+| FR-AST-01 | Hệ thống suy ra các lời nhắc cho sinh viên từ dữ liệu của chính sinh viên đó (hồ sơ, đơn, mốc bàn giao, đánh giá, dự án đang công khai) theo các quy tắc và ngưỡng tường minh ở `assistant.md` mục 4, kiểm thử được bằng unit test. | S |
+| FR-AST-02 | Khi sinh viên có từ 2 đơn bị từ chối liên tiếp trở lên, trợ lý chỉ ra tối đa 3 nguyên nhân sửa được (nộp lệch kỹ năng, thiếu một kỹ năng lặp lại, thư ngỏ dùng lại hoặc sơ sài, CV cũ) kèm một bước làm tiếp. | S |
+| FR-AST-03 | Khi đơn chờ từ 7 ngày trở lên chưa có phản hồi, trợ lý báo số ngày chờ và gợi ý dự án khác đang khớp. | S |
+| FR-AST-04 | Khi sinh viên quay lại sau từ 7 ngày vắng trở lên, trợ lý chào lại và tóm tắt những thay đổi về đơn, mốc bàn giao và dự án mới khớp trong khoảng vắng. | S |
+| FR-AST-05 | Trợ lý tự bật nhiều nhất một lần mỗi phiên với lời nhắc quan trọng nhất chưa nghe; lời nhắc đã nghe không lặp lại cho tới khi tình huống đổi; sinh viên tắt được chế độ tự bật. | S |
+| FR-AST-06 | Mỗi lời nhắc nêu dữ liệu đã dẫn tới nó ("Vì sao Gen nói vậy?"). | S |
+| FR-AST-07 | Trợ lý chỉ đọc dữ liệu của sinh viên đang đăng nhập, không hiển thị thông tin về ứng viên khác. | S |
+
 ## 4. Quy tắc nghiệp vụ
 
 Bất biến áp dụng xuyên suốt mọi use case. Vi phạm trả về lỗi miền ổn định theo `docs/api-conventions.md`, không phải lỗi 500.
@@ -198,6 +212,7 @@ Ngoài ra, điều kiện đóng theo `docs/definition-of-done.md` phải đạt
 | FR-REV-01…03 | `reviews` | `docs/domain-model.md` |
 | FR-CERT-01…05 | `certificates` | `docs/domain-model.md`, `docs/authorization-matrix.md` |
 | FR-ADM-01…04 | `admin` | `docs/authorization-matrix.md` |
+| FR-AST-01…07 | `assistant` | `docs/assistant.md`, `docs/design.md` DD-11 |
 | BR-01…14 | Tầng domain của module sở hữu | `docs/domain-model.md`, `docs/architecture.md` |
 | NFR-SEC, NFR-PRIV, NFR-AUD | Xuyên suốt | `docs/architecture.md`, `docs/authorization-matrix.md` |
 | NFR-PERF, NFR-DATA | `projects`, `applications`, `milestones` | `docs/database-conventions.md`, `docs/api-conventions.md` |
@@ -217,6 +232,8 @@ Các mục sau **không** được xây ở MVP. Liệt kê tường minh để 
 | Community Review theo rubric chuyên môn | V1.1 |
 | Workspace chat/cộng tác tích hợp | V1.1 |
 | AI Matching | V2.0 |
+| Trợ lý Gen ở backend, nhắc qua email khi sinh viên vắng, nhắc SME về đơn chờ lâu | V1.1 |
+| Trợ lý Gen dùng AI: đọc CV và thư ngỏ, trò chuyện tự do | V2.0 |
 | SME Premium, chứng nhận QR, Talent Pool | V2.0 |
 | Ứng dụng di động native | Chưa lên lịch |
 | Mở rộng ngoài TP.HCM | Sau khi kiểm chứng pilot |
@@ -234,6 +251,7 @@ Các điểm cần quyết định trước khi module liên quan được imple
 | OQ-05 | **Quyền sở hữu sản phẩm bàn giao.** Mô tả dự án 2.3.8 yêu cầu quy định rõ quyền sở hữu, quyền SME sử dụng và quyền sinh viên nêu sản phẩm trong CV. Cần văn bản pháp lý trước khi vận hành thật. | Mô tả dự án 2.3.8 |
 | OQ-06 | **Đăng ký sàn TMĐT.** Mô tả dự án 2.3.8 nêu nghĩa vụ rà soát đăng ký website cung cấp dịch vụ TMĐT với Bộ Công Thương khi vận hành chính thức. Ảnh hưởng thời điểm mở public, không ảnh hưởng MVP pilot. | NĐ 52/2013, NĐ 85/2021 |
 | OQ-07 | **Lưu trữ tệp.** `docs/database-conventions.md` yêu cầu object storage nhưng chưa chọn nhà cung cấp; ràng buộc chi phí là NFR-OPS-01. Cần một ADR. | `docs/database-conventions.md` |
+| OQ-08 | **Lý do đóng đơn có cấu trúc.** Trợ lý hiện chỉ suy luận nguyên nhân trượt từ dữ liệu (FR-AST-02). Cho SME chọn một lý do có cấu trúc khi đơn bị đóng sẽ làm lời khuyên chính xác hơn, nhưng thêm một bước cho SME và đụng tới FR-APP-05 (đơn còn lại tự động `REJECTED`). Cần chốt trước khi dựng module `assistant` ở backend. | `docs/assistant.md` mục 7 |
 
 ## 10. Giả định và rủi ro
 

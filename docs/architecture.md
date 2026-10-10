@@ -30,8 +30,9 @@ One application/JAR, one relational database. Organize packages under `vn.skillb
 | reviews | reviews | Reviews and eligibility |
 | certificates | — | Out of scope: verified portfolio was removed and replaced by the student CV (`users`) |
 | admin | admin | Moderation/audit entrypoints; domain mutations stay in their owning modules |
+| assistant (planned) | assistant | Student job-search coaching (assistant Gen): read-only rules over users/applications/projects/milestones/reviews facades; see [assistant.md](assistant.md) |
 
-`workspace` composes domains and owns view state/navigation. `demo-ledger` is a temporary frontend adapter. `platform` owns health, HTTP errors and configuration, not business rules.
+`workspace` composes domains and owns view state/navigation. `demo-ledger` is a temporary frontend adapter. The `assistant` frontend feature currently evaluates its rules in the browser over `demo-ledger`; the backend module is created when applications and milestones have real APIs. `platform` owns health, HTTP errors and configuration, not business rules.
 
 ### Backend module organization
 
