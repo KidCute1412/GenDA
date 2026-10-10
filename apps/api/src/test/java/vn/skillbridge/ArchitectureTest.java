@@ -20,4 +20,11 @@ class ArchitectureTest {
             .that().resideInAPackage("..application..")
             .should().dependOnClassesThat().resideInAnyPackage("..api..", "..infrastructure..")
             .allowEmptyShould(true);
+
+    @ArchTest
+    static final ArchRule platformDoesNotDependOnBusinessModules = noClasses()
+            .that().resideInAPackage("vn.skillbridge.platform..")
+            .should().dependOnClassesThat().resideInAnyPackage(
+                    "vn.skillbridge.projects..", "vn.skillbridge.users..")
+            .allowEmptyShould(true);
 }

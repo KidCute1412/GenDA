@@ -4,6 +4,57 @@
  */
 
 export interface paths {
+    "/api/v1/skills": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List the canonical skill catalog */
+        get: operations["list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Browse published projects */
+        get: operations["browse"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{projectId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get one published project */
+        get: operations["detail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/health": {
         parameters: {
             query?: never;
@@ -25,16 +76,73 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        ApiError: {
+            code: string;
+            message: string;
+            requestId: string;
+        };
+        SkillCatalogItemResponse: {
+            code: string;
+            name: string;
+        };
+        ProjectPageResponse: {
+            data: components["schemas"]["ProjectSummaryResponse"][];
+            /** Format: int32 */
+            page: number;
+            /** Format: int32 */
+            pageSize: number;
+            /** Format: int64 */
+            total: number;
+        };
+        ProjectSummaryResponse: {
+            id: string;
+            title: string;
+            smeName: string;
+            smeIndustry: string;
+            /** Format: int64 */
+            budget: number;
+            /** Format: date */
+            deadline: string;
+            summary: string;
+            skills: components["schemas"]["SkillResponse"][];
+        };
+        SkillResponse: {
+            code: string;
+            name: string;
+        };
+        MilestoneResponse: {
+            id: string;
+            /** Format: int32 */
+            order: number;
+            title: string;
+            /** Format: int64 */
+            budget: number;
+            /** Format: date */
+            deadline: string;
+            criteria: string[];
+        };
+        ProjectDetailResponse: {
+            id: string;
+            title: string;
+            smeName: string;
+            smeIndustry: string;
+            smeSize: string;
+            smeContact: string;
+            /** Format: int64 */
+            budget: number;
+            /** Format: date */
+            deadline: string;
+            summary: string;
+            problem: string;
+            skills: components["schemas"]["SkillResponse"][];
+            acceptanceCriteria: string[];
+            milestones: components["schemas"]["MilestoneResponse"][];
+        };
         HealthResponse: {
             /** @enum {string} */
             status: "ok";
             /** @enum {string} */
             service: "genda-api";
-        };
-        ApiError: {
-            code?: string;
-            message?: string;
-            requestId?: string;
         };
     };
     responses: never;
@@ -45,6 +153,120 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Canonical skill catalog */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["SkillCatalogItemResponse"][];
+                };
+            };
+            /** @description Unexpected error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    browse: {
+        parameters: {
+            query?: {
+                q?: string;
+                skill?: string[];
+                minBudget?: number;
+                maxBudget?: number;
+                page?: number;
+                pageSize?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Published project page */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ProjectPageResponse"];
+                };
+            };
+            /** @description Invalid filter */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unexpected error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    detail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                projectId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Published project detail */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ProjectDetailResponse"];
+                };
+            };
+            /** @description Project not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unexpected error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
     health: {
         parameters: {
             query?: never;

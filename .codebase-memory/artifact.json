@@ -1,0 +1,11 @@
+{
+    "schema_version": 2,
+    "commit": "39bcb6998d2435829e58534a0aa338120cbd6a8c",
+    "indexed_at": "2026-10-06T14:34:26Z",
+    "project": "GenDA",
+    "nodes": 2422,
+    "edges": 4850,
+    "original_size": 6029312,
+    "compressed_size": 1268815,
+    "compression_level": 9
+}
