@@ -58,6 +58,16 @@ corepack pnpm --filter @genda/web test:e2e
 
 From `apps/api`, run `mvnw.cmd verify` (Windows) or `sh mvnw verify` (Linux). Commit OpenAPI snapshot/generated types with API changes. Backend lint checks ArchUnit boundaries; compile and tests are Java quality checks.
 
+For focused architecture checks from the repository root, run `node scripts/api-maven.mjs -Dtest=ArchitectureTest,ArchitectureRulesTest test`. Read [published module interfaces](architecture.md#published-module-interfaces) before adding dependencies; Java `public` does not imply a supported cross-module interface.
+
+If host Java or the Wrapper is unavailable, run tests with the same Maven/Java versions as deployment using Docker Desktop (from the repository root):
+
+```powershell
+docker run --rm --mount "type=bind,source=$((Resolve-Path apps/api).Path),target=/app" --mount type=volume,source=genda-maven-cache,target=/root/.m2 --workdir /app maven:3.9.13-eclipse-temurin-21 mvn -B -ntp clean verify
+```
+
+This builds only the API and needs no database or SMTP service for the current unit/architecture suite. It writes build output to `apps/api/target` and uses a Maven cache volume, without resetting application data. The existing Compose health/OpenAPI smoke test and generated-contract comparison remain separate checks; run database smoke checks only against an isolated local test database.
+
 If Playwright's browser is missing, install Chromium with `corepack pnpm --filter @genda/web exec playwright install chromium`. The existing `PLAYWRIGHT_CHROME_PATH` override can use installed Chrome when download is unavailable.
 
 The backend also serves contributor/SME registration, email OTP verification, authentication and the read-only skill/project catalog. Docker Compose sends verification mail through the external SMTP account configured in `apps/api/.env` and activates the local-only `demo` profile, which seeds three `ACTIVE` login accounts with password `Demo@12345`. New registrations remain pending until the OTP delivered to their registered mailbox is confirmed at `/verify-email`. Matching, applications and later workflows remain sample/local browser behavior. Set a unique `AUTH_JWT_SECRET` of at least 32 bytes outside local development.

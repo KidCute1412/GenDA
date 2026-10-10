@@ -1,6 +1,5 @@
 package vn.skillbridge.auth.infrastructure.config;
 
-import java.time.Clock;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,11 +12,6 @@ import vn.skillbridge.auth.application.emailverification.EmailVerificationSettin
 @Configuration
 @EnableConfigurationProperties({AuthProperties.class, EmailVerificationProperties.class})
 public class AuthInfrastructureConfiguration {
-    @Bean
-    Clock authClock() {
-        return Clock.systemUTC();
-    }
-
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(12);
