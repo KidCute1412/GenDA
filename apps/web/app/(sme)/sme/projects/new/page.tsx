@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { SiteHeader } from "../../../../../components/layout/site-header";
 import { SiteFooter } from "../../../../../components/layout/site-footer";
+import { BottomNav } from "../../../../../components/layout/bottom-nav";
 import { ProjectWizard } from "../../../../../features/projects/components/project-wizard";
 
 export const metadata: Metadata = {
@@ -19,9 +20,9 @@ export const metadata: Metadata = {
 export default function NewProjectPage() {
   return (
     <>
-      <SiteHeader />
+      <SiteHeader hideOnMobile />
 
-      <main id="main-content" className="industrial-canvas" style={{ paddingBottom: "var(--space-16)" }}>
+      <main id="main-content" className="industrial-canvas has-bottom-nav" style={{ paddingBottom: "var(--space-16)" }}>
         {/* THANH THƯỚC ĐO KỸ THUẬT & ĐIỀU HƯỚNG */}
         <div style={{ borderBottom: "2px solid var(--machinery-border)", backgroundColor: "var(--color-surface-card)" }}>
           <div className="container" style={{ paddingBlock: "10px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
@@ -69,6 +70,7 @@ export default function NewProjectPage() {
       </main>
 
       <SiteFooter />
+      <BottomNav />
     </>
   );
 }

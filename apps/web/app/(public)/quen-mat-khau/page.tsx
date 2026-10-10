@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { SiteFooter } from "../../../components/layout/site-footer";
 import { SiteHeader } from "../../../components/layout/site-header";
+import { BottomNav } from "../../../components/layout/bottom-nav";
 import { PasswordResetRequest } from "../../../features/auth/components/password-reset-request";
 
 export default function ForgotPasswordPage() {
   return (
     <>
-      <SiteHeader />
-      <main id="main-content" className="industrial-canvas">
+      <SiteHeader hideOnMobile />
+      <main id="main-content" className="industrial-canvas has-bottom-nav">
         <div className="container" style={{ maxWidth: "640px", paddingBlock: "var(--space-16)" }}>
           <section className="module-bay stack" style={{ padding: "var(--space-8)" }}>
             <div className="industrial-ruler">AUTH // PASSWORD RESET</div>
@@ -19,6 +20,7 @@ export default function ForgotPasswordPage() {
         </div>
       </main>
       <SiteFooter />
+      <BottomNav />
     </>
   );
 }

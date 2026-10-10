@@ -249,7 +249,7 @@ export default async function PortfolioPage({ params }: { params: Promise<{ slug
                           {entry.title}
                         </h2>
                         <p style={{ margin: "4px 0 0", fontFamily: "ui-monospace, monospace", fontSize: "12px", color: "var(--color-text-muted)" }}>
-                          Đối tác: <strong style={{ color: "var(--color-text-heading)" }}>{entry.smeName}</strong> ({entry.smeNote}) — Vai trò: <span style={{ color: "var(--orange-500)", fontWeight: 700 }}>{entry.role}</span>
+                          Đối tác: <strong style={{ color: "var(--color-text-heading)" }}>{entry.smeName}</strong> ({entry.smeNote}) - Vai trò: <span style={{ color: "var(--orange-500)", fontWeight: 700 }}>{entry.role}</span>
                         </p>
                       </div>
 
