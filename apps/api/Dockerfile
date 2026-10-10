@@ -7,7 +7,9 @@ COPY src ./src
 RUN --mount=type=cache,target=/root/.m2 mvn -B -ntp -DskipTests package
 
 FROM eclipse-temurin:21-jre-alpine AS runtime
-RUN addgroup -S app && adduser -S app -G app
+RUN apk add --no-cache ca-certificates \
+    && addgroup -S app \
+    && adduser -S app -G app
 WORKDIR /app
 COPY --from=build --chown=app:app /app/target/genda-api.jar ./app.jar
 USER app
