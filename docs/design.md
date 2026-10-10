@@ -1398,7 +1398,7 @@ Các quyết định dưới đây phát sinh khi dựng mã nguồn, không có
 >
 > **Các trụ cột thiết kế chính:**
 > 1. **Chất liệu cơ khí & Sổ cái:** Khung lưới cơ khí (Engineered Blueprint Grid), viền đen dứt khoát 2px (`#18181B`), đổ bóng cứng xúc giác (`box-shadow: 4px 4px 0px #18181B`), góc vuông cơ học dứt khoát (`0px` cho module bays, `4px` cho nút).
-> 2. **Điểm nhấn Công nghiệp:** Màu **Safety Orange / International Orange (`#F97316`)** làm điểm nhấn tactile duy nhất.
+> 2. **Điểm nhấn Công nghiệp:** Màu **Navy thương hiệu (`#0A285A`)** làm điểm nhấn tactile duy nhất (đổi từ Safety Orange `#F97316` ngày 2026-10-07). Dải token `--brand-50…700`; trên nền tối dùng `--brand-300`.
 > 3. **Typography kỹ thuật:** Sử dụng `Be Vietnam Pro` cho tiêu đề in hoa đanh thép kết hợp `Monospace` cho thông số, số tiền, ngày hạn chót và mã bay (`BAY-01 // ACTIVE`).
 > 4. **Hỗ trợ Song hành Light & Dark Mode:** Hỗ trợ mượt mà cả chế độ Off-White sáng kỹ thuật và chế độ Anodized Carbon tối huyền bí.
 >
@@ -1416,7 +1416,7 @@ Các quyết định dưới đây phát sinh khi dựng mã nguồn, không có
 >
 > **Quyết định: lời nhắc hiện ra như hộp thoại trong game visual novel.** Một nhân vật có tên, có biểu cảm, đứng trên mép hộp thoại; chữ chạy từng ký tự; câu cuối mở các lựa chọn đánh số. Hình thức này tạo cảm giác có một người đang nói chuyện với sinh viên, đúng vai "chị khóa trên" của Gen, và giữ lời khuyên đủ dài mà vẫn chia nhỏ được từng câu.
 >
-> **Nhân vật** là tài sản nhận diện vẽ riêng bằng SVG, thuộc ngoại lệ "được phép tự vẽ" ở [Mục 4.10](#410-hệ-thống-biểu-tượng-icon-system), luôn `aria-hidden`. Phong cách anime 2D phẳng, viền mực đậm như viền cơ khí 2px của DD-10; mọi điểm cam (kẹp tóc hai vạch `//`, tai nghe, dây hoodie, thẻ tên) là Safety Orange. Không dùng nhân vật 3D vì [Mục 4.9.1](#491-làm-ấm-mà-không-rơi-lại-vào-khuôn-mẫu) cấm minh họa người kiểu 3D bong bóng; không dùng model của bên thứ ba vì vướng điều khoản thương mại và không mang nhận diện GenDA. Bảng màu nhân vật cố ý không đổi theo chế độ tối: viền mực riêng giúp nhân vật đứng được trên mọi nền.
+> **Nhân vật** là tài sản nhận diện vẽ riêng bằng SVG, thuộc ngoại lệ "được phép tự vẽ" ở [Mục 4.10](#410-hệ-thống-biểu-tượng-icon-system), luôn `aria-hidden`. Phong cách anime 2D phẳng, viền mực đậm như viền cơ khí 2px của DD-10. Gen là cô gái tai cáo tóc chàm `#4647AE` dài, mắt xanh lá, cardigan len kem mặc ngoài sơ mi trắng thắt nơ navy, cúc màu tóc, tay chống cằm. Tóc chàm là màu riêng của nhân vật: cùng họ xanh với màu thương hiệu navy nên hài hòa với giao diện, nhưng sáng hơn để nhân vật vẫn nổi lên trên hộp thoại. Không dùng nhân vật 3D vì [Mục 4.9.1](#491-làm-ấm-mà-không-rơi-lại-vào-khuôn-mẫu) cấm minh họa người kiểu 3D bong bóng; không dùng model của bên thứ ba vì vướng điều khoản thương mại và không mang nhận diện GenDA. Bảng màu nhân vật cố ý không đổi theo chế độ tối: viền mực riêng giúp nhân vật đứng được trên mọi nền.
 >
 > **Ngoại lệ có kiểm soát với [Mục 4.12](#412-chuyển-động-motion).** Ba chuyển động riêng của Gen đều có lý do nói được thành lời và đều **hữu hạn**:
 > 1. *Chữ chạy* (24ms mỗi ký tự): lý do "đang nói". Bấm là hiện hết ngay (4.12e). Vùng chữ giữ sẵn chỗ cho cả câu nên không làm bố cục nhảy.
@@ -1425,7 +1425,7 @@ Các quyết định dưới đây phát sinh khi dựng mã nguồn, không có
 >
 > Với `prefers-reduced-motion`, chữ hiện ngay cả câu và khẩu hình đứng yên (cờ được kiểm tra trong JavaScript, vì hai chuyển động này điều khiển bằng JS); chớp mắt và trượt vào đã nằm trong khối CSS toàn cục.
 >
-> **Ranh giới bất biến.** Hộp thoại không modal, không lớp phủ, không bẫy tiêu điểm; tự bật thì không giành tiêu điểm. Tự bật nhiều nhất một lần mỗi phiên. Nguyên câu được đọc một lần qua vùng `aria-live="polite"`, chữ đang chạy ẩn với trình đọc màn hình. Mọi vùng bấm ≥ 44px. Bảng tên dùng chữ mực trên nền cam (6,3:1). Hộp thoại vuông góc 0px, viền 2px, không đổ bóng, đúng DD-10.
+> **Ranh giới bất biến.** Hộp thoại không modal, không lớp phủ, không bẫy tiêu điểm; tự bật thì không giành tiêu điểm. Tự bật nhiều nhất một lần mỗi phiên. Nguyên câu được đọc một lần qua vùng `aria-live="polite"`, chữ đang chạy ẩn với trình đọc màn hình. Mọi vùng bấm ≥ 44px. Bảng tên dùng chữ trắng trên nền navy thương hiệu (14,4:1). Hộp thoại vuông góc 0px, viền 2px, không đổ bóng, đúng DD-10.
 >
 > **Điều kiện xem lại.** (1) Chỉ số "tỷ lệ tắt tự bật" ở [`assistant.md`](./assistant.md) mục 8 tăng cao trong pilot: hạ tần suất trước, đổi hình thức sau. (2) Có ngân sách họa sĩ: nâng nhân vật lên Live2D **từ chính thiết kế này**, giữ nguyên bảng màu và phụ kiện nhận diện.
 

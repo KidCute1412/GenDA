@@ -30,7 +30,7 @@ export function AuthControls() {
     return (
       <>
         <Link href="/login" className="nav-link">ĐĂNG NHẬP</Link>
-        <Link href="/login?mode=register" className="btn--tactile-orange" style={{ height: "36px", paddingInline: "var(--space-4)", fontSize: "12px" }}>THAM GIA</Link>
+        <Link href="/login?mode=register" className="btn--tactile-brand" style={{ height: "36px", paddingInline: "var(--space-4)", fontSize: "12px" }}>THAM GIA</Link>
       </>
     );
   }

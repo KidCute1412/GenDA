@@ -84,7 +84,7 @@ export default function StudentProfilePage() {
           >
             <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-3)" }}>
               <div style={{ 
-                backgroundColor: verified ? "var(--color-status-verified)" : "var(--orange-500)", 
+                backgroundColor: verified ? "var(--color-status-verified)" : "var(--brand-500)", 
                 color: "#ffffff", 
                 padding: "6px", 
                 borderRadius: "2px", 

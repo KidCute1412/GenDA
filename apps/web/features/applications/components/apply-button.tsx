@@ -90,7 +90,7 @@ export function ApplyButton({
       {submitError ? <Alert variant="danger" title="Không thể gửi đơn">{submitError}</Alert> : null}
       <button
         type="button"
-        className="btn--tactile-orange"
+        className="btn--tactile-brand"
         style={{ width: "100%", height: "48px" }}
         onClick={open}
         disabled={hydrated && !isStudent}

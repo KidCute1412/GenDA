@@ -137,7 +137,7 @@ export default async function ProjectsPage({
                 placeholder="Nhập từ khóa kỹ thuật (ví dụ: React, Figma, SEO)..."
                 style={{ fontFamily: "ui-monospace, monospace" }}
               />
-              <button type="submit" className="btn--tactile-orange" style={{ height: "42px", paddingInline: "var(--space-5)" }}>
+              <button type="submit" className="btn--tactile-brand" style={{ height: "42px", paddingInline: "var(--space-5)" }}>
                 <MagnifyingGlass weight="bold" aria-hidden="true" />
                 TÌM KIẾM
               </button>
@@ -216,7 +216,7 @@ export default async function ProjectsPage({
         <div className="section--tight">
           <div className="enter" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px dashed var(--machinery-border)", paddingBottom: "var(--space-2)", marginBottom: "var(--space-4)", "--e": 6 } as CSSProperties}>
             <p style={{ fontFamily: "ui-monospace, monospace", fontSize: "12px", fontWeight: 700, margin: 0, textTransform: "uppercase" }} aria-live="polite">
-              KẾT QUẢ QUÉT: <span style={{ color: "var(--orange-500)" }}>{projectPage.total}</span> DỰ ÁN
+              KẾT QUẢ QUÉT: <span style={{ color: "var(--brand-500)" }}>{projectPage.total}</span> DỰ ÁN
             </p>
             <span style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px", color: "var(--color-text-muted)" }}>
               SORT: DEADLINE ASC
@@ -300,9 +300,9 @@ export default async function ProjectsPage({
                           fontFamily: "ui-monospace, monospace",
                           fontSize: "12px",
                           fontWeight: 800,
-                          backgroundColor: score.percent >= 70 ? "rgba(249, 115, 22, 0.15)" : "var(--color-surface-subtle)",
-                          color: score.percent >= 70 ? "var(--orange-500)" : "var(--color-text-muted)",
-                          border: `1px solid ${score.percent >= 70 ? "var(--orange-500)" : "var(--machinery-border)"}`,
+                          backgroundColor: score.percent >= 70 ? "rgba(10, 40, 90, 0.15)" : "var(--color-surface-subtle)",
+                          color: score.percent >= 70 ? "var(--brand-500)" : "var(--color-text-muted)",
+                          border: `1px solid ${score.percent >= 70 ? "var(--brand-500)" : "var(--machinery-border)"}`,
                           padding: "2px 6px",
                           borderRadius: "2px"
                         }}>

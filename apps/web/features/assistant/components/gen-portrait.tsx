@@ -5,45 +5,62 @@ import type { GenExpression } from "../types";
 
 /**
  * Gen: nhân vật trợ lý, tài sản nhận diện vẽ riêng cho GenDA (ngoại lệ được phép tự vẽ SVG,
- * docs/design.md 4.10 và DD-11). Phong cách anime phẳng, viền mực đậm như viền cơ khí 2px
- * của DD-10; điểm nhấn cam Safety Orange ở kẹp tóc hai vạch "//", tai nghe, dây hoodie và thẻ tên.
+ * docs/design.md 4.10 và DD-11). Cô gái tai cáo tóc chàm (#4647AE) dài, mắt xanh lá, cardigan len kem
+ * mặc ngoài sơ mi trắng thắt nơ navy, tay chống cằm. Phong cách anime phẳng, viền mực đậm như viền cơ khí 2px của DD-10. Tóc chàm là
+ * màu riêng của nhân vật, cùng họ xanh với màu thương hiệu navy nhưng sáng hơn để nổi trên giao diện.
  *
  * Bảng màu dưới đây là màu của hình minh họa, cố ý KHÔNG đổi theo chế độ tối: nhân vật có viền
  * mực riêng nên đứng được trên cả nền sáng lẫn nền tối, giống một con dấu in.
  */
 const C = {
-  ink: "#18181B", skin: "#FDE8DA", skinShade: "#F4C7B0", hair: "#2E2438", hairShade: "#1E1726", hairShine: "#5A4A6E",
-  orange: "#F97316", orangeDeep: "#C2410C", irisDark: "#7C2D12", irisLight: "#FDBA74", pupil: "#1C0F08",
-  grey: "#3F3F46", hoodie: "#E4E4E7", hoodieLight: "#F4F4F5", seam: "#A1A1AA", mouth: "#8F2D23", tongue: "#EF7B6E",
-  blush: "#F9A8A0", blushLine: "#E0675C", sweat: "#BAE6FD"
+  ink: "#18181B", skin: "#FFF1E8", skinShade: "#F8CDB8",
+  hair: "#4647AE", hairBack: "#383994", hairShade: "#2C2D7A", hairDeep: "#1F2060", hairLight: "#8E8FD8",
+  earTip: "#1B1C4F", earInner: "#FFE4E6", fluff: "#FFFFFF",
+  iris: "#16A34A", irisDark: "#14532D", irisLight: "#BEF264", pupil: "#052E16",
+  cardigan: "#F3EBDD", cardiganShade: "#D8CCB6", rib: "#C2B49A", shirt: "#FFFFFF", shirtShade: "#E4E4EF",
+  ribbon: "#0A285A", ribbonLight: "#1E4A8F", button: "#4647AE",
+  mouth: "#8F2D23", tongue: "#EF7B6E", blush: "#F9A8A0", blushLine: "#E0675C", sweat: "#BAE6FD", sparkle: "#F97316"
 };
 
 const ink = (width = 3): SVGProps<SVGPathElement> => ({ stroke: C.ink, strokeWidth: width, strokeLinejoin: "round", strokeLinecap: "round" });
 
-const FACE = "M128 164 C128 112 272 112 272 164 L271 200 C268 230 244 256 216 267 Q200 273 184 267 C156 256 132 230 129 200 Z";
-const BACK_HAIR = "M204 66 C140 66 94 110 96 180 C96 236 100 278 116 304 Q128 296 136 308 Q146 298 158 306 L160 330 L240 330 L242 306 Q254 298 264 308 Q272 296 284 304 C300 278 304 236 304 180 C306 110 268 66 204 66 Z";
-/** Mái vuốt chéo sang trái: năm lọn, đầu lọn nghiêng về bên trái người xem. */
+const FACE = "M134 168 C134 112 266 112 266 168 L265 200 C262 232 236 258 210 266 Q200 270 190 266 C164 258 138 232 135 200 Z";
+/** Bờm tóc sau lưng: dài quá vai, xòe ra hai bên với đuôi tóc nhọn. */
+const BACK_HAIR = "M200 70 C126 70 92 124 94 194 C94 256 84 310 70 356 C62 384 52 410 44 440 L72 430 L60 470 L92 452 L98 480 L302 480 L308 452 L340 470 L328 430 L356 440 C348 410 338 384 330 356 C316 310 306 256 306 194 C308 124 274 70 200 70 Z";
+/** Tai cáo bên trái người xem; tai phải lật gương quanh trục x = 200. */
+const EAR = "M130 140 C112 104 102 66 104 28 C134 38 168 62 190 100 Z";
+const EAR_INNER = "M138 126 C128 102 120 76 120 54 C140 64 160 82 176 104 Z";
+const EAR_FLUFF = "M134 130 L138 114 L146 124 L150 104 L158 118 L164 98 L170 114 L180 104 L180 122 Z";
+/** Mái rối rẽ giữa, một lọn dài rủ giữa hai mắt; các lọn đi từ phải sang trái người xem. */
 const BANGS = (() => {
-  const strands: Array<[[number, number], [number, number]]> = [[[266, 148], [252, 180]], [[244, 134], [216, 178]], [[216, 144], [186, 174]], [[188, 140], [158, 178]], [[156, 148], [134, 198]]];
-  let d = "M104 292 C96 246 95 200 103 156 C111 102 152 68 204 68 C258 68 299 104 299 158 C301 204 300 250 296 292 Q290 282 288 272 Q286 282 280 288 C278 256 276 222 272 196 C270 180 268 164 266 148 ";
+  const strands: Array<[[number, number], [number, number]]> = [
+    [[262, 160], [256, 200]], [[236, 150], [222, 186]], [[210, 146], [200, 224]],
+    [[186, 150], [172, 182]], [[160, 156], [146, 200]]
+  ];
+  let d = "M114 268 C106 224 104 180 110 148 C120 100 156 76 200 76 C244 76 280 100 290 148 C296 180 294 224 286 268 Q280 256 278 246 C276 214 272 182 266 150 ";
   strands.forEach(([notch, tip], index) => {
-    const next = strands[index + 1]?.[0] ?? [129, 204];
-    d += `C${notch[0] - 3} ${notch[1] + 20} ${tip[0] + 14} ${tip[1] - 4} ${tip[0]} ${tip[1]} `;
-    d += `C${tip[0] + 3} ${tip[1] - 14} ${next[0] + 7} ${next[1] + 14} ${next[0]} ${next[1]} `;
+    const next = strands[index + 1]?.[0] ?? [126, 214];
+    d += `C${notch[0] - 2} ${notch[1] + 22} ${tip[0] + 10} ${tip[1] - 8} ${tip[0]} ${tip[1]} `;
+    d += `C${tip[0] + 2} ${tip[1] - 18} ${next[0] + 6} ${next[1] + 16} ${next[0]} ${next[1]} `;
   });
-  return `${d}C126 234 124 262 122 286 Q116 276 112 270 Q110 282 104 292 Z`;
+  return `${d}C122 234 120 252 118 262 Q118 266 114 268 Z`;
 })();
-const SHINE = "M124 124 C144 92 174 82 204 82 C236 82 262 92 280 120 C272 114 264 112 258 116 C250 106 240 104 232 110 C222 101 210 101 202 108 C192 101 180 102 172 110 C162 106 152 108 146 116 C138 113 130 116 124 124 Z";
+/** Lọn tóc trước buông qua vai, nằm trên áo. */
+const SIDE_LOCK = "M118 222 C112 262 116 300 104 340 C96 368 84 392 70 420 Q86 414 96 404 Q96 420 92 436 C112 410 124 380 130 344 C136 308 136 272 142 236 Z";
+const SHINE = "M132 122 C152 96 178 88 200 88 C222 88 248 96 268 122 C256 116 248 118 242 122 C232 112 218 110 210 116 C202 108 188 108 180 116 C170 112 158 114 152 120 C144 116 138 118 132 122 Z";
 const eyeShape = (cx: number) => `M${cx - 21} 201 C${cx - 19} 189 ${cx - 7} 184 ${cx + 3} 185 C${cx + 12} 186 ${cx + 19} 191 ${cx + 21} 198 C${cx + 21} 213 ${cx + 15} 225 ${cx + 1} 227 C${cx - 13} 227 ${cx - 20} 215 ${cx - 21} 201 Z`;
+/** Mắt thu nhỏ quanh tâm từng mắt, không đổi khoảng cách giữa hai mắt. */
+const eyeTransform = (cx: number) => `translate(${cx} 206) scale(0.9) translate(${-cx} -206)`;
+const MIRROR = "translate(400 0) scale(-1 1)";
 
 type Mouth = "smile" | "grin" | "talk" | "flat" | "wavy" | "o";
 type Pose = { eyes: "open" | "closed" | "wink"; look: [number, number]; brows: keyof typeof BROWS; mouth: Mouth; blush?: boolean; sparkle?: boolean; sweat?: boolean };
 
 const BROWS = {
-  soft: "M146 172 Q163 165 182 170 M218 170 Q237 165 254 172",
-  worried: "M146 171 Q164 170 182 162 M218 162 Q236 170 254 171",
-  raised: "M146 165 Q163 157 182 163 M218 172 Q237 169 254 174",
-  up: "M146 166 Q163 157 182 163 M218 163 Q237 157 254 166"
+  soft: "M150 172 Q166 166 184 171 M216 171 Q234 166 250 172",
+  worried: "M150 171 Q167 170 184 163 M216 163 Q233 170 250 171",
+  raised: "M150 166 Q166 158 184 164 M216 173 Q234 170 250 175",
+  up: "M150 167 Q166 158 184 164 M216 164 Q234 158 250 167"
 };
 
 const POSES: Record<GenExpression, Pose> = {
@@ -73,7 +90,8 @@ function MouthShape({ mouth }: { mouth: Mouth }) {
     case "o":
       return <ellipse cx="200" cy="253" rx="5.5" ry="6.5" fill={C.mouth} stroke={C.ink} strokeWidth={2.2} />;
     default:
-      return <path d="M189 250 Q200 257 211 250" fill="none" {...ink(2.4)} />;
+      // Cười mỉm tinh nghịch: khóe miệng hơi vểnh
+      return <path d="M184 247 Q186 250 189 249 Q200 258 211 249 Q214 250 216 247" fill="none" {...ink(2.4)} />;
   }
 }
 
@@ -86,7 +104,7 @@ function OpenEye({ cx, mirror, look, clipId }: { cx: number; mirror?: boolean; l
       <clipPath id={clipId}><path d={eyeShape(cx)} /></clipPath>
       <path d={eyeShape(cx)} fill="#FFFFFF" />
       <g clipPath={`url(#${clipId})`}>
-        <ellipse cx={ix} cy={207 + iy} rx="13.5" ry="17" fill={C.orangeDeep} />
+        <ellipse cx={ix} cy={207 + iy} rx="13.5" ry="17" fill={C.iris} />
         <ellipse cx={ix} cy={214 + iy} rx="10" ry="8" fill={C.irisLight} opacity=".85" />
         <ellipse cx={ix} cy={199 + iy} rx="14" ry="9" fill={C.irisDark} />
         <ellipse cx={ix} cy={208 + iy} rx="6" ry="8" fill={C.pupil} />
@@ -107,10 +125,26 @@ const Highlight = ({ x, y }: { x: number; y: number }) => (
 );
 
 const Sparkle = ({ x, y, scale }: { x: number; y: number; scale: number }) => (
-  <path transform={`translate(${x} ${y}) scale(${scale})`} d="M0 -10 L2.5 -2.5 L10 0 L2.5 2.5 L0 10 L-2.5 2.5 L-10 0 L-2.5 -2.5 Z" fill={C.orange} {...ink(1.5)} />
+  <path transform={`translate(${x} ${y}) scale(${scale})`} d="M0 -10 L2.5 -2.5 L10 0 L2.5 2.5 L0 10 L-2.5 2.5 L-10 0 L-2.5 -2.5 Z" fill={C.sparkle} {...ink(1.5)} />
 );
 
-const VIEW_BOX = { bust: "60 22 280 458", face: "96 60 208 208" } as const;
+/** Tai cáo: cùng màu tóc, chóp chàm sẫm, lòng hồng nhạt có túm lông trắng. */
+function Ear({ clipId, mirror }: { clipId: string; mirror?: boolean }) {
+  return (
+    <g transform={mirror ? MIRROR : undefined}>
+      <clipPath id={clipId}><path d={EAR} /></clipPath>
+      <path d={EAR} fill={C.hair} />
+      <g clipPath={`url(#${clipId})`}>
+        <path d="M100 20 L200 20 L200 58 Q150 66 100 50 Z" fill={C.earTip} />
+        <path d={EAR_INNER} fill={C.earInner} />
+      </g>
+      <path d={EAR} fill="none" {...ink()} />
+      <path d={EAR_FLUFF} fill={C.fluff} {...ink(1.6)} />
+    </g>
+  );
+}
+
+const VIEW_BOX = { bust: "60 22 280 458", face: "96 56 208 208" } as const;
 
 export type GenPortraitProps = {
   expression?: GenExpression;
@@ -139,33 +173,33 @@ export function GenPortrait({ expression = "neutral", talking = false, blinkKey,
 
   return (
     <svg viewBox={VIEW_BOX[framing]} className={className} aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
-      {/* Tóc sau và thân */}
-      <path d={BACK_HAIR} fill={C.hairShade} {...ink()} />
-      <path d="M68 480 C72 400 112 346 172 322 Q200 334 228 322 C288 346 328 400 332 480 Z" fill={C.hoodie} {...ink()} />
-      <path d="M112 480 L118 430 M288 480 L282 430" stroke={C.seam} strokeWidth={2.5} strokeLinecap="round" />
-      <path d="M138 338 C140 300 260 300 262 338 C250 356 226 356 212 346 L188 346 C174 356 150 356 138 338 Z" fill={C.hoodieLight} {...ink()} />
-      <path d="M168 330 Q200 348 232 330" fill="none" stroke={C.seam} strokeWidth={2.5} strokeLinecap="round" />
-      <path d="M190 344 C188 368 186 384 184 400 M210 344 C212 368 214 384 216 400" fill="none" {...ink(2.4)} />
-      <rect x="180" y="398" width="8" height="14" rx="1" fill={C.orange} stroke={C.ink} strokeWidth={2} />
-      <rect x="212" y="398" width="8" height="14" rx="1" fill={C.orange} stroke={C.ink} strokeWidth={2} />
-      <g transform="rotate(-6 272 436)">
-        <rect x="248" y="408" width="48" height="56" fill="#FAFAFA" stroke={C.ink} strokeWidth={3} />
-        <rect x="248" y="408" width="48" height="13" fill={C.orange} stroke={C.ink} strokeWidth={3} />
-        <text x="272" y="443" textAnchor="middle" fontFamily="ui-monospace, Consolas, monospace" fontSize="12" fontWeight="700" fill={C.ink}>GEN</text>
-        <text x="272" y="456" textAnchor="middle" fontFamily="ui-monospace, Consolas, monospace" fontSize="8" fill={C.ink}>{"// 01"}</text>
-      </g>
+      {/* Tóc sau, tai cáo */}
+      <path d={BACK_HAIR} fill={C.hairBack} {...ink()} />
+      <Ear clipId={`${uid}-ear-l`} />
+      <Ear clipId={`${uid}-ear-r`} mirror />
 
-      {/* Quai tai nghe vòng sau gáy, vẽ trước cổ để cổ che đầu quai */}
-      <path d="M160 306 C166 290 180 284 188 286 M240 306 C234 290 220 284 212 286" fill="none" stroke={C.grey} strokeWidth={6} strokeLinecap="round" />
-      <path d="M184 250 L184 312 Q200 320 216 312 L216 250 Z" fill={C.skin} {...ink()} />
-      <path d="M185 262 Q200 284 215 262 L215 276 Q200 294 185 276 Z" fill={C.skinShade} />
-      <g transform="rotate(28 156 320)">
-        <ellipse cx="156" cy="320" rx="14" ry="19" fill={C.orange} stroke={C.ink} strokeWidth={3} />
-        <ellipse cx="156" cy="320" rx="7.5" ry="11" fill={C.grey} stroke={C.ink} strokeWidth={2} />
-      </g>
-      <g transform="rotate(-28 244 320)">
-        <ellipse cx="244" cy="320" rx="14" ry="19" fill={C.orange} stroke={C.ink} strokeWidth={3} />
-        <ellipse cx="244" cy="320" rx="7.5" ry="11" fill={C.grey} stroke={C.ink} strokeWidth={2} />
+      {/* Cardigan len kem mở cổ chữ V, bên trong sơ mi trắng */}
+      <path d="M64 480 C66 404 100 348 166 322 Q200 334 234 322 C300 348 334 404 336 480 Z" fill={C.cardigan} {...ink()} />
+      <path d="M118 480 C122 446 128 420 138 400 M282 480 C278 446 272 420 262 400 M246 404 Q258 432 254 470" fill="none" stroke={C.cardiganShade} strokeWidth={3} strokeLinecap="round" />
+      <path d="M164 324 Q200 336 236 324 L206 416 L194 416 Z" fill={C.shirt} {...ink(2.4)} />
+      <path d="M200 340 L200 410" stroke={C.shirtShade} strokeWidth={2} strokeLinecap="round" />
+      {/* Nẹp cardigan: hai mép chữ V gặp nhau rồi chạy thẳng xuống, cúc màu tóc */}
+      <path d="M158 322 L192 416 L192 480 L208 480 L208 416 L242 322 L232 320 L200 410 L168 320 Z" fill={C.cardigan} {...ink(2.4)} />
+      <path d="M172 334 L194 398 M228 334 L206 398 M200 420 L200 480" stroke={C.rib} strokeWidth={1.6} strokeLinecap="round" />
+      <circle cx="200" cy="432" r="4.5" fill={C.button} stroke={C.ink} strokeWidth={2} />
+      <circle cx="200" cy="462" r="4.5" fill={C.button} stroke={C.ink} strokeWidth={2} />
+      <path d="M186 250 L186 318 Q200 326 214 318 L214 250 Z" fill={C.skin} {...ink()} />
+      <path d="M187 262 Q200 282 213 262 L213 276 Q200 292 187 276 Z" fill={C.skinShade} />
+      {/* Cổ sơ mi bẻ và nơ navy */}
+      <path d="M184 308 Q200 318 216 308 L216 316 Q200 326 184 316 Z" fill={C.shirt} {...ink(2.2)} />
+      <path d="M185 312 L166 336 L198 330 Z" fill={C.shirt} {...ink(2.2)} />
+      <path d="M215 312 L234 336 L202 330 Z" fill={C.shirt} {...ink(2.2)} />
+      {/* Nơ hơi thấp dưới cổ áo để tay chống cằm không che mất */}
+      <g transform="translate(0 18) translate(200 334) scale(0.8) translate(-200 -334)">
+      <path d="M197 338 L188 362 L195 359 L200 342 Z M203 338 L212 362 L205 359 L200 342 Z" fill={C.ribbon} {...ink(2)} />
+      <path d="M200 334 C190 322 176 324 176 334 C176 344 190 346 200 334 Z M200 334 C210 322 224 324 224 334 C224 344 210 346 200 334 Z" fill={C.ribbon} {...ink(2.2)} />
+      <path d="M182 332 Q186 330 190 333 M218 332 Q214 330 210 333" stroke={C.ribbonLight} strokeWidth={1.8} strokeLinecap="round" />
+      <rect x="195" y="329" width="10" height="10" rx="3" fill={C.ribbon} stroke={C.ink} strokeWidth={2} />
       </g>
 
       {/* Mặt, bóng mái tóc đổ lên trán */}
@@ -173,31 +207,32 @@ export function GenPortrait({ expression = "neutral", talking = false, blinkKey,
       <clipPath id={`${uid}-face`}><path d={FACE} /></clipPath>
       <g clipPath={`url(#${uid}-face)`}><path d={BANGS} transform="translate(2 7)" fill={C.skinShade} /></g>
 
-      {pose.blush ? (
-        <g>
-          <ellipse cx="146" cy="234" rx="14" ry="6" fill={C.blush} opacity=".55" />
-          <ellipse cx="254" cy="234" rx="14" ry="6" fill={C.blush} opacity=".55" />
-          <path d="M140 237 L144 231 M146 237 L150 231 M152 237 L156 231 M244 237 L248 231 M250 237 L254 231 M256 237 L260 231" stroke={C.blushLine} strokeWidth={1.4} strokeLinecap="round" opacity=".7" />
-        </g>
-      ) : null}
+      {/* Má hồng luôn có; biểu cảm vui thì đậm hơn */}
+      <g opacity={pose.blush ? 1 : 0.6}>
+        <ellipse cx="150" cy="234" rx="14" ry="6" fill={C.blush} opacity=".55" />
+        <ellipse cx="250" cy="234" rx="14" ry="6" fill={C.blush} opacity=".55" />
+        <path d="M144 237 L148 231 M150 237 L154 231 M156 237 L160 231 M240 237 L244 231 M246 237 L250 231 M252 237 L256 231" stroke={C.blushLine} strokeWidth={1.4} strokeLinecap="round" opacity=".7" />
+      </g>
 
       <g key={blinkKey} className="gen-portrait__eyes">
         {pose.eyes === "closed" ? (
           <>
-            <path d="M145 210 Q164 193 185 208" fill="none" {...ink(4)} />
-            <path d="M215 208 Q236 193 255 210" fill="none" {...ink(4)} />
+            <path d="M147 210 Q166 193 187 208" transform={eyeTransform(166)} fill="none" {...ink(4)} />
+            <path d="M213 208 Q234 193 253 210" transform={eyeTransform(234)} fill="none" {...ink(4)} />
           </>
         ) : (
           <>
-            <OpenEye cx={164} look={pose.look} clipId={`${uid}-eye-l`} />
-            <Highlight x={159 + lx} y={199 + ly} />
+            <g transform={eyeTransform(166)}>
+              <OpenEye cx={166} look={pose.look} clipId={`${uid}-eye-l`} />
+              <Highlight x={161 + lx} y={199 + ly} />
+            </g>
             {pose.eyes === "wink" ? (
-              <path d="M215 208 Q236 193 255 210" fill="none" {...ink(4)} />
+              <path d="M213 208 Q234 193 253 210" transform={eyeTransform(234)} fill="none" {...ink(4)} />
             ) : (
-              <>
-                <OpenEye cx={236} mirror look={pose.look} clipId={`${uid}-eye-r`} />
-                <Highlight x={231 + lx} y={199 + ly} />
-              </>
+              <g transform={eyeTransform(234)}>
+                <OpenEye cx={234} mirror look={pose.look} clipId={`${uid}-eye-r`} />
+                <Highlight x={229 + lx} y={199 + ly} />
+              </g>
             )}
           </>
         )}
@@ -206,14 +241,26 @@ export function GenPortrait({ expression = "neutral", talking = false, blinkKey,
       <path d="M200 234 L198 240 L202 240" fill="none" stroke={C.ink} strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" opacity=".6" />
       <MouthShape mouth={mouth} />
 
-      {/* Tóc trước: sợi tóc dựng, mái, vệt bóng, kẹp tóc hai vạch "//" */}
-      <path d="M194 74 C184 44 210 26 234 40 C214 40 204 54 216 72 Z" fill={C.hair} {...ink()} />
+      <path d={BROWS[pose.brows]} fill="none" stroke={C.hairDeep} strokeWidth={3.2} strokeLinecap="round" />
+
+      {/* Tóc trước: lọn buông qua vai, mái rối, vệt bóng, sợi tóc dựng */}
+      <path d={SIDE_LOCK} fill={C.hair} {...ink()} />
+      <path d={SIDE_LOCK} transform={MIRROR} fill={C.hair} {...ink()} />
       <path d={BANGS} fill={C.hair} {...ink()} />
-      <path d={SHINE} fill={C.hairShine} />
-      <path d="M232 104 C224 124 214 146 202 160 M196 100 C186 124 176 142 166 156 M262 122 C258 140 256 154 252 166 M150 120 C142 146 136 168 130 186" fill="none" stroke={C.hairShade} strokeWidth={2.2} strokeLinecap="round" />
-      <path d="M252 110 L244 136 M266 116 L258 142" stroke={C.ink} strokeWidth={9} strokeLinecap="round" />
-      <path d="M252 110 L244 136 M266 116 L258 142" stroke={C.orange} strokeWidth={5} strokeLinecap="round" />
-      <path d={BROWS[pose.brows]} fill="none" stroke={C.hair} strokeWidth={3.2} strokeLinecap="round" />
+      <path d={SHINE} fill={C.hairLight} opacity=".75" />
+      <path d="M228 106 C224 126 220 146 214 166 M204 104 C204 130 203 156 201 190 M172 112 C168 130 166 146 162 160" fill="none" stroke={C.hairShade} strokeWidth={2} strokeLinecap="round" />
+      <path d="M126 290 C124 330 114 370 98 404 M274 290 C276 330 286 370 302 404" fill="none" stroke={C.hairShade} strokeWidth={2} strokeLinecap="round" />
+      <path d="M196 80 C192 62 202 50 216 54 C206 58 202 66 206 78 Z" fill={C.hair} {...ink(2.4)} />
+
+      {/* Tay chống cằm: tay áo cardigan, nắm tay chạm cằm */}
+      <g transform="translate(-2 8)">
+      <path d="M94 480 C102 420 118 362 134 314 L188 322 C178 372 168 428 162 480 Z" fill={C.cardigan} {...ink()} />
+      <path d="M128 452 C136 410 146 372 156 340" fill="none" stroke={C.cardiganShade} strokeWidth={3} strokeLinecap="round" />
+      <path d="M142 304 C136 290 138 274 148 268 C150 258 162 254 172 258 C180 254 190 260 190 270 C194 280 190 296 184 306 Z" fill={C.skin} {...ink()} />
+      <path d="M152 272 Q162 268 172 274 M150 284 Q162 280 174 288 M178 262 Q186 266 188 276" fill="none" {...ink(1.8)} />
+      <path d="M128 318 C128 306 136 300 146 302 L182 308 C192 310 196 318 192 328 L188 338 L128 330 Z" fill={C.cardigan} {...ink()} />
+      <path d="M140 314 L138 330 M152 314 L150 332 M164 316 L163 334 M176 318 L175 336" stroke={C.rib} strokeWidth={2} strokeLinecap="round" />
+      </g>
 
       {pose.sparkle ? (<><Sparkle x={300} y={150} scale={1.1} /><Sparkle x={318} y={184} scale={0.6} /></>) : null}
       {pose.sweat ? <path d="M286 168 Q280 180 286 186 Q292 180 286 168 Z" fill={C.sweat} {...ink(1.8)} /> : null}

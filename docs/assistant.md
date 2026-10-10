@@ -36,7 +36,7 @@ Một sàn việc làm thông thường chỉ trả lời câu hỏi *"có việ
 | :--- | :--- | :--- |
 | Tên | **Gen** | Gọi ngắn, đọc tự nhiên trong tiếng Việt, lấy từ tên sản phẩm GenD/GenDA. |
 | Vai | Chị khóa trên đi làm được vài năm, làm trợ lý tuyển dụng | Đủ gần để sinh viên không ngại, đủ kinh nghiệm để lời khuyên có trọng lượng. |
-| Ngoại hình | Tóc bob tím than, mắt màu hổ phách cam, hoodie xám, tai nghe cam vòng cổ, kẹp tóc hai vạch cam `//`, thẻ tên `GEN // 01` | Mọi điểm cam lặp lại màu Safety Orange của DD-10; kẹp tóc `//` lặp lại ký hiệu mã máy `BAY-01 // ACTIVE` của giao diện. |
+| Ngoại hình | Cô gái tai cáo (chóp tai chàm sẫm, lòng tai lông trắng), tóc chàm `#4647AE` dài rối với một lọn mái rủ giữa hai mắt, mắt xanh lá, má hồng, cardigan len kem mặc ngoài sơ mi trắng thắt nơ navy, cúc màu tóc, tay chống cằm, cười mỉm tinh nghịch | Tóc chàm cùng họ xanh với màu thương hiệu navy nên Gen hài hòa với giao diện, nhưng sáng hơn để vẫn nổi bật; tai cáo và dáng chống cằm cho cảm giác lanh lợi, đang suy nghĩ giúp bạn. |
 | Phong cách vẽ | Anime 2D phẳng, viền mực đậm, đổ bóng cel | Viền mực đậm khớp viền cơ khí 2px của DD-10. Nhân vật có viền riêng nên đứng được trên mọi nền. |
 | Xưng hô | Gen xưng **mình**, gọi sinh viên là **bạn**, gọi bằng tên (*"Chào Lộc!"*) | Ngôi thứ hai, câu ngắn: đúng đòn bẩy "giọng văn" ở `design.md` 4.9.1. |
 | Giới hạn giọng | Không emoji, tối đa một dấu chấm than mỗi câu, không gạch ngang dài, nháy kép cong | Theo `design.md` 4.10 và 4.11. |
@@ -98,7 +98,7 @@ Không chẩn đoán nào khớp thì Gen nói thật: đơn khớp tốt, có t
               ╭─┴──┴─╮                                    ← chân dung Gen nhô lên khỏi mép hộp
               │ ◕  ◕ │
 ┌─────────────┤  ‿   ├──────────────────────────────────────────┐
-│             │      │  [GEN] // TRỢ LÝ TÌM VIỆC          02/03 ✕│ ← bảng tên cam, mã máy, số câu
+│             │      │  [GEN] // TRỢ LÝ TÌM VIỆC          02/03 ✕│ ← bảng tên màu thương hiệu, mã máy, số câu
 │   (bust)    │      │  4 đơn gần nhất của bạn đều chưa được    │
 │             │      │  chọn. Mình đã xem lại các đơn đó...▍    │ ← chữ chạy, bấm để hiện hết
 │             │      │                              [ TIẾP ▸ ]  │
@@ -113,9 +113,9 @@ Không chẩn đoán nào khớp thì Gen nói thật: đơn khớp tốt, có t
 | :--- | :--- |
 | Vị trí | Máy tính: giữa đáy màn hình, rộng tối đa 760px, chân dung đứng trong hộp ở góc trái và nhô lên khỏi mép trên. Điện thoại: phủ bề ngang phía trên thanh điều hướng đáy, chân dung đứng trên mép trên hộp. |
 | Tự bật | Một lần mỗi phiên (một tab), chờ 1,2 giây sau khi trang vẽ xong, với điều quan trọng nhất chưa nghe. Không bật ở trang đăng nhập, đăng ký, xác minh email, quên mật khẩu. Tắt chế độ tự bật thì chỉ lời chào lần đầu còn tự bật. |
-| Nút gọi | Phím vuông ở góc dưới phải có mặt Gen; huy hiệu cam ghi số điều chưa nghe. Bấm thì Gen hỏi *"Bạn muốn nghe điều nào trước?"* và liệt kê tối đa 4 việc. |
+| Nút gọi | Phím vuông ở góc dưới phải có mặt Gen; huy hiệu màu thương hiệu ghi số điều chưa nghe. Bấm thì Gen hỏi *"Bạn muốn nghe điều nào trước?"* và liệt kê tối đa 4 việc. |
 | Chữ chạy | 24ms mỗi ký tự. Bấm vào vùng chữ hoặc nút "Hiện hết" thì hiện cả câu ngay; bấm tiếp thì sang câu sau. Vùng chữ giữ sẵn chỗ cho cả câu nên bố cục không nhảy. |
-| Lựa chọn | Câu cuối mở các lựa chọn đánh số; phím 1–4 chọn nhanh. Lựa chọn đầu là lựa chọn Gen đề xuất (ô số màu cam). Lựa chọn không dẫn đi đâu nghĩa là "nghe tiếp": còn điều chưa nghe thì Gen nói tiếp, hết thì khép lại. |
+| Lựa chọn | Câu cuối mở các lựa chọn đánh số; phím 1–4 chọn nhanh. Lựa chọn đầu là lựa chọn Gen đề xuất (ô số màu thương hiệu). Lựa chọn không dẫn đi đâu nghĩa là "nghe tiếp": còn điều chưa nghe thì Gen nói tiếp, hết thì khép lại. |
 | Đã nghe | Một lời nhắc được tính là đã nghe khi câu cuối hiện đủ. Đóng giữa chừng thì lời nhắc vẫn là "mới". |
 | Không chặn trang | Không lớp phủ, không bẫy tiêu điểm. Gen tự bật thì không giành tiêu điểm; người dùng tự mở thì tiêu điểm vào hộp thoại, đóng thì trả về nút gọi. |
 | Trình đọc màn hình | `role="dialog"` không modal, tên "Gen". Chữ chạy ẩn với trình đọc màn hình; nguyên câu được đọc một lần qua vùng `aria-live="polite"`. |
