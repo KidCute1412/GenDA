@@ -10,6 +10,7 @@ import { Check, MagnifyingGlass } from "../../../components/ui/icons";
 import { CURRENT_STUDENT } from "../../../mocks/data";
 import { daysUntil, formatDate, formatVnd, matchScore } from "../../../lib/utils/format";
 import { browsePublishedProjects, listSkills } from "../../../features/projects/api";
+import { LedgerPublishedProjects } from "../../../features/projects/components/ledger-published-projects";
 
 export const dynamic = "force-dynamic";
 
@@ -112,6 +113,7 @@ export default async function ProjectsPage({
 
       {/* projects-page: chạy hiệu ứng vào trang (vạch quét + các khối hiện lần lượt), xem components.css */}
       <main id="main-content" className="container has-bottom-nav projects-page" style={{ paddingTop: "var(--space-8)" }}>
+        <LedgerPublishedProjects />
         <div className="section--tight projects-page__head" style={{ borderBottom: "2px solid var(--machinery-border)", paddingBottom: "var(--space-6)", marginBottom: "var(--space-8)" }}>
           <h1 className="industrial-display projects-page__title" style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}>
             DỰ ÁN ĐANG TUYỂN
