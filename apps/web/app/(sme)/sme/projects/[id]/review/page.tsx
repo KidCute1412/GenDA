@@ -10,7 +10,7 @@ import { ButtonLink } from "../../../../../../components/ui/button";
 import { ArrowRight, Check, ICON_WEIGHT, SealCheck } from "../../../../../../components/ui/icons";
 import { AcceptApplicantButton } from "../../../../../../features/applications/components/accept-applicant-button";
 import { ShortlistToggleButton } from "../../../../../../features/applications/components/shortlist-toggle-button";
-import { APPLICANTS, PROJECTS, getProject } from "../../../../../../mocks/data";
+import { APPLICANTS, PROJECTS, SAMPLE_CV_PATH, getProject } from "../../../../../../mocks/data";
 import { matchScore } from "../../../../../../lib/utils/format";
 
 export function generateStaticParams() {
@@ -211,13 +211,13 @@ export default async function ReviewApplicantsPage({ params }: { params: Promise
                       }}
                     >
                       <a 
-                        href={applicant.portfolioUrl} 
+                        href={SAMPLE_CV_PATH}
                         target="_blank"
                         rel="noreferrer"
                         className="btn--tactile-zinc"
                         style={{ height: "36px", fontSize: "11px", textDecoration: "none" }}
                       >
-                        {applicant.portfolioLabel}
+                        XEM CV ({applicant.cvFileName})
                         <ArrowRight weight={ICON_WEIGHT} aria-hidden="true" />
                       </a>
 

@@ -6,7 +6,8 @@ import Link from "next/link";
 import { TextField } from "../../../components/ui/field";
 import { PasswordField } from "../../../features/auth/components/password-field";
 import { setDemoSession } from "../services/demo-session";
-import { findDemoAccount } from "../../demo-ledger/store";
+import { findDemoAccount, needsCv } from "../../demo-ledger/store";
+import { cvOnboardingHref } from "../../users/components/cv-required-gate";
 import { RecaptchaField, verifyRecaptcha } from "./recaptcha-field";
 
 /** Sinh viên đăng nhập xong vào thẳng danh sách dự án đang tuyển, không vào trang hồ sơ. */
@@ -74,7 +75,8 @@ export function LoginFormClient() {
       // Tài khoản đã đăng ký trong ledger demo: đăng nhập đúng tên và vai trò của tài khoản đó
       if (account && account.role !== "ADMIN") {
         setDemoSession({ name: account.name, email: account.email, role: account.role, emailVerified: account.emailVerified });
-        router.replace(account.role === "SME" ? "/sme/projects" : STUDENT_HOME);
+        // Sinh viên mới chưa nộp CV thì vào bước nộp CV trước
+        router.replace(account.role === "SME" ? "/sme/projects" : needsCv(account) ? cvOnboardingHref(STUDENT_HOME) : STUDENT_HOME);
         router.refresh();
         return;
       }

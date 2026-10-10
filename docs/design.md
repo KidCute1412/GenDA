@@ -23,12 +23,12 @@ Nền tảng chuẩn hóa các mini-project chuyên môn ngắn hạn (ngân sá
 ```mermaid
 graph LR
     subgraph Supply["Sinh viên (Cung)"]
-        S1["Kỹ năng chuyên môn"] --> S2["Cần dự án thực tế & Portfolio xác thực"]
+        S1["Kỹ năng chuyên môn"] --> S2["Cần dự án thực tế để đưa vào CV"]
     end
     subgraph TrustLayer["GenDA Trust Layer (Lớp Niềm Tin)"]
         T1["(1) Matching Kỹ năng"] --> T2["(2) Mốc bàn giao Milestone"]
         T2 --> T3["(3) Ký quỹ mô phỏng & Nghiệm thu"]
-        T3 --> T4["(4) Portfolio Xác thực Bất biến"]
+        T3 --> T4["(4) Ứng tuyển bằng CV"]
     end
     subgraph Demand["Doanh nghiệp SME (Cầu)"]
         D1["Nhu cầu số hóa/marketing nhỏ"] --> D2["Ngân sách 1-5M, sợ rủi ro bùng việc"]
@@ -68,13 +68,13 @@ graph LR
 4. **Thiết kế hội thoại tạo cảm giác đóng gói (Design dialogs to yield closure)**: Các chuỗi tác vụ như đăng ký, đăng dự án 3 bước, nghiệm thu đều có màn hình chúc mừng/hoàn thành rõ ràng để người dùng biết tác vụ đã kết thúc.
 5. **Ngăn chặn lỗi (Prevent errors & simple error handling)**: Ràng buộc nhập liệu chặt chẽ (ô ngân sách chỉ cho nhập số 1–5 triệu VNĐ, lịch chỉ cho chọn ngày tương lai); thông báo lỗi chỉ rõ nguyên nhân và cách khắc phục.
 6. **Cho phép hoàn tác dễ dàng (Permit easy reversal of actions)**: Sinh viên được quyền rút đơn ứng tuyển (`WITHDRAWN`) khi chưa được duyệt (FR-APP-06); SME được sửa/xóa dự án ở trạng thái `DRAFT` (FR-PRJ-02).
-7. **Trao quyền kiểm soát cho người dùng (Support internal locus of control)**: Người dùng chủ động quản lý dữ liệu cá nhân, sinh viên chủ động chọn ẩn hoặc hiện từng mục trên trang portfolio công khai (FR-CERT-04).
+7. **Trao quyền kiểm soát cho người dùng (Support internal locus of control)**: Người dùng chủ động quản lý dữ liệu cá nhân, sinh viên chủ động nộp và thay CV của mình bất cứ lúc nào (FR-USR-01).
 8. **Giảm tải trí nhớ ngắn hạn (Reduce short-term memory load)**: Tuân thủ quy tắc tâm lý học $7 \pm 2$ (Miller's Law). Không bắt người dùng nhớ thông tin từ trang trước; hiển thị tóm tắt thông tin dự án ngay tại màn hình nộp bàn giao.
 
 ### 2.3. Mô hình Tinh thần vs. Mô hình Hệ thống (Mental Model vs. System Image)
 - **Mô hình Tinh thần của Sinh viên**: Kỳ vọng nhận được công việc rõ ràng, được bảo vệ tiền thù lao, không bị bùng việc và có thành quả chứng minh năng lực.
 - **Mô hình Tinh thần của SME**: Kỳ vọng giao việc đúng người, nắm bắt tiến độ từng ngày, nghiệm thu hài lòng mới xác nhận giải ngân.
-- **Hình ảnh Hệ thống (System Image của GenDA)**: Biến các quy tắc phức tạp thành giao diện trực quan gồm **Thanh Stepper tiến độ 7 bước**, **Thẻ Ký quỹ mô phỏng**, và **Thẻ Portfolio xác thực**.
+- **Hình ảnh Hệ thống (System Image của GenDA)**: Biến các quy tắc phức tạp thành giao diện trực quan gồm **Thanh Stepper tiến độ 7 bước**, **Thẻ Ký quỹ mô phỏng**, và **CV đính kèm đơn ứng tuyển**.
 
 ---
 
@@ -161,7 +161,7 @@ Theo phương pháp chuẩn hóa trong `LN04 - Task Analysis`, các tác vụ c�
      3. Nộp đơn ứng tuyển (Apply)
         3.1. Bấm nút "Ứng tuyển ngay" để mở modal nộp đơn
         3.2. Soạn thư ngỏ giới thiệu bản thân & cam kết
-        3.3. Đính kèm liên kết sản phẩm minh chứng (GitHub, Behance, Drive)
+        3.3. Đính kèm CV dạng PDF (lấy sẵn từ hồ sơ, có thể thay tệp khác ngay trong modal)
         3.4. Gửi đơn ứng tuyển (Tạo bản ghi Application trạng thái SUBMITTED)
   ```
 - **Kế hoạch thực hiện (Plan 0)**: Thực hiện $1 \rightarrow 2$. Nếu phù hợp thực hiện $3$. Ngoại lệ: Nếu sinh viên chưa `VERIFIED`, hệ thống chặn bước 3.1 và chuyển hướng sang trang xác thực hồ sơ (BR-03). Nếu đã nộp trước đó, chặn nộp lần 2 (FR-APP-02).
@@ -213,10 +213,9 @@ Theo phương pháp chuẩn hóa trong `LN04 - Task Analysis`, các tác vụ c�
         3.2. Nếu đạt: SME chọn "Nghiệm thu mốc này"
              3.2.1. Mốc chuyển sang ACCEPTED
              3.2.2. Cập nhật trạng thái thanh toán mô phỏng (FUNDED -> RELEASED)
-     4. Hoàn tất dự án & Cấp Portfolio
+     4. Hoàn tất dự án & Đánh giá
         4.1. Khi mốc cuối cùng được ACCEPTED: Dự án chuyển sang COMPLETED (FR-PRJ-08)
         4.2. SME viết đánh giá sao và nhận xét cho sinh viên (FR-REV-01)
-        4.3. Hệ thống tự động sinh mục Portfolio xác thực vào hồ sơ sinh viên (FR-CERT-01)
   ```
 - **Kế hoạch thực hiện (Plan 0)**: Thực hiện $1 \rightarrow 2 \rightarrow 3$. Lặp lại $3.1 \rightarrow 1 \rightarrow 2$ nếu có yêu cầu chỉnh sửa cho đến khi $3.2$ thành công. Kết thúc bằng $4$.
 
@@ -385,7 +384,7 @@ Cột cuối là **số đo thực tế** theo công thức WCAG 2.1 (không ph�
 | `color-brand-decorative` | accent-500 | `#E85D2C` | **Coral** cho **phần tử phi văn bản và chữ cỡ lớn**: nét khoanh vẽ tay, icon vùng kéo thả, vạch trích dẫn, thanh tiến độ, hình minh họa. | Trên nền kem: **3.18:1** — đạt ngưỡng 3:1 cho phần tử giao diện và chữ $\ge$ 24px. **Cấm làm nền nút có chữ trắng** |
 | `color-accent-text` | accent-700 | `#A33A16` | Coral dùng làm **chữ cỡ nhỏ**: nhãn viết tay, từ nhấn trong tiêu đề, dòng ghi công. | Trên nền kem: **6.05:1** ✅ AA |
 | `color-accent-strong` | accent-600 | `#C94A1E` | Coral đủ đậm để làm nền có chữ trắng, khi thật sự cần một khối cam đặc. | Chữ trắng: **4.69:1** ✅ AA |
-| `color-status-verified` | green-700 | `#1F7A43` | Nền huy hiệu `VERIFIED`, mốc `ACCEPTED`, quỹ `RELEASED`, tích xanh Portfolio. | Chữ trắng trên nền này: **5.35:1** ✅ AA |
+| `color-status-verified` | green-700 | `#1F7A43` | Nền huy hiệu `VERIFIED`, mốc `ACCEPTED`, quỹ `RELEASED`, huy hiệu hoàn thành dự án. | Chữ trắng trên nền này: **5.35:1** ✅ AA |
 | `color-status-verified-text` | green-800 | `#176034` | Chữ trong badge xác thực nền tint. | Trên nền `#E9F7EE`: **6.89:1** ✅ AA |
 | `color-status-verified-bg` | green-50 | `#E9F7EE` | Nền banner/badge trạng thái đã xác thực. | (Nền — xem cặp trên) |
 | `color-status-warning` | amber-700 | `#9A5B06` | **Warm Amber** — huy hiệu Ký quỹ mô phỏng, `CHANGES_REQUESTED`, dự án `PENDING_REVIEW`. | Chữ trắng trên nền này: **5.42:1** ✅ AA |
@@ -475,7 +474,7 @@ Hệ quả kiểm thử: chụp màn hình chuyển sang ảnh xám (grayscale) 
 > **Đính chính so với bản trước của tài liệu.** Bản trước ghi *"WCAG 2.5.8 — tối thiểu 44×44px"*. Con số này **không phải** ngưỡng của 2.5.8. Tiêu chí `2.5.8 Target Size (Minimum)` ở mức **AA** yêu cầu **24×24 CSS px** (hoặc khoảng cách tương đương giữa các đích chạm). Con số 44px thuộc về `2.5.5 Target Size (Enhanced)` ở mức **AAA**, và cũng trùng với hướng dẫn 44pt của Apple HIG. Ghi sai ngưỡng cho một tiêu chí là lỗi đáng sửa vì hai lý do: người đọc tài liệu có thể trích dẫn sai trong báo cáo, và một lập trình viên tra lại chuẩn rồi "sửa" 44px xuống 24px sẽ tưởng mình đang sửa đúng.
 
 - **Sàn bắt buộc (AA)**: 24×24 CSS px cho mọi đích chạm trên web.
-- **Ngưỡng GenDA tự đặt cho mình: 44×44px**, tức vượt hẳn sàn AA và chạm mức AAA. Đây là **lựa chọn có chủ đích, không phải mức tối thiểu của chuẩn**: 85% sinh viên vào bằng smartphone và thao tác bằng ngón cái, thường trong lúc di chuyển. Áp dụng cho Bottom Navigation 4 tab (thực tế đặt 56px), các Filter Chips, thanh trượt ngân sách và nút Toggle ẩn/hiện mục portfolio.
+- **Ngưỡng GenDA tự đặt cho mình: 44×44px**, tức vượt hẳn sàn AA và chạm mức AAA. Đây là **lựa chọn có chủ đích, không phải mức tối thiểu của chuẩn**: 85% sinh viên vào bằng smartphone và thao tác bằng ngón cái, thường trong lúc di chuyển. Áp dụng cho Bottom Navigation 4 tab (thực tế đặt 56px), các Filter Chips và thanh trượt ngân sách.
 - Khi một đích chạm buộc phải nhỏ hơn 44px vì lý do bố cục, nó vẫn **không được** xuống dưới sàn 24px, và phải có khoảng cách đủ với đích chạm kế bên.
 
 **g. Tôn trọng lựa chọn giảm chuyển động (WCAG 2.3.3)**
@@ -668,7 +667,7 @@ Một hệ thiết kế đúng chuẩn khả dụng vẫn có thể cho ra giao 
 | Icon trang trí rải khắp nơi | Icon không mang thông tin chỉ thêm nhiễu thị giác. | Icon chỉ dùng khi **mã hóa trạng thái** (lớp 2 của quy tắc Redundant Coding) hoặc làm affordance. Không đính icon vào tiêu đề cho đẹp. |
 | Con số trình bày như văn bản thường | Sản phẩm này nói về tiền và tiến độ — con số chính là nội dung. | Mọi số tiền, điểm phù hợp và số thứ tự mốc dùng **chữ số bảng** (`tabular-nums`), cỡ lớn, và **căn phải khi cần so sánh**. |
 | Danh sách để so sánh lại trình bày thành lưới thẻ | Mắt phải nhảy zigzag giữa các thẻ nên không so được ngân sách với nhau. | Trang `/projects` dùng **danh sách có cột thẳng hàng**, tiền căn phải trên một trục dọc duy nhất. |
-| Bằng chứng xã hội bịa ra ("hơn 500 sinh viên tin dùng") | Nền tảng chưa vận hành. Số liệu giả là nói dối, và người đọc tinh ý nhận ra ngay. | Nêu **cam kết sản phẩm có thật** lấy từ `requirement.md` (1–5tr, 1 sinh viên, duyệt trong 4 giờ, 0đ phí) và **cho xem chính cơ chế** — một thẻ portfolio xác thực mẫu. |
+| Bằng chứng xã hội bịa ra ("hơn 500 sinh viên tin dùng") | Nền tảng chưa vận hành. Số liệu giả là nói dối, và người đọc tinh ý nhận ra ngay. | Nêu **cam kết sản phẩm có thật** lấy từ `requirement.md` (1–5tr, 1 sinh viên, duyệt trong 4 giờ, 0đ phí) và **cho xem chính cơ chế** — một dự án mẫu đã được nghiệm thu và đánh giá. |
 
 > **Ranh giới cần giữ**: mọi thủ pháp trên đều phải đi qua các cổng ở Mục 4.4 và 4.6. Bất đối xứng không được phá thứ tự Tab; siết `letter-spacing` không đụng tới giãn dòng vốn đang chừa chỗ cho dấu phụ tiếng Việt; số chìm màu trong danh sách editorial là **trang trí**, phải mang `aria-hidden` và không bao giờ là nguồn thông tin duy nhất.
 
@@ -903,7 +902,6 @@ Hệ thống kết hợp hài hòa 3 phong cách tương tác chính:
 2. **Thao tác trực tiếp (Direct Manipulation)**:
    - Kéo thả tập tin bàn giao vào vùng Dropzone với hiệu ứng đổi viền.
    - Kéo thanh trượt (Slider) để chọn nhanh ngân sách từ 1 đến 5 triệu đồng.
-   - Thẻ gạt (Toggle Switch) để ẩn hoặc hiện mục trên trang portfolio công khai tức thì.
 3. **Lựa chọn từ Menu (Menu Selection)**: Thanh điều hướng vai trò, các thẻ bộ lọc danh mục (Filter Chips) chạm để kích hoạt/hủy kích hoạt.
 
 ### 5.2. Kiến trúc Điều hướng & Sơ đồ Cấu trúc Site (Sitemap)
@@ -914,7 +912,6 @@ GenDA Web Platform
 │   ├── /                          (Trang chủ: Giới thiệu UVP, Trust Layer, Danh mục dự án mẫu)
 │   ├── /projects                  (Danh mục dự án PUBLISHED, thanh tìm kiếm & bộ lọc)
 │   ├── /projects/[id]             (Chi tiết dự án, tiêu chí nghiệm thu, các mốc thanh toán)
-│   ├── /portfolio/[studentSlug]   (Hồ sơ năng lực công khai, minh chứng dự án xác thực)
 │   ├── /login                     (Đăng nhập tài khoản)
 │   ├── /register                  (Đăng ký tài khoản: Chọn vai trò STUDENT hoặc SME)
 │   ├── /phap-ly/[doc]             (Quy chế sàn, chính sách bảo mật, quy trình khiếu nại)
@@ -998,7 +995,7 @@ GenDA Web Platform
   +-------------------------------------------------------------------------+
   |  4 LỚP BẢO VỆ NIỀM TIN (TRUST LAYER):                                   |
   |  [ (1) Ghép nối kỹ năng ]   [ (2) Milestone minh bạch ]                 |
-  |  [ (3) Ký quỹ an toàn   ]   [ (4) Portfolio xác thực  ]                 |
+  |  [ (3) Ký quỹ an toàn   ]   [ (4) Ứng tuyển bằng CV   ]                 |
   +-------------------------------------------------------------------------+
   |  DỰ ÁN MỚI NHẤT DÀNH CHO BẠN (Ngân sách chuẩn 1.000.000 - 5.000.000 đ)  |
   |  +---------------------------+   +---------------------------+          |
@@ -1062,7 +1059,8 @@ GenDA Web Platform
     - **Điểm phù hợp kỹ năng (Match Score Breakdown)**: Ví dụ: `[ 90% Match: Trùng 3/3 kỹ năng của bạn ]`.
   - **Hộp thoại Ứng tuyển (Apply Modal Dialog)**:
     - Nếu sinh viên chưa xác thực: Hiển thị thông báo màu hổ phách chặn ứng tuyển và nút chuyển sang trang xác thực hồ sơ (BR-03).
-    - Nếu đã xác thực: Form nhập Thư ngỏ (Cover letter) và Liên kết sản phẩm minh chứng đã từng làm. Nút bấm "Gửi đơn ứng tuyển".
+    - Nếu đã xác thực: Form nhập Thư ngỏ (Cover letter) và CV dạng PDF đính kèm (lấy từ hồ sơ, thay được ngay trong modal). Nút bấm "Gửi đơn ứng tuyển".
+  - **Chặn tài khoản mới chưa có CV (FR-USR-07)**: Sinh viên mới đăng ký chưa nộp CV sẽ được chuyển từ `/projects` sang `/student/cv` để tải CV (PDF, tối đa 2 MB) rồi mới quay lại danh sách dự án.
 
 ---
 
@@ -1070,7 +1068,7 @@ GenDA Web Platform
 - **Mục tiêu**: SME so sánh các ứng viên và chấp nhận đúng 1 sinh viên (FR-APP-03, FR-APP-05, BR-05, BR-13).
 - **Bố cục giao diện**:
   - Danh sách ứng viên được hệ thống tự động sắp xếp giảm dần theo **Điểm phù hợp Match Score** (FR-MAT-03).
-  - Mỗi thẻ ứng viên hiển thị: Tên sinh viên, trường đại học, huy hiệu thẻ SV đã xác thực, thư ngỏ và link sản phẩm mẫu.
+  - Mỗi thẻ ứng viên hiển thị: Tên sinh viên, trường đại học, huy hiệu thẻ SV đã xác thực, thư ngỏ và nút xem CV (PDF).
   - Nút **"Chấp nhận ứng viên này"**:
     - Nhấp nút sẽ bật **Modal Xác nhận Quan trọng (Irreversible Confirmation Dialog)**:
       > *"Bạn có chắc chắn muốn chọn ứng viên **Nguyễn Hải Nam**?*  
@@ -1123,34 +1121,15 @@ GenDA Web Platform
 
 ---
 
-### 7.7. Màn hình 7: Nghiệm thu, Đánh giá & Portfolio Xác thực (`/portfolio/[slug]`)
-- **Mục tiêu**: Đóng vòng đời dự án và tạo ra bằng chứng năng lực thực tế có thể kiểm chứng cho sinh viên (FR-REV-01..03, FR-CERT-01..05).
+### 7.7. Màn hình 7: Nghiệm thu, Đánh giá & CV của sinh viên (`/student/cv`)
+- **Mục tiêu**: Đóng vòng đời dự án bằng đánh giá của SME (FR-REV-01..03) và cho sinh viên quản lý CV gửi kèm đơn ứng tuyển (FR-USR-01, FR-USR-07). Portfolio xác thực (FR-CERT) đã bị loại khỏi phạm vi.
 - **Quy trình đóng dự án**:
   1. Khi mốc cuối cùng được SME nghiệm thu: Dự án chuyển sang `COMPLETED`.
-  2. Hệ thống hiển thị form đánh giá 1 chiều: SME chấm điểm sao (1–5 sao) và nhận xét thái độ, chuyên môn của sinh viên (FR-REV-01).
-  3. Hệ thống **tự động sinh (System-generated)** một mục Portfolio xác thực không thể chỉnh sửa khống (FR-CERT-02).
-- **Thẻ Portfolio Xác thực (Verified Portfolio Card Layout)**:
-  ```text
-  +-----------------------------------------------------------------------+
-  | [TÍCH XANH GENDA] DỰ ÁN ĐÃ ĐƯỢC XÁC THỰC HOÀN THÀNH                   |
-  | Dự án: Xây dựng Landing Page giới thiệu sản phẩm nông sản sạch        |
-  | Đơn vị giao việc: Công ty Cổ phần Nông sản Eco (SME tại TP.HCM)       |
-  | Thời gian: 10/10/2026 – 28/10/2026 | Vai trò: Frontend Developer      |
-  | Kỹ năng chứng minh: Next.js, Tailwind CSS, Responsive Web             |
-  |                                                                       |
-  | ĐÁNH GIÁ CỦA DOANH NGHIỆP:                                            |
-  | "Nam làm việc rất trách nhiệm, hoàn thành đúng tiến độ và giao diện   |
-  | chạy rất mượt mà trên di động. Rất khuyến khích hợp tác!"             |
-  | Đánh giá: [ ★★★★★ 5.0 / 5.0 ]                                         |
-  |                                                                       |
-  | Minh chứng: [Xem Demo trực tuyến] | [Xem mã nguồn dự án]             |
-  | Quyền sở hữu: Hai bên đã thỏa thuận quyền công khai portfolio.        |
-  +-----------------------------------------------------------------------+
-  ```
-- **Trang Portfolio Công khai (`/portfolio/[studentSlug]`)**:
-  - Thiết kế bố cục lưới Bento Grid hiện đại (tham chiếu Contra/Readcv).
-  - Có nút chuyển đổi (Toggle Switch) để sinh viên chủ động chọn Ẩn/Hiện từng dự án trên trang công khai (FR-CERT-04).
-  - Có nút "Sao chép liên kết hồ sơ" để sinh viên gắn trực tiếp vào CV hoặc LinkedIn.
+  2. Hệ thống hiển thị form đánh giá 1 chiều: SME chấm điểm sao (1–5 sao) và nhận xét thái độ, chuyên môn của sinh viên (FR-REV-01). Đánh giá gửi một lần, không sửa được.
+- **Trang CV của tôi (`/student/cv`)**:
+  - Chưa có CV: vùng kéo thả (Dropzone) chỉ nhận PDF, tối đa 2 MB. Đây cũng là bước bắt buộc của tài khoản sinh viên mới trước khi xem `/projects`.
+  - Đã có CV: thẻ tệp (tên, dung lượng, ngày nộp) kèm nút "Xem CV" và "Thay CV khác".
+  - Lối tắt "CV của tôi" nằm trong menu người dùng trên header; trang Hồ sơ cũng có mục CV.
 
 ---
 
@@ -1297,7 +1276,6 @@ Thử nghiệm trên nhóm mẫu thử nghiệm giai đoạn Soft-launch (15–2
 | **FR-MIL-08** | Cả hai bên xem tiến độ từng mốc kèm trạng thái và hạn chót | Màn hình 6 — Milestone Stepper hiển thị chung cho cả SV và SME |
 | **FR-MIL-09** | Tệp bàn giao lưu ở object storage | Màn hình 6 — Dropzone tải tệp, hiển thị tên/dung lượng/thời điểm nộp; liên kết tải có thời hạn (ràng buộc kỹ thuật thuộc `architecture.md`) |
 | **FR-REV-01..03** | SME đánh giá SV sau khi hoàn thành, hiển thị công khai | Màn hình 7 (Form đánh giá 1 chiều 5 sao + nhận xét thực tế) |
-| **FR-CERT-01..05** | Hệ thống tự sinh Portfolio xác thực, link chia sẻ công khai | Màn hình 7 (Thẻ Verified Portfolio Card & Bento Grid Profile Slug) |
 | **FR-ADM-01..04** | Hàng đợi duyệt dự án, duyệt thẻ sinh viên, nhật ký kiểm toán, khóa tài khoản | Màn hình 8 (Bảng điều khiển Quản trị viên 3 tab chuyên biệt) |
 | **BR-01..14** | Các bất biến miền (ngân sách 1-5M, SV verified mới được nộp, BR-07...) | Visible Constraints: slider giới hạn ngân sách, date picker khóa ngày quá khứ, nút nghiệm thu `disabled` khi mốc chưa `SUBMITTED`, modal xác nhận hành động không đảo ngược |
 | **NFR-UX-01** | Giao diện tiếng Việt, Mobile-First, Semantic HTML, hỗ trợ bàn phím | Mục 4.6 (focus ring, thứ tự Tab, focus trap, ARIA, vùng chạm 44px) + lưới bố cục Mục 4.1 |
@@ -1329,7 +1307,7 @@ Các quyết định dưới đây phát sinh khi dựng mã nguồn, không có
 >
 > **Lý do.** Ảnh stock chung chung rơi đúng vào dấu hiệu khuôn mẫu mà [Mục 4.9](#49-kỷ-luật-chống-giao-diện-khuôn-mẫu) liệt kê. Nặng hơn: nền tảng **chưa vận hành**, nên chưa có ảnh thật của sinh viên thật hay cửa hàng thật; dựng ảnh người mẫu rồi trình bày như người dùng của nền tảng chính là bằng chứng xã hội bịa ra mà Mục 4.9 đã cấm.
 >
-> **Điều kiện xem lại.** Khi có ảnh thật kèm sự đồng ý của người trong ảnh, ba vị trí nên gắn trước theo thứ tự ưu tiên: **cột phải của hero**, **dải Trust Layer**, và **mỗi thẻ trong lưới portfolio**. Ảnh thật của người dùng thật mạnh hơn mọi hình minh họa, kể cả hình dựng riêng.
+> **Điều kiện xem lại.** Khi có ảnh thật kèm sự đồng ý của người trong ảnh, ba vị trí nên gắn trước theo thứ tự ưu tiên: **cột phải của hero**, **dải Trust Layer**, và **thẻ dự án mẫu ở khối "Cuối cùng bạn nhận được gì"**. Ảnh thật của người dùng thật mạnh hơn mọi hình minh họa, kể cả hình dựng riêng.
 >
 > **Ràng buộc kèm theo khi mở ảnh thật.** Hiện tại giao diện không có ảnh bitmap nào, nên phần lớn rủi ro hiệu năng của tầng hiển thị chưa tồn tại. Ngay khi DD-04 được mở lại, bốn ràng buộc sau có hiệu lực vì cả bốn đều thuộc quyền quyết định của thiết kế, không phải hạ tầng:
 > 1. **Chừa sẵn chỗ cho mọi ảnh** (khai báo tỷ lệ khung hoặc kích thước). Ảnh không chừa chỗ là nguyên nhân phổ biến nhất của hiện tượng giật bố cục, và nó phá đúng cam kết chống CLS mà [Mục 8.1](#81-trạng-thái-đang-tải-loading-state--skeleton-shimmer-pattern) đã đặt ra cho Skeleton.
@@ -1460,7 +1438,7 @@ Bảng này trả lời câu hỏi *"quy định ở mục nào thì nằm ở t
 | Màn hình 4 — Khám phá & Lọc | `apps/web/app/(public)/projects/page.tsx` |
 | Màn hình 5 — Chọn ứng viên | `apps/web/app/(sme)/sme/projects/[id]/review/page.tsx` |
 | Màn hình 6 — Workspace | `apps/web/app/workspace/[id]/page.tsx` |
-| Màn hình 7 — Portfolio công khai | `apps/web/app/(public)/portfolio/[slug]/page.tsx` |
+| Màn hình 7 — CV của sinh viên | `apps/web/app/(student)/student/cv/page.tsx` |
 | Màn hình 8 — Bảng điều khiển quản trị | `apps/web/app/(admin)/admin/page.tsx` |
 
 ---

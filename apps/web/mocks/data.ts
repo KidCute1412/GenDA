@@ -47,7 +47,6 @@ export type VerificationStatus = "UNVERIFIED" | "PENDING" | "VERIFIED" | "REJECT
 
 export const CURRENT_STUDENT: {
   name: string;
-  slug: string;
   school: string;
   major: string;
   year: string;
@@ -56,7 +55,6 @@ export const CURRENT_STUDENT: {
   skills: string[];
 } = {
   name: "Lê Tuấn Lộc",
-  slug: "le-tuan-loc",
   school: "ĐH Khoa học Tự nhiên, ĐHQG-HCM",
   major: "Công nghệ Thông tin",
   year: "Sinh viên năm 3",
@@ -425,10 +423,13 @@ export type Applicant = {
   verified: boolean;
   skills: string[];
   coverLetter: string;
-  portfolioUrl: string;
-  portfolioLabel: string;
+  /** Tên tệp CV (PDF) gửi kèm đơn; bản demo mở CV mẫu ở /demo/cv-mau.pdf. */
+  cvFileName: string;
   shortlisted: boolean;
 };
+
+/** CV mẫu dùng cho tài khoản/ứng viên dựng sẵn (chỉ có tên tệp, không có tệp tải lên thật). */
+export const SAMPLE_CV_PATH = "/demo/cv-mau.pdf";
 
 export const APPLICANTS: Applicant[] = [
   {
@@ -441,8 +442,7 @@ export const APPLICANTS: Applicant[] = [
     skills: ["Next.js", "Figma", "UI/UX"],
     coverLetter:
       "Em đã làm một trang tương tự cho một hợp tác xã rau ở Củ Chi hồi hè, nên phần kể chuyện vùng trồng em hình dung được ngay. Em làm được cả phần thiết kế nên anh chị không cần tìm thêm người dựng giao diện. Em rảnh buổi tối các ngày trong tuần và cả ngày cuối tuần.",
-    portfolioUrl: "https://github.com/hainam-nguyen",
-    portfolioLabel: "GitHub cá nhân",
+    cvFileName: "CV_LeTuanLoc.pdf",
     shortlisted: true
   },
   {
@@ -455,8 +455,7 @@ export const APPLICANTS: Applicant[] = [
     skills: ["Figma", "UI/UX"],
     coverLetter:
       "Em mạnh phần thiết kế giao diện và đã làm 4 trang bán hàng trên Figma. Phần lập trình em làm được ở mức cơ bản với Next.js, nếu anh chị cần tối ưu sâu thì em xin nói trước là em chưa chắc tay.",
-    portfolioUrl: "https://www.behance.net/lethanhtruc",
-    portfolioLabel: "Behance",
+    cvFileName: "CV_LeThanhTruc.pdf",
     shortlisted: false
   },
   {
@@ -469,8 +468,7 @@ export const APPLICANTS: Applicant[] = [
     skills: ["React", "Next.js"],
     coverLetter:
       "Em làm React khoảng một năm rưỡi, chủ yếu là các trang quản trị nội bộ. Phần giao diện đẹp mắt em cần anh chị đưa bản thiết kế sẵn, em không tự dựng được phần thẩm mỹ.",
-    portfolioUrl: "https://github.com/datpq-dev",
-    portfolioLabel: "GitHub cá nhân",
+    cvFileName: "CV_PhamQuocDat.pdf",
     shortlisted: false
   },
   {
@@ -483,8 +481,7 @@ export const APPLICANTS: Applicant[] = [
     skills: ["Figma"],
     coverLetter:
       "Em đang học năm 2 và đây là dự án thật đầu tiên em ứng tuyển. Em làm Figma khá ổn, phần lập trình thì em chưa làm được.",
-    portfolioUrl: "https://drive.google.com/drive/folders/vongocdiep",
-    portfolioLabel: "Thư mục Drive",
+    cvFileName: "CV_VoNgocDiep.pdf",
     shortlisted: false
   }
 ];
@@ -522,58 +519,6 @@ export const DELIVERY_HISTORY: DeliveryEvent[] = [
     kind: "submitted",
     actor: "Lê Tuấn Lộc",
     note: "Em đã nâng cỡ chữ mô tả lên 16px và giãn dòng rộng ra cho dễ đọc. Nhờ anh chị xem lại."
-  }
-];
-
-/* ==========================================================================
-   Portfolio xác thực (FR-CERT-01..05)
-   ========================================================================== */
-
-export type PortfolioEntry = {
-  id: string;
-  title: string;
-  smeName: string;
-  smeNote: string;
-  period: string;
-  role: string;
-  skills: string[];
-  rating: number;
-  review: string;
-  demoUrl: string;
-  sourceUrl: string;
-  visible: boolean;
-};
-
-export const PORTFOLIO: PortfolioEntry[] = [
-  {
-    id: "c-eco-phase-1",
-    title: "Trang giới thiệu vùng trồng cho hợp tác xã rau Củ Chi",
-    smeName: "HTX Rau an toàn Tân Phú Trung",
-    smeNote: "Hợp tác xã tại Củ Chi, TP.HCM",
-    period: "12/06/2026 - 04/07/2026",
-    role: "Lập trình giao diện",
-    skills: ["Next.js", "React", "UI/UX"],
-    rating: 5,
-    review:
-      "Nam chủ động hỏi lại những chỗ đề bài của bên mình viết chưa rõ, nên không phải làm lại lần nào. Trang chạy nhanh, các cô chú trong hợp tác xã tự vào xem trên điện thoại được.",
-    demoUrl: "https://rau-tanphutrung.vercel.app",
-    sourceUrl: "https://github.com/hainam-nguyen/htx-tanphutrung",
-    visible: true
-  },
-  {
-    id: "c-menu-board",
-    title: "Bảng thực đơn điện tử cho quán ăn gia đình",
-    smeName: "Quán Cơm Nhà Bảy Hiền",
-    smeNote: "Quán ăn tại Tân Bình, TP.HCM",
-    period: "02/05/2026 - 20/05/2026",
-    role: "Thiết kế và lập trình",
-    skills: ["Figma", "React"],
-    rating: 4,
-    review:
-      "Bản giao đúng hạn và đúng yêu cầu. Có một đợt bạn phản hồi tin nhắn hơi chậm vào tuần thi giữa kỳ, nhưng bạn có báo trước nên bên quán chủ động được.",
-    demoUrl: "https://thucdon-bayhien.vercel.app",
-    sourceUrl: "https://github.com/hainam-nguyen/menu-bayhien",
-    visible: true
   }
 ];
 

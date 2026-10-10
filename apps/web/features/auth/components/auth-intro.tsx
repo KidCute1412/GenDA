@@ -159,7 +159,7 @@ export function AuthIntro() {
           <span data-for="register">Figma ▲ 72%</span>
         </div>
         <div className="op-chip op-chip--c">
-          <span data-for="login">PORTFOLIO +1</span>
+          <span data-for="login">ĐÁNH GIÁ 5/5</span>
           <span data-for="register">CHUỖI HỌC 7 NGÀY</span>
         </div>
       </div>

@@ -41,7 +41,7 @@ export function SiteFooter() {
             </Link>
             <p className="text-muted" style={{ maxWidth: "38ch" }}>
               Nền tảng kết nối sinh viên TP.HCM với doanh nghiệp nhỏ và vừa qua các mini-project ngắn
-              hạn, có mốc bàn giao rõ ràng và portfolio được xác thực.
+              hạn, có mốc bàn giao rõ ràng và ứng tuyển bằng CV.
             </p>
           </div>
 

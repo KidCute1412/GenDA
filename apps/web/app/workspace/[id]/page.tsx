@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { SiteHeader } from "../../../components/layout/site-header";
@@ -10,7 +9,7 @@ import { ICON_WEIGHT, SealCheck } from "../../../components/ui/icons";
 import { WorkspaceRoleActions } from "../../../features/workspace/components/workspace-role-actions";
 import { WorkspaceEscrowPanel } from "../../../features/workspace/components/workspace-escrow-panel";
 import { LedgerWorkspace } from "../../../features/workspace/components/ledger-workspace";
-import { APPLICANTS, DELIVERY_HISTORY, PROJECTS, getProject } from "../../../mocks/data";
+import { APPLICANTS, DELIVERY_HISTORY, PROJECTS, SAMPLE_CV_PATH, getProject } from "../../../mocks/data";
 import { formatDate, formatVnd } from "../../../lib/utils/format";
 
 export function generateStaticParams() {
@@ -214,9 +213,9 @@ export default async function WorkspacePage({ params }: { params: Promise<{ id: 
               </ul>
 
               <div className="card__footer">
-                <Link href="/portfolio/le-tuan-loc" className="btn btn--outline btn--sm">
-                  Xem hồ sơ đầy đủ
-                </Link>
+                <a href={SAMPLE_CV_PATH} target="_blank" rel="noreferrer" className="btn btn--outline btn--sm">
+                  Xem CV
+                </a>
               </div>
             </section>
 

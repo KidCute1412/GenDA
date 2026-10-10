@@ -2,7 +2,7 @@
 
 ## Actors
 
-- `STUDENT`: applies individually or as a team member and owns portfolio evidence.
+- `STUDENT`: applies individually or as a team member and attaches a PDF CV to applications.
 - `SME`: creates projects, selects applicants, defines milestones, and accepts deliverables.
 - `ADMIN`: moderates projects, supports disputes, and audits state changes.
 
@@ -26,6 +26,6 @@ Only the owning use case may perform a transition. Invalid transitions return a 
 - A student cannot apply to an unpublished or cancelled project.
 - An accepted application belongs to at most one active project assignment.
 - A milestone cannot be accepted without a submitted deliverable.
-- Only completed projects create verified portfolio entries or certificates.
+- Only completed projects can receive an SME review. Verified portfolio entries were removed from scope (replaced by the student CV).
 - Every acceptance and rejection records the acting user and timestamp.
 

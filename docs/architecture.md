@@ -28,7 +28,7 @@ One application/JAR, one relational database. Organize packages under `vn.skillb
 | matching | projects / applications | Recommendations; no dedicated frontend feature yet |
 | milestones | milestones | Deliverables, acceptance, simulated escrow |
 | reviews | reviews | Reviews and eligibility |
-| certificates | portfolio | Verified evidence/certificates; portfolio is the UI name |
+| certificates | — | Out of scope: verified portfolio was removed and replaced by the student CV (`users`) |
 | admin | admin | Moderation/audit entrypoints; domain mutations stay in their owning modules |
 
 `workspace` composes domains and owns view state/navigation. `demo-ledger` is a temporary frontend adapter. `platform` owns health, HTTP errors and configuration, not business rules.

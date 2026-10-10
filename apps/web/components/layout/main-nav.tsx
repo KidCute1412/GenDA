@@ -11,7 +11,7 @@ import { groupOf, useMyApplications } from "../../features/applications/hooks/us
  *
  * Hai việc sinh viên làm nhiều nhất phải nhìn thấy ngay trên mọi trang: TÌM DỰ ÁN và
  * xem ĐƠN CỦA TÔI. Mục "Đơn của tôi" có số đơn đang chờ duyệt để biết có gì cần theo dõi.
- * Hồ sơ và portfolio nằm trong menu biểu tượng người dùng bên phải (UserMenu).
+ * Hồ sơ và CV nằm trong menu biểu tượng người dùng bên phải (UserMenu).
  */
 type NavItem = { href: string; label: string; badge?: number; matches?: (path: string) => boolean };
 

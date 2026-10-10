@@ -11,7 +11,7 @@ Authentication proves identity; the application use case must still verify role,
 | Approve or reject project | No | No | Yes |
 | Manage milestones for assigned project | As assigned | As owner | Support/audit |
 | Accept deliverable | No | As project owner | Support/audit |
-| Create verified portfolio/certificate | From completed work | No | System/admin workflow |
+| Upload/replace own CV (PDF) | Own account | No | Student only; required before browsing projects |
 
 ## Enforcement rules
 
