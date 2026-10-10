@@ -76,37 +76,95 @@ export default async function DocPage({
     <>
       <SiteHeader />
 
-      <main id="main-content" className="container">
-        <nav aria-label="Đường dẫn phân cấp">
-          <ol className="breadcrumbs">
-            <li>
-              <Link href="/">Trang chủ</Link>
-            </li>
-            <li aria-hidden="true">/</li>
-            <li aria-current="page">{entry.title}</li>
-          </ol>
-        </nav>
+      <main id="main-content" className="industrial-canvas" style={{ paddingBottom: "var(--space-16)" }}>
+        {/* THANH THƯỚC ĐO KỸ THUẬT & ĐIỀU HƯỚNG */}
+        <div style={{ borderBottom: "2px solid var(--machinery-border)", backgroundColor: "var(--color-surface-card)" }}>
+          <div className="container" style={{ paddingBlock: "10px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
+            <nav aria-label="Đường dẫn phân cấp" style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px" }}>
+              <ol className="breadcrumbs" style={{ margin: 0, padding: 0 }}>
+                <li>
+                  <Link href="/" style={{ color: "var(--color-text-muted)", textDecoration: "none" }}>HOME</Link>
+                </li>
+                <li aria-hidden="true" style={{ color: "var(--color-text-muted)" }}>/</li>
+                <li>
+                  <span style={{ color: "var(--color-text-muted)" }}>{section.toUpperCase()}</span>
+                </li>
+                <li aria-hidden="true" style={{ color: "var(--color-text-muted)" }}>/</li>
+                <li aria-current="page" style={{ fontWeight: 700, color: "var(--orange-500)" }}>{doc.toUpperCase()}</li>
+              </ol>
+            </nav>
 
-        <article className="section" style={{ maxWidth: "70ch" }}>
-          <h1>{entry.title}</h1>
-          <p className="lede" style={{ marginBlock: "var(--space-4) var(--space-8)" }}>
-            {entry.summary}
-          </p>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", fontFamily: "ui-monospace, monospace", fontSize: "11px" }}>
+              <span className="badge badge--verified" style={{ margin: 0 }}>
+                DOC REF // 2026.09
+              </span>
+              <span style={{ color: "var(--color-text-muted)" }}>
+                PHỤ TRÁCH: {entry.owner.toUpperCase()}
+              </span>
+            </div>
+          </div>
+        </div>
 
-          <Alert variant="info" title="Nội dung đang được hoàn thiện">
-            Văn bản này do {entry.owner} soạn và chưa được ban hành. Chúng tôi để trống thay vì đăng một
-            bản nháp, vì đây là văn bản ràng buộc quyền lợi của bạn.
-          </Alert>
+        <div className="container" style={{ paddingTop: "var(--space-8)", maxWidth: "840px" }}>
+          
+          <article className="module-bay" style={{ padding: "var(--space-8)", backgroundColor: "var(--color-surface-card)" }}>
+            <div className="module-bay__header">
+              <span className="module-bay__id">LEGAL PROTOCOL // {section.toUpperCase()}</span>
+              <span style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px", color: "var(--color-text-muted)" }}>
+                GENDA TRUST LAYER
+              </span>
+            </div>
 
-          <p style={{ marginBlock: "var(--space-8)" }}>
-            Trong lúc chờ, nếu bạn có câu hỏi về quyền lợi hoặc gặp vướng mắc với một dự án đang chạy, hãy
-            liên hệ trực tiếp với đội vận hành. Chúng tôi trả lời trong giờ hành chính.
-          </p>
+            <h1 style={{ fontSize: "clamp(1.75rem, 3.5vw, 2.25rem)", fontWeight: 900, textTransform: "uppercase", margin: "var(--space-2) 0" }}>
+              {entry.title}
+            </h1>
 
-          <ButtonLink href="/" variant="outline">
-            Về trang chủ
-          </ButtonLink>
-        </article>
+            <p style={{ margin: "0 0 var(--space-6)", fontSize: "14px", lineHeight: 1.6, color: "var(--color-text-body)" }}>
+              {entry.summary}
+            </p>
+
+            {/* BANNER THÔNG BÁO CƠ KHÍ */}
+            <div 
+              style={{ 
+                border: "2px solid var(--machinery-border)", 
+                backgroundColor: "var(--color-surface-subtle)", 
+                padding: "var(--space-4) var(--space-5)",
+                boxShadow: "3px 3px 0px var(--machinery-shadow)",
+                marginBottom: "var(--space-6)"
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-3)" }}>
+                <div style={{ backgroundColor: "var(--orange-500)", color: "#ffffff", padding: "4px 8px", borderRadius: "2px", fontFamily: "ui-monospace, monospace", fontSize: "11px", fontWeight: 800 }}>
+                  INFO
+                </div>
+                <div>
+                  <strong style={{ fontSize: "13px", textTransform: "uppercase", fontFamily: "ui-monospace, monospace", color: "var(--color-text-heading)", display: "block" }}>
+                    Nội dung văn bản đang được hoàn thiện
+                  </strong>
+                  <p style={{ margin: "4px 0 0", fontSize: "12px", color: "var(--color-text-body)", lineHeight: 1.5 }}>
+                    Văn bản này do {entry.owner} soạn thảo và chuẩn bị ban hành chính thức. Theo nguyên tắc <em>Trust-First</em>, chúng tôi từ chối đăng tải bản nháp giả lập vì đây là văn bản ràng buộc trực tiếp quyền lợi và trách nhiệm pháp lý của người dùng.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ borderTop: "1px dashed var(--machinery-border)", paddingTop: "var(--space-4)", marginTop: "var(--space-6)" }}>
+              <p style={{ margin: "0 0 var(--space-6)", fontSize: "13px", color: "var(--color-text-muted)", lineHeight: 1.5 }}>
+                Trong thời gian chờ ban hành, nếu bạn có bất kỳ câu hỏi về quyền lợi hoặc cần giải quyết khiếu nại trong quá trình bàn giao dự án, vui lòng liên hệ với đội ngũ hỗ trợ qua Zalo hoặc Hotline trong giờ hành chính.
+              </p>
+
+              <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                <Link href="/" className="btn--tactile-zinc" style={{ height: "40px", fontSize: "12px", textDecoration: "none" }}>
+                  ← VỀ TRANG CHỦ
+                </Link>
+                <Link href="/projects" className="btn--tactile-orange" style={{ height: "40px", fontSize: "12px", textDecoration: "none" }}>
+                  KHÁM PHÁ DỰ ÁN
+                </Link>
+              </div>
+            </div>
+          </article>
+
+        </div>
       </main>
 
       <SiteFooter />

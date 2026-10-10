@@ -55,13 +55,13 @@ export const CURRENT_STUDENT: {
   schoolEmail: string;
   skills: string[];
 } = {
-  name: "Nguyễn Hải Nam",
-  slug: "nguyen-hai-nam",
+  name: "Lê Tuấn Lộc",
+  slug: "le-tuan-loc",
   school: "ĐH Khoa học Tự nhiên, ĐHQG-HCM",
   major: "Công nghệ Thông tin",
   year: "Sinh viên năm 3",
   verification: "VERIFIED",
-  schoolEmail: "namnh.2203@hcmus.edu.vn",
+  schoolEmail: "letuanloc.2203@hcmus.edu.vn",
   skills: ["React", "Next.js", "TypeScript", "Figma"]
 };
 
@@ -433,7 +433,7 @@ export type Applicant = {
 export const APPLICANTS: Applicant[] = [
   {
     id: "s-nam",
-    name: "Nguyễn Hải Nam",
+    name: "Lê Tuấn Lộc",
     school: "ĐH Khoa học Tự nhiên, ĐHQG-HCM",
     major: "Công nghệ Thông tin",
     year: "Năm 3",
@@ -506,7 +506,7 @@ export const DELIVERY_HISTORY: DeliveryEvent[] = [
     id: "d1",
     date: "2026-09-12",
     kind: "submitted",
-    actor: "Nguyễn Hải Nam",
+    actor: "Lê Tuấn Lộc",
     note: "Đã dựng xong các mục theo wireframe, đưa lên đường dẫn chạy thử để anh chị xem."
   },
   {
@@ -520,7 +520,7 @@ export const DELIVERY_HISTORY: DeliveryEvent[] = [
     id: "d3",
     date: "2026-09-16",
     kind: "submitted",
-    actor: "Nguyễn Hải Nam",
+    actor: "Lê Tuấn Lộc",
     note: "Em đã nâng cỡ chữ mô tả lên 16px và giãn dòng rộng ra cho dễ đọc. Nhờ anh chị xem lại."
   }
 ];
@@ -637,7 +637,7 @@ export const AUDIT_LOG: AuditEntry[] = [
   {
     id: "l3",
     at: "17/09/2026 10:18",
-    actor: "Nguyễn Hải Nam",
+    actor: "Lê Tuấn Lộc",
     role: "SINH VIÊN",
     action: "Nộp kết quả bàn giao",
     target: "Mốc 2 - Landing page nông sản sạch",
