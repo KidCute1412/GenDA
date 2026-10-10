@@ -36,15 +36,33 @@ function scorePassword(value: string): number {
 export function PasswordField({
   label = "Mật khẩu",
   autoComplete = "new-password",
-  showStrength = false
+  showStrength = false,
+  required = true,
+  value: controlledValue,
+  onChange: controlledOnChange,
+  defaultValue = ""
 }: {
   label?: string;
   autoComplete?: "new-password" | "current-password";
   showStrength?: boolean;
+  required?: boolean;
+  value?: string;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  defaultValue?: string;
 }) {
   const id = useId();
-  const [value, setValue] = useState("");
+  const [internalValue, setInternalValue] = useState(defaultValue);
   const [visible, setVisible] = useState(false);
+
+  const value = controlledValue !== undefined ? controlledValue : internalValue;
+
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    if (controlledOnChange) {
+      controlledOnChange(event);
+    } else {
+      setInternalValue(event.target.value);
+    }
+  }
 
   const level = LEVELS[scorePassword(value)];
   const percent = value.length === 0 ? 0 : ((scorePassword(value) + 1) / 4) * 100;
@@ -54,7 +72,7 @@ export function PasswordField({
     <Field
       id={id}
       label={label}
-      required
+      required={required}
       hint={showStrength && value.length === 0 ? "Ít nhất 8 ký tự." : undefined}
     >
       <div className="input-affix">
@@ -62,11 +80,11 @@ export function PasswordField({
           id={id}
           className="input"
           type={visible ? "text" : "password"}
-          required
+          required={required}
           minLength={showStrength ? 8 : undefined}
           autoComplete={autoComplete}
           value={value}
-          onChange={(event) => setValue(event.target.value)}
+          onChange={handleChange}
           aria-describedby={meterVisible ? `${id}-strength` : showStrength ? `${id}-hint` : undefined}
         />
 
