@@ -115,9 +115,10 @@ function toInput(state: WizardState): ProjectDraftInput {
       const globalCriteria = state.acceptance.split("\n").map((line) => line.trim()).filter(Boolean);
       return state.milestones.map((row, index) => {
         // Nếu mốc để trống tiêu chí riêng, fallback dùng tiêu chí chung của dự án cho mốc cuối (hoặc toàn bộ nếu 1 mốc)
+        const milestoneCriteria = row.criteria.map((line) => line.trim()).filter(Boolean);
         const criteria =
-          row.criteria.length > 0
-            ? row.criteria
+          milestoneCriteria.length > 0
+            ? milestoneCriteria
             : (index === state.milestones.length - 1 ? globalCriteria : []);
         return {
           title: optional(row.title),

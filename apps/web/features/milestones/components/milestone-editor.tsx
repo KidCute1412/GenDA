@@ -140,8 +140,7 @@ export function MilestoneEditor({
                   value={row.criteria.join("\n")}
                   placeholder="Mỗi dòng một tiêu chí riêng cho mốc này (để trống sẽ dùng tiêu chí chung của dự án)"
                   onChange={(event) => {
-                    const lines = event.target.value.split("\n").map((s) => s.trim()).filter(Boolean);
-                    update(row.key, { criteria: lines });
+                    update(row.key, { criteria: event.target.value.split("\n") });
                   }}
                 />
                 <p className="field__hint">
