@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.sql.Connection;
 import java.sql.SQLException;
 import javax.sql.DataSource;
+import vn.skillbridge.platform.api.dto.ApiError;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,7 +24,7 @@ public class HealthController {
     @GetMapping(value = "/api/v1/health", produces = "application/json")
     @Operation(operationId = "health", summary = "Application and database readiness")
     @ApiResponse(responseCode = "200", description = "Ready", content = @Content(mediaType = "application/json", schema = @Schema(implementation = HealthResponse.class)))
-    @ApiResponse(responseCode = "503", description = "Database unavailable", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiExceptionHandler.ApiError.class)))
+    @ApiResponse(responseCode = "503", description = "Database unavailable", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class)))
     public HealthResponse health() {
         try (Connection connection = dataSource.getConnection()) {
             if (!connection.isValid(2)) throw new SQLException("Database unavailable");

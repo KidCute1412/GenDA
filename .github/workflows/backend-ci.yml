@@ -1,10 +1,10 @@
 name: Backend CI
 on:
   pull_request:
-    paths: ["apps/api/**", "packages/api-client/**", "compose.yaml", "render.yaml", "scripts/api-maven.mjs", ".github/workflows/backend-ci.yml"]
+    paths: ["apps/api/**", "packages/api-client/**", "compose.yaml", "render.yaml", "scripts/api-maven.mjs", "AGENTS.md", ".agents/skills/**", "docs/architecture.md", "docs/definition-of-done.md", "docs/testing-strategy.md", "docs/local-development.md", ".github/workflows/backend-ci.yml"]
   push:
     branches: [main]
-    paths: ["apps/api/**", "packages/api-client/**", "compose.yaml", "render.yaml", "scripts/api-maven.mjs", ".github/workflows/backend-ci.yml"]
+    paths: ["apps/api/**", "packages/api-client/**", "compose.yaml", "render.yaml", "scripts/api-maven.mjs", "AGENTS.md", ".agents/skills/**", "docs/architecture.md", "docs/definition-of-done.md", "docs/testing-strategy.md", "docs/local-development.md", ".github/workflows/backend-ci.yml"]
   workflow_dispatch:
 permissions:
   contents: read

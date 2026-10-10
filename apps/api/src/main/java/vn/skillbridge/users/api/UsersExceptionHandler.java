@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import vn.skillbridge.platform.api.ApiExceptionHandler.ApiError;
+import vn.skillbridge.platform.api.dto.ApiError;
 import vn.skillbridge.users.application.UsersException;
 import vn.skillbridge.users.domain.ContributorRuleViolation;
 

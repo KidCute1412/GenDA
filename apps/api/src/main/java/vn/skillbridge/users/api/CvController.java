@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import vn.skillbridge.auth.application.session.AuthenticatedPrincipal;
-import vn.skillbridge.platform.api.ApiExceptionHandler.ApiError;
+import vn.skillbridge.platform.api.dto.ApiError;
 import vn.skillbridge.users.api.dto.CvResponse;
 import vn.skillbridge.users.application.CvFile;
 import vn.skillbridge.users.application.CvService;

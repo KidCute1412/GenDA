@@ -19,7 +19,7 @@ import vn.skillbridge.projects.api.dto.ProjectDetailResponse;
 import vn.skillbridge.projects.api.dto.ProjectPageResponse;
 import vn.skillbridge.projects.application.ProjectQueryService;
 import vn.skillbridge.projects.application.ProjectSearch;
-import vn.skillbridge.platform.api.ApiExceptionHandler.ApiError;
+import vn.skillbridge.platform.api.dto.ApiError;
 
 @Validated
 @RestController
