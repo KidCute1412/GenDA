@@ -109,6 +109,9 @@ jobs:
 
       - name: Run Playwright tests
         run: pnpm --filter @genda/web test:e2e
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:3001
+          API_INTERNAL_URL: http://localhost:3001
 
       - name: Upload Playwright report
         if: failure()
