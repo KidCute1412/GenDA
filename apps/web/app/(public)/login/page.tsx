@@ -50,17 +50,7 @@ export default async function LoginPage({
           >
             
             {/* CỘT TRÁI: POSTER DECOR CƠ KHÍ & THỊ GIÁC NGHỆ THUẬT (Minimalist Teenage Engineering Aesthetic) */}
-            <div style={{ 
-              backgroundColor: "var(--machinery-border)", 
-              color: "var(--color-surface-card)", 
-              padding: "var(--space-6) var(--space-6)",
-              position: "relative",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              overflow: "hidden",
-              borderRight: "2px solid var(--machinery-border)"
-            }}>
+            <div className="auth-poster">
               {/* Họa tiết lưới tọa độ mờ cơ khí */}
               <div 
                 aria-hidden="true"
