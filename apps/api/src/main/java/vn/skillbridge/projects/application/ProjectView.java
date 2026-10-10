@@ -2,6 +2,7 @@ package vn.skillbridge.projects.application;
 
 import java.time.LocalDate;
 import java.util.List;
+import vn.skillbridge.projects.domain.ProjectComplexity;
 import vn.skillbridge.users.application.SkillSummary;
 
 public record ProjectView(
@@ -11,6 +12,7 @@ public record ProjectView(
         String smeIndustry,
         String smeSize,
         String smeContact,
+        ProjectComplexity complexity,
         long budget,
         LocalDate deadline,
         String summary,

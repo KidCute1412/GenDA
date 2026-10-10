@@ -44,19 +44,60 @@ Unsafe API requests require the `X-CSRF-Token` value issued by `GET /auth/csrf`;
 
 ## Contributor profile and CV target
 
-The current implementation lets authenticated students use `GET /api/v1/users/me/profile` and `PUT /api/v1/users/me/profile` with display name, school, major, study year and canonical skill codes. The approved target keeps the stable `/users/me/profile` resource but replaces student-only fields with contributor background, specialization and canonical skills; education becomes a separate child collection rather than a single school field.
+Implemented application endpoints:
 
-The target contract will add private CV upload/status/replace operations under `/api/v1/users/me/cv` and an application-readiness representation derived from account, profile and CV state. Contributors may browse projects while incomplete; `POST /applications` remains the authoritative enforcement point. A `READY` CV indicates only successful technical/security validation, not verified content. Exact multipart/presigned-upload details remain blocked by OQ-07 and must be added to OpenAPI when object storage is selected.
+| Endpoint | Actor | Behavior |
+|---|---|---|
+| `POST /api/v1/applications` | Contributor | Applies to a `PUBLISHED` project with a cover letter (80-3000 characters after trimming). Server-side gate: `422 APPLICATION_NOT_ELIGIBLE` with `details.missing` (`ACCOUNT_INACTIVE`, `EMAIL_NOT_VERIFIED`, `PROFILE_INCOMPLETE`, `CV_NOT_READY`, `TIER_REQUIRED`), `requiredTier`, `currentTier`, `missingXp`; `409 APPLICATION_ALREADY_EXISTS` for a second active application; `409 PROJECT_NOT_OPEN` once the project started; `422 APPLICATION_COVER_LETTER_LENGTH` |
+| `GET /api/v1/applications/me` | Contributor | Own applications, newest first, with project title, SME, budget, level and status |
+| `POST /api/v1/applications/{id}/withdraw` | Contributor | `SUBMITTED`/`SHORTLISTED` to `WITHDRAWN`; `409 APPLICATION_INVALID_TRANSITION` otherwise |
+| `GET /api/v1/sme/projects/{projectId}/applications` | Owning SME | Applicants ranked by skill match (FR-MAT-03), each with tier, XP, completed projects per level, self-declared profile and education, match explanation, CV metadata; withdrawn applications omitted; `contactEmail` only for the accepted applicant |
+| `GET /api/v1/sme/applications/counts?projectId=` | Owning SME | Open and total applications per owned project |
+| `POST /api/v1/sme/applications/{id}/shortlist` | Owning SME | `SUBMITTED` to `SHORTLISTED` |
+| `POST /api/v1/sme/applications/{id}/accept` | Owning SME | One transaction: the project row is locked, moves `PUBLISHED` to `IN_PROGRESS` with the contributor assigned, the application becomes `ACCEPTED` and every other open application `REJECTED`, each recording the deciding SME and time |
+| `GET /api/v1/sme/applications/{id}/cv` | Owning SME | The applicant's current READY CV, `inline`, `no-store` |
+
+Applying reads the project under a shared row lock, so an acceptance in progress cannot interleave with a new application. springdoc names schemas by simple class name, so API DTO names must be unique across modules; `ArchitectureTest` enforces this.
+
+Implemented contributor endpoints (role `CONTRIBUTOR`, own data only):
+
+| Endpoint | Behavior |
+|---|---|
+| `GET/PUT /api/v1/users/me/profile` | Display name, `backgroundType`, `specialization`, 1-8 canonical skill codes in the contributor's order; `complete` when all are present |
+| `GET/POST /api/v1/users/me/education`, `PUT/DELETE /api/v1/users/me/education/{id}` | Up to 10 self-declared entries; months as `YYYY-MM`; finished statuses need a past end month (`422 EDUCATION_INVALID_PERIOD`); responses carry `selfDeclared: true` |
+| `GET /api/v1/users/me/cv` | Current CV metadata or `404 CV_NOT_FOUND` |
+| `PUT /api/v1/users/me/cv` (multipart `file`) | Synchronous technical validation; READY CV on success, otherwise `422 CV_REJECTED_TECHNICAL` with `details.reason` (`EMPTY`, `TOO_LARGE`, `NOT_PDF`, `CORRUPTED`, `PASSWORD_PROTECTED`) and the current CV unchanged |
+| `GET /api/v1/users/me/cv/file` | The owner's PDF, `inline`, `no-store`, `nosniff` |
+| `GET /api/v1/users/me/readiness` | `accountActive`, `emailVerified`, `profileComplete`, `cvReady`, `ready` |
+| `GET /api/v1/users/me/experience` | `totalXp`, `tier`, next-tier progress, `basicXpCap`, the tier/level policy and newest-first history with `xpAwarded`/`capped` |
+
+The target contract will add private CV upload/status/replace operations under `/api/v1/users/me/cv` and an application-readiness representation derived from account, profile and CV state. Contributors may browse projects while incomplete; `POST /applications` remains the authoritative enforcement point. A `READY` CV indicates only successful technical/security validation, not verified content. MVP accepts the PDF as multipart and stores it in Postgres; presigned uploads replace this once OQ-07 selects object storage.
 
 Education is a child collection of the contributor profile. The target contract uses `GET` and `POST /api/v1/users/me/education`, plus `PUT` and `DELETE /api/v1/users/me/education/{educationId}`. Requests carry institution, field of study, education level, optional degree name, start/end period, education status and optional description. The API validates ownership and consistent periods/statuses; responses identify entries as self-declared. Education is not included in the application-readiness predicates.
 
 ## Project complexity and budget target
 
-The project create/update contract includes `complexity` with one of `BASIC`, `MEDIUM`, or `HIGH`. The backend also exposes the current project-creation policy (allowed levels, global budget range, and minimum budget for each level) so the generated frontend client can render the same policy without hard-coded business constants.
+The project create/update contract includes `complexity` with one of `BASIC`, `MEDIUM`, or `HIGH`. The backend also exposes the current project-creation policy (allowed levels, global budget range, and the inclusive minimum/maximum budget for each level: `BASIC` 1,000,000-1,500,000, `MEDIUM` 1,500,000-3,500,000, `HIGH` 3,500,000-5,000,000 VND) so the generated frontend client can render the same policy without hard-coded business constants.
 
-Submitting a draft whose budget is below the selected level's minimum returns HTTP `422` with stable code `PROJECT_BUDGET_BELOW_COMPLEXITY_MINIMUM` and details containing `complexity`, `minimumBudget`, and `submittedBudget`. The backend repeats this validation before publication even if the draft was created under an older client session.
+Submitting a draft whose budget is outside the selected level's range returns HTTP `422` with stable code `PROJECT_BUDGET_OUTSIDE_LEVEL_RANGE` and details containing `complexity`, `minimumBudget`, `maximumBudget`, and `submittedBudget`. The backend repeats this validation before publication even if the draft was created under an older client session.
 
-When admin review identifies a scope that is materially more complex than its declared level, the moderation command returns the project to `DRAFT` and requires a reason; it may also include `suggestedComplexity`. This is a review decision, not an admin-side edit of the SME's project. The exact project-creation-policy resource shape and the numeric minimums are finalized with OQ-08 when this slice is implemented and then committed to OpenAPI together with generated clients.
+When admin review identifies a scope that is materially more complex than its declared level, the moderation command returns the project to `DRAFT` and requires a reason; it may also include `suggestedComplexity`. This is a review decision, not an admin-side edit of the SME's project. The exact project-creation-policy resource shape is finalized when this slice is implemented and then committed to OpenAPI together with generated clients.
+
+Implemented project authoring and moderation endpoints:
+
+| Endpoint | Actor | Behavior |
+|---|---|---|
+| `GET /api/v1/projects/creation-policy` | Anyone | Overall budget range and the inclusive `minimumBudget`/`maximumBudget` of each level |
+| `GET /api/v1/sme/projects` | Approved SME | Own projects in every state, most recently updated first |
+| `POST /api/v1/sme/projects` | Approved SME | Create a `DRAFT`; only `title` is required, `201 Created` |
+| `GET /api/v1/sme/projects/{projectId}` | Approved SME | One own project; another SME's project returns `404 PROJECT_NOT_FOUND` |
+| `PUT /api/v1/sme/projects/{projectId}` | Approved SME | Replace draft content; a non-draft returns `409 PROJECT_INVALID_TRANSITION` |
+| `POST /api/v1/sme/projects/{projectId}/submit` | Approved SME | `DRAFT → PENDING_REVIEW`; incomplete content returns `422 PROJECT_NOT_READY` with `details.issues` |
+| `GET /api/v1/admin/projects/pending` | Admin | Review queue, oldest submission first |
+| `POST /api/v1/admin/projects/{projectId}/publish` | Admin | `PENDING_REVIEW → PUBLISHED`, revalidating readiness and the level range |
+| `POST /api/v1/admin/projects/{projectId}/return` | Admin | `PENDING_REVIEW → DRAFT` with `reason` (10-1000 characters) and optional `suggestedComplexity` |
+
+Owner/admin responses (`ManagedProjectResponse`) include `submissionIssues`, the reasons the project could not enter review today, and `latestReturn` while the latest review decision returned it to draft. A draft budget outside the overall MVP range returns `400 PROJECT_BUDGET_OUT_OF_RANGE`. Published catalog responses now also carry `complexity`. Business errors may include a `details` object.
 
 ## Compatibility
 

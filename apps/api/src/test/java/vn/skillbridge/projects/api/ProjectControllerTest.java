@@ -11,6 +11,7 @@ import vn.skillbridge.projects.application.ProjectPage;
 import vn.skillbridge.projects.application.ProjectQueryService;
 import vn.skillbridge.projects.application.ProjectSearch;
 import vn.skillbridge.projects.application.ProjectView;
+import vn.skillbridge.projects.domain.ProjectComplexity;
 import vn.skillbridge.users.application.SkillSummary;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -34,6 +35,7 @@ class ProjectControllerTest {
                 .andExpect(jsonPath("$.pageSize").value(12))
                 .andExpect(jsonPath("$.total").value(1))
                 .andExpect(jsonPath("$.data[0].id").value("p-test"))
+                .andExpect(jsonPath("$.data[0].complexity").value("MEDIUM"))
                 .andExpect(jsonPath("$.data[0].skills[0].code").value("react"));
     }
 
@@ -57,7 +59,7 @@ class ProjectControllerTest {
     private ProjectView project() {
         return new ProjectView(
                 "p-test", "Test project", "Test SME", "Technology", "1-10", "test@example.com",
-                2_000_000, LocalDate.of(2027, 1, 1), "Summary", "Problem",
+                ProjectComplexity.MEDIUM, 2_000_000, LocalDate.of(2027, 1, 1), "Summary", "Problem",
                 List.of(new SkillSummary("react", "React")), List.of("Done"), List.of());
     }
 }

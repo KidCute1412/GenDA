@@ -24,6 +24,11 @@ export async function getAuthMutationHeaders() {
   return { "X-CSRF-Token": csrfToken ?? (await csrf()) };
 }
 
+/** Forgets the cached CSRF token so the next mutation fetches a fresh one (e.g. after its cookie expired). */
+export function resetCsrfToken() {
+  csrfToken = null;
+}
+
 function changed() {
   if (typeof window !== "undefined") window.dispatchEvent(new Event(EVENT_NAME));
 }

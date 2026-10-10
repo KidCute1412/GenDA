@@ -120,7 +120,7 @@ Theo phương pháp chuẩn hóa trong `LN04 - Task Analysis`, các tác vụ c�
              2. Thiết lập Kỹ năng, Complexity & Ngân sách
                 2.1. Chọn các kỹ năng yêu cầu từ danh mục chuẩn (FR-USR-05)
                 2.2. Chọn complexity: BASIC / MEDIUM / HIGH
-                2.3. Xem minimum budget tương ứng và nhập ngân sách dự án (BR-10, BR-18)
+                2.3. Xem khoảng ngân sách tương ứng và nhập ngân sách dự án (BR-10, BR-18)
                 2.4. Chọn hạn chót hoàn thành (Ràng buộc: Ngày tương lai - BR-11)
      3. Thiết lập Tiêu chí Nghiệm thu & Phân bổ Mốc
         3.1. Nhập tiêu chí nghiệm thu chi tiết
@@ -1035,7 +1035,7 @@ Biến thể SME của `/register` bổ sung thông tin doanh nghiệp theo FR-U
 
 ### 7.3. Màn hình 3: Wizard Đăng Dự án phía SME (`/sme/projects/new`)
 - **Mục tiêu**: Giúp chủ doanh nghiệp tạo đề bài chuẩn mực trong 3 bước, bảo đảm các luật BR-01, BR-10, BR-11, BR-18, BR-19 và FR-MIL-02.
-- **Bước Kỹ năng, Complexity & Ngân sách**: Hiển thị ba lựa chọn `BASIC`, `MEDIUM`, `HIGH` kèm mô tả phạm vi dễ hiểu. Khi level thay đổi, giao diện lấy policy từ backend và hiển thị minimum budget tương ứng cạnh ô nhập/slider. Nếu budget thấp hơn ngưỡng, hiện lỗi inline nêu số tối thiểu và vô hiệu hóa nút gửi duyệt; không tự nâng budget hoặc âm thầm đổi level thay SME.
+- **Bước Kỹ năng, Complexity & Ngân sách**: Hiển thị ba lựa chọn `BASIC`, `MEDIUM`, `HIGH` kèm mô tả phạm vi dễ hiểu. Khi level thay đổi, giao diện lấy policy từ backend và hiển thị khoảng ngân sách tương ứng (sàn–trần) cạnh ô nhập/slider. Nếu budget nằm ngoài khoảng, hiện lỗi inline nêu sàn/trần và vô hiệu hóa nút gửi duyệt; không tự nâng budget hoặc âm thầm đổi level thay SME.
 - **Review state**: Bản xem trước đặt scope, deliverables, skills, deadline, milestones, complexity và budget trong cùng vùng đối chiếu. Admin Queue hiển thị cùng tập dữ liệu; khi scope không khớp level, admin chọn “Trả về chỉnh sửa”, bắt buộc nhập lý do và có thể đề xuất complexity. Project quay về `DRAFT`, không bị admin sửa trực tiếp.
 - **Bố cục Stepper 3 bước**:
   ```text
@@ -1279,7 +1279,7 @@ Thử nghiệm trên nhóm mẫu thử nghiệm giai đoạn Soft-launch (15–2
 | **FR-USR-12..13** | SME nộp thông tin doanh nghiệp; admin xác minh/từ chối trước khi cấp quyền SME | Biến thể SME của `/register`, completion state sau `/verify-email`, Màn hình 8 — SME Verification Queue |
 | **FR-PRJ-01..04** | SME tạo dự án nháp, gửi duyệt; Admin duyệt/từ chối kèm lý do | Màn hình 3 (Wizard 3 bước) & Màn hình 8 (Admin Queue) |
 | **FR-PRJ-05..07** | Xem danh sách PUBLISHED, lọc phân trang, hủy dự án, nhận ứng viên | Màn hình 4 (Thẻ dự án, Faceted Filter) & Màn hình 5 |
-| **FR-PRJ-10..11** | Minimum budget theo complexity và admin phát hiện scope bị khai level thấp | Màn hình 3 (complexity selector, minimum-budget hint, inline block) & Màn hình 8 (scope-level review, trả về DRAFT kèm lý do/level đề xuất) |
+| **FR-PRJ-10..11** | Khoảng ngân sách theo complexity và admin phát hiện scope bị khai level thấp | Màn hình 3 (complexity selector, budget-range hint, inline block) & Màn hình 8 (scope-level review, trả về DRAFT kèm lý do/level đề xuất) |
 | **FR-PRJ-08** | Mọi milestone nghiệm thu xong thì dự án chuyển `COMPLETED` | Màn hình 7 (Quy trình đóng dự án, bước 1) + cập nhật Milestone Stepper ở Màn hình 6 |
 | **FR-PRJ-09** | SME xem danh sách dự án của chính mình theo trạng thái | `/sme/projects` — danh sách nhóm theo tab trạng thái (Nháp / Chờ duyệt / Đang tuyển / Đang thực hiện / Hoàn tất) |
 | **FR-APP-01..03, 05..07** | Contributor ứng tuyển kèm thư ngỏ/CV; SME xem và chọn 1 người; contributor rút đơn | Màn hình 4 (Apply Modal) & Màn hình 5 (Applicant Selection Card, Irreversible Confirmation Dialog) |

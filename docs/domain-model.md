@@ -34,6 +34,20 @@ canApplyGeneral = accountActive
 
 A contributor may browse published `GENERAL` projects before the profile/CV checklist is complete. The backend enforces the checklist when an application is submitted.
 
+## Contributor experience and tier
+
+Completing an eligible project earns experience points (XP): `BASIC` +1, `MEDIUM` +2, `HIGH` +3. XP earned from `BASIC` projects counts up to 10 in total. A project counts only when it is `COMPLETED`, the contributor holds its `ACCEPTED` application and every milestone was accepted.
+
+XP maps to a tier that bounds which project levels a contributor may apply to on their own:
+
+```text
+BRONZE  0 XP  (default)  → BASIC
+SILVER  10 XP            → BASIC, MEDIUM
+GOLD    30 XP            → BASIC, MEDIUM, HIGH
+```
+
+XP and tier are derived from completion history, never entered by hand or stored as an independent mutable flag. A tier never decreases in MVP. Because `BASIC` XP caps at the `SILVER` threshold, the 20 XP between `SILVER` and `GOLD` must come from `MEDIUM` work. An owning SME's invitation may waive the `SILVER` requirement for one `MEDIUM` project; nothing waives the `GOLD` requirement for `HIGH`. Tier reflects GenDA delivery history, not verified skill.
+
 ## Education profile
 
 A contributor owns zero or more education entries. Each entry records institution, field of study, education level, optional degree name, start/end period, status (`CURRENTLY_STUDYING`, `GRADUATED`, `COMPLETED`, `NOT_COMPLETED`) and an optional description.
@@ -53,11 +67,19 @@ Milestone: PENDING → IN_PROGRESS → SUBMITTED → ACCEPTED / CHANGES_REQUESTE
 
 Only the owning use case may perform a transition. Invalid transitions return a stable domain error.
 
-## Project complexity and budget guard
+## Project complexity and budget range guard
 
-Every project declares one complexity level: `BASIC`, `MEDIUM`, or `HIGH`. The `projects` domain owns the mapping from each level to its minimum budget, with the invariant `BASIC_MIN < MEDIUM_MIN < HIGH_MIN`. Exact amounts remain a product-policy decision (OQ-08); every configured minimum must remain within the MVP project range of 1,000,000-5,000,000 VND.
+Every project declares one complexity level: `BASIC`, `MEDIUM`, or `HIGH`. The `projects` domain owns the mapping from each level to an inclusive budget range (decided 2026-10-09, OQ-08):
 
-A draft may be incomplete while the SME is editing it. The transition from `DRAFT` to `PENDING_REVIEW`, and the admin transition from `PENDING_REVIEW` to `PUBLISHED`, must both revalidate `budget >= minimumBudget(complexity)`.
+| Level | Minimum (VND) | Maximum (VND) |
+|---|---:|---:|
+| `BASIC` | 1,000,000 | 1,500,000 |
+| `MEDIUM` | 1,500,000 | 3,500,000 |
+| `HIGH` | 3,500,000 | 5,000,000 |
+
+The ranges are contiguous and together cover exactly the MVP project range of 1,000,000-5,000,000 VND. A boundary amount (1,500,000 or 3,500,000) is valid for both adjacent levels; the SME's chosen level decides.
+
+A draft may be incomplete while the SME is editing it. The transition from `DRAFT` to `PENDING_REVIEW`, and the admin transition from `PENDING_REVIEW` to `PUBLISHED`, must both revalidate `minimumBudget(complexity) <= budget <= maximumBudget(complexity)`.
 
 The numeric rule alone cannot prevent an SME from declaring a complex scope as `BASIC`. During review, the admin compares the selected complexity with scope, deliverables, required skills, deadline, and milestones. A materially under-classified project is returned to `DRAFT` with a mandatory reason and suggested complexity. The admin does not silently rewrite the SME's project; the SME must reduce the scope or select the appropriate level and budget before resubmitting.
 
@@ -75,7 +97,7 @@ The numeric rule alone cannot prevent an SME from declaring a complex scope as `
 - An SME cannot receive a full session or create projects until both email and business verification succeed (`SME_NOT_APPROVED`). An admin may approve, or reject with a required recorded reason; both decisions are audited.
 - Only an SME can create or edit its draft project.
 - Only an admin can publish or reject a pending project.
-- A project cannot enter `PENDING_REVIEW` or `PUBLISHED` when its budget is below the server-owned minimum for its selected complexity.
+- A project cannot enter `PENDING_REVIEW` or `PUBLISHED` when its budget is outside the server-owned range for its selected complexity.
 - An admin cannot publish a materially under-classified project and cannot change the SME's complexity, scope, or budget on the SME's behalf.
 - A contributor cannot apply to an unpublished or cancelled project, or without satisfying `canApplyGeneral`.
 - A contributor may mutate only their own education entries. Self-declared education must not be represented as verified education.

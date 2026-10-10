@@ -140,7 +140,7 @@ Bản demo chạy bộ quy tắc ngay trên trình duyệt vì ứng tuyển, mi
 | Bảng | `assistant_acknowledgements (student_id, insight_key, acknowledged_at)` khóa chính `(student_id, insight_key)`; `assistant_preferences (student_id, auto_open, intro_done)`. Mốc "lần trước" lấy từ thời điểm đăng nhập/làm mới token gần nhất của module `auth`. |
 | Frontend | `assistant-host.tsx` thay `buildStudentInsights` cục bộ bằng lời gọi API; hộp thoại, nhân vật và quy tắc tự bật giữ nguyên. |
 
-**Đề xuất phụ thuộc (chưa chốt, xem OQ-08 ở `requirement.md`):** cho doanh nghiệp chọn một lý do có cấu trúc khi một đơn bị đóng (không khớp kỹ năng, đã chọn người nộp sớm hơn, lệch thời gian, khác). Hiện Gen chỉ *suy luận* nguyên nhân trượt từ dữ liệu; có lý do thật thì lời khuyên chính xác hơn hẳn.
+**Đề xuất phụ thuộc (chưa chốt, xem OQ-10 ở `requirement.md`):** cho doanh nghiệp chọn một lý do có cấu trúc khi một đơn bị đóng (không khớp kỹ năng, đã chọn người nộp sớm hơn, lệch thời gian, khác). Hiện Gen chỉ *suy luận* nguyên nhân trượt từ dữ liệu; có lý do thật thì lời khuyên chính xác hơn hẳn.
 
 ## 8. Đo hiệu quả
 

@@ -9,7 +9,7 @@ The backend is the source of truth for:
 - `GET /api/v1/skills`: canonical skill codes and display names.
 - `GET /api/v1/projects`: published projects only, with keyword, repeated skill-code, budget and paging filters.
 - `GET /api/v1/projects/{projectId}`: one published project, including acceptance criteria and the milestone plan visible before applying. Execution status, deliverables and escrow remain owned by the future `milestones` slice.
-- The project-creation policy supplied by the backend: allowed complexity levels and the current minimum budget for each level. The wizard may display and pre-validate this policy, but must not duplicate it as trusted frontend constants.
+- The project-creation policy supplied by the backend: allowed complexity levels and the current minimum/maximum budget for each level. The wizard may display and pre-validate this policy, but must not duplicate it as trusted frontend constants.
 
 List responses use `{ data, page, pageSize, total }`. Errors use `{ code, message, requestId }`. The OpenAPI snapshot and generated TypeScript schema are committed with contract changes.
 

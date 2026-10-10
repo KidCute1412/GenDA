@@ -41,9 +41,17 @@ export async function generateMetadata({
  * Mật độ ở màn hình này CHẶT hơn hẳn khu marketing - đây là nơi làm việc hằng
  * ngày, người dùng cần thấy nhiều thứ cùng lúc (design.md 4.9).
  */
-export default async function WorkspacePage({ params }: { params: Promise<{ id: string }> }) {
+export default async function WorkspacePage({
+  params,
+  searchParams
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ ledger?: string }>;
+}) {
   const { id } = await params;
   if (id === "demo") return <LedgerWorkspace />;
+  // Dự án đã chọn người qua API thật: workspace chạy trên bản sao ledger cho tới khi milestones có API.
+  if ((await searchParams).ledger === "1") return <LedgerWorkspace projectId={id} />;
   const project = getProject(id);
 
   if (!project) {

@@ -1,10 +1,14 @@
 package vn.skillbridge.projects.application;
 
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import vn.skillbridge.projects.domain.BudgetRange;
+import vn.skillbridge.projects.domain.ProjectBudgetPolicy;
+import vn.skillbridge.projects.domain.ProjectComplexity;
 import vn.skillbridge.projects.domain.ProjectMilestone;
 import vn.skillbridge.projects.domain.PublishedProject;
 import vn.skillbridge.users.application.SkillQueryService;
@@ -15,10 +19,24 @@ import vn.skillbridge.users.application.SkillSummary;
 public class ProjectQueryService {
     private final PublishedProjectRepository projects;
     private final SkillQueryService skills;
+    private final ProjectBudgetPolicy budgetPolicy;
 
-    public ProjectQueryService(PublishedProjectRepository projects, SkillQueryService skills) {
+    public ProjectQueryService(PublishedProjectRepository projects, SkillQueryService skills,
+            ProjectBudgetPolicy budgetPolicy) {
         this.projects = projects;
         this.skills = skills;
+        this.budgetPolicy = budgetPolicy;
+    }
+
+    public ProjectCreationPolicyView creationPolicy() {
+        BudgetRange overall = budgetPolicy.overall();
+        return new ProjectCreationPolicyView(overall.minimum(), overall.maximum(),
+                Arrays.stream(ProjectComplexity.values())
+                        .map(level -> {
+                            BudgetRange range = budgetPolicy.rangeFor(level);
+                            return new ProjectCreationPolicyView.LevelView(level, range.minimum(), range.maximum());
+                        })
+                        .toList());
     }
 
     public ProjectPage<ProjectView> browse(ProjectSearch search) {
@@ -45,7 +63,7 @@ public class ProjectQueryService {
                 .toList();
         return new ProjectView(
                 project.id(), project.title(), project.smeName(), project.smeIndustry(), project.smeSize(),
-                project.smeContact(), project.budget(), project.deadline(), project.summary(), project.problem(),
+                project.smeContact(), project.complexity(), project.budget(), project.deadline(), project.summary(), project.problem(),
                 resolvedSkills, project.acceptanceCriteria(),
                 project.milestones().stream().map(this::toMilestoneView).toList());
     }
