@@ -7,4 +7,5 @@
 - Do not put business authorization decisions only in the UI.
 - Reusable UI belongs in a shared component package only after a second real use.
 - Prefer accessible semantic HTML, keyboard support, and mobile-first responsive layouts.
+- Follow the visual tokens, wireframes, and UX guidelines specified in `docs/design.md`.
 
