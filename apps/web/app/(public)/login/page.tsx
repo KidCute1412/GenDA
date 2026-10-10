@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { SiteHeader } from "../../../components/layout/site-header";
+import { BottomNav } from "../../../components/layout/bottom-nav";
 import { LoginFormClient } from "../../../features/auth/components/login-form-client";
 import { RegisterFormClient } from "../../../features/auth/components/register-form-client";
 
@@ -22,13 +23,12 @@ export default async function LoginPage({
 
   return (
     <>
-      <SiteHeader />
+      <SiteHeader hideOnMobile />
 
       <main 
         id="main-content" 
-        className="industrial-canvas" 
+        className="industrial-canvas has-bottom-nav auth-shell"
         style={{ 
-          minHeight: "calc(100vh - 64px)", 
           display: "flex", 
           flexDirection: "column",
           justifyContent: "center",
@@ -273,6 +273,7 @@ export default async function LoginPage({
 
         </div>
       </main>
+      <BottomNav />
 
       {/* Đã tích hợp micro footer ngay dưới thẻ terminal module */}
     </>
