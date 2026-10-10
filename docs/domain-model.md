@@ -19,6 +19,8 @@ CV:           UPLOADING → PROCESSING → READY / REJECTED_TECHNICAL
 SME business verification: outside MVP
 ```
 
+SME profiles are self-declared: business name uses the account display name; optional description and industry are owned by `users` and stored in `sme_profiles`. SME registration tax-code/website data remains read-only in the profile. Saving a profile does not verify a business or introduce a completeness gate. Existing project business names remain snapshots.
+
 Email addresses are collected for account sign-in but are not verified in MVP.
 
 SME access requires an active account. Business identity is self-declared; project review remains a separate lifecycle.

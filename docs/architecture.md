@@ -144,7 +144,7 @@ Java `public` visibility does not make a type a supported module interface. Only
 
 | Caller | Published target types | Purpose |
 | --- | --- | --- |
-| `users.application` | `auth.application.account.AccountProfileService`, `AccountProfile`, `AccountStanding` | Read account identity/standing and update display name |
+| `users.application` | `auth.application.account.AccountProfileService`, `AccountProfile`, `AccountStanding`, `SmeIdentity` | Read account identity/standing and self-declared SME registration identity; update display name |
 | `projects.application` | `users.application.SkillQueryService`, `SkillSummary` | Resolve canonical skill codes |
 | `projects.application` | `auth.application.account.AccountProfileService`, `AccountProfile` | Check the SME approval/role of the project author |
 | `projects.api` | `users.application.SkillSummary` | Map resolved skills to HTTP DTOs |
@@ -192,6 +192,8 @@ Legacy email-verification requirements are deferred; active accounts can sign in
 CVs and SME verification evidence are private object-storage objects when files are required. Upload processing validates file type/signature, size, readability, password protection and configured malware scanning before marking a CV `READY`. Database rows hold metadata and object keys, never file bytes; access uses short-lived authorization. The exact storage/scanner provider remains an implementation decision under OQ-07.
 
 ## Frontend
+
+SME profiles are implemented in `users`: `GET/PUT /api/v1/users/me/sme-profile` reads the active SME's own registration details and updates business name, description and industry. Optional description/industry live in `sme_profiles`; the existing account display name remains the business name. Registration identity is read-only through the published auth facade. Business verification remains outside MVP. New projects use the current business name; existing projects retain their name snapshot.
 
 Keep feature-oriented UI and DD-10 Neo-Industrial Ledger. Pages compose features; features use generated clients and local view state with explicit server/client boundaries. Server calls use `API_INTERNAL_URL`; browsers use `NEXT_PUBLIC_API_URL`. Database credentials never enter frontend code.
 

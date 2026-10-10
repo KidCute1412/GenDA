@@ -25,6 +25,7 @@ class ArchitectureTest {
             "users.application", Set.of(
                     "vn.skillbridge.auth.application.account.AccountProfileService",
                     "vn.skillbridge.auth.application.account.AccountProfile",
+                    "vn.skillbridge.auth.application.account.SmeIdentity",
                     "vn.skillbridge.auth.application.account.AccountStanding"),
             "projects.application", Set.of(
                     "vn.skillbridge.users.application.SkillQueryService",

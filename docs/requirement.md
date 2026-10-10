@@ -55,7 +55,7 @@ Phân quyền chi tiết theo `docs/authorization-matrix.md`. Mọi yêu cầu d
 | FR-USR-01 | Cá nhân khai hồ sơ cơ bản gồm họ tên hiển thị, loại nền tảng (`STUDENT`, `RECENT_GRADUATE`, `WORKING_PROFESSIONAL`, `FREELANCER`, `CAREER_SWITCHER`, `OTHER`), chuyên môn và danh sách kỹ năng. Học vấn được quản lý thành danh sách riêng theo FR-USR-10. | M |
 | FR-USR-02 | **Đã loại bỏ (2026-10-07).** GenDA không thu thập hoặc xác minh minh chứng tư cách sinh viên; `STUDENT` chỉ là loại nền tảng tự khai trong profile. | — |
 | FR-USR-03 | **Đã loại bỏ (2026-10-07).** Không có hàng đợi admin duyệt tư cách sinh viên. | — |
-| FR-USR-04 | SME khai hồ sơ gồm tên doanh nghiệp, lĩnh vực, quy mô nhân sự, người liên hệ và thông tin liên lạc. | M |
+| FR-USR-04 | MVP: SME đang hoạt động xem và sửa hồ sơ riêng gồm tên doanh nghiệp (bắt buộc, tối đa 180 ký tự), mô tả (tùy chọn, tối đa 2.000 ký tự), lĩnh vực (tùy chọn, tối đa 120 ký tự); dữ liệu lưu backend và giữ sau tải lại. Email, mã số thuế/website đăng ký hiển thị chỉ đọc. Thông tin là tự khai, không có gate hoàn thiện/duyệt doanh nghiệp. Quy mô nhân sự và người liên hệ riêng được hoãn. | M |
 | FR-USR-05 | Kỹ năng được chọn từ danh mục kỹ năng do hệ thống quản lý, không nhập tự do, để matching và tìm kiếm hoạt động được. | M |
 | FR-USR-06 | Người dùng xem hồ sơ công khai của bên kia trong phạm vi một dự án đang tương tác. | M |
 | FR-USR-07 | Cá nhân được xem danh sách và chi tiết dự án ở mọi project level sau khi xác minh email, nhưng chỉ được ứng tuyển khi đã có CV ở trạng thái `READY`. CV PDF tối đa 2 MB và có thể thay thế. | M |

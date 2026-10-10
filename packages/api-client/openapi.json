@@ -5,6 +5,66 @@
     "version": "v0"
   },
   "paths": {
+    "/api/v1/users/me/sme-profile": {
+      "get": {
+        "tags": [
+          "sme-profile-controller"
+        ],
+        "summary": "View the authenticated SME's self-declared profile",
+        "operationId": "getSmeProfile",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SmeProfileResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "sme-profile-controller"
+        ],
+        "summary": "Update the SME's business name, description and industry",
+        "operationId": "updateSmeProfile",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSmeProfileRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SmeProfileResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
     "/api/v1/users/me/profile": {
       "get": {
         "tags": [
@@ -1582,6 +1642,56 @@
   },
   "components": {
     "schemas": {
+      "UpdateSmeProfileRequest": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string",
+            "maxLength": 180,
+            "minLength": 0
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 0
+          },
+          "industry": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 0
+          }
+        },
+        "required": [
+          "displayName"
+        ]
+      },
+      "SmeProfileResponse": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "taxCode": {
+            "type": "string"
+          },
+          "companyWebsite": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "industry": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "displayName",
+          "email"
+        ]
+      },
       "UpdateContributorProfileRequest": {
         "type": "object",
         "properties": {

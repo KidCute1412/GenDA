@@ -35,6 +35,10 @@ SME registration keeps validated tax-code/website data as self-declared business
 `POST /logout` is idempotent: it revokes the current refresh-session record when a valid refresh cookie exists, expires both authentication cookies using their original paths, and returns `204 No Content`. The access JWT remains stateless; the backend stores only the refresh-token fingerprint and revocation metadata, never the raw token.
 ## Contributor profile and CV target
 
+### SME profile (implemented)
+
+`GET/PUT /api/v1/users/me/sme-profile` requires an active SME account and acts only on the authenticated user. GET returns `displayName`, `email`, `taxCode`, `companyWebsite`, `description`, `industry`; an account without a saved profile receives its registration details and empty optional fields. PUT accepts only `displayName` (required, max 180), `description` (optional, max 2000), `industry` (optional, max 120). Text is trimmed; blank optional fields become null. Email and registration identity are read-only. Successful writes return the updated profile; invalid transport input returns 400, invalid normalized text returns 422 `SME_PROFILE_INVALID`, and denied accounts return 403. The existing cookie/CSRF rules apply. Name and profile updates share one transaction.
+
 Implemented application endpoints:
 
 | Endpoint | Actor | Behavior |

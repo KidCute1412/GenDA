@@ -17,7 +17,7 @@ public class UsersExceptionHandler {
     @ExceptionHandler(UsersException.class)
     ResponseEntity<ApiError> users(UsersException exception) {
         HttpStatus status = switch (exception.code()) {
-            case UsersException.CONTRIBUTOR_ROLE_REQUIRED -> HttpStatus.FORBIDDEN;
+            case UsersException.CONTRIBUTOR_ROLE_REQUIRED, UsersException.SME_ROLE_REQUIRED -> HttpStatus.FORBIDDEN;
             case UsersException.EDUCATION_NOT_FOUND, UsersException.CV_NOT_FOUND -> HttpStatus.NOT_FOUND;
             case UsersException.EDUCATION_LIMIT_REACHED -> HttpStatus.CONFLICT;
             default -> HttpStatus.BAD_REQUEST;

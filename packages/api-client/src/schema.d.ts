@@ -4,6 +4,24 @@
  */
 
 export interface paths {
+    "/api/v1/users/me/sme-profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** View the authenticated SME's self-declared profile */
+        get: operations["getSmeProfile"];
+        /** Update the SME's business name, description and industry */
+        put: operations["updateSmeProfile"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/users/me/profile": {
         parameters: {
             query?: never;
@@ -567,6 +585,19 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        UpdateSmeProfileRequest: {
+            displayName: string;
+            description?: string;
+            industry?: string;
+        };
+        SmeProfileResponse: {
+            displayName: string;
+            email: string;
+            taxCode?: string;
+            companyWebsite?: string;
+            description?: string;
+            industry?: string;
+        };
         UpdateContributorProfileRequest: {
             displayName: string;
             /** @enum {string} */
@@ -1026,6 +1057,50 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    getSmeProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["SmeProfileResponse"];
+                };
+            };
+        };
+    };
+    updateSmeProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateSmeProfileRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["SmeProfileResponse"];
+                };
+            };
+        };
+    };
     get: {
         parameters: {
             query?: never;

@@ -29,6 +29,7 @@ public class SecurityConfiguration {
                                 "/api/v1/projects/**", "/api/v1/auth/csrf", "/api/v1/auth/login",
                                 "/api/v1/auth/register",
                                 "/api/v1/auth/refresh", "/api/v1/auth/logout").permitAll()
+                        .requestMatchers("/api/v1/users/me/sme-profile").hasRole("SME")
                         .requestMatchers("/api/v1/users/me/**").hasRole("CONTRIBUTOR")
                         .requestMatchers("/api/v1/applications/**").hasRole("CONTRIBUTOR")
                         .requestMatchers("/api/v1/sme/**").hasRole("SME")

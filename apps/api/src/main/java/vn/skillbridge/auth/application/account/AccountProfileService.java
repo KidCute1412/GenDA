@@ -46,4 +46,10 @@ public class AccountProfileService {
     public void updateDisplayName(UUID userId, String displayName) {
         accounts.updateDisplayName(userId, displayName);
     }
+
+    @Transactional(readOnly = true)
+    public SmeIdentity smeIdentity(UUID userId) {
+        return accounts.findSmeIdentity(userId)
+                .orElseThrow(() -> new AuthException("ACCOUNT_NOT_FOUND", "SME account does not exist"));
+    }
 }

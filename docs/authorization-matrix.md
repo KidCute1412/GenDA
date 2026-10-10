@@ -4,6 +4,7 @@ Authentication proves identity; application use cases still verify role, ownersh
 
 | Use case | Contributor | SME | Admin |
 | --- | --- | --- | --- |
+| Read/update own SME profile | No | Active account, own profile only; email/registration identity read-only | No |
 | Register and sign in | Own account | Own account | Internal provisioning only |
 | View published projects | Yes | Yes | Yes |
 | Create/edit own draft project | No | Yes | Support/audit only |

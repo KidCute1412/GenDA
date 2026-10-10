@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
 import vn.skillbridge.auth.application.account.AuthUserRepository;
+import vn.skillbridge.auth.application.account.SmeIdentity;
 import vn.skillbridge.auth.domain.account.AccountState;
 import vn.skillbridge.auth.domain.account.AuthUser;
 import vn.skillbridge.auth.domain.account.UserRole;
@@ -44,5 +45,11 @@ class JpaAuthUserRepositoryAdapter implements AuthUserRepository {
         return new AuthUser(entity.id, entity.email, entity.passwordHash, entity.displayName,
                 UserRole.valueOf(entity.role), AccountState.valueOf(entity.accountState),
                 entity.smeApprovalStatus);
+    }
+
+    @Override
+    public Optional<SmeIdentity> findSmeIdentity(UUID id) {
+        return repository.findById(id).filter(entity -> "SME".equals(entity.role))
+                .map(entity -> new SmeIdentity(entity.taxCode, entity.companyWebsite));
     }
 }

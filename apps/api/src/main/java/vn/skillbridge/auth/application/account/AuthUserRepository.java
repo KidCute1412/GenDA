@@ -9,4 +9,5 @@ public interface AuthUserRepository {
     Optional<AuthUser> findById(UUID id);
     void create(AuthUser user, String taxCode, String companyWebsite);
     void updateDisplayName(UUID id, String displayName);
+    Optional<SmeIdentity> findSmeIdentity(UUID id);
 }
