@@ -18,8 +18,11 @@ class GeminiReviewModelServiceTest {
             assertThat(exchange.getRequestURI().getQuery()).isNull();
             var request=json.readTree(exchange.getRequestBody().readAllBytes());
             assertThat(request.path("generationConfig").path("responseMimeType").asText()).isEqualTo("application/json");
+            assertThat(request.path("generationConfig").path("responseJsonSchema").path("required").toString()).contains("summary","limitations");
+            assertThat(request.path("systemInstruction").path("parts").get(0).path("text").asText()).contains("nextStep","không chấm điểm tổng");
             assertThat(request.has("tools")).isFalse();
-            var report=new ReviewReport(List.of(new ReviewReport.Item("c1",ReviewReport.EvidenceStatus.EVIDENCE_FOUND,List.of(new ReviewReport.Quote("note","Evidence")),null)),"Advisory");
+            var report=new ReviewReport(List.of(new ReviewReport.Item("c1",ReviewReport.EvidenceStatus.EVIDENCE_FOUND,List.of(new ReviewReport.Quote("note","Evidence")),null,
+                "Có thông tin liên quan.","Chưa xác minh được hành vi thực tế.","SME kiểm tra trên sản phẩm.")),"Advisory","Có bằng chứng trong nội dung gửi lên.",List.of("Có trích dẫn phù hợp."),List.of("Chưa kiểm tra sản phẩm chạy thật."));
             byte[] result=json.writeValueAsBytes(Map.of("candidates",List.of(Map.of("finishReason","STOP","content",Map.of("parts",List.of(Map.of("text",json.writeValueAsString(report)))))),"usageMetadata",Map.of("promptTokenCount",12,"candidatesTokenCount",20)));
             exchange.sendResponseHeaders(200,result.length);exchange.getResponseBody().write(result);exchange.close();
         });server.start();

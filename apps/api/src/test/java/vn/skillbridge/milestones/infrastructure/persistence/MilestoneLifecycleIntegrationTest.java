@@ -119,6 +119,8 @@ class MilestoneLifecycleIntegrationTest {
         mvc.perform(get("/api/v1/openapi")).andExpect(status().isOk())
             .andExpect(jsonPath("$.components.schemas.WorkspaceResponse.properties.milestones").exists())
             .andExpect(jsonPath("$.components.schemas.AiReviewResponse.properties.items").exists())
+            .andExpect(jsonPath("$.components.schemas.AiReviewResponse.properties.summary").exists())
+            .andExpect(jsonPath("$.components.schemas.AiCriterionResponse.properties.nextStep").exists())
             .andExpect(jsonPath("$.components.schemas.SubmitHandoffRequest.required").isArray());
     }
     @Test void cancelledProjectsCannotAcceptOrOpenAnotherMilestone(){

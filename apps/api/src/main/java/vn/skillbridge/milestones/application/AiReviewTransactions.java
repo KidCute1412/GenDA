@@ -33,7 +33,7 @@ public class AiReviewTransactions {
         if(!model.available()) throw new MilestoneViolation("AI_NOT_CONFIGURED","AI is not configured; regular review remains available");
         repository.lockReviewer(actor);
         if(repository.attempts(actor,clock.instant().minusSeconds(3600))>=10) throw new MilestoneViolation("AI_RATE_LIMIT","AI limit reached; try again later");
-        var review=new AiReview(UUID.randomUUID(),h.id(),actor,"PROCESSING","gemini",model.model(),"milestone-v1",clock.instant(),null,null,List.of(),List.of(),null,null,null);
+        var review=new AiReview(UUID.randomUUID(),h.id(),actor,"PROCESSING","gemini",model.model(),"milestone-v2",clock.instant(),null,null,List.of(),List.of(),null,null,null);
         repository.save(review);return new Attempt(m,h,review,true);
     }
     @Transactional

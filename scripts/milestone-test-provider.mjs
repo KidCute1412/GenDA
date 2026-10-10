@@ -28,6 +28,9 @@ export function createMilestoneTestProvider() {
         if (text.includes("QUOTA_AI")) return answer(429, {});
         if (text.includes("FAIL_AI")) return answer(503, {});
         const report = {
+          summary: "Đã tìm thấy một số bằng chứng liên quan; kết quả chỉ phản ánh văn bản được gửi.",
+          findings: ["Có nội dung được trích dẫn từ nguồn bàn giao."],
+          limitations: ["Chưa kiểm tra sản phẩm đang chạy."],
           items: input.criteria.map(criterion => {
             const source = input.sources[0];
             const ambiguous = criterion.text.includes("đẹp");
@@ -36,6 +39,9 @@ export function createMilestoneTestProvider() {
               criterionId: criterion.id,
               status: ambiguous ? "CANNOT_ASSESS" : missing ? "NOT_SHOWN" : "EVIDENCE_FOUND",
               evidence: ambiguous || missing ? [] : [{ source: source.id, quote: text.includes("BAD_QUOTE") ? "Fabricated quote" : source.text.slice(0, 100) }],
+              analysis: "Đối chiếu nội dung nguồn với tiêu chí, không suy rộng ngoài bằng chứng.",
+              gap: missing ? "Nguồn chưa thể hiện bằng chứng cho tiêu chí." : "Hành vi thực tế chưa được xác minh từ văn bản.",
+              nextStep: "SME kiểm tra trực tiếp hành vi liên quan trên sản phẩm.",
               question: ambiguous ? "SME có thể đánh giá phần này trực tiếp không?" : null
             };
           }),

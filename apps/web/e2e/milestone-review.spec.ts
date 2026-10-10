@@ -54,9 +54,11 @@ test("two sessions share revisions, evidence, AI review, human decisions and pro
     const first = contributor.getByRole("article", { name: "Bản bàn giao 1" });
     await expect(first).toBeVisible();
     await first.getByRole("button", { name: "Phân tích bằng AI", exact: true }).click();
-    await expect(first.getByText("✓ Có bằng chứng liên quan")).toBeVisible();
-    await expect(first.getByText("○ Chưa thấy bằng chứng")).toBeVisible();
-    await expect(first.getByText("? Chưa đủ thông tin để đánh giá")).toBeVisible();
+    await expect(first.getByText("EXECUTIVE SUMMARY")).toBeVisible();
+    await expect(first.getByText("Có bằng chứng liên quan")).toBeVisible();
+    await expect(first.getByText("Chưa thấy bằng chứng")).toBeVisible();
+    await expect(first.getByText("Chưa đủ thông tin")).toBeVisible();
+    await expect(first.getByText("Bước kiểm tra tiếp theo").first()).toBeVisible();
     await expect(first.getByText(/AI không đọc được văn bản trong scan.pdf/)).toBeVisible();
     const original = await (await contributor.request.get(`${api}/api/v1/projects/${id}/workspace`)).json() as Workspace;
     const oldReview = original.submissions[0].aiReview!;
@@ -66,7 +68,7 @@ test("two sessions share revisions, evidence, AI review, human decisions and pro
     const download = await sme.request.get(`${api}/api/v1/attachments/${original.submissions[0].attachments[0].id}/download`);
     expect(download.ok()).toBeTruthy(); expect(download.headers()["content-disposition"]).toContain("attachment");
     await sme.reload();
-    await expect(sme.getByRole("article", { name: "Bản bàn giao 1" }).getByText("✓ Có bằng chứng liên quan")).toBeVisible();
+    await expect(sme.getByRole("article", { name: "Bản bàn giao 1" }).getByText("Có bằng chứng liên quan")).toBeVisible();
     await sme.getByRole("button", { name: "Có ích", exact: true }).click();
     await expect(sme.getByText("Đã ghi nhận phản hồi của bạn.")).toBeVisible();
     await sme.getByLabel("Lý do yêu cầu sửa").fill("Bổ sung email và mô tả mã nguồn.");
@@ -77,7 +79,7 @@ test("two sessions share revisions, evidence, AI review, human decisions and pro
     await contributor.getByRole("button", { name: "Nộp bản 2", exact: true }).click();
     await expect(contributor.getByRole("article", { name: "Bản bàn giao 2" })).toBeVisible();
     await contributor.getByRole("article", { name: "Bản bàn giao 2" }).getByRole("button", { name: "Phân tích bằng AI" }).click();
-    await expect(contributor.getByRole("article", { name: "Bản bàn giao 2" }).getByText("✓ Có bằng chứng liên quan")).toBeVisible();
+    await expect(contributor.getByRole("article", { name: "Bản bàn giao 2" }).getByText("Có bằng chứng liên quan")).toBeVisible();
     await sme.reload();
     await sme.getByRole("button", { name: "Ghi nhận đã cấp quỹ" }).click();
     await expect(sme.getByRole("button", { name: "Ghi nhận đã giải ngân" })).toBeDisabled();

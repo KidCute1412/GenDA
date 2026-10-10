@@ -35,9 +35,12 @@ public class AiReviewService {
             }
             sources=bounded;
             ReviewModelService.Result result;
-            if(attempt.milestone().criteria().isEmpty()) result=new ReviewModelService.Result(new ReviewReport(List.of(),"Milestone chưa có tiêu chí đã chốt. SME cần làm rõ tiêu chí; AI không thể đánh giá."),0L,0L);
+            if(attempt.milestone().criteria().isEmpty()) result=new ReviewModelService.Result(new ReviewReport(List.of(),"Milestone chưa có tiêu chí đã chốt. SME cần làm rõ tiêu chí; AI không thể đánh giá.",
+                "Chưa thể rà soát vì milestone chưa có tiêu chí nghiệm thu.",List.of(),List.of("Không có tiêu chí để đối chiếu.")),0L,0L);
             else if(sources.isEmpty()) result=new ReviewModelService.Result(new ReviewReport(attempt.milestone().criteria().stream().map(c->
-                new ReviewReport.Item(c.id(),ReviewReport.EvidenceStatus.CANNOT_ASSESS,List.of(),"Bạn có thể bổ sung bằng chứng đọc được cho tiêu chí này? ")).toList(),"Chưa có nội dung đọc được để phân tích."),0L,0L);
+                new ReviewReport.Item(c.id(),ReviewReport.EvidenceStatus.CANNOT_ASSESS,List.of(),"Bạn có thể bổ sung bằng chứng đọc được cho tiêu chí này?",
+                    "Không có nội dung bàn giao đọc được để đối chiếu với tiêu chí.","Chưa có nguồn bằng chứng đọc được.","Bổ sung ghi chú hoặc tệp PDF/TXT có thể đọc được rồi gửi phiên bản bàn giao mới." )).toList(),
+                "Chưa có nội dung đọc được để phân tích.","Chưa thể đối chiếu các tiêu chí vì không có nguồn văn bản đọc được.",List.of(),List.of("Liên kết không được truy cập; PDF scan chưa được OCR.")),0L,0L);
             else result=model.review(attempt.milestone().criteria(),sources,warnings);
             result.report().validate(attempt.milestone().criteria(),sources);
             return transactions.finish(attempt.review(),result,sources,warnings,null);

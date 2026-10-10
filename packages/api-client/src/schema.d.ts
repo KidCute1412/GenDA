@@ -990,7 +990,10 @@ export interface components {
             /** @enum {string} */
             status: "EVIDENCE_FOUND" | "NOT_SHOWN" | "CANNOT_ASSESS";
             evidence: components["schemas"]["AiQuoteResponse"][];
-            question?: string;
+            question?: string | null;
+            analysis?: string | null;
+            gap?: string | null;
+            nextStep?: string | null;
         };
         AiQuoteResponse: {
             source: string;
@@ -1005,8 +1008,16 @@ export interface components {
             startedAt: string;
             /** Format: date-time */
             finishedAt?: string;
+            promptVersion?: string;
+            /** Format: int64 */
+            inputTokens?: number | null;
+            /** Format: int64 */
+            outputTokens?: number | null;
             items: components["schemas"]["AiCriterionResponse"][];
-            overallNote?: string;
+            summary?: string | null;
+            findings?: string[] | null;
+            limitations?: string[] | null;
+            overallNote?: string | null;
             sources: components["schemas"]["AiSourceResponse"][];
             warnings: string[];
             errorCode?: string;

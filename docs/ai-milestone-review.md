@@ -107,21 +107,30 @@ Model không được tự mở rộng hợp đồng từ bài giới thiệu d�
 
 ## 8. Đầu ra và ví dụ
 
-Đầu ra ở mức sản phẩm có thể biểu diễn như sau:
+Report mới có phần tóm tắt điều hành và danh sách phát hiện, sau đó trình bày từng tiêu chí với phân tích, trích dẫn, khoảng trống chưa xác minh và bước kiểm tra tiếp theo. `EVIDENCE_FOUND` chỉ mô tả bằng chứng liên quan; không phải kết luận đạt. Report không có điểm tổng và không quyết định nghiệm thu.
 
 ```json
 {
+  "summary": "Nguồn có bằng chứng về các trường trong form; chưa xác minh được dữ liệu gửi đi sau khi khách đặt bàn.",
+  "findings": ["Ghi chú bàn giao nêu tên, số điện thoại và khung giờ."],
+  "limitations": ["Chưa kiểm tra form đang chạy hoặc nơi lưu đơn."],
   "items": [
     {
-      "criterion": "Trang có form đặt bàn với các trường tên, số điện thoại và thời gian.",
+      "criterionId": "criterion-1",
       "status": "EVIDENCE_FOUND",
       "evidence": [{"source": "handoff-note", "quote": "Đã thêm tên, số điện thoại và khung giờ."}],
+      "analysis": "Ghi chú có nhắc đủ ba trường được yêu cầu.",
+      "gap": "Nguồn văn bản chưa chứng minh form hoạt động trên sản phẩm.",
+      "nextStep": "SME mở form và kiểm tra các trường trên giao diện.",
       "question": null
     },
     {
-      "criterion": "SME nhận được thông tin đặt bàn sau khi khách gửi form.",
+      "criterionId": "criterion-2",
       "status": "CANNOT_ASSESS",
       "evidence": [],
+      "analysis": "Nguồn hiện có không mô tả điểm nhận hoặc lưu thông tin đặt bàn.",
+      "gap": "Chưa xác minh được thông tin được gửi tới đâu.",
+      "nextStep": "SME gửi thử một đơn và kiểm tra email nhận hoặc hệ thống lưu đơn.",
       "question": "Bản bàn giao chưa cho biết thông tin được gửi tới đâu; SME kiểm tra email nhận hoặc hệ thống lưu đơn giúp nhé."
     }
   ],
@@ -129,7 +138,7 @@ Model không được tự mở rộng hợp đồng từ bài giới thiệu d�
 }
 ```
 
-JSON schema chỉ kiểm tra cấu trúc. Backend phải kiểm tra các criterion IDs thuộc đúng revision, số item không vượt số tiêu chí, kích thước response, trạng thái hợp lệ và mọi quote phải là đoạn con của nội dung đầu vào. Nếu quote không tồn tại, bỏ quote hoặc đánh dấu kết quả không hợp lệ; không hiện trích dẫn do model bịa. Structured output không tự chứng minh nội dung đúng. [Google: structured outputs](https://ai.google.dev/gemini-api/docs/structured-output)
+Backend yêu cầu đủ đúng một item mỗi tiêu chí, trường report mới không rỗng/vượt giới hạn, các criterion IDs thuộc revision hiện tại, trạng thái hợp lệ và mọi quote phải là đoạn con của nội dung đầu vào. Nếu output sai, attempt thất bại thay vì hiện report thiếu hoặc trích dẫn do model bịa. Structured output không tự chứng minh nội dung đúng. Report cũ thiếu các trường mới vẫn được deserialize và hiển thị bằng bố cục tương thích; không gọi lại Gemini tự động. [Google: structured outputs](https://ai.google.dev/gemini-api/docs/structured-output)
 
 ## 9. AI được triển khai ra sao?
 

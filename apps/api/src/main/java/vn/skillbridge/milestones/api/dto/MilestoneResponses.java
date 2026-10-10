@@ -26,13 +26,18 @@ public final class MilestoneResponses {
     public record AiSourceResponse(@Schema(requiredMode=Schema.RequiredMode.REQUIRED) String id,@Schema(requiredMode=Schema.RequiredMode.REQUIRED) String label,Integer page) {}
     public record AiQuoteResponse(@Schema(requiredMode=Schema.RequiredMode.REQUIRED) String source,@Schema(requiredMode=Schema.RequiredMode.REQUIRED) String quote) {}
     public record AiCriterionResponse(@Schema(requiredMode=Schema.RequiredMode.REQUIRED) String criterionId,@Schema(requiredMode=Schema.RequiredMode.REQUIRED) ReviewReport.EvidenceStatus status,
-        @Schema(requiredMode=Schema.RequiredMode.REQUIRED) List<AiQuoteResponse> evidence,String question) {}
+        @Schema(requiredMode=Schema.RequiredMode.REQUIRED) List<AiQuoteResponse> evidence,@Schema(nullable=true) String question,
+        @Schema(nullable=true) String analysis,@Schema(nullable=true) String gap,@Schema(nullable=true) String nextStep) {}
     public record AiReviewResponse(@Schema(requiredMode=Schema.RequiredMode.REQUIRED) UUID id,@Schema(requiredMode=Schema.RequiredMode.REQUIRED) String state,
         @Schema(requiredMode=Schema.RequiredMode.REQUIRED) String model,@Schema(requiredMode=Schema.RequiredMode.REQUIRED) Instant startedAt,Instant finishedAt,
-        @Schema(requiredMode=Schema.RequiredMode.REQUIRED) List<AiCriterionResponse> items,String overallNote,
+        String promptVersion,@Schema(nullable=true) Long inputTokens,@Schema(nullable=true) Long outputTokens,
+        @Schema(requiredMode=Schema.RequiredMode.REQUIRED) List<AiCriterionResponse> items,@Schema(nullable=true) String summary,
+        @Schema(nullable=true) List<String> findings,@Schema(nullable=true) List<String> limitations,@Schema(nullable=true) String overallNote,
         @Schema(requiredMode=Schema.RequiredMode.REQUIRED) List<AiSourceResponse> sources,@Schema(requiredMode=Schema.RequiredMode.REQUIRED) List<String> warnings,String errorCode) {
         public static AiReviewResponse from(AiReview r){return r==null?null:new AiReviewResponse(r.id(),r.state(),r.model(),r.startedAt(),r.finishedAt(),
-            r.report()==null?List.of():r.report().items().stream().map(i->new AiCriterionResponse(i.criterionId(),i.status(),i.evidence().stream().map(q->new AiQuoteResponse(q.source(),q.quote())).toList(),i.question())).toList(),
+            r.promptVersion(),r.inputTokens(),r.outputTokens(),
+            r.report()==null?List.of():r.report().items().stream().map(i->new AiCriterionResponse(i.criterionId(),i.status(),i.evidence().stream().map(q->new AiQuoteResponse(q.source(),q.quote())).toList(),i.question(),i.analysis(),i.gap(),i.nextStep())).toList(),
+            r.report()==null?null:r.report().summary(),r.report()==null?null:r.report().findings(),r.report()==null?null:r.report().limitations(),
             r.report()==null?null:r.report().overallNote(),r.sources().stream().map(s->new AiSourceResponse(s.id(),s.label(),s.page())).toList(),r.warnings(),r.errorCode());}
     }
     public record HandoffResponse(@Schema(requiredMode=Schema.RequiredMode.REQUIRED) UUID id,@Schema(requiredMode=Schema.RequiredMode.REQUIRED) UUID milestoneId,

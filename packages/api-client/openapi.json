@@ -3810,7 +3810,28 @@
             }
           },
           "question": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "analysis": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "gap": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "nextStep": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
         "required": [
@@ -3855,14 +3876,58 @@
             "type": "string",
             "format": "date-time"
           },
+          "promptVersion": {
+            "type": "string"
+          },
+          "inputTokens": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "outputTokens": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
           "items": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/AiCriterionResponse"
             }
           },
+          "summary": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "findings": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "limitations": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
           "overallNote": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "sources": {
             "type": "array",
