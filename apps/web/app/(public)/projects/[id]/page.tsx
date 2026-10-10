@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { SiteHeader } from "../../../../components/layout/site-header";
@@ -61,24 +60,6 @@ export default async function ProjectDetailPage({
       <SiteHeader hideOnMobile />
 
       <main id="main-content" className="container has-bottom-nav" style={{ paddingTop: "var(--space-8)" }}>
-        <div className="industrial-ruler">
-          {`SYS.EXPLORER // SPECIFICATION // MOD-${project.id.toUpperCase()}`}
-        </div>
-
-        <nav className="page-breadcrumb-bar" aria-label="Đường dẫn phân cấp">
-          <ol className="breadcrumbs" style={{ fontFamily: "ui-monospace, monospace", fontSize: "12px", textTransform: "uppercase" }}>
-            <li>
-              <Link href="/">ROOT</Link>
-            </li>
-            <li aria-hidden="true">/</li>
-            <li>
-              <Link href="/projects">PROJECTS</Link>
-            </li>
-            <li aria-hidden="true">/</li>
-            <li aria-current="page" style={{ color: "var(--orange-500)", fontWeight: 700 }}>{project.id.toUpperCase()}</li>
-          </ol>
-        </nav>
-
         <div className="layout-aside section--tight">
           {/* --- Cột nội dung chính --- */}
           <div className="stack stack--lg">
@@ -279,7 +260,6 @@ export default async function ProjectDetailPage({
               padding: "var(--space-4)",
               border: "2px solid var(--machinery-border)",
               backgroundColor: "var(--color-surface-card)",
-              boxShadow: "4px 4px 0px var(--machinery-shadow)",
               fontFamily: "ui-monospace, monospace",
               fontSize: "12px"
             }}>

@@ -74,40 +74,11 @@ export default async function SmeProjectsPage({
         <div className="container" style={{ paddingTop: "var(--space-8)" }}>
           <LedgerApplicantQueue />
         </div>
-        {/* THANH THƯỚC ĐO KỸ THUẬT & ĐIỀU HƯỚNG */}
-        <div style={{ borderBottom: "2px solid var(--machinery-border)", backgroundColor: "var(--color-surface-card)" }}>
-          <div className="container" style={{ paddingBlock: "10px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
-            <nav aria-label="Đường dẫn phân cấp" style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px" }}>
-              <ol className="breadcrumbs" style={{ margin: 0, padding: 0 }}>
-                <li>
-                  <Link href="/" style={{ color: "var(--color-text-muted)", textDecoration: "none" }}>HOME</Link>
-                </li>
-                <li aria-hidden="true" style={{ color: "var(--color-text-muted)" }}>/</li>
-                <li>
-                  <span style={{ color: "var(--color-text-muted)" }}>SME PORTAL</span>
-                </li>
-                <li aria-hidden="true" style={{ color: "var(--color-text-muted)" }}>/</li>
-                <li aria-current="page" style={{ fontWeight: 700, color: "var(--orange-500)" }}>PROJECTS // MANAGER</li>
-              </ol>
-            </nav>
-
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", fontFamily: "ui-monospace, monospace", fontSize: "11px" }}>
-              <span className="badge badge--verified" style={{ margin: 0 }}>
-                ORG: THE COFFEE LAB
-              </span>
-              <span style={{ color: "var(--color-text-muted)" }}>
-                TOTAL: {PROJECTS.length} PROJECTS
-              </span>
-            </div>
-          </div>
-        </div>
-
         <div className="container" style={{ paddingTop: "var(--space-6)" }}>
           
           {/* HEADER TRANG SME */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "var(--space-4)", marginBottom: "var(--space-6)" }}>
             <div>
-              <div className="industrial-ruler">ENTERPRISE CONSOLE // QUẢN LÝ DỰ ÁN</div>
               <h1 style={{ fontSize: "clamp(1.75rem, 3.5vw, 2.5rem)", fontWeight: 900, textTransform: "uppercase", margin: "var(--space-1) 0" }}>
                 DỰ ÁN CỦA TÔI
               </h1>

@@ -11,6 +11,7 @@ import { AdminActionButtons } from "../../../features/admin/components/admin-act
 import { LedgerAuditPanel } from "../../../features/admin/components/ledger-audit-panel";
 import { LedgerProjectQueue } from "../../../features/admin/components/ledger-project-queue";
 import { LedgerVerificationQueue } from "../../../features/admin/components/ledger-verification-queue";
+import { LedgerSmeQueue, LedgerSmeQueueCount } from "../../../features/admin/components/ledger-sme-queue";
 import { RoleRouteGuard } from "../../../features/auth/components/role-route-guard";
 import { 
   Check, 
@@ -24,7 +25,7 @@ import {
 
 export const metadata: Metadata = {
   title: "Bảng điều khiển quản trị // GENDA-OPS",
-  description: "Duyệt dự án, duyệt minh chứng sinh viên và tra cứu nhật ký kiểm toán."
+  description: "Duyệt dự án, duyệt minh chứng sinh viên, duyệt đăng ký doanh nghiệp và tra cứu nhật ký kiểm toán."
 };
 
 /**
@@ -36,6 +37,7 @@ export const metadata: Metadata = {
 const TABS = [
   { key: "projects", label: "Duyệt dự án", code: "QUEUE.01" },
   { key: "students", label: "Duyệt thẻ sinh viên", code: "QUEUE.02" },
+  { key: "smes", label: "Duyệt doanh nghiệp", code: "QUEUE.03" },
   { key: "audit", label: "Nhật ký kiểm toán", code: "LEDGER.LOG" }
 ];
 
@@ -107,7 +109,6 @@ export default async function AdminPage({
                   backgroundColor: "var(--color-surface-card)", 
                   padding: "10px 16px", 
                   border: "2px solid var(--machinery-border)", 
-                  boxShadow: "3px 3px 0px var(--machinery-shadow)" 
                 }}
               >
                 <div>
@@ -153,7 +154,7 @@ export default async function AdminPage({
                     fontWeight: 800
                   }}
                 >
-                  {counts[item.key]}
+                  {item.key === "smes" ? <LedgerSmeQueueCount /> : counts[item.key]}
                 </span>
               </Link>
             ))}
@@ -310,6 +311,9 @@ export default async function AdminPage({
             )
           ) : null}
 
+          {/* TAB: HÀNG ĐỢI DUYỆT ĐĂNG KÝ DOANH NGHIỆP */}
+          {active === "smes" ? <LedgerSmeQueue /> : null}
+
           {/* TAB 2: HÀNG ĐỢI DUYỆT THẺ SINH VIÊN */}
           {active === "students" ? <LedgerVerificationQueue /> : null}
           {active === "students" ? (
@@ -369,7 +373,6 @@ export default async function AdminPage({
             <div 
               style={{ 
                 border: "2px solid var(--machinery-border)", 
-                boxShadow: "6px 6px 0px var(--machinery-shadow)",
                 backgroundColor: "var(--color-surface-card)"
               }}
             >

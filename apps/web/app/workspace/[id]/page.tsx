@@ -70,16 +70,6 @@ export default async function WorkspacePage({ params }: { params: Promise<{ id: 
       <SiteHeader hideOnMobile />
 
       <main id="main-content" className="container has-bottom-nav">
-        <nav aria-label="Đường dẫn phân cấp">
-          <ol className="breadcrumbs">
-            <li>
-              <Link href="/">Trang chủ</Link>
-            </li>
-            <li aria-hidden="true">/</li>
-            <li aria-current="page">Không gian làm việc</li>
-          </ol>
-        </nav>
-
         <div className="section--tight cluster cluster--between">
           <div>
             <p className="text-caption">{project.smeName}</p>

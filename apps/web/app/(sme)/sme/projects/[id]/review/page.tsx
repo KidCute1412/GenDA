@@ -53,39 +53,10 @@ export default async function ReviewApplicantsPage({ params }: { params: Promise
       <SiteHeader hideOnMobile />
 
       <main id="main-content" className="industrial-canvas has-bottom-nav" style={{ paddingBottom: "var(--space-16)" }}>
-        {/* THANH THƯỚC ĐO KỸ THUẬT & ĐIỀU HƯỚNG */}
-        <div style={{ borderBottom: "2px solid var(--machinery-border)", backgroundColor: "var(--color-surface-card)" }}>
-          <div className="container" style={{ paddingBlock: "10px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
-            <nav aria-label="Đường dẫn phân cấp" style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px" }}>
-              <ol className="breadcrumbs" style={{ margin: 0, padding: 0 }}>
-                <li>
-                  <Link href="/" style={{ color: "var(--color-text-muted)", textDecoration: "none" }}>HOME</Link>
-                </li>
-                <li aria-hidden="true" style={{ color: "var(--color-text-muted)" }}>/</li>
-                <li>
-                  <Link href="/sme/projects" style={{ color: "var(--color-text-muted)", textDecoration: "none" }}>SME PROJECTS</Link>
-                </li>
-                <li aria-hidden="true" style={{ color: "var(--color-text-muted)" }}>/</li>
-                <li aria-current="page" style={{ fontWeight: 700, color: "var(--orange-500)" }}>APPLICANTS // {project.id.toUpperCase()}</li>
-              </ol>
-            </nav>
-
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", fontFamily: "ui-monospace, monospace", fontSize: "11px" }}>
-              <span className="badge badge--verified" style={{ margin: 0 }}>
-                CANDIDATES: {applicants.length}
-              </span>
-              <span style={{ color: "var(--color-text-muted)" }}>
-                MATCH ENGINE ACTIVE
-              </span>
-            </div>
-          </div>
-        </div>
-
         <div className="container" style={{ paddingTop: "var(--space-6)" }}>
           
           {/* HEADER TRANG REVIEW */}
           <div style={{ marginBottom: "var(--space-6)" }}>
-            <div className="industrial-ruler">SELECTION PROTOCOL // CHỌN NHÂN SỰ DỰ ÁN</div>
             <h1 style={{ fontSize: "clamp(1.75rem, 3.5vw, 2.5rem)", fontWeight: 900, textTransform: "uppercase", margin: "var(--space-1) 0" }}>
               XÉT DUYỆT ỨNG VIÊN
             </h1>

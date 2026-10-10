@@ -39,7 +39,11 @@ export {
   House,
   Briefcase,
   FileText,
-  UserCircle
+  UserCircle,
+  // --- Menu tài khoản trên header ---
+  SignOut,
+  IdentificationCard,
+  CaretDown
 } from "@phosphor-icons/react/ssr";
 
 /**

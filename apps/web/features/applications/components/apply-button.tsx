@@ -95,7 +95,7 @@ export function ApplyButton({
         {alreadyApplied ? "ĐÃ NỘP ĐƠN" : "ỨNG TUYỂN NGAY"}
       </button>
 
-      <dialog ref={dialogRef} className="dialog dialog--lg" aria-labelledby="apply-title" style={{ border: "2px solid var(--machinery-border)", boxShadow: "8px 8px 0px var(--machinery-shadow)", borderRadius: 0 }}>
+      <dialog ref={dialogRef} className="dialog dialog--lg" aria-labelledby="apply-title" style={{ border: "2px solid var(--machinery-border)", borderRadius: 0 }}>
         {status === "done" ? (
           /* Trạng thái Thành công (design.md 8.4): xác nhận rõ ràng, tạo cảm
              giác đóng gói, và nói luôn bước kế tiếp thay vì bỏ người dùng lơ lửng. */

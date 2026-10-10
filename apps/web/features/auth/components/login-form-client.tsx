@@ -6,12 +6,21 @@ import Link from "next/link";
 import { TextField } from "../../../components/ui/field";
 import { PasswordField } from "../../../features/auth/components/password-field";
 import { setDemoSession } from "../services/demo-session";
+import { findDemoAccount } from "../../demo-ledger/store";
+import { RecaptchaField, verifyRecaptcha } from "./recaptcha-field";
+
+/** Sinh viên đăng nhập xong vào thẳng danh sách dự án đang tuyển, không vào trang hồ sơ. */
+const STUDENT_HOME = "/projects";
 
 export function LoginFormClient() {
   const router = useRouter();
   const [email, setEmail] = useState("letuanloc.2203@hcmus.edu.vn");
   const [password, setPassword] = useState("••••••••");
   const [isLoading, setIsLoading] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  // Đổi key để gắn lại widget reCAPTCHA (bắt giải lại) khi xác minh thất bại
+  const [captchaKey, setCaptchaKey] = useState(0);
+  const [captchaError, setCaptchaError] = useState("");
 
   function handleFillStudent() {
     setEmail("letuanloc.2203@hcmus.edu.vn");
@@ -29,11 +38,46 @@ export function LoginFormClient() {
     router.refresh();
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!captchaToken) {
+      setCaptchaError("Hãy tick ô reCAPTCHA \"Tôi không phải người máy\" trước khi đăng nhập.");
+      return;
+    }
+    setCaptchaError("");
     setIsLoading(true);
 
+    if (!(await verifyRecaptcha(captchaToken))) {
+      setIsLoading(false);
+      setCaptchaToken(null);
+      setCaptchaKey((key) => key + 1);
+      setCaptchaError("Xác minh reCAPTCHA không thành công hoặc đã hết hạn. Hãy tick lại rồi thử lần nữa.");
+      return;
+    }
+
+    // Doanh nghiệp đã đăng ký nhưng chưa được duyệt (hoặc bị từ chối) thì chưa được đăng nhập
+    const account = findDemoAccount(email);
+    if (account?.role === "SME" && account.smeApprovalStatus === "PENDING") {
+      setIsLoading(false);
+      setCaptchaError("Tài khoản doanh nghiệp này đang chờ quản trị viên duyệt. Bạn sẽ đăng nhập được sau khi hồ sơ được duyệt.");
+      return;
+    }
+    if (account?.role === "SME" && account.smeApprovalStatus === "REJECTED") {
+      setIsLoading(false);
+      setCaptchaError(
+        `Đăng ký doanh nghiệp đã bị từ chối${account.smeRejectionReason ? `: ${account.smeRejectionReason}` : "."}`
+      );
+      return;
+    }
+
     setTimeout(() => {
+      // Tài khoản đã đăng ký trong ledger demo: đăng nhập đúng tên và vai trò của tài khoản đó
+      if (account && account.role !== "ADMIN") {
+        setDemoSession({ name: account.name, email: account.email, role: account.role, emailVerified: account.emailVerified });
+        router.replace(account.role === "SME" ? "/sme/projects" : STUDENT_HOME);
+        router.refresh();
+        return;
+      }
       // Tự động phân luồng theo role hoặc email
       if (email.includes("sme") || email.includes("coffee") || email.includes("corp") || email.includes("lab")) {
         setDemoSession({ name: "The Coffee Lab", email, role: "SME", emailVerified: true });
@@ -41,7 +85,7 @@ export function LoginFormClient() {
         router.refresh();
       } else {
         setDemoSession({ name: "Lê Tuấn Lộc", email, role: "STUDENT", emailVerified: true });
-        router.replace("/student/profile");
+        router.replace(STUDENT_HOME);
         router.refresh();
       }
     }, 600);
@@ -128,11 +172,26 @@ export function LoginFormClient() {
           </div>
         </div>
 
-        <button 
-          type="submit" 
-          disabled={isLoading}
-          className="btn--tactile-orange" 
-          style={{ width: "100%", height: "40px", fontSize: "12px", cursor: isLoading ? "wait" : "pointer" }}
+        <div>
+          <RecaptchaField
+            key={captchaKey}
+            onChange={(token) => {
+              setCaptchaToken(token);
+              if (token) setCaptchaError("");
+            }}
+          />
+          {captchaError ? (
+            <p role="alert" style={{ margin: "4px 0 0", fontSize: "12px", color: "var(--color-danger-text, #b91c1c)" }}>
+              {captchaError}
+            </p>
+          ) : null}
+        </div>
+
+        <button
+          type="submit"
+          disabled={isLoading || !captchaToken}
+          className="btn--tactile-orange"
+          style={{ width: "100%", height: "40px", fontSize: "12px", cursor: isLoading ? "wait" : !captchaToken ? "not-allowed" : "pointer", opacity: captchaToken ? 1 : 0.55 }}
         >
           {isLoading ? "ĐANG XÁC THỰC..." : "XÁC NHẬN ĐĂNG NHẬP"}
         </button>
@@ -144,7 +203,7 @@ export function LoginFormClient() {
           {"// VÀO THẲNG GIAO DIỆN (BYPASS):"}
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "var(--space-2)" }}>
-          <button type="button" onClick={() => quickLogin("Lê Tuấn Lộc", "letuanloc.2203@hcmus.edu.vn", "STUDENT", "/student/profile")} className="btn--tactile-zinc" style={{ height: "30px", fontSize: "10px", padding: 0 }}>
+          <button type="button" onClick={() => quickLogin("Lê Tuấn Lộc", "letuanloc.2203@hcmus.edu.vn", "STUDENT", STUDENT_HOME)} className="btn--tactile-zinc" style={{ height: "30px", fontSize: "10px", padding: 0 }}>
             SINH VIÊN
           </button>
           <button type="button" onClick={() => quickLogin("The Coffee Lab", "contact@coffeelab.vn", "SME", "/sme/projects")} className="btn--tactile-zinc" style={{ height: "30px", fontSize: "10px", padding: 0 }}>

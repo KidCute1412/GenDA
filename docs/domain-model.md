@@ -19,6 +19,8 @@ Only the owning use case may perform a transition. Invalid transitions return a 
 
 ## MVP invariants
 
+- An SME account must provide a Vietnamese tax code (10 digits, or `0123456789-001` for a branch) at registration; an SME without a tax code must provide its company website instead. Otherwise registration fails with `SME_IDENTITY_REQUIRED`.
+- A newly registered SME stays `PENDING` until an admin approves it: it cannot sign in or create projects (`SME_NOT_APPROVED`). An admin may approve, or reject with a recorded reason; both decisions are audited.
 - Only an SME can create or edit its draft project.
 - Only an admin can publish or reject a pending project.
 - A student cannot apply to an unpublished or cancelled project.

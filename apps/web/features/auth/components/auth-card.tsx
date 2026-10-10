@@ -40,7 +40,7 @@ export function AuthCard({ initialMode, children }: { initialMode: AuthMode; chi
       <div
         className="module-bay module-bay--static auth-card"
         data-mode={mode}
-        style={{ padding: 0, overflow: "hidden", boxShadow: "4px 4px 0px var(--machinery-shadow)" }}
+        style={{ padding: 0, overflow: "hidden" }}
       >
         {children}
       </div>

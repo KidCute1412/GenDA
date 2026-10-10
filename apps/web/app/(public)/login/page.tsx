@@ -46,8 +46,8 @@ export default async function LoginPage({
             <AuthIntro />
 
             {/* CỘT BIỂU MẪU: bên phải khi đăng nhập, trượt sang trái khi đăng ký */}
-            <div className="auth-form-col" style={{ 
-              padding: "var(--space-6) var(--space-6)", 
+            <div className="auth-form-col" style={{
+              padding: "var(--space-5) var(--space-6)", 
               display: "flex", 
               flexDirection: "column", 
               justifyContent: "space-between", 

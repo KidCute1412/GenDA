@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import { SiteHeader } from "../../../components/layout/site-header";
 import { SiteFooter } from "../../../components/layout/site-footer";
 import { BottomNav } from "../../../components/layout/bottom-nav";
@@ -104,36 +105,21 @@ export default async function ProjectsPage({
     <>
       <SiteHeader hideOnMobile />
 
-      <main id="main-content" className="container has-bottom-nav" style={{ paddingTop: "var(--space-8)" }}>
+      {/* projects-page: chạy hiệu ứng vào trang (vạch quét + các khối hiện lần lượt), xem components.css */}
+      <main id="main-content" className="container has-bottom-nav projects-page" style={{ paddingTop: "var(--space-8)" }}>
         <LedgerPublishedProjects />
-        <div className="industrial-ruler">
-          {"SYS.EXPLORER // REGISTRY // 04 MODULES ACTIVE"}
-        </div>
-
-        <nav className="page-breadcrumb-bar" aria-label="Đường dẫn phân cấp">
-          <ol className="breadcrumbs" style={{ fontFamily: "ui-monospace, monospace", fontSize: "12px", textTransform: "uppercase" }}>
-            <li>
-              <Link href="/">ROOT</Link>
-            </li>
-            <li aria-hidden="true">/</li>
-            <li aria-current="page" style={{ color: "var(--orange-500)", fontWeight: 700 }}>PROJECTS</li>
-          </ol>
-        </nav>
-
-        <div className="section--tight" style={{ borderBottom: "2px solid var(--machinery-border)", paddingBottom: "var(--space-6)", marginBottom: "var(--space-8)" }}>
-          <h1 className="industrial-display" style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}>
+        <div className="section--tight projects-page__head" style={{ borderBottom: "2px solid var(--machinery-border)", paddingBottom: "var(--space-6)", marginBottom: "var(--space-8)" }}>
+          <h1 className="industrial-display projects-page__title" style={{ fontSize: "clamp(2rem, 4vw, 3rem)" }}>
             DỰ ÁN ĐANG TUYỂN
           </h1>
-          <p className="lede" style={{ marginTop: "var(--space-3)", color: "var(--color-text-muted)" }}>
-            Tất cả dự án được mã hóa hợp đồng kiểm soát theo từng mốc (milestone), giải ngân qua ký quỹ độc lập.
-          </p>
         </div>
 
         {/* --- Thanh tìm kiếm & bộ lọc --- */}
-        <div style={{ marginBottom: "var(--space-8)" }}>
+        <div className="enter" style={{ marginBottom: "var(--space-8)", "--e": 4 } as CSSProperties}>
           <form action="/projects" method="get" role="search" className="stack stack--sm">
-            <label className="field__label" htmlFor="project-search" style={{ fontFamily: "ui-monospace, monospace", textTransform: "uppercase", fontSize: "12px", letterSpacing: "0.08em" }}>
-              {"[SCAN] TÌM THEO TÊN DỰ ÁN, DOANH NGHIỆP HOẶC KỸ NĂNG"}
+            {/* Nhãn ẩn: ô tìm kiếm vẫn cần tên cho trình đọc màn hình */}
+            <label className="visually-hidden" htmlFor="project-search">
+              Tìm theo tên dự án, doanh nghiệp hoặc kỹ năng
             </label>
             <div className="search-row" style={{ maxWidth: "720px" }}>
               <input
@@ -158,7 +144,7 @@ export default async function ProjectsPage({
           </form>
         </div>
 
-        <div className="stack stack--sm" style={{ marginBottom: "var(--space-10)" }}>
+        <div className="stack stack--sm enter" style={{ marginBottom: "var(--space-10)", "--e": 5 } as CSSProperties}>
           <fieldset style={{ border: 0, margin: 0, padding: 0 }}>
             <legend className="field__label" style={{ fontFamily: "ui-monospace, monospace", textTransform: "uppercase", fontSize: "11px", letterSpacing: "0.1em", color: "var(--color-text-muted)" }}>
               {"// LỌC THEO KỸ NĂNG"}
@@ -222,7 +208,7 @@ export default async function ProjectsPage({
 
         {/* --- Kết quả --- */}
         <div className="section--tight">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px dashed var(--machinery-border)", paddingBottom: "var(--space-2)", marginBottom: "var(--space-4)" }}>
+          <div className="enter" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px dashed var(--machinery-border)", paddingBottom: "var(--space-2)", marginBottom: "var(--space-4)", "--e": 6 } as CSSProperties}>
             <p style={{ fontFamily: "ui-monospace, monospace", fontSize: "12px", fontWeight: 700, margin: 0, textTransform: "uppercase" }} aria-live="polite">
               KẾT QUẢ QUÉT: <span style={{ color: "var(--orange-500)" }}>{results.length}</span> DỰ ÁN
             </p>
@@ -249,7 +235,7 @@ export default async function ProjectsPage({
                 const bayId = `MOD-${String(idx + 1).padStart(2, "0")}`;
 
                 return (
-                  <li key={project.id} className="project-row">
+                  <li key={project.id} className="project-row project-row--enter" style={{ "--i": idx } as CSSProperties}>
                     <div className="stack stack--sm">
                       <div style={{ display: "flex", alignItems: "center", gap: "8px", fontFamily: "ui-monospace, monospace", fontSize: "11px", color: "var(--color-text-muted)" }}>
                         <span className="tag-hardware">

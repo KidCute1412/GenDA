@@ -77,34 +77,6 @@ export default async function DocPage({
       <SiteHeader />
 
       <main id="main-content" className="industrial-canvas" style={{ paddingBottom: "var(--space-16)" }}>
-        {/* THANH THƯỚC ĐO KỸ THUẬT & ĐIỀU HƯỚNG */}
-        <div style={{ borderBottom: "2px solid var(--machinery-border)", backgroundColor: "var(--color-surface-card)" }}>
-          <div className="container" style={{ paddingBlock: "10px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
-            <nav aria-label="Đường dẫn phân cấp" style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px" }}>
-              <ol className="breadcrumbs" style={{ margin: 0, padding: 0 }}>
-                <li>
-                  <Link href="/" style={{ color: "var(--color-text-muted)", textDecoration: "none" }}>HOME</Link>
-                </li>
-                <li aria-hidden="true" style={{ color: "var(--color-text-muted)" }}>/</li>
-                <li>
-                  <span style={{ color: "var(--color-text-muted)" }}>{section.toUpperCase()}</span>
-                </li>
-                <li aria-hidden="true" style={{ color: "var(--color-text-muted)" }}>/</li>
-                <li aria-current="page" style={{ fontWeight: 700, color: "var(--orange-500)" }}>{doc.toUpperCase()}</li>
-              </ol>
-            </nav>
-
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", fontFamily: "ui-monospace, monospace", fontSize: "11px" }}>
-              <span className="badge badge--verified" style={{ margin: 0 }}>
-                DOC REF // 2026.09
-              </span>
-              <span style={{ color: "var(--color-text-muted)" }}>
-                PHỤ TRÁCH: {entry.owner.toUpperCase()}
-              </span>
-            </div>
-          </div>
-        </div>
-
         <div className="container" style={{ paddingTop: "var(--space-8)", maxWidth: "840px" }}>
           
           <article className="module-bay" style={{ padding: "var(--space-8)", backgroundColor: "var(--color-surface-card)" }}>
@@ -129,7 +101,6 @@ export default async function DocPage({
                 border: "2px solid var(--machinery-border)", 
                 backgroundColor: "var(--color-surface-subtle)", 
                 padding: "var(--space-4) var(--space-5)",
-                boxShadow: "3px 3px 0px var(--machinery-shadow)",
                 marginBottom: "var(--space-6)"
               }}
             >

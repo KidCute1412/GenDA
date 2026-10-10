@@ -1,6 +1,7 @@
 "use client";
 
 import { PROJECTS, MY_APPLICATIONS, PORTFOLIO } from "../../mocks/data";
+import { normalizeTaxCode, normalizeWebsite, validateSmeIdentity } from "../../lib/utils/sme-identity";
 import type { DemoApplication, DemoAudit, DemoLedger, DemoMilestone, DemoPortfolio, DemoProject, DemoResult, DemoRole, DemoSubmission, DemoUser } from "./types";
 
 const KEY = "genda-demo:ledger:v2";
@@ -11,7 +12,7 @@ let memory: DemoLedger | null = null;
 const accounts: DemoUser[] = [
   { id: "student-loc", name: "Lê Tuấn Lộc", email: "letuanloc.2203@hcmus.edu.vn", role: "STUDENT", emailVerified: true, studentVerified: true, verificationStatus: "VERIFIED", skills: ["Next.js", "React", "UI/UX"] },
   { id: "student-unverified", name: "Võ Ngọc Diệp", email: "diep@student.vn", role: "STUDENT", emailVerified: true, studentVerified: false, verificationStatus: "UNVERIFIED", skills: ["Figma"] },
-  { id: "sme-coffee", name: "The Coffee Lab", email: "contact@coffeelab.vn", role: "SME", emailVerified: true },
+  { id: "sme-coffee", name: "The Coffee Lab", email: "contact@coffeelab.vn", role: "SME", emailVerified: true, smeApprovalStatus: "APPROVED" },
   { id: "admin-triet", name: "Đỗ Minh Triết", email: "admin@genda.vn", role: "ADMIN", emailVerified: true }
 ];
 
@@ -76,18 +77,40 @@ function failure(code: import("./types").DemoErrorCode, message: string): DemoRe
 const audit = (draft: DemoLedger, actorId: string, action: string, targetId: string, reason?: string) => draft.audits.unshift({ id: crypto.randomUUID(), at: new Date().toISOString(), actorId, action, targetId, reason });
 const actor = (draft: DemoLedger, email: string) => draft.users.find((u) => u.email === email);
 
-export function registerDemoUser(input: { name: string; email: string; role: Exclude<DemoRole, "ADMIN"> }): DemoResult<DemoUser> {
+export function registerDemoUser(input: { name: string; email: string; role: Exclude<DemoRole, "ADMIN">; taxCode?: string; companyWebsite?: string }): DemoResult<DemoUser> {
   let created!: DemoUser;
-  const result = update((draft) => { const existing = actor(draft, input.email); if (existing) { created = existing; return { ok: true, value: undefined }; } created = { id: crypto.randomUUID(), ...input, emailVerified: false, studentVerified: input.role === "STUDENT" ? false : undefined, verificationStatus: input.role === "STUDENT" ? "UNVERIFIED" : undefined, skills: [] }; draft.users.push(created); return { ok: true, value: undefined }; });
+  // Doanh nghiệp phải có mã số thuế, hoặc website công ty nếu chưa có mã số thuế
+  const identity = input.role === "SME"
+    ? (input.taxCode?.trim() ? { taxCode: normalizeTaxCode(input.taxCode) } : { companyWebsite: normalizeWebsite(input.companyWebsite ?? "") })
+    : {};
+  if (input.role === "SME") { const problem = validateSmeIdentity(identity); if (problem) return { ok: false, code: "SME_IDENTITY_REQUIRED", message: problem }; }
+  const result = update((draft) => { const existing = actor(draft, input.email); if (existing) { created = existing; return { ok: true, value: undefined }; } created = { id: crypto.randomUUID(), name: input.name, email: input.email, role: input.role, ...identity, ...(input.role === "SME" ? { smeApprovalStatus: "PENDING" as const } : {}), emailVerified: false,studentVerified: input.role === "STUDENT" ? false : undefined, verificationStatus: input.role === "STUDENT" ? "UNVERIFIED" : undefined, skills: [] }; draft.users.push(created); if (created.role === "SME") audit(draft, created.id, "SUBMIT_SME_REGISTRATION", created.id); return { ok: true, value: undefined }; });
   return result.ok ? { ok: true, value: created } : result;
 }
+
+/**
+ * Tài khoản doanh nghiệp mới đăng ký ở trạng thái PENDING, chưa đăng nhập và chưa đăng dự án
+ * được cho tới khi quản trị viên duyệt. Tài khoản SME tạo trước khi có quy tắc này (không có
+ * smeApprovalStatus) được coi là đã duyệt.
+ */
+export function isSmeApproved(user: DemoUser | undefined) { return user?.role === "SME" && (user.smeApprovalStatus ?? "APPROVED") === "APPROVED"; }
+
+/** Trạng thái tài khoản theo email, để màn hình đăng nhập chặn doanh nghiệp chưa được duyệt. */
+export function findDemoAccount(email: string): DemoUser | undefined { return load().users.find((user) => user.email.toLowerCase() === email.trim().toLowerCase()); }
+
+/**
+ * Quản trị viên duyệt / từ chối đăng ký doanh nghiệp. Từ chối bắt buộc có lý do.
+ * Ở bản demo không gửi email thật: thư báo "đã duyệt" đóng vai trò thư kích hoạt, nên duyệt
+ * xong thì email cũng được coi là đã xác minh (doanh nghiệp không phải qua bước kích hoạt riêng).
+ */
+export function moderateSmeRegistration(email: string, smeId: string, decision: "approve" | "reject", reason?: string) { return update((draft) => { const admin = actor(draft, email); if (admin?.role !== "ADMIN") return fail("WRONG_ROLE", "Chỉ quản trị viên được duyệt doanh nghiệp."); const sme = draft.users.find((user) => user.id === smeId && user.role === "SME"); if (!sme || sme.smeApprovalStatus !== "PENDING") return fail("INVALID_TRANSITION", "Hồ sơ doanh nghiệp không ở trạng thái chờ duyệt."); if (decision === "reject" && !reason?.trim()) return fail("REASON_REQUIRED", "Từ chối phải có lý do."); sme.smeApprovalStatus = decision === "approve" ? "APPROVED" : "REJECTED"; sme.smeRejectionReason = decision === "reject" ? reason : undefined; if (decision === "approve") sme.emailVerified = true; audit(draft, admin.id, decision === "approve" ? "APPROVE_SME" : "REJECT_SME", sme.id, reason); return { ok: true, value: undefined }; }); }
 export function verifyDemoEmail(email: string) { return update((draft) => { const user = actor(draft, email); if (!user) return fail("NOT_FOUND", "Không tìm thấy tài khoản."); user.emailVerified = true; return { ok: true, value: undefined }; }); }
 export function requestStudentVerification(email: string) { return update((draft) => { const user = actor(draft, email); if (user?.role !== "STUDENT") return fail("WRONG_ROLE", "Chỉ sinh viên được gửi minh chứng."); user.verificationStatus = "PENDING"; user.verificationReason = undefined; audit(draft, user.id, "SUBMIT_VERIFICATION", user.id); return { ok: true, value: undefined }; }); }
 export function moderateStudentVerification(email: string, studentId: string, decision: "approve" | "reject", reason?: string) { return update((draft) => { const admin = actor(draft, email); if (admin?.role !== "ADMIN") return fail("WRONG_ROLE", "Chỉ Admin được duyệt minh chứng."); const student = draft.users.find((user) => user.id === studentId && user.role === "STUDENT"); if (!student || student.verificationStatus !== "PENDING") return fail("INVALID_TRANSITION", "Minh chứng không chờ duyệt."); if (decision === "reject" && !reason?.trim()) return fail("REASON_REQUIRED", "Từ chối phải có lý do."); student.studentVerified = decision === "approve"; student.verificationStatus = decision === "approve" ? "VERIFIED" : "REJECTED"; student.verificationReason = reason; audit(draft, admin.id, decision === "approve" ? "APPROVE_VERIFICATION" : "REJECT_VERIFICATION", student.id, reason); return { ok: true, value: undefined }; }); }
 
 export function createProject(input: Omit<DemoProject, "id" | "ownerId" | "status" | "milestoneIds" | "createdAt"> & { ownerEmail: string; milestones: Array<Omit<DemoMilestone, "id" | "projectId" | "status" | "escrow">> }): DemoResult<string> {
   let id = "";
-  const result = update((draft) => { const user = actor(draft, input.ownerEmail); if (!user) return fail("AUTH_REQUIRED", "Cần đăng nhập."); if (user.role !== "SME") return fail("WRONG_ROLE", "Chỉ doanh nghiệp được đăng dự án."); if (!user.emailVerified) return fail("EMAIL_NOT_VERIFIED", "Cần xác minh email."); if (input.milestones.reduce((s, m) => s + m.budget, 0) !== input.budget) return fail("MILESTONE_BUDGET_MISMATCH", "Tổng ngân sách milestone phải bằng ngân sách dự án."); id = `p-${crypto.randomUUID()}`; const milestoneIds = input.milestones.map(() => crypto.randomUUID()); const created: DemoMilestone[] = input.milestones.map((m, i) => ({ ...m, id: milestoneIds[i], projectId: id, status: "PENDING", escrow: "PENDING_FUNDING" })); draft.milestones.push(...created); draft.projects.push({ ...input, id, ownerId: user.id, status: "PENDING_REVIEW", milestoneIds, createdAt: new Date().toISOString() }); audit(draft, user.id, "SUBMIT_PROJECT", id); return { ok: true, value: undefined }; });
+  const result = update((draft) => { const user = actor(draft, input.ownerEmail); if (!user) return fail("AUTH_REQUIRED", "Cần đăng nhập."); if (user.role !== "SME") return fail("WRONG_ROLE", "Chỉ doanh nghiệp được đăng dự án."); if (!isSmeApproved(user)) return fail("SME_NOT_APPROVED", "Tài khoản doanh nghiệp chưa được quản trị viên duyệt.");if (!user.emailVerified) return fail("EMAIL_NOT_VERIFIED", "Cần xác minh email."); if (input.milestones.reduce((s, m) => s + m.budget, 0) !== input.budget) return fail("MILESTONE_BUDGET_MISMATCH", "Tổng ngân sách milestone phải bằng ngân sách dự án."); id = `p-${crypto.randomUUID()}`; const milestoneIds = input.milestones.map(() => crypto.randomUUID()); const created: DemoMilestone[] = input.milestones.map((m, i) => ({ ...m, id: milestoneIds[i], projectId: id, status: "PENDING", escrow: "PENDING_FUNDING" })); draft.milestones.push(...created); draft.projects.push({ ...input, id, ownerId: user.id, status: "PENDING_REVIEW", milestoneIds, createdAt: new Date().toISOString() }); audit(draft, user.id, "SUBMIT_PROJECT", id); return { ok: true, value: undefined }; });
   return result.ok ? { ok: true, value: id } : result;
 }
 export function moderateProject(email: string, projectId: string, decision: "approve" | "reject", reason?: string) { return update((draft) => { const user = actor(draft, email); if (user?.role !== "ADMIN") return fail("WRONG_ROLE", "Chỉ quản trị viên được duyệt dự án."); const project = draft.projects.find((p) => p.id === projectId); if (!project) return fail("NOT_FOUND", "Không tìm thấy dự án."); if (project.status !== "PENDING_REVIEW") return fail("INVALID_TRANSITION", "Dự án không ở trạng thái chờ duyệt."); if (decision === "reject" && !reason?.trim()) return fail("REASON_REQUIRED", "Từ chối phải có lý do."); project.status = decision === "approve" ? "PUBLISHED" : "DRAFT"; project.rejectionReason = reason; audit(draft, user.id, decision === "approve" ? "APPROVE_PROJECT" : "REJECT_PROJECT", projectId, reason); return { ok: true, value: undefined }; }); }
