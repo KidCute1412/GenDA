@@ -8,6 +8,10 @@ import { EmptyState } from "../../../components/ui/feedback";
 import { AUDIT_LOG, PENDING_VERIFICATIONS, PROJECTS } from "../../../mocks/data";
 import { formatDate, formatVnd } from "../../../lib/utils/format";
 import { AdminActionButtons } from "../../../features/admin/components/admin-action-buttons";
+import { LedgerAuditPanel } from "../../../features/admin/components/ledger-audit-panel";
+import { LedgerProjectQueue } from "../../../features/admin/components/ledger-project-queue";
+import { LedgerVerificationQueue } from "../../../features/admin/components/ledger-verification-queue";
+import { RoleRouteGuard } from "../../../features/auth/components/role-route-guard";
 import { 
   Check, 
   CheckCircle, 
@@ -52,7 +56,8 @@ export default async function AdminPage({
   };
 
   return (
-    <>
+    <RoleRouteGuard role="ADMIN">
+      <>
       <SiteHeader hideOnMobile />
 
       <main id="main-content" className="has-bottom-nav" style={{ minHeight: "calc(100vh - 64px - 200px)", paddingBottom: "var(--space-20)" }}>
@@ -155,6 +160,7 @@ export default async function AdminPage({
           </nav>
 
           {/* TAB 1: HÀNG ĐỢI DUYỆT DỰ ÁN */}
+          {active === "projects" ? <LedgerProjectQueue /> : null}
           {active === "projects" ? (
             pendingProjects.length === 0 ? (
               <EmptyState
@@ -305,6 +311,7 @@ export default async function AdminPage({
           ) : null}
 
           {/* TAB 2: HÀNG ĐỢI DUYỆT THẺ SINH VIÊN */}
+          {active === "students" ? <LedgerVerificationQueue /> : null}
           {active === "students" ? (
             <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
               {PENDING_VERIFICATIONS.map((item) => (
@@ -357,6 +364,7 @@ export default async function AdminPage({
           ) : null}
 
           {/* TAB 3: NHẬT KÝ KIỂM TOÁN */}
+          {active === "audit" ? <LedgerAuditPanel /> : null}
           {active === "audit" ? (
             <div 
               style={{ 
@@ -434,6 +442,7 @@ export default async function AdminPage({
 
       <SiteFooter />
       <BottomNav />
-    </>
+      </>
+    </RoleRouteGuard>
   );
 }

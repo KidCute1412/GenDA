@@ -8,6 +8,7 @@ import { EmptyState } from "../../../components/ui/feedback";
 import { Check, MagnifyingGlass } from "../../../components/ui/icons";
 import { CURRENT_STUDENT, PROJECTS, SKILL_CATALOG, TODAY } from "../../../mocks/data";
 import { daysUntil, formatDate, formatVnd, matchScore } from "../../../lib/utils/format";
+import { LedgerPublishedProjects } from "../../../features/projects/components/ledger-published-projects";
 
 export const metadata: Metadata = {
   title: "Dự án đang tuyển",
@@ -104,6 +105,7 @@ export default async function ProjectsPage({
       <SiteHeader hideOnMobile />
 
       <main id="main-content" className="container has-bottom-nav" style={{ paddingTop: "var(--space-8)" }}>
+        <LedgerPublishedProjects />
         <div className="industrial-ruler">
           {"SYS.EXPLORER // REGISTRY // 04 MODULES ACTIVE"}
         </div>

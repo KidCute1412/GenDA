@@ -7,6 +7,7 @@ import { Alert } from "../../../../components/ui/alert";
 import { ArrowRight, Check, ICON_WEIGHT, SealCheck, Star } from "../../../../components/ui/icons";
 import { ShareLinkButton } from "../../../../features/portfolio/components/share-link-button";
 import { VisibilityToggle } from "../../../../features/portfolio/components/visibility-toggle";
+import { LedgerPortfolioPanel } from "../../../../features/portfolio/components/ledger-portfolio-panel";
 import { CURRENT_STUDENT, PORTFOLIO } from "../../../../mocks/data";
 
 export function generateStaticParams() {
@@ -77,6 +78,9 @@ export default async function PortfolioPage({ params }: { params: Promise<{ slug
       <SiteHeader hideOnMobile />
 
       <main id="main-content" className="industrial-canvas has-bottom-nav" style={{ paddingBottom: "var(--space-16)" }}>
+        <div className="container" style={{ paddingTop: "var(--space-8)" }}>
+          <LedgerPortfolioPanel />
+        </div>
         
         {/* THANH THƯỚC ĐO KỸ THUẬT & ĐIỀU HƯỚNG */}
         <div style={{ borderBottom: "2px solid var(--machinery-border)", backgroundColor: "var(--color-surface-card)" }}>
