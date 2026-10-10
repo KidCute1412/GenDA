@@ -19,7 +19,7 @@ Education tests cover zero, one and multiple entries; create/update/delete owner
 
 Project-complexity tests cover every level at one unit below, exactly at, and one unit above its configured minimum; strict ordering of the three minimums; server-side revalidation on both submit-for-review and publish; and rejection of client-tampered values. Moderation tests cover a scope that matches its declared level and an obviously under-classified scope returned to `DRAFT` with reviewer, mandatory reason, timestamp, and suggested complexity. They also confirm that the admin cannot silently mutate SME-owned scope, complexity, or budget.
 
-Run Maven Wrapper `verify` for Java tests/build. Root pnpm tasks bridge Java compile/build to Maven. Backend CI checks Java and Compose API/database startup, then regenerated-contract drift. Frontend CI checks lint, typecheck, Vitest, build and Playwright.
+Run Maven Wrapper `verify` for Java tests/build. Root pnpm tasks bridge Java compile/build to Maven. Backend CI checks Java and Compose API/database startup, then regenerated-contract drift. Frontend CI checks lint, typecheck, Vitest and build; Playwright remains available for manual/local E2E runs.
 
 For architecture work, run `node scripts/api-maven.mjs -Dtest=ArchitectureTest,ArchitectureRulesTest test` from the repository root, then the full Maven `verify`. Configuration regression tests check the shared UTC clock and exact CORS policy. Existing standalone MockMvc tests do not exercise the real security filter chain, and the Compose smoke test does not replace PostgreSQL persistence/transaction integration tests; that coverage remains separate work.
 
