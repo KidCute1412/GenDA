@@ -13,22 +13,24 @@ packages/config      existing shared frontend configuration placeholders
 
 Persistence uses PostgreSQL, Spring Data JPA/Hibernate and Flyway. Springdoc 3.0.3 generates the code-first REST contract. See [ADR 0002](decisions/0002-spring-boot-and-docker.md), [API conventions](api-conventions.md) and [database conventions](database-conventions.md).
 
-**Current capability:** the backend implements health/readiness, account registration, JWT cookie authentication, and a read-only published-project catalog. Authentication exposes CSRF bootstrap, student/SME registration, login, refresh, logout and current-user endpoints. Flyway owns users, registration identity fields and revocable refresh sessions; the local `demo` profile adds deterministic sample users/projects. Email verification, matching, applications, and the remaining workflows still use sample/local browser data.
+**Current capability:** the backend implements health/readiness, account registration, JWT cookie authentication, student profile view/update, and a read-only published-project catalog. Authentication exposes CSRF bootstrap, student/SME registration, login, refresh, logout and current-user endpoints. The `users` module owns structured student profile fields and canonical skill selection while the `auth` module remains the owner of account identity. Flyway owns users, student profiles, registration identity fields and revocable refresh sessions; the local `demo` profile adds deterministic sample users/projects/profile data. CV storage, email verification, matching, applications, and the remaining workflows still use sample/local browser data. Student verification is not part of the approved target.
+
+**Approved target direction (not implemented yet):** replace the person-side `STUDENT` role with the general `CONTRIBUTOR` role while keeping student only as a self-declared background type. Registration creates a pending account and requires a six-digit email OTP before any full session is issued. The `users` module owns contributor profile completeness, self-declared education history, private CV lifecycle/technical validation, and SME business-verification records. It exposes eligibility/approval facades instead of allowing `auth` or `applications` to read user persistence. Education is optional and does not affect general eligibility. GenDA does not collect or review student-status evidence. A `READY` CV is a technically valid artifact, not a GenDA endorsement. Admin reviews SME identity, not contributor education or CV content; AI CV review/scoring is outside MVP.
 
 ## Modular monolith and business ownership
 
-One application/JAR, one relational database. Organize packages under `vn.skillbridge.<module>`, not separate Maven projects or services. Frontend features correspond to business ownership; student/SME/admin routes do not duplicate domains.
+One application/JAR, one relational database. Organize packages under `vn.skillbridge.<module>`, not separate Maven projects or services. Frontend features correspond to business ownership; contributor/SME/admin routes do not duplicate domains. Existing `/student/*` routes are legacy implementation and will be migrated with the role/API change rather than renamed independently.
 
 | Backend module | Frontend feature | Ownership |
 | --- | --- | --- |
 | auth | auth | Identity and session boundary |
-| users | users | Profiles, verification, skills |
-| projects | projects | Lifecycle, ownership, publication |
+| users | users | Contributor/SME profiles, SME business verification, education history, profile completeness, CV lifecycle, skills |
+| projects | projects | Lifecycle, ownership, complexity taxonomy, minimum-budget policy, moderation and publication |
 | applications | applications | Applications, selection, assignments |
 | matching | projects / applications | Recommendations; no dedicated frontend feature yet |
 | milestones | milestones | Deliverables, acceptance, simulated escrow |
 | reviews | reviews | Reviews and eligibility |
-| certificates | — | Out of scope: verified portfolio was removed and replaced by the student CV (`users`) |
+| certificates | — | Out of scope: verified portfolio was removed; CV remains an unverified contributor artifact owned by `users` |
 | admin | admin | Moderation/audit entrypoints; domain mutations stay in their owning modules |
 
 `workspace` composes domains and owns view state/navigation. `demo-ledger` is a temporary frontend adapter. `platform` owns health, HTTP errors and configuration, not business rules.
@@ -117,6 +119,14 @@ Springdoc emits `/api/v1/openapi` locally. Export the normalized snapshot and re
 Health preserves `{ status: "ok", service: "genda-api" }`, returning 503 if PostgreSQL is unavailable. Compose and Render use it for readiness. Errors use `{ code, message, requestId }`, without SQL, credentials or stack traces.
 
 Authentication uses a five-minute access JWT and a rotating refresh JWT in scoped `HttpOnly` cookies. Refresh sessions are fingerprinted in PostgreSQL and revoked on logout. Refresh TTL is 24 hours by default or seven days when the user remembers the device. Cookie mutations require a double-submit CSRF token; CORS allows credentials only from configured exact origins. Frontend role checks remain UX only.
+
+The target email-verification flow stores only an OTP hash plus expiry, failed-attempt count, resend metadata and consumption time. Confirmation and resend are rate-limited; issuing a new OTP invalidates the old one. No access/refresh session is issued before email verification. SME approval remains an additional independent gate.
+
+`users` owns SME verification evidence, `PENDING`/`VERIFIED`/`REJECTED` state and review audit. Admin controllers invoke the public `users` verification use case. When an SME logs in, `auth` queries a narrow public approval facade in `users`; it never reads SME tables or repositories directly. Email verification, business verification and per-project moderation remain separate gates.
+
+`projects` owns project complexity, the minimum-budget policy, and all submit/review/publish transitions. The backend is authoritative for policy values; the frontend consumes them through the generated contract and never decides eligibility from local constants. An admin moderation endpoint invokes a `projects` application use case: it may publish a consistent project or return an under-classified project to `DRAFT` with a reason and suggested level, but it cannot reach into the SME's project repository to rewrite scope, complexity, or budget.
+
+CVs and SME verification evidence are private object-storage objects when files are required. Upload processing validates file type/signature, size, readability, password protection and configured malware scanning before marking a CV `READY`. Database rows hold metadata and object keys, never file bytes; access uses short-lived authorization. The exact storage/scanner provider remains an implementation decision under OQ-07.
 
 ## Frontend
 

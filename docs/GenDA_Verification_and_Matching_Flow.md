@@ -1,603 +1,293 @@
 # GenDA — Verification & Matching Flow
 
-## 1. Mục tiêu
+## Project Creation — Complexity & Minimum Budget Guard
 
-Cơ chế verification và matching của GenDA được thiết kế để giải quyết hai vấn đề chính:
-
-- Đảm bảo người tham gia nền tảng là sinh viên và SME hợp lệ.
-- Giảm rủi ro khi ghép sinh viên với dự án bằng cách dựa trên lịch sử thực hiện project trên GenDA thay vì chỉ dựa vào thông tin tự khai trong CV.
-
-GenDA không cố gắng xác minh toàn bộ năng lực của sinh viên ngay từ đầu. CV được sử dụng như nguồn thông tin ban đầu, trong khi mức độ tin cậy về năng lực được hình thành dần thông qua lịch sử thực hiện project.
-
----
-
-# 2. Verification Flow — Sinh viên
-
-## 2.1. Đăng ký tài khoản
-
-Sinh viên tạo tài khoản trên GenDA bằng email.
+Luồng tạo và duyệt dự án áp dụng hai lớp kiểm soát độc lập:
 
 ```text
-Student Register
-      ↓
-Verify Email
-      ↓
-Student Account Created
-```
-
----
-
-## 2.2. Xác thực tư cách sinh viên
-
-GenDA cần xác minh người dùng thực sự là sinh viên thuộc nhóm đối tượng mà nền tảng phục vụ.
-
-Thông tin có thể sử dụng để xác thực:
-
-- Họ và tên.
-- Trường đang theo học.
-- Ngành học.
-- Trạng thái sinh viên.
-- Email trường nếu có.
-- Thẻ sinh viên hoặc giấy xác nhận sinh viên trong trường hợp cần thiết.
-
-```text
-Student Account
-      ↓
-Student Verification
-      ↓
-Verified Student
-```
-
-Việc xác thực này chỉ nhằm xác nhận **tư cách sinh viên**, không đồng nghĩa với việc GenDA đã xác minh năng lực chuyên môn.
-
----
-
-## 2.3. Hoàn thiện profile bắt buộc
-
-Sau khi được xác thực, sinh viên phải hoàn thiện các thông tin bắt buộc trước khi được phép apply project.
-
-Thông tin bắt buộc có thể gồm:
-
-- Họ và tên.
-- Trường.
-- Ngành học.
-- Kỹ năng chính.
-- Thời gian có thể tham gia project.
-- CV.
-- Một số thông tin cơ bản khác do GenDA quy định.
-
-```text
-Verified Student
-      ↓
-Complete Required Profile
-      ↓
-Upload CV
-      ↓
-Profile Complete?
-   ├─ No  → Không được Apply
-   └─ Yes
-         ↓
-General Apply Permission
-```
-
-Nguyên tắc:
-
-> Sinh viên được bắt đầu apply project khi profile đã hoàn thành đầy đủ các thông tin bắt buộc.
-
----
-
-## 2.4. Vai trò của CV
-
-CV là nguồn thông tin ban đầu để SME và hệ thống hiểu về:
-
-- kỹ năng;
-- kinh nghiệm;
-- project học tập hoặc project cá nhân;
-- công nghệ đã sử dụng;
-- hoạt động liên quan.
-
-Tuy nhiên, GenDA không coi toàn bộ nội dung trong CV là năng lực đã được xác minh.
-
-Ví dụ:
-
-```text
-CV:
-React
-Node.js
-SQL
-```
-
-Hệ thống chỉ hiểu đây là:
-
-```text
-Self-declared / CV-declared skills
-```
-
-Độ tin cậy của năng lực sẽ được tăng dần thông qua lịch sử thực hiện project trên GenDA.
-
----
-
-# 3. Verification Flow — SME
-
-## 3.1. Đăng ký tài khoản SME
-
-SME tạo tài khoản và cung cấp thông tin doanh nghiệp.
-
-Thông tin cơ bản gồm:
-
-- Tên doanh nghiệp.
-- Email.
-- Mã số thuế hoặc thông tin đăng ký doanh nghiệp.
-- Người đại diện hoặc người phụ trách đăng project.
-- Thông tin liên hệ.
-- Website hoặc trang doanh nghiệp nếu có.
-
-```text
-SME Register
-      ↓
-Verify Email
-      ↓
-Submit Business Information
-```
-
----
-
-## 3.2. Xác thực SME
-
-GenDA kiểm tra tính hợp lệ của doanh nghiệp và người đại diện.
-
-Trong giai đoạn pilot, việc xác thực có thể được thực hiện thủ công thông qua:
-
-- đối chiếu mã số thuế;
-- email doanh nghiệp;
-- website hoặc trang doanh nghiệp;
-- thông tin đăng ký doanh nghiệp;
-- liên hệ xác nhận khi cần thiết.
-
-```text
-Submit Business Information
-      ↓
-Business Verification
-      ↓
-Verified SME
-```
-
-Chỉ SME đã được xác thực mới được phép đăng project.
-
----
-
-# 4. Project Creation Flow
-
-Sau khi được xác thực, SME có thể tạo project.
-
-Thông tin project gồm:
-
-- mô tả công việc;
-- scope;
-- deliverables;
-- kỹ năng yêu cầu;
-- deadline;
-- số lượng sinh viên;
-- tiêu chí nghiệm thu;
-- mức độ phức tạp;
-- ngân sách.
-
-```text
-Verified SME
-      ↓
-Create Project
-      ↓
-Select Complexity
-Basic / Medium / High
-      ↓
-Enter Budget
-      ↓
-Budget Validation
-```
-
----
-
-## 4.1. Complexity-Based Budget Guard
-
-SME được phép tự lựa chọn mức độ phức tạp của project.
-
-Mỗi mức độ có một mức ngân sách tối thiểu do GenDA quy định.
-
-Ví dụ:
-
-```text
-Basic  → Minimum Budget A
-Medium → Minimum Budget B
-High   → Minimum Budget C
-```
-
-Nếu SME chọn mức độ cao nhưng ngân sách thấp hơn mức tối thiểu:
-
-```text
-Selected Complexity
-      ↓
-Budget < Minimum?
-   ├─ Yes → Không cho Publish
-   │        → Increase Budget
-   │        hoặc
-   │        → Reduce Complexity
-   │
-   └─ No
+SME đã được xác minh doanh nghiệp
         ↓
-     Publish
+Tạo project DRAFT, khai báo scope/deliverables/skills/deadline/milestones
+        ↓
+Chọn complexity: BASIC / MEDIUM / HIGH
+        ↓
+Hệ thống hiển thị minimum budget tương ứng
+        ↓
+Budget >= minimumBudget(complexity)?
+        ├─ Không → chặn gửi duyệt; SME tăng budget hoặc điều chỉnh scope/level
+        └─ Có    → chuyển PENDING_REVIEW
+                         ↓
+             Admin đối chiếu scope với complexity
+        ├─ Không phù hợp → trả về DRAFT, bắt buộc ghi lý do và gợi ý level
+        └─ Phù hợp       → PUBLISHED
 ```
 
-Mục tiêu của cơ chế này là tránh trường hợp SME chọn project complexity cao để tiếp cận nhóm sinh viên có lịch sử tốt nhưng vẫn trả mức ngân sách thấp.
+| Project level | Minimum budget | Điều kiện tự ứng tuyển |
+|---|---:|---|
+| `BASIC` | `BASIC_MIN` | Không yêu cầu lịch sử dự án |
+| `MEDIUM` | `MEDIUM_MIN` | Có ít nhất 1 experience point **hoặc** được SME của project chủ động mời |
+| `HIGH` | `HIGH_MIN` | Có ít nhất 3 experience points **và** đã hoàn thành ít nhất 1 project `MEDIUM` |
 
----
+Các ngưỡng phải thỏa `BASIC_MIN < MEDIUM_MIN < HIGH_MIN` và nằm trong khoảng ngân sách MVP 1.000.000-5.000.000 VNĐ. Giá trị cụ thể chưa được tự giả định trong tài liệu này; cần chốt tại OQ-08 trước khi triển khai.
 
-## 4.2. Trường hợp SME khai complexity thấp hơn thực tế
+Minimum budget chỉ ngăn trường hợp chọn complexity cao nhưng trả ngân sách quá thấp. Nó không tự ngăn SME cố tình gắn nhãn `BASIC` cho một scope thực tế phức tạp. Vì vậy admin phải đánh giá scope, deliverables, kỹ năng yêu cầu, deadline và milestones trước khi publish. Admin không được âm thầm đổi nội dung, complexity hoặc budget thay SME; SME phải tự thu hẹp scope hoặc chọn level/budget phù hợp rồi gửi duyệt lại.
 
-Ví dụ:
+Quyết định này thay thế quan điểm legacy chấp nhận rủi ro SME tự khai complexity thấp. Backend là nguồn chính sách duy nhất và phải kiểm tra lại ở cả `DRAFT → PENDING_REVIEW` lẫn `PENDING_REVIEW → PUBLISHED`.
+
+### Project level đồng thời điều khiển eligibility
+
+Target model không dùng `GENERAL` như một project type riêng. SME chọn một `projectLevel = BASIC | MEDIUM | HIGH`; level đó đồng thời quyết định độ phức tạp, minimum budget và yêu cầu kinh nghiệm khi ứng tuyển.
+
+Không yêu cầu contributor phải từng hoàn thành project **cùng level** mới được ứng tuyển level đó, vì điều này tạo vòng lặp không thể mở khóa. Kinh nghiệm được tích lũy từ level thấp lên:
 
 ```text
-Project thực tế: High
-SME khai: Basic
+Hoàn thành BASIC  = +1 experience point
+Hoàn thành MEDIUM = +2 experience points
+Hoàn thành HIGH   = +3 experience points
 ```
 
-GenDA chấp nhận rằng SME đang lựa chọn một mức rủi ro cao hơn cho chính mình.
-
-Hệ quả:
+Baseline policy cho MVP:
 
 ```text
-Basic Project
-      ↓
-Lower Minimum Budget
-      ↓
-Student Pool có ít bằng chứng năng lực hơn
-      ↓
-SME chấp nhận rủi ro tuyển sinh viên
-chưa có nhiều lịch sử được kiểm chứng
+Người mới
+   ↓
+Ứng tuyển và hoàn thành BASIC (+1 điểm)
+   ↓
+Đủ điều kiện tự ứng tuyển MEDIUM
+   ↓
+Hoàn thành MEDIUM (tổng tối thiểu 3 điểm)
+   ↓
+Đủ điều kiện tự ứng tuyển HIGH
 ```
 
-Tuy nhiên, SME không được phép khai Basic rồi mở rộng scope thành High trong quá trình thực hiện.
-
-Scope và deliverables đã công bố là căn cứ kiểm soát project.
-
-Nếu muốn mở rộng đáng kể:
+Một project chỉ được tính vào kinh nghiệm khi thỏa toàn bộ điều kiện:
 
 ```text
-Change Request
-      ↓
-Update Scope
-      ↓
-Re-evaluate Complexity
-      ↓
-Adjust Budget / Deadline
-      ↓
-Student Approval
+project.status == COMPLETED
+&& contributor là người có application ACCEPTED
+&& toàn bộ milestone đã được nghiệm thu
 ```
 
----
-
-# 5. Student Project Eligibility
-
-Sau khi profile hoàn chỉnh, sinh viên có quyền sử dụng chức năng Apply.
-
-Tuy nhiên, khả năng apply vào từng project cụ thể còn phụ thuộc vào điều kiện của project.
+Application gate được backend kiểm tra tại thời điểm submit:
 
 ```text
-General Apply Permission
-      ↓
-Open Project
-      ↓
-Project Eligibility Check
+Contributor xem được project ở mọi level
+        ↓
+Nhấn Ứng tuyển
+        ↓
+accountActive && emailVerified && profileComplete && cv.status == READY?
+        ├─ Không → chặn và hiển thị bước còn thiếu
+        └─ Có
+             ↓
+        Kiểm tra projectLevel
+        ├─ BASIC  → cho submit application
+        ├─ MEDIUM → score >= 1 hoặc có SME invitation hợp lệ
+        └─ HIGH   → score >= 3 và completedMediumProjects >= 1
 ```
 
-Hệ thống có thể kiểm tra:
+Contributor không đủ điều kiện vẫn xem được toàn bộ nội dung project. Giao diện khóa hành động submit và nêu chính xác điều kiện còn thiếu, ví dụ: “Bạn cần hoàn thành thêm 1 project BASIC để ứng tuyển project MEDIUM.”
 
-- kỹ năng bắt buộc;
-- trạng thái profile;
-- lịch sử thực hiện project;
-- điểm uy tín;
-- completion rate;
-- lịch sử tranh chấp;
-- mức độ phức tạp của project.
+### SME invitation cho MEDIUM
 
----
-
-# 6. Matching giữa SME và Sinh viên
-
-## 6.1. Nguyên tắc
-
-Matching của GenDA dựa chủ yếu trên **lịch sử thực hiện project trên nền tảng**.
-
-CV chỉ đóng vai trò cung cấp dữ liệu ban đầu.
-
-Sau khi sinh viên đã tham gia các project trên GenDA, hệ thống ưu tiên sử dụng dữ liệu thực tế từ lịch sử thực hiện.
-
-Các yếu tố chính gồm:
-
-- số project đã hoàn thành;
-- loại project đã thực hiện;
-- complexity của các project đã hoàn thành;
-- tỷ lệ hoàn thành;
-- mức độ đúng hạn;
-- đánh giá từ SME;
-- số lần yêu cầu chỉnh sửa;
-- lịch sử tranh chấp;
-- kỹ năng đã được sử dụng trong các project trước.
-
----
-
-## 6.2. Matching Flow
+SME có thể mời một contributor chưa đủ experience point vào project `MEDIUM` của chính mình. Cơ chế này hỗ trợ người đã có kinh nghiệm bên ngoài nhưng mới tham gia GenDA, nhưng không bỏ qua email verification, profile completeness hoặc CV `READY`.
 
 ```text
-Student Apply
-      ↓
-Read Project Requirements
-      ↓
-Check Student Project History
-      ↓
-Evaluate Similarity
-      ↓
-Calculate Matching Score
-      ↓
-Rank Candidates
-      ↓
-SME Reviews Candidate List
-      ↓
-SME Makes Final Decision
+SME chọn contributor chưa đủ lịch sử
+        ↓
+Hệ thống cảnh báo điều kiện đang được miễn
+        ↓
+SME xác nhận gửi lời mời
+        ↓
+Contributor chấp nhận lời mời
+        ↓
+Tạo Application SUBMITTED
+eligibilitySource = SME_INVITATION
 ```
 
----
+Lời mời chỉ cho phép đi vào quy trình ứng tuyển, không tự động `ACCEPTED` và không tự động giao project. Hệ thống ghi lại SME, project, contributor, thời điểm gửi/chấp nhận và điều kiện được miễn để phục vụ audit.
 
-## 6.3. Ví dụ Matching
+Trong MVP, lời mời của SME không vượt qua gate của `HIGH`. Contributor chỉ được ứng tuyển `HIGH` khi đạt cả experience point và lịch sử hoàn thành `MEDIUM`. Ngoại lệ dựa trên kinh nghiệm ngoài GenDA chỉ được bổ sung sau khi có một quy trình xác minh năng lực riêng; admin hiện không duyệt nội dung CV để cấp ngoại lệ này.
 
-Project mới:
+## 1. Quyết định phạm vi
+
+GenDA phục vụ vai trò cá nhân dùng chung `CONTRIBUTOR`; sinh viên là phân khúc trọng tâm ban đầu, không phải điều kiện bắt buộc để mở tài khoản hoặc ứng tuyển dự án `GENERAL`.
+
+Mô hình niềm tin được tách thành ba lớp, không dùng một nhãn “đã xác thực” cho nhiều ý nghĩa khác nhau:
+
+1. **Email verified:** người dùng kiểm soát email đăng ký.
+2. **Application ready:** tài khoản hoạt động, hồ sơ hoàn tất và CV hợp lệ về kỹ thuật.
+3. **Platform reputation:** đánh giá và lịch sử dự án thật trên GenDA.
+
+Không lớp nào tự động chứng minh toàn bộ năng lực chuyên môn của cá nhân.
+
+## 2. Đăng ký và xác thực email bằng OTP
 
 ```text
-Type: Landing Page
-Complexity: Medium
-Skills:
-- React
-- Tailwind
+Chọn vai trò CONTRIBUTOR hoặc SME
+        ↓
+Nhập email, mật khẩu và thông tin đăng ký bắt buộc
+        ↓
+Tạo tài khoản PENDING_EMAIL_VERIFICATION
+        ↓
+Gửi OTP 6 chữ số tới email đăng ký
+        ↓
+Nhập OTP
+   ┌────┴──────────────────────────┐
+   │ hợp lệ                        │ sai/hết hạn/đã dùng
+   ↓                               ↓
+EMAIL_VERIFIED                 Giữ trạng thái pending
+   ↓                               ↓
+Contributor: tiếp tục onboarding   Cho thử lại hoặc gửi lại có giới hạn
+SME: tiếp tục chờ admin duyệt
 ```
 
-Sinh viên A:
+Quy tắc OTP của MVP:
+
+- OTP gồm 6 chữ số, dùng một lần và mặc định hết hạn sau 10 phút; thời lượng có thể cấu hình.
+- Tối đa 5 lần nhập sai cho một mã. Vượt ngưỡng thì mã bị khóa.
+- Chỉ gửi lại sau tối thiểu 60 giây; mã mới làm mã cũ mất hiệu lực.
+- Giới hạn tần suất theo tài khoản/email và nguồn yêu cầu để chống brute force, spam và email enumeration.
+- Chỉ lưu hash của OTP cùng expiry, số lần sai, thời điểm gửi và thời điểm sử dụng; không log OTP rõ.
+- Đăng ký chưa cấp access/refresh session đầy đủ. Chỉ sau email verification và các gate riêng của vai trò mới cho phép đăng nhập/tiếp tục.
+
+Email verification chỉ chứng minh quyền kiểm soát hộp thư. Với SME, admin approval vẫn là một gate độc lập.
+
+## 3. Verification Flow — SME
+
+### 3.1. Đăng ký và nộp thông tin doanh nghiệp
+
+Khi chọn vai trò `SME`, người dùng cung cấp:
+
+- tên doanh nghiệp;
+- email đăng ký;
+- mã số thuế Việt Nam; nếu chưa có thì cung cấp website hoặc trang doanh nghiệp để đối chiếu;
+- người đại diện hoặc người phụ trách đăng dự án;
+- thông tin liên hệ;
+- lĩnh vực và quy mô doanh nghiệp.
 
 ```text
-Completed Projects: 4
-
-Project History:
-- Landing Page / React / Medium / Rating 4.8
-- Company Website / React / Medium / Rating 4.7
-- UI Fix / React / Basic / Rating 5.0
-
-Completion Rate: 100%
-Disputes: 0
+SME Register + Business Information
+        ↓
+Verify Registered Email by OTP
+        ↓
+Business Verification = PENDING
 ```
 
-Sinh viên B:
+Xác minh email chỉ chứng minh SME kiểm soát hộp thư đăng ký. Nó không tự động chứng minh doanh nghiệp hoặc người đại diện là hợp lệ.
+
+### 3.2. Admin xác minh doanh nghiệp
+
+Trong giai đoạn pilot, admin thực hiện review thủ công dựa trên những nguồn phù hợp với hồ sơ:
+
+- đối chiếu mã số thuế và tên doanh nghiệp;
+- email tên miền doanh nghiệp nếu có;
+- website hoặc trang doanh nghiệp;
+- thông tin người đại diện/người phụ trách;
+- liên hệ xác nhận khi dữ liệu chưa đủ rõ.
 
 ```text
-Completed Projects: 0
-
-CV:
-- React
-- Tailwind
+Business Verification = PENDING
+        ↓
+Admin Review
+   ┌────┴───────────────────────┐
+   │ hợp lệ                     │ không hợp lệ/không đủ căn cứ
+   ↓                            ↓
+VERIFIED                    REJECTED
+   ↓                            ↓
+Cho phép full session       Lưu lý do từ chối
+và tạo dự án               Không được tạo dự án
 ```
 
-Matching:
+Mọi quyết định approve/reject phải ghi người thực hiện, thời điểm và lý do khi từ chối. Chỉ SME đồng thời có `emailVerified = true`, business verification `VERIFIED` và tài khoản hoạt động mới nhận phiên đầy đủ và tạo dự án.
+
+Flow này xác minh danh tính/tính hợp lệ của bên đăng việc; nó không phải bảo chứng rằng mọi dự án của SME đều hợp lệ. Từng dự án vẫn phải qua vòng `PENDING_REVIEW → PUBLISHED` riêng.
+
+## 4. Onboarding cá nhân và quyền ứng tuyển GENERAL
 
 ```text
-Student A
-→ Có lịch sử project tương tự
-→ Có rating tốt
-→ Có completion history
-→ Matching Score cao
-
-Student B
-→ Có kỹ năng khai trong CV
-→ Chưa có project history
-→ Matching Score thấp hơn
+Email đã xác minh
+        ↓
+Hoàn thiện contributor profile
+        ↓
+Tải CV PDF
+        ↓
+CV được kiểm tra kỹ thuật/an toàn
+        ↓
+CV READY
+        ↓
+Đủ điều kiện ứng tuyển dự án GENERAL
 ```
 
-Sinh viên B vẫn có thể apply nếu project cho phép sinh viên mới, nhưng SME sẽ nhìn thấy mức độ bằng chứng năng lực khác nhau.
+Hồ sơ contributor gồm tên hiển thị, loại nền tảng, chuyên môn và kỹ năng chuẩn. Loại nền tảng là thông tin tự khai: `STUDENT`, `RECENT_GRADUATE`, `WORKING_PROFESSIONAL`, `FREELANCER`, `CAREER_SWITCHER` hoặc `OTHER`.
 
----
+Contributor có thể thêm nhiều bản ghi **Education / Học vấn** gồm trường/cơ sở đào tạo, chuyên ngành, bậc học, tên bằng cấp nếu có, thời gian, trạng thái học tập và mô tả. Education là dữ liệu nghề nghiệp tự khai, cho phép ghi đúng cả trường hợp đang học, đã tốt nghiệp, đã hoàn thành hoặc chưa hoàn thành. Không có Education vẫn có thể hoàn tất profile và ứng tuyển `GENERAL`.
 
-# 7. Cold Start — Sinh viên chưa có lịch sử Project
+Education không đồng nghĩa với credential. GenDA không xác minh tư cách sinh viên; `backgroundType = STUDENT` chỉ là thông tin tự khai. Xác minh bằng cấp `EDUCATION_CREDENTIAL` nằm ngoài MVP.
 
-GenDA cần tránh tình trạng:
-
-> Không có project history → không được nhận project → không bao giờ có project history.
-
-Do đó sinh viên mới vẫn có thể tiếp cận các project phù hợp.
+Quyền ứng tuyển không được lưu bằng một cờ độc lập. Backend suy ra tại thời điểm gửi đơn:
 
 ```text
-New Student
-      ↓
-Verified
-      ↓
-Complete Profile + CV
-      ↓
-No GenDA Project History
-      ↓
-Can Apply to Suitable Basic Projects
+canApplyGeneral = accountActive
+               && emailVerified
+               && contributorProfileComplete
+               && cv.status == READY
 ```
 
-Với sinh viên mới, matching có thể dựa nhiều hơn vào:
+Contributor đã xác minh email vẫn được xem danh sách và chi tiết dự án khi checklist chưa hoàn tất. Hệ thống chỉ chặn tại hành động gửi đơn và trả lý do cụ thể; frontend hiển thị checklist nhưng không thay thế kiểm tra phía backend.
 
-- CV;
-- kỹ năng khai báo;
-- ngành học;
-- project học tập ghi trong CV;
-- yêu cầu của project.
+## 5. Xử lý CV trong MVP
 
-Sau khi sinh viên hoàn thành project đầu tiên:
+CV là tài liệu tự khai để SME đánh giá ứng viên. GenDA không yêu cầu admin đọc/duyệt nội dung CV và không dùng AI để quyết định cá nhân có được ứng tuyển hay không.
 
 ```text
-First Completed Project
-      ↓
-Project History Created
-      ↓
-Future Matching uses GenDA History
+UPLOADING → PROCESSING → READY
+                       ↘ REJECTED_TECHNICAL
 ```
 
-Theo thời gian:
+Các kiểm tra tự động bắt buộc:
 
-```text
-CV-based matching
-      ↓
-CV + GenDA history
-      ↓
-Primarily GenDA project history
-```
+- dung lượng không quá 2 MB;
+- MIME, phần mở rộng và file signature thực sự là PDF;
+- tệp đọc được, không hỏng và không khóa bằng mật khẩu;
+- kiểm tra an toàn/malware khi môi trường có bộ quét được cấu hình.
 
----
+`READY` chỉ có nghĩa artifact đạt điều kiện kỹ thuật để lưu và chia sẻ có kiểm soát. Nó không có nghĩa học vấn, kinh nghiệm hoặc kỹ năng trong CV đã được GenDA xác minh. SME xem CV khi xét từng application. CV được lưu riêng tư trong object storage và chỉ cấp quyền truy cập ngắn hạn cho chủ sở hữu hoặc actor có nhu cầu nghiệp vụ hiện tại.
 
-# 8. Reputation Update sau Project
+AI trích xuất CV, gợi ý cải thiện hoặc scoring có thể được nghiên cứu sau MVP, nhưng phải minh bạch, có đường kiểm tra của con người và không trở thành hard gate duy nhất.
 
-Sau mỗi project, hệ thống cập nhật hồ sơ năng lực thực tế của sinh viên.
+## 6. Matching và bằng chứng năng lực
 
-```text
-Project Completed
-      ↓
-SME Evaluation
-      ↓
-Store Project Result
-      ↓
-Update Student Reputation
-      ↓
-Used for Future Matching
-```
+Matching MVP là rule-based theo mức trùng khớp giữa kỹ năng chuẩn trong hồ sơ và kỹ năng dự án. Điểm số chỉ hỗ trợ sắp xếp/tham khảo; không tự động chấp nhận hoặc loại ứng viên.
 
-Các dữ liệu được ghi nhận có thể gồm:
+Theo thời gian, bằng chứng đáng tin cậy hơn CV tự khai đến từ:
 
-- project type;
-- complexity;
-- kỹ năng sử dụng;
-- completion status;
-- deadline performance;
-- SME rating;
-- revision count;
-- dispute result.
+- dự án GenDA đã hoàn tất;
+- milestone và lịch sử bàn giao;
+- đánh giá của SME sau dự án.
 
-Dữ liệu này trở thành bằng chứng năng lực đáng tin cậy hơn so với thông tin tự khai trong CV.
+AI Matching vẫn thuộc V2.0.
 
----
+## 7. Phân chia ownership
 
-# 9. Tổng thể Flow của GenDA
+- `auth`: đăng ký, OTP email, trạng thái email, account activation, đăng nhập và session.
+- `users`: contributor/SME profile, SME business-verification record, education history, profile completeness, CV lifecycle và kỹ năng.
+- `applications`: kiểm tra eligibility qua public application facade của `users`, tạo/rút/chọn application.
+- `matching`: tính điểm kỹ năng tường minh; không đọc trực tiếp persistence riêng của module khác.
+- `admin`: entrypoint duyệt dự án, SME và audit; mutation nghiệp vụ vẫn thuộc module sở hữu. Quyết định SME do use case `users` sở hữu; khi cấp session cho SME, `auth` truy vấn public approval facade của `users` thay vì đọc persistence trực tiếp.
 
-```text
-================ STUDENT SIDE ================
+## 8. Tiêu chí chốt flow
 
-Student Register
-      ↓
-Verify Student Status
-      ↓
-Complete Required Profile
-      ↓
-Upload CV
-      ↓
-General Apply Permission
-      ↓
-Apply Project
-      ↓
-Project Eligibility Check
-      ↓
-Matching based on Project History
-      ↓
-SME Selection
-      ↓
-Execute Project
-      ↓
-Project Result + Rating
-      ↓
-Update Reputation & Project History
+- Không cấp phiên đầy đủ khi đăng ký chưa xác minh OTP.
+- OTP sai, hết hạn, đã dùng, bị khóa hoặc bị thay bởi mã mới đều không xác minh được email.
+- SME đã xác minh email nhưng business verification còn `PENDING` hoặc `REJECTED` không nhận full session và không tạo được dự án.
+- Admin approve chuyển SME sang `VERIFIED`; admin reject bắt buộc có lý do; cả hai quyết định đều có audit.
+- SME `VERIFIED` vẫn phải gửi từng dự án qua hàng đợi duyệt dự án riêng.
+- Contributor đã xác minh email nhưng thiếu hồ sơ/CV vẫn duyệt được dự án `GENERAL` và bị chặn đúng tại lúc apply.
+- CV không hợp lệ bị `REJECTED_TECHNICAL` với lý do có thể hành động; CV hợp lệ đạt `READY` mà không cần admin/AI duyệt nội dung.
+- Không có upload, admin review hoặc huy hiệu xác minh tư cách sinh viên; `backgroundType = STUDENT` là tự khai.
+- Contributor có thể quản lý nhiều bản ghi Education; thiếu Education không ảnh hưởng quyền apply và bản ghi tự khai không có huy hiệu xác minh.
+- SME là bên đọc CV và quyết định application; matching không auto accept/reject.
 
+## 9. Trạng thái triển khai
 
-================ SME SIDE ====================
-
-SME Register
-      ↓
-Business Verification
-      ↓
-Verified SME
-      ↓
-Create Project
-      ↓
-Choose Complexity
-      ↓
-Enter Budget
-      ↓
-Complexity-Based Budget Guard
-      ↓
-Publish Project
-      ↓
-Receive Applications
-      ↓
-Review Matching Ranking
-      ↓
-Select Student
-      ↓
-Execute Project
-      ↓
-Evaluate Student
-
-
-================ MATCHING LOOP ===============
-
-Completed Project
-      ↓
-Project History
-      ↓
-Reputation
-      ↓
-Better Matching Evidence
-      ↓
-Access to More Suitable / Higher-Risk Projects
-```
-
----
-
-# 10. Technical Decision Summary
-
-## Decision
-
-GenDA áp dụng mô hình:
-
-> **Identity Verification + Profile Completion + Project-History-Based Matching**
-
-## Sinh viên
-
-GenDA xác thực tư cách sinh viên và yêu cầu hoàn thiện profile trước khi mở quyền Apply.
-
-CV được sử dụng làm dữ liệu ban đầu nhưng không được coi là bằng chứng năng lực đã được xác minh hoàn toàn.
-
-Năng lực được chứng minh dần thông qua lịch sử thực hiện project.
-
-## SME
-
-GenDA xác thực doanh nghiệp trước khi cho phép đăng project.
-
-SME tự lựa chọn complexity của project nhưng phải tuân thủ mức ngân sách tối thiểu tương ứng.
-
-## Matching
-
-Matching ưu tiên dữ liệu thực tế từ lịch sử project:
-
-```text
-Project similarity
-+ Completion history
-+ Rating
-+ Deadline performance
-+ Dispute history
-+ Skills used in previous projects
-```
-
-SME vẫn là bên đưa ra quyết định lựa chọn cuối cùng.
-
-## Nguyên tắc
-
-GenDA không cố xác định trước rằng một sinh viên “giỏi” hay “không giỏi”.
-
-Thay vào đó, hệ thống liên tục xây dựng mức độ tin cậy dựa trên:
-
-> **Sinh viên đã thực sự hoàn thành những project nào và kết quả của các project đó ra sao.**
+Đây là flow đích đã chốt cho tài liệu. Code hiện tại vẫn dùng role `STUDENT`, profile sinh viên và cấp session ngay sau đăng ký student; email OTP, CV lifecycle, contributor eligibility và workflow admin xác minh SME hoàn chỉnh chưa được implement. Việc chuyển đổi phải cập nhật đồng bộ migration, backend, OpenAPI client, frontend routes/copy và tests; không đổi riêng một lớp.

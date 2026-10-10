@@ -20,7 +20,7 @@ async function csrf() {
   return csrfToken;
 }
 
-async function mutationHeaders() {
+export async function getAuthMutationHeaders() {
   return { "X-CSRF-Token": csrfToken ?? (await csrf()) };
 }
 
@@ -35,7 +35,7 @@ function toError(error: unknown, fallbackCode: string, fallbackMessage: string) 
 
 export async function login(email: string, password: string, rememberDevice: boolean) {
   const { data, error } = await api.POST("/api/v1/auth/login", {
-    headers: await mutationHeaders(),
+    headers: await getAuthMutationHeaders(),
     body: { email, password, rememberDevice }
   });
   if (!data) throw toError(error, "LOGIN_FAILED", "Không thể đăng nhập.");
@@ -45,7 +45,7 @@ export async function login(email: string, password: string, rememberDevice: boo
 
 export async function registerAccount(input: components["schemas"]["RegisterRequest"]) {
   const { data, error } = await api.POST("/api/v1/auth/register", {
-    headers: await mutationHeaders(),
+    headers: await getAuthMutationHeaders(),
     body: input
   });
   if (!data) throw toError(error, "REGISTRATION_FAILED", "Không thể tạo tài khoản.");
@@ -55,7 +55,7 @@ export async function registerAccount(input: components["schemas"]["RegisterRequ
 
 export async function refreshSession() {
   try {
-    const { data } = await api.POST("/api/v1/auth/refresh", { headers: await mutationHeaders() });
+    const { data } = await api.POST("/api/v1/auth/refresh", { headers: await getAuthMutationHeaders() });
     if (!data) return null;
     changed();
     return data;
@@ -78,12 +78,12 @@ export async function loadAuthSession(): Promise<AuthSession | null> {
 }
 
 export async function logout(): Promise<void> {
-  let result = await api.POST("/api/v1/auth/logout", { headers: await mutationHeaders() });
+  let result = await api.POST("/api/v1/auth/logout", { headers: await getAuthMutationHeaders() });
   const error = result.error as { code?: string } | undefined;
 
   if (result.response.status === 403 && error?.code === "CSRF_TOKEN_INVALID") {
     csrfToken = null;
-    result = await api.POST("/api/v1/auth/logout", { headers: await mutationHeaders() });
+    result = await api.POST("/api/v1/auth/logout", { headers: await getAuthMutationHeaders() });
   }
 
   if (!result.response.ok) {
