@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Button } from "../../../components/ui/button";
 import { Dropzone } from "../../../components/ui/dropzone";
 import { TextField } from "../../../components/ui/field";
+import { useDemoSession } from "../hooks/use-demo-session";
+import { requestStudentVerification } from "../../demo-ledger/store";
 import { Alert } from "../../../components/ui/alert";
 import { useDemoPersistedState } from "../../../lib/hooks/use-demo-persisted-state";
 
@@ -25,6 +27,8 @@ const TABS = [
 export function VerificationPanel() {
   const [active, setActive] = useState("email");
   const [submitted, setSubmitted] = useDemoPersistedState("student-verification:submitted", false);
+  const { session } = useDemoSession();
+  const submit = () => { const result = requestStudentVerification(session?.email ?? ""); if (result.ok) setSubmitted(true); };
 
   function onKeyDown(event: React.KeyboardEvent) {
     const index = TABS.findIndex((tab) => tab.id === active);
@@ -63,7 +67,7 @@ export function VerificationPanel() {
             placeholder="mssv@hcmus.edu.vn"
             hint="Chúng tôi gửi mã xác minh tới hộp thư này. Chỉ chấp nhận tên miền của các trường tại TP.HCM."
           />
-          <Button type="button" onClick={() => setSubmitted(true)}>Gửi mã xác minh</Button>
+          <Button type="button" onClick={submit}>Gửi mã xác minh</Button>
         </div>
       ) : (
         <div role="tabpanel" id="panel-card" aria-labelledby="tab-card">
@@ -78,7 +82,7 @@ export function VerificationPanel() {
           <p className="field__hint" style={{ marginBottom: "var(--space-5)" }}>
             Ảnh thẻ chỉ dùng để xác minh và không hiển thị công khai ở bất kỳ đâu.
           </p>
-          <Button type="button" onClick={() => setSubmitted(true)}>Gửi minh chứng</Button>
+          <Button type="button" onClick={submit}>Gửi minh chứng</Button>
         </div>
       )}
     </div>

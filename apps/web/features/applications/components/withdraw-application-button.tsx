@@ -1,15 +1,19 @@
 "use client";
 
-import { useDemoPersistedState } from "../../../lib/hooks/use-demo-persisted-state";
+import { useDemoLedger } from "../../demo-ledger/use-demo-ledger";
+import { setApplicationStatus } from "../../demo-ledger/store";
+import { useDemoSession } from "../../auth/hooks/use-demo-session";
 import { Button } from "../../../components/ui/button";
 
 export function WithdrawApplicationButton({ applicationId }: { applicationId: string }) {
-  const [withdrawn, setWithdrawn] = useDemoPersistedState(`application:${applicationId}:withdrawn`, false);
+  const ledger = useDemoLedger();
+  const { session } = useDemoSession();
+  const withdrawn = ledger.applications.find((application) => application.id === applicationId)?.status === "WITHDRAWN";
 
   return withdrawn ? (
     <span className="badge badge--neutral">ĐÃ RÚT ĐƠN</span>
   ) : (
-    <Button type="button" variant="outline" size="sm" onClick={() => setWithdrawn(true)}>
+    <Button type="button" variant="outline" size="sm" onClick={() => setApplicationStatus(session?.email ?? "", applicationId, "WITHDRAWN")}>
       RÚT ĐƠN NÀY
     </Button>
   );

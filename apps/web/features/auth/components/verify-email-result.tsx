@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { Alert } from "../../../components/ui/alert";
 import { Button } from "../../../components/ui/button";
 import { activateDemoSession } from "../services/demo-session";
+import { getDemoSession } from "../services/demo-session";
+import { verifyDemoEmail } from "../../demo-ledger/store";
 
 type VerificationState = "checking" | "verified" | "expired" | "invalid";
 
@@ -41,7 +43,7 @@ export function VerifyEmailResult({ token, next }: { token?: string; next: strin
         <Alert variant="success" title="Tài khoản đã kích hoạt">
           Địa chỉ email của bạn đã được xác nhận. Bạn có thể tiếp tục sử dụng các tính năng theo vai trò tài khoản.
         </Alert>
-        <Button type="button" onClick={() => { activateDemoSession(); router.push(next); }}>TIẾP TỤC</Button>
+        <Button type="button" onClick={() => { const session = getDemoSession(); if (session) verifyDemoEmail(session.email); activateDemoSession(); router.push(next); }}>TIẾP TỤC</Button>
       </section>
     );
   }
