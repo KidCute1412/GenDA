@@ -27,7 +27,7 @@ These values never grant backend authorization. Do not send them as trusted role
 
 ## Local seed boundary
 
-`compose.yaml` activates Spring profile `demo`. After Flyway finishes the versioned schema migrations, a profile-scoped startup runner executes the idempotent catalog seed. The seed is deliberately absent from Flyway schema history. Deployment environments do not activate `demo`, so production receives the canonical skill reference data but no sample projects.
+`compose.yaml` activates Spring profile `demo`. After Flyway finishes, profile-scoped startup runners seed demo accounts, contributor fixtures, applications and catalog data. Six complete catalog projects are owned by the existing demo SMEs `contact@coffeelab.vn` (The Coffee Lab) and `studio@zenyoga.vn` (Zen Yoga); their scope, skills, acceptance criteria and milestone plans are refreshed deterministically on each demo startup. Seeds are separate from Flyway schema history. Deployment environments normally omit `demo`; explicitly activating `production,demo` on a remote database also runs all demo fixtures, including the shared demo credentials (`Demo@12345`), so use that combination only on an isolated test database.
 
 ## Authentication boundary
 
