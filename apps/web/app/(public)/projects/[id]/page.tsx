@@ -62,7 +62,7 @@ export default async function ProjectDetailPage({
           {`SYS.EXPLORER // SPECIFICATION // MOD-${project.id.toUpperCase()}`}
         </div>
 
-        <nav aria-label="Đường dẫn phân cấp">
+        <nav className="page-breadcrumb-bar" aria-label="Đường dẫn phân cấp">
           <ol className="breadcrumbs" style={{ fontFamily: "ui-monospace, monospace", fontSize: "12px", textTransform: "uppercase" }}>
             <li>
               <Link href="/">ROOT</Link>

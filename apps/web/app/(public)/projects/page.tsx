@@ -108,7 +108,7 @@ export default async function ProjectsPage({
           {"SYS.EXPLORER // REGISTRY // 04 MODULES ACTIVE"}
         </div>
 
-        <nav aria-label="Đường dẫn phân cấp">
+        <nav className="page-breadcrumb-bar" aria-label="Đường dẫn phân cấp">
           <ol className="breadcrumbs" style={{ fontFamily: "ui-monospace, monospace", fontSize: "12px", textTransform: "uppercase" }}>
             <li>
               <Link href="/">ROOT</Link>

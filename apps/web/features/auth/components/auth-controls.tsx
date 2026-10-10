@@ -41,7 +41,7 @@ export function AuthControls() {
           ĐẶT LẠI DEMO
         </button>
         <Link href="/login" className="nav-link">ĐĂNG NHẬP</Link>
-        <Link href="/register" className="btn--tactile-orange" style={{ height: "36px", paddingInline: "var(--space-4)", fontSize: "12px", boxShadow: "2px 2px 0px var(--machinery-shadow)" }}>THAM GIA</Link>
+        <Link href="/login?mode=register" className="btn--tactile-orange" style={{ height: "36px", paddingInline: "var(--space-4)", fontSize: "12px", boxShadow: "2px 2px 0px var(--machinery-shadow)" }}>THAM GIA</Link>
       </>
     );
   }

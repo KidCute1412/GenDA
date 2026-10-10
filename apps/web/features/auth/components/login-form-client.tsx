@@ -25,7 +25,8 @@ export function LoginFormClient() {
 
   function quickLogin(name: string, accountEmail: string, role: "STUDENT" | "SME" | "ADMIN", destination: string) {
     setDemoSession({ name, email: accountEmail, role, emailVerified: true });
-    router.push(destination);
+    router.replace(destination);
+    router.refresh();
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -36,10 +37,12 @@ export function LoginFormClient() {
       // Tự động phân luồng theo role hoặc email
       if (email.includes("sme") || email.includes("coffee") || email.includes("corp") || email.includes("lab")) {
         setDemoSession({ name: "The Coffee Lab", email, role: "SME", emailVerified: true });
-        router.push("/sme/projects");
+        router.replace("/sme/projects");
+        router.refresh();
       } else {
         setDemoSession({ name: "Lê Tuấn Lộc", email, role: "STUDENT", emailVerified: true });
-        router.push("/student/profile");
+        router.replace("/student/profile");
+        router.refresh();
       }
     }, 600);
   }
