@@ -4,6 +4,8 @@ import { SiteHeader } from "../../../components/layout/site-header";
 import { BottomNav } from "../../../components/layout/bottom-nav";
 import { LoginFormClient } from "../../../features/auth/components/login-form-client";
 import { RegisterFormClient } from "../../../features/auth/components/register-form-client";
+import { AuthIntro } from "../../../features/auth/components/auth-intro";
+import { AuthCard } from "../../../features/auth/components/auth-card";
 
 export const metadata: Metadata = {
   title: "Đăng nhập",
@@ -36,109 +38,15 @@ export default async function LoginPage({
           padding: "var(--space-3) var(--space-4)" 
         }}
       >
-        <div className="container" style={{ maxWidth: "1080px", width: "100%" }}>
+        <div style={{ width: "100%" }}>
           
-          <div 
-            className="module-bay module-bay--static"
-            style={{
-              padding: 0, 
-              overflow: "hidden", 
-              display: "grid", 
-              gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-              boxShadow: "4px 4px 0px var(--machinery-shadow)"
-            }}
-          >
-            
-            {/* CỘT TRÁI: POSTER DECOR CƠ KHÍ & THỊ GIÁC NGHỆ THUẬT (Minimalist Teenage Engineering Aesthetic) */}
-            <div className="auth-poster">
-              {/* Họa tiết lưới tọa độ mờ cơ khí */}
-              <div 
-                aria-hidden="true"
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  backgroundImage: "radial-gradient(rgba(255,255,255,0.15) 1px, transparent 1px)",
-                  backgroundSize: "20px 20px",
-                  pointerEvents: "none",
-                  opacity: 0.6
-                }} 
-              />
+          <AuthCard initialMode={isRegister ? "register" : "login"}>
 
-              {/* Header của Poster */}
-              <div style={{ position: "relative", zIndex: 1 }}>
-                <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontFamily: "ui-monospace, monospace", fontSize: "10px", letterSpacing: "0.12em", color: "var(--orange-500)", fontWeight: 800 }}>
-                  <span style={{ width: "6px", height: "6px", backgroundColor: "var(--orange-500)", display: "inline-block" }} />
-                  <span>GENDA INDUSTRIAL LEDGER</span>
-                </div>
+            {/* CỘT HÌNH: cảnh minh họa morph giữa Đăng nhập (ngày, đi làm) và Đăng ký (đêm, ngồi học) */}
+            <AuthIntro />
 
-                <div style={{ marginTop: "var(--space-4)" }}>
-                  <span style={{ fontFamily: "ui-monospace, monospace", fontSize: "11px", color: "rgba(255,255,255,0.6)", textTransform: "uppercase", letterSpacing: "0.1em" }}>
-                    PROTOCOL 2026 // VN-HCM
-                  </span>
-                  <h1 style={{ 
-                    fontFamily: "var(--font-sans)", 
-                    fontSize: "clamp(2rem, 3.5vw, 2.75rem)", 
-                    fontWeight: 900, 
-                    lineHeight: 1.05, 
-                    letterSpacing: "-0.03em", 
-                    textTransform: "uppercase", 
-                    margin: "var(--space-1) 0",
-                    color: "#ffffff"
-                  }}>
-                    FROM LEARN <br />
-                    TO <span style={{ color: "var(--orange-500)" }}>EARN.</span>
-                  </h1>
-                </div>
-              </div>
-
-              {/* Đồ họa linh kiện phần cứng dập chìm */}
-              <div style={{ position: "relative", zIndex: 1, marginBlock: "var(--space-4)" }}>
-                <div style={{ 
-                  border: "1px solid rgba(255,255,255,0.2)", 
-                  padding: "12px 16px", 
-                  backgroundColor: "rgba(0,0,0,0.25)",
-                  fontFamily: "ui-monospace, monospace"
-                }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: "10px", color: "rgba(255,255,255,0.5)", borderBottom: "1px dashed rgba(255,255,255,0.2)", paddingBottom: "6px", marginBottom: "8px" }}>
-                    <span>ENCLAVE HARDWARE</span>
-                    <span>OP-01 CHIP</span>
-                  </div>
-                  
-                  {/* Visual LED bars decor */}
-                  <div style={{ display: "flex", gap: "5px", alignItems: "flex-end", height: "24px", marginBottom: "8px" }}>
-                    <div style={{ width: "6px", height: "40%", backgroundColor: "var(--orange-500)" }} />
-                    <div style={{ width: "6px", height: "70%", backgroundColor: "var(--orange-500)" }} />
-                    <div style={{ width: "6px", height: "100%", backgroundColor: "var(--orange-500)" }} />
-                    <div style={{ width: "6px", height: "55%", backgroundColor: "rgba(255,255,255,0.4)" }} />
-                    <div style={{ width: "6px", height: "85%", backgroundColor: "rgba(255,255,255,0.4)" }} />
-                    <div style={{ width: "6px", height: "35%", backgroundColor: "rgba(255,255,255,0.4)" }} />
-                  </div>
-
-                  <p style={{ margin: 0, fontSize: "11px", color: "rgba(255,255,255,0.8)", lineHeight: 1.4 }}>
-                    Mỗi dự án là một khoang gắn module. Mỗi nghiệm thu là một dấu ấn năng lực được bảo chứng.
-                  </p>
-                </div>
-              </div>
-
-              {/* Chân Poster */}
-              <div style={{ 
-                position: "relative", 
-                zIndex: 1, 
-                display: "flex", 
-                justifyContent: "space-between", 
-                fontFamily: "ui-monospace, monospace", 
-                fontSize: "10px", 
-                color: "rgba(255,255,255,0.5)", 
-                borderTop: "1px solid rgba(255,255,255,0.2)", 
-                paddingTop: "var(--space-2)" 
-              }}>
-                <span>SYS.VER: 2026.09</span>
-                <span>SECURED & VERIFIED</span>
-              </div>
-            </div>
-
-            {/* CỘT PHẢI: UNIFIED AUTH TERMINAL (TAB CHUYỂN ĐỔI ĐĂNG NHẬP / TẠO TÀI KHOẢN) */}
-            <div style={{ 
+            {/* CỘT BIỂU MẪU: bên phải khi đăng nhập, trượt sang trái khi đăng ký */}
+            <div className="auth-form-col" style={{ 
               padding: "var(--space-6) var(--space-6)", 
               display: "flex", 
               flexDirection: "column", 
@@ -195,11 +103,14 @@ export default async function LoginPage({
                 </div>
 
                 {/* Nội dung tương ứng (Đã hỗ trợ mock đăng nhập & chọn tài khoản mẫu) */}
-                {!isRegister ? (
-                  <LoginFormClient />
-                ) : (
-                  <RegisterFormClient initialRole={selectedRole} />
-                )}
+                {/* Đổi key theo chế độ để biểu mẫu mới chạy animation hiện lên */}
+                <div key={isRegister ? "register" : "login"} className="auth-form-swap">
+                  {!isRegister ? (
+                    <LoginFormClient />
+                  ) : (
+                    <RegisterFormClient initialRole={selectedRole} />
+                  )}
+                </div>
               </div>
 
               {/* Chân điều hướng nhanh giữa 2 chế độ */}
@@ -237,7 +148,7 @@ export default async function LoginPage({
               </div>
             </div>
 
-          </div>
+          </AuthCard>
 
           {/* Micro Footer ngay chân card thay cho Fat Footer khổng lồ ở trang Login */}
           <div 
