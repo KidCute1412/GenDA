@@ -5,11 +5,9 @@ import { SiteFooter } from "../../../../components/layout/site-footer";
 import { BottomNav } from "../../../../components/layout/bottom-nav";
 import { StatusBadge } from "../../../../components/ui/status-badge";
 import { Alert } from "../../../../components/ui/alert";
-import { Check, ICON_WEIGHT } from "../../../../components/ui/icons";
 import { ApplyButton } from "../../../../features/applications/components/apply-button";
 import { getPublishedProject } from "../../../../features/projects/api";
-import { CURRENT_STUDENT } from "../../../../mocks/data";
-import { daysUntil, formatDate, formatVnd, matchScore } from "../../../../lib/utils/format";
+import { daysUntil, formatDate, formatVnd } from "../../../../lib/utils/format";
 
 export const dynamic = "force-dynamic";
 
@@ -46,8 +44,6 @@ export default async function ProjectDetailPage({
     notFound();
   }
 
-  const projectSkillNames = project.skills.map((skill) => skill.name);
-  const score = matchScore(projectSkillNames, CURRENT_STUDENT.skills);
   const remaining = daysUntil(project.deadline, new Date().toISOString().slice(0, 10));
   const milestoneTotal = project.milestones.reduce((sum, milestone) => sum + milestone.budget, 0);
 
@@ -196,36 +192,16 @@ export default async function ProjectDetailPage({
               <hr className="rule" style={{ borderTop: "2px solid var(--machinery-border)", margin: "var(--space-2) 0" }} />
 
               <div>
-                <div style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "6px",
-                  fontFamily: "ui-monospace, monospace",
-                  fontSize: "12px",
-                  fontWeight: 800,
-                  backgroundColor: score.percent >= 70 ? "rgba(10, 40, 90, 0.15)" : "var(--color-surface-subtle)",
-                  color: score.percent >= 70 ? "var(--brand-500)" : "var(--color-text-muted)",
-                  border: `1px solid ${score.percent >= 70 ? "var(--brand-500)" : "var(--machinery-border)"}`,
-                  padding: "4px 8px",
-                  borderRadius: "2px",
-                  width: "100%",
-                  justifyContent: "space-between"
-                }}>
-                  <span>[MATCH: {score.percent}%]</span>
-                  <span style={{ fontSize: "10px" }}>KHỚP {score.matchedCount}/{score.total} KỸ NĂNG</span>
-                </div>
+                <p className="text-caption" style={{ fontFamily: "ui-monospace, monospace", textTransform: "uppercase", margin: 0, color: "var(--color-text-muted)" }}>
+                  {"// KỸ NĂNG YÊU CẦU"}
+                </p>
 
-                <ul className="pill-list" style={{ marginTop: "var(--space-3)" }}>
-                  {project.skills.map((skill) => {
-                    const owned = score.matched.includes(skill.name);
-                    return (
-                      <li key={skill.code} className={`skill-pill ${owned ? "skill-pill--matched" : ""}`}>
-                        {owned ? <Check weight={ICON_WEIGHT} aria-hidden="true" /> : null}
-                        {skill.name}
-                        {owned ? <span className="visually-hidden">(bạn đã có kỹ năng này)</span> : null}
-                      </li>
-                    );
-                  })}
+                <ul className="pill-list" style={{ marginTop: "var(--space-2)" }}>
+                  {project.skills.map((skill) => (
+                    <li key={skill.code} className="skill-pill">
+                      {skill.name}
+                    </li>
+                  ))}
                 </ul>
               </div>
 

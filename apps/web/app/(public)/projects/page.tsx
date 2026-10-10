@@ -7,8 +7,7 @@ import { BottomNav } from "../../../components/layout/bottom-nav";
 import { ButtonLink } from "../../../components/ui/button";
 import { EmptyState } from "../../../components/ui/feedback";
 import { Check, MagnifyingGlass } from "../../../components/ui/icons";
-import { CURRENT_STUDENT } from "../../../mocks/data";
-import { daysUntil, formatDate, formatVnd, matchScore } from "../../../lib/utils/format";
+import { daysUntil, formatDate, formatVnd } from "../../../lib/utils/format";
 import { browsePublishedProjects, listSkills } from "../../../features/projects/api";
 import { OpportunityBrowser } from "../../../features/opportunities/components/opportunity-browser";
 import { OpportunityTypeTabs } from "../../../features/opportunities/components/opportunity-type-tabs";
@@ -258,8 +257,6 @@ export default async function ProjectsPage({
             <>
             <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
               {results.map((project, idx) => {
-                const projectSkillNames = project.skills.map((skill) => skill.name);
-                const score = matchScore(projectSkillNames, CURRENT_STUDENT.skills);
                 const remaining = daysUntil(project.deadline, today);
                 const bayId = `MOD-${String(idx + 1).padStart(2, "0")}`;
 
@@ -289,21 +286,11 @@ export default async function ProjectsPage({
                       </p>
 
                       <ul className="pill-list" style={{ marginTop: "var(--space-2)" }}>
-                        {project.skills.map((skill) => {
-                          const owned = score.matched.includes(skill.name);
-                          return (
-                            <li
-                              key={skill.code}
-                              className={`skill-pill ${owned ? "skill-pill--matched" : ""}`}
-                            >
-                              {owned ? <Check weight="bold" aria-hidden="true" /> : null}
-                              {skill.name}
-                              {owned ? (
-                                <span className="visually-hidden">(bạn đã có kỹ năng này)</span>
-                              ) : null}
-                            </li>
-                          );
-                        })}
+                        {project.skills.map((skill) => (
+                          <li key={skill.code} className="skill-pill">
+                            {skill.name}
+                          </li>
+                        ))}
                       </ul>
                     </div>
 
@@ -314,25 +301,6 @@ export default async function ProjectsPage({
                       <p className="text-caption num" style={{ margin: 0, fontFamily: "ui-monospace, monospace" }}>
                         HẠN: {formatDate(project.deadline)} (CÒN {remaining}D)
                       </p>
-
-                      {/* Điểm phù hợp LUÔN đi kèm diễn giải trùng mấy trên mấy (FR-MAT-02) */}
-                      <div style={{ margin: 0, display: "inline-flex", flexDirection: "column", alignItems: "flex-end" }}>
-                        <span style={{
-                          fontFamily: "ui-monospace, monospace",
-                          fontSize: "12px",
-                          fontWeight: 800,
-                          backgroundColor: score.percent >= 70 ? "rgba(10, 40, 90, 0.15)" : "var(--color-surface-subtle)",
-                          color: score.percent >= 70 ? "var(--brand-500)" : "var(--color-text-muted)",
-                          border: `1px solid ${score.percent >= 70 ? "var(--brand-500)" : "var(--machinery-border)"}`,
-                          padding: "2px 6px",
-                          borderRadius: "2px"
-                        }}>
-                          [MATCH: {score.percent}%]
-                        </span>
-                        <span className="text-caption" style={{ fontFamily: "ui-monospace, monospace", fontSize: "10px", marginTop: "2px" }}>
-                          KHỚP {score.matchedCount}/{score.total} KỸ NĂNG
-                        </span>
-                      </div>
 
                       <div style={{ marginTop: "var(--space-2)" }}>
                         <Link

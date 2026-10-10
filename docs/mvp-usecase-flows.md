@@ -41,6 +41,16 @@ Mục tiêu: một SME đăng dự án, chọn một cá nhân thực hiện, nh
 - Health frontend → API → database và CORS đạt. Sau restart backend, nội dung dự án, hai milestone và bốn audit event giữ nguyên; API chủ sở hữu và công khai vẫn đọc đúng.
 - Chỉ xác nhận luồng 2 trên local; chưa nghiệm thu deploy, hot reload hoặc các luồng còn lại. Xóa nháp tiếp tục hoãn khỏi MVP.
 
+### Trạng thái triển khai và nghiệm thu luồng 3 (2026-10-10)
+
+- Đã loại bỏ hoàn toàn mock data `CURRENT_STUDENT` và thuật toán match score ảo khỏi trang danh sách `/projects` và chi tiết `/projects/[id]`. Danh sách kỹ năng yêu cầu của dự án hiển thị ở trạng thái nhãn (pill) trung lập, minh bạch và nhất quán.
+- Nghiệp vụ ứng tuyển chạy bằng API backend và PostgreSQL thật:
+  - Backend kiểm tra role `CONTRIBUTOR`, dự án `PUBLISHED`, checklist điều kiện hồ sơ & CV qua `ContributorEligibilityService`, kiểm tra hạng, độ dài thư ngỏ (>= 80 ký tự) và chặn ứng tuyển trùng lặp.
+  - Cá nhân ứng tuyển qua `ApplyButton` modal, đơn được lưu vào bảng `applications` thật.
+  - Trang "Đơn của tôi" (`/student/applications`) đọc danh sách đơn thật qua `/api/v1/applications/me`, phân loại theo tab trạng thái (Đang chờ duyệt, Được nhận, Không được nhận, Đã rút).
+  - Cá nhân có thể rút đơn đang chờ duyệt qua `/api/v1/applications/{id}/withdraw` và trạng thái chuyển sang `WITHDRAWN` ngay lập tức.
+- Frontend typecheck (`tsc --noEmit`), 41 test Vitest và production build (`next build`) đạt 100%. Backend unit test (`ApplicationControllerTest`, `ContributorApplicationServiceTest`) đạt 11/11 test. Đã bổ sung kịch bản Playwright E2E `flow3-application.spec.ts`.
+
 Ưu tiên stack và thành phần đã có trong repository:
 
 | Thành phần | Lựa chọn | Mục đích |
