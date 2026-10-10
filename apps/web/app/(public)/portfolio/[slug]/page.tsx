@@ -152,7 +152,7 @@ export default async function PortfolioPage({ params }: { params: Promise<{ slug
               </h1>
 
               <p style={{ margin: 0, fontSize: "14px", color: "rgba(255,255,255,0.8)", fontFamily: "ui-monospace, monospace" }}>
-                {student.major} // {student.year} // {student.school}
+                {student.major} · {student.year} · {student.school}
               </p>
 
               <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "var(--space-3)" }}>
@@ -298,7 +298,7 @@ export default async function PortfolioPage({ params }: { params: Promise<{ slug
                           color: "var(--color-text-heading)"
                         }}
                       >
-                        "{entry.review}"
+                        {'"'}{entry.review}{'"'}
                       </blockquote>
                       <div style={{ marginTop: "var(--space-3)" }}>
                         <Rating value={entry.rating} />
