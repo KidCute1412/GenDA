@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { applyToProject, findDemoAccount, getLedger, mirrorPublishedProject, mirrorContributor, moderateSmeRegistration, registerDemoUser, resetLedger,reviewMilestone, setApplicationStatus, submitDeliverable, submitReview, verifyDemoEmail } from "./store";
+import { applyToProject, findDemoAccount, getLedger, mirrorPublishedProject, mirrorContributor, moderateSmeRegistration, registerDemoUser, resetLedger,reviewMilestone, seedAssistantScenario, setApplicationStatus, submitDeliverable, submitReview, verifyDemoEmail } from "./store";
 
 const published = { id: "p-backend-demo", title: "Demo xuyên vai trò", smeName: "The Coffee Lab", smeContact: "contact@coffeelab.vn", budget: 3_000_000, deadline: "2027-01-01", skills: ["React"], summary: "Demo", problem: "Cần một sản phẩm demo", acceptance: ["Hoàn tất"], milestones: [{ order: 1, title: "Mốc một", budget: 1_000_000, deadline: "2026-12-01", criteria: "Đạt" }, { order: 2, title: "Mốc hai", budget: 2_000_000, deadline: "2027-01-01", criteria: "Đạt" }] };
 /** Dự án đã được backend xuất bản, sao vào ledger như ApplyButton làm trước khi ứng tuyển. */
@@ -70,5 +70,13 @@ describe("demo ledger lifecycle", () => {
     expect(getLedger().projects.find((item) => item.id === created.value)?.status).toBe("COMPLETED");
     expect(submitReview({ email: "contact@coffeelab.vn", projectId: created.value, rating: 5, comment: "Hoàn thành tốt và đúng yêu cầu" }).ok).toBe(true);
     expect(submitReview({ email: "contact@coffeelab.vn", projectId: created.value, rating: 5, comment: "Lặp" })).toMatchObject({ ok: false, code: "INVALID_TRANSITION" });
+  });
+  it("upgrades contributors saved under the legacy STUDENT role", () => {
+    const stored = getLedger();
+    const legacy = { ...stored, users: stored.users.map((user) => user.email === "letuanloc.2203@hcmus.edu.vn" ? { ...user, role: "STUDENT" } : user) };
+    localStorage.setItem("genda-demo:ledger:v2", JSON.stringify(legacy));
+    window.dispatchEvent(new StorageEvent("storage", { key: "genda-demo:ledger:v2" }));
+    expect(findDemoAccount("letuanloc.2203@hcmus.edu.vn")?.role).toBe("CONTRIBUTOR");
+    expect(seedAssistantScenario("letuanloc.2203@hcmus.edu.vn", "changes").ok).toBe(true);
   });
 });
