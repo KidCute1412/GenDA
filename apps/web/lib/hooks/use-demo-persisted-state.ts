@@ -1,38 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback } from "react";
+import type { Dispatch, SetStateAction } from "react";
+import { getDemoUiValue, setDemoUiValue } from "../../features/demo-ledger/store";
+import { useDemoLedger } from "../../features/demo-ledger/use-demo-ledger";
 
 const DEMO_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
-type StoredValue<T> = { value: T; expiresAt: number };
-
-/** Browser-only persistence for prototype interactions. Data automatically resets after seven days. */
+/** UI-only prototype state stored inside the single demo ledger. */
 export function useDemoPersistedState<T>(key: string, fallback: T, ttlMs = DEMO_TTL_MS) {
-  const [value, setValue] = useState<T>(fallback);
-  const [hydrated, setHydrated] = useState(false);
-
-  useEffect(() => {
-    const stored = window.localStorage.getItem(`genda-demo:${key}`);
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored) as StoredValue<T> | T;
-        if (typeof parsed === "object" && parsed !== null && "expiresAt" in parsed && "value" in parsed) {
-          if (parsed.expiresAt > Date.now()) setValue(parsed.value);
-          else window.localStorage.removeItem(`genda-demo:${key}`);
-        } else {
-          // Migrate values saved by the prior prototype implementation.
-          setValue(parsed as T);
-        }
-      } catch {
-        window.localStorage.removeItem(`genda-demo:${key}`);
-      }
-    }
-    setHydrated(true);
-  }, [key]);
-
-  useEffect(() => {
-    if (hydrated) window.localStorage.setItem(`genda-demo:${key}`, JSON.stringify({ value, expiresAt: Date.now() + ttlMs } satisfies StoredValue<T>));
-  }, [hydrated, key, ttlMs, value]);
-
+  useDemoLedger();
+  const value = getDemoUiValue(key, fallback);
+  const setValue: Dispatch<SetStateAction<T>> = useCallback((next) => {
+    const current = getDemoUiValue(key, fallback);
+    setDemoUiValue(key, typeof next === "function" ? (next as (previous: T) => T)(current) : next, ttlMs);
+  }, [fallback, key, ttlMs]);
   return [value, setValue] as const;
 }

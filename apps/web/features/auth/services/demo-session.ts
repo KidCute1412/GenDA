@@ -54,6 +54,7 @@ export function resetDemoData() {
     const key = window.localStorage.key(index);
     if (key?.startsWith(DEMO_KEY_PREFIX)) window.localStorage.removeItem(key);
   }
+  void import("../../demo-ledger/store").then(({ resetLedger }) => resetLedger());
   window.dispatchEvent(new Event(EVENT_NAME));
 }
 
