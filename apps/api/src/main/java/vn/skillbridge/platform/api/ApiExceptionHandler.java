@@ -1,20 +1,25 @@
 package vn.skillbridge.platform.api;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.UUID;
 
 @RestControllerAdvice
+@Order(Ordered.LOWEST_PRECEDENCE)
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     private static final Logger LOG = LoggerFactory.getLogger(ApiExceptionHandler.class);
 
@@ -32,6 +37,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 new ApiError(code, "Request could not be completed", UUID.randomUUID().toString()));
     }
 
+    @ExceptionHandler(ConstraintViolationException.class)
+    ResponseEntity<ApiError> constraintViolation(ConstraintViolationException exception) {
+        return ResponseEntity.badRequest().body(
+                new ApiError("VALIDATION_FAILED", "Request validation failed", UUID.randomUUID().toString()));
+    }
+
     @ExceptionHandler(Exception.class)
     ResponseEntity<ApiError> unexpected(Exception exception, HttpServletRequest request) {
         String requestId = UUID.randomUUID().toString();
@@ -40,5 +51,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 new ApiError("INTERNAL_ERROR", "Unexpected server error", requestId));
     }
 
-    public record ApiError(String code, String message, String requestId) {}
+    public record ApiError(
+            @Schema(requiredMode = Schema.RequiredMode.REQUIRED) String code,
+            @Schema(requiredMode = Schema.RequiredMode.REQUIRED) String message,
+            @Schema(requiredMode = Schema.RequiredMode.REQUIRED) String requestId) {}
 }

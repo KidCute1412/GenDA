@@ -1,0 +1,30 @@
+package vn.skillbridge.projects.api;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.LocalDate;
+import java.util.List;
+import vn.skillbridge.projects.application.ProjectView;
+
+public record ProjectDetailResponse(
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED) String id,
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED) String title,
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED) String smeName,
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED) String smeIndustry,
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED) String smeSize,
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED) String smeContact,
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED) long budget,
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED) LocalDate deadline,
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED) String summary,
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED) String problem,
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED) List<SkillResponse> skills,
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED) List<String> acceptanceCriteria,
+        @Schema(requiredMode = Schema.RequiredMode.REQUIRED) List<MilestoneResponse> milestones) {
+
+    static ProjectDetailResponse from(ProjectView project) {
+        return new ProjectDetailResponse(
+                project.id(), project.title(), project.smeName(), project.smeIndustry(), project.smeSize(),
+                project.smeContact(), project.budget(), project.deadline(), project.summary(), project.problem(),
+                project.skills().stream().map(SkillResponse::from).toList(), project.acceptanceCriteria(),
+                project.milestones().stream().map(MilestoneResponse::from).toList());
+    }
+}
