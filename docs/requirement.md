@@ -71,7 +71,7 @@ Phân quyền chi tiết theo `docs/authorization-matrix.md`. Mọi yêu cầu d
 | ID | Yêu cầu | Ưu tiên |
 | --- | --- | --- |
 | FR-PRJ-01 | SME tạo dự án nháp gồm tiêu đề, mô tả, kỹ năng yêu cầu, project level (`BASIC`, `MEDIUM`, `HIGH`), ngân sách (VNĐ), hạn chót và tiêu chí nghiệm thu. Project level đồng thời xác định độ phức tạp, khoảng ngân sách và eligibility theo lịch sử dự án. | M |
-| FR-PRJ-02 | SME chỉnh sửa hoặc xóa dự án của chính mình khi dự án còn ở trạng thái `DRAFT`. | M |
+| FR-PRJ-02 | SME chỉnh sửa dự án của chính mình khi dự án còn ở trạng thái `DRAFT`, kể cả bản nháp được admin trả về. Xóa bản nháp được hoãn khỏi MVP theo quyết định ngày 2026-10-10. | M |
 | FR-PRJ-03 | SME gửi dự án đi duyệt, chuyển `DRAFT → PENDING_REVIEW`. | M |
 | FR-PRJ-04 | Quản trị viên duyệt dự án (`PENDING_REVIEW → PUBLISHED`) hoặc từ chối kèm lý do bắt buộc (`PENDING_REVIEW → DRAFT`). | M |
 | FR-PRJ-05 | Mọi người dùng đã xác thực xem danh sách dự án `PUBLISHED` ở mọi project level, kể cả khi chưa đủ điều kiện ứng tuyển; có thể lọc theo level, kỹ năng, khoảng ngân sách và hạn chót. Kết quả phân trang theo `{ data, page, pageSize, total }`. | M |
@@ -114,7 +114,7 @@ Vòng đời trạng thái theo `docs/domain-model.md`. Trạng thái `SUBMITTED
 
 | ID | Yêu cầu | Ưu tiên |
 | --- | --- | --- |
-| FR-MIL-01 | SME định nghĩa các milestone cho dự án đã giao, mỗi milestone gồm tiêu đề, mô tả kết quả bàn giao, hạn chót và phần ngân sách phân bổ. | M |
+| FR-MIL-01 | SME định nghĩa kế hoạch milestone trước khi gửi duyệt dự án, mỗi milestone gồm tiêu đề, mô tả kết quả bàn giao, hạn chót và phần ngân sách phân bổ. Khi dự án được giao, cá nhân thực hiện và SME nghiệm thu theo kế hoạch này. | M |
 | FR-MIL-02 | Tổng ngân sách phân bổ cho các milestone bằng đúng ngân sách dự án. | M |
 | FR-MIL-03 | Cá nhân được phân công nộp kết quả bàn giao cho một milestone (tệp và/hoặc liên kết), chuyển milestone sang `SUBMITTED`. | M |
 | FR-MIL-04 | SME nghiệm thu (`SUBMITTED → ACCEPTED`) hoặc yêu cầu chỉnh sửa kèm lý do bắt buộc (`SUBMITTED → CHANGES_REQUESTED`). | M |
@@ -272,6 +272,7 @@ Các mục sau **không** được xây ở MVP. Liệt kê tường minh để 
 
 | Hạng mục | Phiên bản dự kiến |
 | --- | --- |
+| SME xóa bản nháp dự án (phần xóa của FR-PRJ-02) | Sau MVP, quyết định 2026-10-10 |
 | Ký quỹ thật, giữ và giải ngân tiền, tích hợp cổng thanh toán | V1.1 |
 | Thu phí nền tảng / hoa hồng | V1.1 |
 | Ứng tuyển theo nhóm 2–4 sinh viên | Sau MVP |

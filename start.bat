@@ -30,6 +30,12 @@ if not exist ".env" (
   copy /y ".env.example" ".env" >nul
   echo [INFO] Created local .env from .env.example.
 )
+if not exist "apps\api\.env" (
+  if exist "apps\api\.env.example" (
+    copy /y "apps\api\.env.example" "apps\api\.env" >nul
+    echo [INFO] Created local apps\api\.env from apps\api\.env.example.
+  )
+)
 docker compose config --quiet
 if errorlevel 1 goto :failed
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\compose-watch.ps1" -Stop

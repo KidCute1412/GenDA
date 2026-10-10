@@ -51,8 +51,8 @@ class ProjectTest {
             "HIGH, 3500000", "HIGH, 5000000"
     })
     void acceptsBothInclusiveBoundariesOfEachLevel(ProjectComplexity complexity, long budget) {
-        assertThat(draft(complexity, budget).submit(POLICY, TODAY, NOW).status())
-                .isEqualTo(ProjectStatus.PENDING_REVIEW);
+        assertThat(draft(complexity, budget).submit(POLICY, TODAY, NOW).publish(POLICY, TODAY, NOW).status())
+                .isEqualTo(ProjectStatus.PUBLISHED);
     }
 
     @ParameterizedTest
@@ -78,6 +78,25 @@ class ProjectTest {
         assertThatThrownBy(() -> draft(ProjectComplexity.HIGH, 6_000_000))
                 .isInstanceOf(ProjectRuleViolation.class)
                 .extracting("code").isEqualTo(ProjectRuleViolation.BUDGET_OUT_OF_RANGE);
+    }
+
+    @ParameterizedTest
+    @CsvSource({"BASIC, 999999", "BASIC, 1500001", "MEDIUM, 1499999", "MEDIUM, 3500001",
+            "HIGH, 3499999", "HIGH, 5000001"})
+    void rejectsAmountsJustOutsideBothBoundariesAtSubmissionAndPublication(ProjectComplexity level, long budget) {
+        assertThatThrownBy(() -> POLICY.requireWithinLevel(level, budget))
+                .isInstanceOf(ProjectRuleViolation.class).extracting("code")
+                .isEqualTo(ProjectRuleViolation.BUDGET_OUTSIDE_LEVEL_RANGE);
+        var scope = content(level, budget, List.of(
+                new ProjectMilestone("m1", 1, "Delivery", budget, LocalDate.of(2026, 12, 1), List.of())));
+        var draft = new Project("p-1", SME, "Coffee Lab", "sme@example.com", ProjectStatus.DRAFT,
+                scope, NOW, NOW, null, null, null);
+        var pending = new Project("p-1", SME, "Coffee Lab", "sme@example.com", ProjectStatus.PENDING_REVIEW,
+                scope, NOW, NOW, NOW, null, null);
+        assertThatThrownBy(() -> draft.submit(POLICY, TODAY, NOW)).isInstanceOf(ProjectRuleViolation.class)
+                .extracting("code").isEqualTo(ProjectRuleViolation.BUDGET_OUTSIDE_LEVEL_RANGE);
+        assertThatThrownBy(() -> pending.publish(POLICY, TODAY, NOW)).isInstanceOf(ProjectRuleViolation.class)
+                .extracting("code").isEqualTo(ProjectRuleViolation.BUDGET_OUTSIDE_LEVEL_RANGE);
     }
 
     @Test

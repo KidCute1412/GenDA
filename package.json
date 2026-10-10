@@ -6,7 +6,8 @@
     "dev": "docker compose up --build --watch",
     "build": "turbo run build",
     "lint": "turbo run lint",
-    "typecheck": "turbo run typecheck"
+    "typecheck": "turbo run typecheck",
+    "db:reset": "node scripts/db-reset.mjs"
   },
   "devDependencies": {
     "turbo": "^2.5.6"

@@ -70,24 +70,24 @@ The target contract will add private CV upload/status/replace operations under `
 
 Education is a child collection of the contributor profile. The target contract uses `GET` and `POST /api/v1/users/me/education`, plus `PUT` and `DELETE /api/v1/users/me/education/{educationId}`. Requests carry institution, field of study, education level, optional degree name, start/end period, education status and optional description. The API validates ownership and consistent periods/statuses; responses identify entries as self-declared. Education is not included in the application-readiness predicates.
 
-## Project complexity and budget target
+## Project complexity and budget policy
 
 The project create/update contract includes `complexity` with one of `BASIC`, `MEDIUM`, or `HIGH`. The backend also exposes the current project-creation policy (allowed levels, global budget range, and the inclusive minimum/maximum budget for each level: `BASIC` 1,000,000-1,500,000, `MEDIUM` 1,500,000-3,500,000, `HIGH` 3,500,000-5,000,000 VND) so the generated frontend client can render the same policy without hard-coded business constants.
 
 Submitting a draft whose budget is outside the selected level's range returns HTTP `422` with stable code `PROJECT_BUDGET_OUTSIDE_LEVEL_RANGE` and details containing `complexity`, `minimumBudget`, `maximumBudget`, and `submittedBudget`. The backend repeats this validation before publication even if the draft was created under an older client session.
 
-When admin review identifies a scope that is materially more complex than its declared level, the moderation command returns the project to `DRAFT` and requires a reason; it may also include `suggestedComplexity`. This is a review decision, not an admin-side edit of the SME's project. The exact project-creation-policy resource shape is finalized when this slice is implemented and then committed to OpenAPI together with generated clients.
+When admin review identifies a scope that is materially more complex than its declared level, the moderation command returns the project to `DRAFT` and requires a reason; it may also include `suggestedComplexity`. This is a review decision, not an admin-side edit of the SME's project. The project-creation-policy resource shape is committed in OpenAPI together with generated clients.
 
 Implemented project authoring and moderation endpoints:
 
 | Endpoint | Actor | Behavior |
 |---|---|---|
 | `GET /api/v1/projects/creation-policy` | Anyone | Overall budget range and the inclusive `minimumBudget`/`maximumBudget` of each level |
-| `GET /api/v1/sme/projects` | Approved SME | Own projects in every state, most recently updated first |
-| `POST /api/v1/sme/projects` | Approved SME | Create a `DRAFT`; only `title` is required, `201 Created` |
-| `GET /api/v1/sme/projects/{projectId}` | Approved SME | One own project; another SME's project returns `404 PROJECT_NOT_FOUND` |
-| `PUT /api/v1/sme/projects/{projectId}` | Approved SME | Replace draft content; a non-draft returns `409 PROJECT_INVALID_TRANSITION` |
-| `POST /api/v1/sme/projects/{projectId}/submit` | Approved SME | `DRAFT → PENDING_REVIEW`; incomplete content returns `422 PROJECT_NOT_READY` with `details.issues` |
+| `GET /api/v1/sme/projects` | Active SME | Own projects in every state, most recently updated first |
+| `POST /api/v1/sme/projects` | Active SME | Create a `DRAFT`; only `title` is required, `201 Created` |
+| `GET /api/v1/sme/projects/{projectId}` | Active SME | One own project; another SME's project returns `404 PROJECT_NOT_FOUND` |
+| `PUT /api/v1/sme/projects/{projectId}` | Active SME | Replace draft content; a non-draft returns `409 PROJECT_INVALID_TRANSITION` |
+| `POST /api/v1/sme/projects/{projectId}/submit` | Active SME | `DRAFT → PENDING_REVIEW`; incomplete content returns `422 PROJECT_NOT_READY` with `details.issues` |
 | `GET /api/v1/admin/projects/pending` | Admin | Review queue, oldest submission first |
 | `POST /api/v1/admin/projects/{projectId}/publish` | Admin | `PENDING_REVIEW → PUBLISHED`, revalidating readiness and the level range |
 | `POST /api/v1/admin/projects/{projectId}/return` | Admin | `PENDING_REVIEW → DRAFT` with `reason` (10-1000 characters) and optional `suggestedComplexity` |
