@@ -111,12 +111,22 @@ function toInput(state: WizardState): ProjectDraftInput {
     deadline: optional(state.deadline),
     skillCodes: state.skillCodes,
     acceptanceCriteria: state.acceptance.split("\n").map((line) => line.trim()).filter(Boolean),
-    milestones: state.milestones.map((row) => ({
-      title: optional(row.title),
-      budget: row.budget,
-      deadline: optional(row.deadline),
-      criteria: row.criteria
-    }))
+    milestones: (() => {
+      const globalCriteria = state.acceptance.split("\n").map((line) => line.trim()).filter(Boolean);
+      return state.milestones.map((row, index) => {
+        // Nếu mốc để trống tiêu chí riêng, fallback dùng tiêu chí chung của dự án cho mốc cuối (hoặc toàn bộ nếu 1 mốc)
+        const criteria =
+          row.criteria.length > 0
+            ? row.criteria
+            : (index === state.milestones.length - 1 ? globalCriteria : []);
+        return {
+          title: optional(row.title),
+          budget: row.budget,
+          deadline: optional(row.deadline),
+          criteria
+        };
+      });
+    })()
   };
 }
 

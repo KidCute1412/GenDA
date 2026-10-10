@@ -128,6 +128,26 @@ export function MilestoneEditor({
                   ) : null}
                 </div>
               </div>
+
+              <div className="field" style={{ marginBottom: 0 }}>
+                <label className="field__label" htmlFor={`milestone-criteria-${row.key}`}>
+                  Tiêu chí nghiệm thu của mốc
+                </label>
+                <textarea
+                  id={`milestone-criteria-${row.key}`}
+                  className="input"
+                  rows={2}
+                  value={row.criteria.join("\n")}
+                  placeholder="Mỗi dòng một tiêu chí riêng cho mốc này (để trống sẽ dùng tiêu chí chung của dự án)"
+                  onChange={(event) => {
+                    const lines = event.target.value.split("\n").map((s) => s.trim()).filter(Boolean);
+                    update(row.key, { criteria: lines });
+                  }}
+                />
+                <p className="field__hint">
+                  Để trống nếu mốc này sử dụng chung tiêu chí hoàn thành của cả dự án.
+                </p>
+              </div>
             </li>
           );
         })}

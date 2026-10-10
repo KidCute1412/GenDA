@@ -28,7 +28,7 @@ public class ProjectExecutionService {
 
     private static ExecutionProject view(Project p) {
         return new ExecutionProject(p.id(), p.ownerId(), p.assignment() == null ? null : p.assignment().contributorId(),
-                p.content().title(), p.smeName(), p.status().name(), p.content().milestones().stream().map(m ->
+                p.content().title(), p.smeName(), p.status().name(), p.content().acceptanceCriteria(), p.content().milestones().stream().map(m ->
                 new ExecutionProject.Plan(m.id(), m.order(), m.title(), m.budget(), m.deadline(), m.criteria())).toList());
     }
     private static ProjectException missing() { return new ProjectException(ProjectException.NOT_FOUND, "Project was not found"); }

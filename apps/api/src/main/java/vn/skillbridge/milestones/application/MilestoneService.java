@@ -32,11 +32,15 @@ public class MilestoneService {
         ExecutionProject project = projects.lock(projectId);
         if (!repository.milestones(projectId).isEmpty()) return;
         int first = project.plans().stream().mapToInt(ExecutionProject.Plan::order).min().orElseThrow();
+        int last = project.plans().stream().mapToInt(ExecutionProject.Plan::order).max().orElseThrow();
         for (var plan : project.plans()) {
             UUID id = UUID.randomUUID();
+            var rawCriteria = !plan.criteria().isEmpty()
+                    ? plan.criteria()
+                    : (plan.order() == last || project.plans().size() == 1 ? project.acceptanceCriteria() : List.<String>of());
             var criteria = new ArrayList<Milestone.Criterion>();
-            for (int i = 0; i < plan.criteria().size(); i++)
-                criteria.add(new Milestone.Criterion(id + ":" + i, plan.criteria().get(i)));
+            for (int i = 0; i < rawCriteria.size(); i++)
+                criteria.add(new Milestone.Criterion(id + ":" + i, rawCriteria.get(i)));
             repository.save(new Milestone(id, projectId, plan.id(), plan.order(), plan.title(), plan.budget(), plan.deadline(),
                     criteria, plan.order() == first ? Milestone.Status.IN_PROGRESS : Milestone.Status.PENDING,
                     Milestone.Funding.PENDING_FUNDING, 0));
