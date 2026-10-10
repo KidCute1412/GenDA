@@ -250,7 +250,7 @@ export default async function ProjectsPage({
                   <li key={project.id} className="project-row">
                     <div className="stack stack--sm">
                       <div style={{ display: "flex", alignItems: "center", gap: "8px", fontFamily: "ui-monospace, monospace", fontSize: "11px", color: "var(--color-text-muted)" }}>
-                        <span style={{ backgroundColor: "var(--machinery-border)", color: "var(--color-surface-card)", padding: "1px 6px", fontWeight: 800, borderRadius: "2px" }}>
+                        <span className="tag-hardware">
                           {bayId}
                         </span>
                         <span>{project.smeName.toUpperCase()}</span>
