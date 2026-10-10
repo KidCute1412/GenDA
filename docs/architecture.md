@@ -225,5 +225,25 @@ See [local development](local-development.md) for launch/reload/checks and the c
 ## Decisions needed when implementing business features
 
 Local infrastructure and deployment target choices are settled by ADR 0002. These do not block local launch:
-- Object storage provider and upload authorization: choose before file deliverables; no durable uploads on Render filesystem.
+- File deliverables use private Supabase Storage through backend assignment authorization (ADR 0003); no durable uploads on Render filesystem. Existing CV storage migration remains separate work.
 - Confirm group applications and the project-level SUBMITTED transition before their schema/use cases; existing OQ-02/OQ-03 in requirements describe the alternatives.
+
+## Milestone execution and AI review
+
+The `milestones` module implements plan snapshots, sequential execution, immutable handoff revisions, human decisions, simulated funding, private Supabase deliverables, and on-demand Gemini evidence review. AI infrastructure belongs to milestones; it is independent of the rule-based assistant Gen.
+
+Published dependencies added for this slice:
+
+| Caller | Published target types | Purpose |
+| --- | --- | --- |
+| `applications.application` | `milestones.application.MilestoneService` | Initialize execution snapshots in the acceptance transaction |
+| `milestones.application` | `projects.application.execution.ProjectExecutionService`, `ExecutionProject`, `ExecutionProject.Plan` | Read/lock the assigned project and its plan; complete the project |
+| `milestones.application` | `auth.application.account.AccountProfileService`, `AccountProfile`, `AccountStanding` | Verify active assignment actors and admin support |
+| `milestones.api` | `projects.application.execution.ExecutionProject` | Map the project header of the shared workspace |
+| `admin.api` | `milestones.application.MilestoneService`, `milestones.api.dto.MilestoneRequests.MilestoneFundingRequest`, `milestones.domain.Milestone.Funding` | Simulated funding support with mandatory reason and audit |
+
+Dependencies are acyclic: applications → milestones → projects → users → auth; admin → milestones. Lock the project first for submit/decision/funding/initialization; re-read milestone state after acquiring it. AI attempt transactions only persist processing/results, while provider calls occur outside database transactions. A PostgreSQL advisory transaction lock serializes rate-limit accounting per reviewer across projects.
+
+Real project routes compose generated clients at `/workspace/[id]`; only `/workspace/demo` uses the browser ledger. Project `COMPLETED` retains workspace access for both participants. Experience ledger updates and post-project reviews are outside this slice.
+
+The workspace matcher is authenticated before the public catalog matcher `/api/v1/projects/**`. Secret keys are backend-only. Evidence extraction uses the installed PDFBox, bounded UTF-8 TXT, and Java HTTP; no agent framework, RAG, queue or new dependency is needed.

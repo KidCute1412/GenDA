@@ -14,7 +14,11 @@ Authentication proves identity; application use cases still verify role, ownersh
 | Review applicants for own project | No | Yes | Audit/support |
 | Approve or return project | No | No | Yes |
 | Manage milestones for assigned project | As assigned | As owner | Support/audit |
-| Accept deliverable | No | As project owner | Support/audit |
+| Accept deliverable | No | As project owner | No; simulated funding support only |
+| Submit/re-submit milestone | Assigned active contributor only | No | No |
+| Read workspace, submitted evidence and AI reports | Assigned active contributor only | Project owner only | No automatic content access |
+| Request AI review / give feedback | Assigned active contributor | Project owner | No |
+| Mark simulated milestone funding | No | Project owner | Active admin, reason and audit required |
 
 ## Enforcement rules
 

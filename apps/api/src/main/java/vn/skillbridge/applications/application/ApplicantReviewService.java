@@ -22,6 +22,7 @@ import vn.skillbridge.users.application.SkillQueryService;
 import vn.skillbridge.users.application.SkillSummary;
 import vn.skillbridge.users.application.eligibility.ApplicantProfile;
 import vn.skillbridge.users.application.eligibility.ContributorEligibilityService;
+import vn.skillbridge.milestones.application.MilestoneService;
 
 /**
  * The owning SME's side: review applicants ranked by skill match, shortlist, and accept exactly one (FR-APP-03..05,
@@ -35,16 +36,18 @@ public class ApplicantReviewService {
     private final SkillQueryService skills;
     private final AccountProfileService accounts;
     private final Clock clock;
+    private final MilestoneService milestones;
 
     public ApplicantReviewService(ApplicationRepository applications, ProjectStaffingService projects,
             ContributorEligibilityService contributors, SkillQueryService skills, AccountProfileService accounts,
-            Clock clock) {
+            Clock clock, MilestoneService milestones) {
         this.applications = applications;
         this.projects = projects;
         this.contributors = contributors;
         this.skills = skills;
         this.accounts = accounts;
         this.clock = clock;
+        this.milestones = milestones;
     }
 
     /** Best skill match first, then the earliest applicant; withdrawn applications are left out. */
@@ -93,6 +96,7 @@ public class ApplicantReviewService {
             }
         }
         if (accepted == null) throw ContributorApplicationService.notFound();
+        milestones.initialize(started.id());
         return views(started, List.of(accepted)).getFirst();
     }
 

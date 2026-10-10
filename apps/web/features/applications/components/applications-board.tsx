@@ -142,7 +142,7 @@ export function ApplicationsBoard() {
 
                 <div className="app-card__actions">
                   {application.status === "ACCEPTED" ? (
-                    <Link href={`/workspace/${application.projectId}?ledger=1`} className="btn--tactile-brand" style={{ height: "36px", fontSize: "11px" }}>
+                    <Link href={`/workspace/${application.projectId}`} className="btn--tactile-brand" style={{ height: "36px", fontSize: "11px" }}>
                       Vào workspace
                     </Link>
                   ) : null}

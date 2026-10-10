@@ -12,6 +12,7 @@ import vn.skillbridge.projects.domain.PublishedProject;
 @Repository
 class JpaPublishedProjectRepositoryAdapter implements PublishedProjectRepository {
     private static final String PUBLISHED = "PUBLISHED";
+    private static final java.util.List<String> PUBLIC_STATUSES = java.util.List.of("PUBLISHED", "IN_PROGRESS", "COMPLETED");
     private final SpringDataProjectRepository repository;
 
     JpaPublishedProjectRepositoryAdapter(SpringDataProjectRepository repository) {
@@ -32,7 +33,7 @@ class JpaPublishedProjectRepositoryAdapter implements PublishedProjectRepository
 
     @Override
     public Optional<PublishedProject> findPublishedById(String projectId) {
-        return repository.findByPublicIdAndStatus(projectId, PUBLISHED).map(this::toDomain);
+        return repository.findByPublicIdAndStatusIn(projectId, PUBLIC_STATUSES).map(this::toDomain);
     }
 
     // Published rows are complete: the schema rejects missing scope fields outside DRAFT.

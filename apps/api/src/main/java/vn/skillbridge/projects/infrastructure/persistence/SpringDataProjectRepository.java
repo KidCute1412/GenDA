@@ -69,6 +69,8 @@ interface SpringDataProjectRepository extends JpaRepository<ProjectJpaEntity, UU
 
     Optional<ProjectJpaEntity> findByPublicIdAndStatus(String publicId, String status);
 
+    Optional<ProjectJpaEntity> findByPublicIdAndStatusIn(String publicId, java.util.Collection<String> statuses);
+
     Optional<ProjectJpaEntity> findByPublicId(String publicId);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)

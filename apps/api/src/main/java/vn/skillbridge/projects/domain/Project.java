@@ -72,6 +72,12 @@ public record Project(
         return status == ProjectStatus.PUBLISHED;
     }
 
+    public Project complete(Instant now) {
+        requireStatus(ProjectStatus.IN_PROGRESS, "Only a project in progress can be completed");
+        return new Project(id, ownerId, smeName, smeContact, ProjectStatus.COMPLETED, content, createdAt, now,
+                submittedAt, publishedAt, assignment);
+    }
+
     /** Everything that would block submission today, including a budget outside the declared level's range. */
     public List<ReadinessIssue> submissionIssues(ProjectBudgetPolicy policy, LocalDate today) {
         List<ReadinessIssue> issues = content.readinessIssues(today);

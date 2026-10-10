@@ -28,12 +28,18 @@ spring:
   servlet:
     multipart:
       # CV policy allows 2 MB; the slack lets the API answer with a precise TOO_LARGE reason.
-      max-file-size: 3MB
-      max-request-size: 3MB
+      max-file-size: 6MB
+      max-request-size: 6MB
   jackson:
     deserialization:
       fail-on-unknown-properties: true
 app:
+  milestones:
+    storage-url: ${SUPABASE_URL:}
+    storage-key: ${SUPABASE_SERVICE_ROLE_KEY:}
+    bucket: ${DELIVERABLES_BUCKET:milestone-deliverables}
+    gemini-key: ${GEMINI_API_KEY:}
+    gemini-model: ${GEMINI_MODEL:gemini-3.5-flash-lite}
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS}
   auth:

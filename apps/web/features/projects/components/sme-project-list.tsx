@@ -37,7 +37,9 @@ function primaryAction(project: ManagedProject, count?: ApplicationCount) {
     case "PUBLISHED":
       return { href: `/sme/projects/${project.id}/review`, label: `Xem ứng viên (${count?.total ?? 0})`, primary: true };
     case "IN_PROGRESS":
-      return { href: `/workspace/${project.id}?ledger=1`, label: "Vào workspace", primary: true };
+      return { href: `/workspace/${project.id}`, label: "Vào workspace", primary: true };
+    case "COMPLETED":
+      return { href: `/workspace/${project.id}`, label: "Xem lịch sử bàn giao", primary: true };
     default:
       return { href: `/projects/${project.id}`, label: "Xem trang công khai", primary: true };
   }

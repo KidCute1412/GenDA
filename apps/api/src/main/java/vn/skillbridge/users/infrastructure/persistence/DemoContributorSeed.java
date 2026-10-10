@@ -36,6 +36,9 @@ class DemoContributorSeed implements ApplicationRunner {
     private static final UUID LOC = UUID.fromString("40000000-0000-0000-0000-000000000001");
     private static final UUID MINH_ANH = UUID.fromString("40000000-0000-0000-0000-000000000004");
     private static final UUID GIA_HUY = UUID.fromString("40000000-0000-0000-0000-000000000005");
+    private static final UUID HOANG_THAO = UUID.fromString("40000000-0000-0000-0000-000000000006");
+    private static final UUID QUOC_BAO = UUID.fromString("40000000-0000-0000-0000-000000000007");
+    private static final UUID HAI_ANH = UUID.fromString("40000000-0000-0000-0000-000000000008");
     private static final Instant SEEDED_AT = Instant.parse("2026-09-01T08:00:00Z");
 
     private final SpringDataContributorProfileRepository profiles;
@@ -58,6 +61,9 @@ class DemoContributorSeed implements ApplicationRunner {
         profile(LOC, "STUDENT", "Phát triển web front-end", List.of("react", "nextjs", "typescript", "figma"));
         profile(MINH_ANH, "STUDENT", "Thiết kế đồ họa và nội dung", List.of("figma", "graphic-design", "copywriting"));
         profile(GIA_HUY, "RECENT_GRADUATE", "Phát triển ứng dụng web", List.of("react", "typescript", "nextjs", "seo"));
+        profile(HOANG_THAO, "RECENT_GRADUATE", "Thiết kế sản phẩm và UI/UX", List.of("figma", "ui-ux", "graphic-design", "react", "typescript"));
+        profile(QUOC_BAO, "STUDENT", "Lập trình web fullstack", List.of("react", "typescript", "nextjs", "python"));
+        profile(HAI_ANH, "STUDENT", "Truyền thông và sáng tạo nội dung", List.of("content-marketing", "copywriting", "seo", "meta-ads"));
 
         educationEntry(LOC, "ĐH Khoa học Tự nhiên, ĐHQG-HCM", "Công nghệ Thông tin", "BACHELOR", null,
                 "2023-09-01", "2027-06-01", "CURRENTLY_STUDYING");
@@ -65,9 +71,19 @@ class DemoContributorSeed implements ApplicationRunner {
                 "2024-09-01", "2028-06-01", "CURRENTLY_STUDYING");
         educationEntry(GIA_HUY, "ĐH Bách khoa, ĐHQG-HCM", "Khoa học Máy tính", "BACHELOR", "Kỹ sư Khoa học Máy tính",
                 "2021-09-01", "2025-08-01", "GRADUATED");
+        educationEntry(HOANG_THAO, "ĐH Kiến trúc TP.HCM", "Thiết kế Đồ họa", "BACHELOR", "Cử nhân Thiết kế Đồ họa",
+                "2020-09-01", "2024-07-01", "GRADUATED");
+        educationEntry(QUOC_BAO, "ĐH FPT TP.HCM", "Kỹ thuật Phần mềm", "BACHELOR", null,
+                "2023-09-01", "2027-06-01", "CURRENTLY_STUDYING");
+        educationEntry(HAI_ANH, "ĐH Ngoại thương CS2", "Kinh tế Đối ngoại", "BACHELOR", null,
+                "2024-09-01", "2028-06-01", "CURRENTLY_STUDYING");
 
         cv(LOC, "CV_LeTuanLoc.pdf", "Le Tuan Loc", "Front-end developer (student)");
+        cv(MINH_ANH, "CV_TranMinhAnh.pdf", "Tran Minh Anh", "Graphic designer and content creator");
         cv(GIA_HUY, "CV_PhamGiaHuy.pdf", "Pham Gia Huy", "Web application developer");
+        cv(HOANG_THAO, "CV_NguyenHoangThao.pdf", "Nguyen Hoang Thao", "Product & UI/UX Designer");
+        cv(QUOC_BAO, "CV_VuQuocBao.pdf", "Vu Quoc Bao", "Fullstack Web Developer");
+        cv(HAI_ANH, "CV_DangHaiAnh.pdf", "Dang Hai Anh", "Content Marketing Specialist");
 
         new ResourceDatabasePopulator(new ClassPathResource("db/demo/contributor-history.sql")).execute(dataSource);
     }

@@ -13,6 +13,12 @@ WITH planned AS (
     UNION ALL SELECT '40000000-0000-0000-0000-000000000005'::uuid, 'BASIC', 1, n FROM generate_series(1, 12) n
     UNION ALL SELECT '40000000-0000-0000-0000-000000000005'::uuid, 'MEDIUM', 2, n FROM generate_series(1, 10) n
     UNION ALL SELECT '40000000-0000-0000-0000-000000000005'::uuid, 'HIGH', 3, n FROM generate_series(1, 1) n
+    UNION ALL SELECT '40000000-0000-0000-0000-000000000006'::uuid, 'BASIC', 1, n FROM generate_series(1, 10) n
+    UNION ALL SELECT '40000000-0000-0000-0000-000000000006'::uuid, 'MEDIUM', 2, n FROM generate_series(1, 8) n
+    UNION ALL SELECT '40000000-0000-0000-0000-000000000006'::uuid, 'HIGH', 3, n FROM generate_series(1, 2) n
+    UNION ALL SELECT '40000000-0000-0000-0000-000000000007'::uuid, 'BASIC', 1, n FROM generate_series(1, 10) n
+    UNION ALL SELECT '40000000-0000-0000-0000-000000000007'::uuid, 'MEDIUM', 2, n FROM generate_series(1, 4) n
+    UNION ALL SELECT '40000000-0000-0000-0000-000000000008'::uuid, 'BASIC', 1, n FROM generate_series(1, 8) n
 ), history AS (
     SELECT row_number() OVER (ORDER BY contributor_id, level_order, n) AS seq,
            row_number() OVER (PARTITION BY contributor_id ORDER BY level_order, n) AS step,
@@ -57,6 +63,12 @@ WITH planned AS (
     UNION ALL SELECT '40000000-0000-0000-0000-000000000005'::uuid, 'BASIC', 1, n FROM generate_series(1, 12) n
     UNION ALL SELECT '40000000-0000-0000-0000-000000000005'::uuid, 'MEDIUM', 2, n FROM generate_series(1, 10) n
     UNION ALL SELECT '40000000-0000-0000-0000-000000000005'::uuid, 'HIGH', 3, n FROM generate_series(1, 1) n
+    UNION ALL SELECT '40000000-0000-0000-0000-000000000006'::uuid, 'BASIC', 1, n FROM generate_series(1, 10) n
+    UNION ALL SELECT '40000000-0000-0000-0000-000000000006'::uuid, 'MEDIUM', 2, n FROM generate_series(1, 8) n
+    UNION ALL SELECT '40000000-0000-0000-0000-000000000006'::uuid, 'HIGH', 3, n FROM generate_series(1, 2) n
+    UNION ALL SELECT '40000000-0000-0000-0000-000000000007'::uuid, 'BASIC', 1, n FROM generate_series(1, 10) n
+    UNION ALL SELECT '40000000-0000-0000-0000-000000000007'::uuid, 'MEDIUM', 2, n FROM generate_series(1, 4) n
+    UNION ALL SELECT '40000000-0000-0000-0000-000000000008'::uuid, 'BASIC', 1, n FROM generate_series(1, 8) n
 ), history AS (
     SELECT row_number() OVER (ORDER BY contributor_id, level_order, n) AS seq, contributor_id
     FROM planned

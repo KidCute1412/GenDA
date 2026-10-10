@@ -34,6 +34,7 @@ class ArchitectureTest {
                     "vn.skillbridge.auth.application.account.AccountProfile"),
             "projects.api", Set.of("vn.skillbridge.users.application.SkillSummary"),
             "applications.application", Set.of(
+                    "vn.skillbridge.milestones.application.MilestoneService",
                     "vn.skillbridge.auth.application.account.AccountProfileService",
                     "vn.skillbridge.auth.application.account.AccountProfile",
                     "vn.skillbridge.users.application.SkillQueryService",
@@ -54,9 +55,20 @@ class ArchitectureTest {
                     "vn.skillbridge.projects.application.staffing.StaffingProject",
                     "vn.skillbridge.matching.domain.SkillMatch"),
             "admin.api", Set.of(
+                    "vn.skillbridge.milestones.application.MilestoneService",
+                    "vn.skillbridge.milestones.api.dto.MilestoneRequests$MilestoneFundingRequest",
+                    "vn.skillbridge.milestones.domain.Milestone$Funding",
                     "vn.skillbridge.projects.application.moderation.ProjectModerationService",
                     "vn.skillbridge.projects.api.dto.ManagedProjectResponse",
                     "vn.skillbridge.projects.domain.ProjectComplexity"),
+            "milestones.application", Set.of(
+                    "vn.skillbridge.auth.application.account.AccountProfileService",
+                    "vn.skillbridge.auth.application.account.AccountProfile",
+                    "vn.skillbridge.auth.application.account.AccountStanding",
+                    "vn.skillbridge.projects.application.execution.ProjectExecutionService",
+                    "vn.skillbridge.projects.application.execution.ExecutionProject",
+                    "vn.skillbridge.projects.application.execution.ExecutionProject$Plan"),
+            "milestones.api", Set.of("vn.skillbridge.projects.application.execution.ExecutionProject"),
             "*.api", Set.of(
                     "vn.skillbridge.platform.api.dto.ApiError",
                     "vn.skillbridge.auth.application.session.AuthenticatedPrincipal"));

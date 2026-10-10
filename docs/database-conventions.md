@@ -29,3 +29,13 @@ The account-role schema uses `CONTRIBUTOR`. Account lifecycle is `ACTIVE` or `DI
 - V15 renames `student_profiles` to `contributor_profiles` (school/major/study year become the first `contributor_education` row; study year becomes `background_type`, major becomes `specialization`) and adds `contributor_education`, `contributor_cvs` (metadata, only accepted files) with `contributor_cv_files` (PDF bytes in `BYTEA` until OQ-07 selects object storage), and `contributor_experience_records`. The experience ledger holds one row per completed project with a title/SME/level snapshot; XP and tier are never stored, they are derived from these rows at read time by the server-side `ExperiencePolicy`. Rows are written only by the future project-completion use case; the demo profile seeds history fixtures.
 - V16 adds `applications` (project by `public_id`, contributor, cover letter, status, `eligibility_source` with `SME_INVITATION` reserved, `decided_at`/`decided_by` required exactly for `ACCEPTED`/`REJECTED`). Partial unique indexes enforce one active application per contributor and project (FR-APP-02) and one `ACCEPTED` application per project (BR-05). `projects` gains `assigned_contributor_id` and `started_at`, required whenever the project is `IN_PROGRESS`.
 
+## Milestone persistence
+
+V20 creates `milestones`, `handoffs`, `handoff_attachments`, `milestone_ai_reviews`, `milestone_ai_feedback` and `milestone_events`. It snapshots plans for existing real IN_PROGRESS assignments; browser data is never imported. New assignments create snapshots within the acceptance transaction.
+
+Milestone IDs and criterion IDs remain stable across revisions. Plan criteria, revision links, bounded AI report/source snapshots and warnings use text JSON mapped inside the owning JPA adapter. Attachment rows contain metadata/object keys only; original bytes are private Supabase Storage objects.
+
+V21 strengthens decision audit/reason checks and enforces that attachment and handoff belong to the same milestone. Unique constraints enforce plan position and revision numbering; a partial unique index allows only one PROCESSING/SUCCEEDED AI attempt per revision. Failed attempts stay in history; feedback is unique per review/actor.
+
+Retain submitted evidence and decision history. Hourly maintenance removes unsubmitted attachments older than 24 hours, sharing the project's transition lock with submit. A failed object deletion leaves metadata for retry. No scheduled deletion of committed revisions or provider reports is introduced.
+

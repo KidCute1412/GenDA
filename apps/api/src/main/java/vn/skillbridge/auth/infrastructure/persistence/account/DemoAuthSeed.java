@@ -40,7 +40,19 @@ class DemoAuthSeed implements ApplicationRunner {
                         "CONTRIBUTOR", "ACTIVE", null, null, null),
                 new AuthUserJpaEntity(UUID.fromString("40000000-0000-0000-0000-000000000005"),
                         "phamgiahuy@demo.genda.vn", passwordEncoder.encode(DEMO_PASSWORD), "Phạm Gia Huy",
-                        "CONTRIBUTOR", "ACTIVE", null, null, null));
+                        "CONTRIBUTOR", "ACTIVE", null, null, null),
+                new AuthUserJpaEntity(UUID.fromString("40000000-0000-0000-0000-000000000006"),
+                        "nguyenhoangthao@demo.genda.vn", passwordEncoder.encode(DEMO_PASSWORD), "Nguyễn Hoàng Thảo",
+                        "CONTRIBUTOR", "ACTIVE", null, null, null),
+                new AuthUserJpaEntity(UUID.fromString("40000000-0000-0000-0000-000000000007"),
+                        "vuquocbao@demo.genda.vn", passwordEncoder.encode(DEMO_PASSWORD), "Vũ Quốc Bảo",
+                        "CONTRIBUTOR", "ACTIVE", null, null, null),
+                new AuthUserJpaEntity(UUID.fromString("40000000-0000-0000-0000-000000000008"),
+                        "danghaianh@demo.genda.vn", passwordEncoder.encode(DEMO_PASSWORD), "Đặng Hải Anh",
+                        "CONTRIBUTOR", "ACTIVE", null, null, null),
+                new AuthUserJpaEntity(UUID.fromString("40000000-0000-0000-0000-000000000009"),
+                        "studio@zenyoga.vn", passwordEncoder.encode(DEMO_PASSWORD), "Zen Yoga Studio",
+                        "SME", "ACTIVE", "APPROVED", "0318991234", null));
         seeds.stream().filter(seed -> !users.existsById(seed.id)).forEach(users::save);
     }
 }

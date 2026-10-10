@@ -1,6 +1,6 @@
 # Đặc tả đề xuất: AI rà soát bàn giao theo tiêu chí milestone
 
-**Trạng thái:** Đề xuất để thử nghiệm, chưa phải tính năng đã implement hay yêu cầu MVP được chốt.
+**Trạng thái:** Đã triển khai milestone backend, workspace API và adapter Gemini cho pilot. Nghiệm thu local và giới hạn được ghi tại mục 15; chưa xác nhận dịch vụ hosted hoặc hiệu quả với người dùng thật.
 
 **Kết luận về giá trị:** Có khả năng hữu ích vì AI đối chiếu sản phẩm với cam kết chung của hai bên. Chưa có dữ liệu người dùng để khẳng định hiệu quả; cần pilot trước khi đầu tư rộng.
 
@@ -151,14 +151,14 @@ Không cần agent, vòng gọi tool, RAG, vector database, fine-tuning hay queu
 ### API key và nhà cung cấp
 
 - Nếu dùng LLM hosted, chủ vận hành GenDA cấu hình key ở secret của backend (local env bị ignore, Render secret ở backend). Không đặt trong browser, localStorage, `NEXT_PUBLIC_*` hoặc mã nguồn.
-- Người dùng không phải nhập API key riêng trong pilot. Họ cần biết bằng chứng nào được gửi ra nhà cung cấp và đồng ý trước khi bật phân tích.
-- Chưa chốt nhà cung cấp/model. Cần xem chính sách lưu giữ dữ liệu, điều khoản sử dụng cho nội dung khách hàng, khu vực xử lý và quota trước khi chọn. Không mặc định file có thể được gửi cho bất kỳ dịch vụ nào.
+- Người dùng không phải nhập API key riêng. Theo quyết định triển khai, bấm “Phân tích bằng AI” là yêu cầu gửi bằng chứng revision đó tới Gemini; giao diện có thông báo ngắn ngay cạnh nút, không có checkbox/hộp thoại hoặc bước chờ hai bên đồng ý.
+- Nhà cung cấp đã chốt: Gemini, mặc định `gemini-3.5-flash-lite`, cấu hình được bằng `GEMINI_MODEL`. Key/quota và chính sách tài khoản provider phải được kiểm tra khi nghiệm thu dịch vụ thật.
 - Nếu SME cần dữ liệu không rời môi trường riêng, tích hợp endpoint của model do doanh nghiệp quản lý là một hướng sau pilot; không hứa hỗ trợ mọi LLM trong bản đầu.
 - Model lỗi, timeout, vượt quota hoặc output không hợp lệ: báo AI chưa sẵn sàng, vẫn cho SME/contributor dùng chức năng thường.
 
 NIST nêu nguy cơ LLM tạo nội dung sai nhưng tự tin, đặc biệt cần chú ý khi đầu ra có thể ảnh hưởng quyết định. Hướng dẫn Gemini cũng khuyến nghị test an toàn, theo dõi phản hồi và giữ oversight phù hợp. Bởi vậy, không biến AI thành bên nghiệm thu. [NIST AI RMF GenAI Profile](https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=958388) [Gemini safety guidance](https://ai.google.dev/gemini-api/docs/safety-guidance)
 
-## 10. Trạng thái code GenDA và phần phụ thuộc
+## 10. Trạng thái code trước triển khai và phần phụ thuộc
 
 | Thành phần | Hiện trạng quan sát | Tác động đến feature |
 | --- | --- | --- |
@@ -204,7 +204,7 @@ Liên quan: [workspace route](../apps/web/app/workspace/[id]/page.tsx), [handoff
 - Review chỉ dùng tiêu chí đã chốt và bằng chứng đúng revision; tiêu chí sau đó thay đổi không âm thầm sửa lịch sử.
 - Mỗi kết luận có quote/source hợp lệ hoặc ghi rõ không tìm thấy bằng chứng.
 - Model không có quyền gọi nghiệp vụ, sửa milestone, gửi yêu cầu sửa, chấp nhận hoặc đổi payment status.
-- Không có key trong frontend/network browser bundle/log. Không gửi tài liệu trước khi có thông báo và opt-in.
+- Không có key trong frontend/network browser bundle/log. Chỉ gửi bằng chứng sau thao tác bấm phân tích, có thông báo ngay cạnh nút; không tự chạy sau submit.
 - Unsupported file, prompt injection trong tài liệu, file lỗi, timeout, quota, response schema lỗi và sai project ID đều xử lý an toàn.
 - AI không sẵn sàng thì submit/review thường vẫn chạy; không mất revision hoặc quyết định của người dùng.
 - Chạy thử với trường hợp đạt, thiếu, mơ hồ, nội dung mâu thuẫn và subjective; có contributor và SME review kết quả trước khi mở rộng.
@@ -219,7 +219,7 @@ Liên quan: [workspace route](../apps/web/app/workspace/[id]/page.tsx), [handoff
 | SME dùng AI làm lý do từ chối tự động | Không có nút/API auto-reject; decision API vẫn yêu cầu con người và lý do nếu yêu cầu sửa |
 | Model bịa quote hoặc tạo tiêu chí mới | Backend xác thực quote; output chỉ được nhắc lại criterion ID thuộc phiên bản gốc |
 | File chứa prompt injection hoặc dữ liệu riêng | Treat file text as untrusted input; bỏ tool execution, giới hạn nội dung gửi, consent và giới hạn loại tệp |
-| Tài liệu bị chuyển ra nhà cung cấp ngoài | Thông báo rõ, opt-in, gửi đúng project evidence tối thiểu, xác minh retention/provider trước launch |
+| Tài liệu bị chuyển ra nhà cung cấp ngoài | Thông báo cạnh nút, chỉ gửi khi bấm phân tích, gửi đúng project evidence tối thiểu, kiểm tra chính sách/quota khi nghiệm thu provider thật |
 | AI lặp vô ích/chi phí cao | Chỉ gọi theo nút bấm sau submit; rate limit; một lần mỗi revision; log usage không chứa secret/nội dung nhạy cảm |
 | Tranh chấp bị AI làm trầm trọng | Không dùng kết quả AI làm phán quyết hay bằng chứng pháp lý; giữ nguyên trao đổi và quyết định người dùng |
 
@@ -244,7 +244,36 @@ Liên quan: [workspace route](../apps/web/app/workspace/[id]/page.tsx), [handoff
 
 - Tần suất sửa đi sửa lại do hiểu tiêu chí khác nhau đủ lớn để cần AI.
 - Định dạng bàn giao của pilot có thể trích xuất để phân tích an toàn.
-- Contributor và SME đồng ý chia sẻ bằng chứng bàn giao với một provider AI ngoài.
+- Người dùng hiểu giới hạn nhận xét AI và thông báo gửi bằng chứng tới Gemini khi bấm phân tích.
 - Đầu ra AI có thể tăng tính rõ ràng so với checklist/copy của tiêu chí đã có.
 
-**Tài liệu này chỉ đặc tả và đánh giá đề xuất. Không có model, API key, pipeline AI hay backend milestone nào được thêm trong thay đổi này.**
+## 15. Phạm vi triển khai đã chốt
+
+- Luồng thật: chọn contributor → snapshot milestone → upload/nộp → AI theo nút bấm → SME yêu cầu sửa → revision mới → nghiệm thu tuần tự → `COMPLETED` khi mọi mốc accepted. Không có `SUBMITTED` ở cấp dự án.
+- `milestones` sở hữu revision, bằng chứng, audit, AI report/feedback và quỹ mô phỏng. `projects` sở hữu kế hoạch và trạng thái dự án; `applications` điều phối tạo snapshot cùng transaction chấp nhận người thực hiện.
+- Hai vai trò đọc `/workspace/[id]` qua API. `/workspace/demo` giữ dữ liệu demo riêng; không tự nhập browser ledger vào PostgreSQL.
+- Upload PDF/TXT tối đa 5 MB/tệp, 5 tệp/revision. PDF tối đa 100 trang, không mật khẩu; PDF scan vẫn bàn giao được nhưng AI chưa hỗ trợ OCR. TXT phải UTF-8. Link HTTP/HTTPS là tham chiếu, không fetch.
+- AI chỉ gửi tiêu chí snapshot, note và văn bản revision; tối đa 60.000 ký tự. Quote/source được đối chiếu với đúng phần văn bản đã gửi. JSON sai, quote bịa và criterion ID sai làm attempt thất bại.
+- Không có key thì backend vẫn khởi động. AI lỗi không chặn quyết định SME. Thành công được cache theo revision; attempt lỗi có thể thử lại bằng nút bấm. Tối đa 10 attempt/người/giờ, một attempt đang xử lý/revision; không giữ transaction khi gọi Gemini.
+- Supabase Storage dùng bucket private `milestone-deliverables`; tải tệp qua backend có kiểm tra assignment. PostgreSQL lưu metadata/object key; source text gửi AI được giữ trong snapshot audit có giới hạn. Tệp tạm không submit được dọn sau 24 giờ.
+- Quỹ mô phỏng được SME đánh dấu thủ công; admin hỗ trợ phải có lý do/audit. Chỉ ghi nhận release sau nghiệm thu, không chuyển tiền hoặc dùng AI để quyết định quỹ.
+- Feedback hữu ích/không hữu ích lưu riêng theo người và AI report. Audit/revision/timestamps/usage hỗ trợ đo số vòng sửa và thời gian review; chưa có baseline người dùng thật để khẳng định cải thiện.
+- Đánh giá SME sau dự án, ghi nhận XP và triển khai hosted không thuộc đợt này. Project `COMPLETED` chưa tự thêm experience record; không thay đổi policy XP/hạng hiện có.
+
+### Cấu hình để chạy
+
+Trong local Compose, đặt secrets tại `apps/api/.env`; trên Render đặt trong backend environment:
+
+```dotenv
+SUPABASE_URL=https://YOUR_PROJECT.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=YOUR_BACKEND_STORAGE_KEY
+DELIVERABLES_BUCKET=milestone-deliverables
+GEMINI_API_KEY=YOUR_GEMINI_KEY
+GEMINI_MODEL=gemini-3.5-flash-lite
+```
+
+Tạo bucket private trước khi upload. JDBC PostgreSQL không thay thế credentials Storage. Sau khi storage được cấu hình, chỉ cần thêm key Gemini và restart/redeploy backend để bật AI; quyền model/quota và lời gọi thật vẫn phải smoke test.
+
+### Nghiệm thu
+
+Xem [kiểm chứng milestone](milestone-review-verification.md) để phân biệt test local với dịch vụ provider thật. Test HTTP fixture chỉ dùng trong môi trường test, không có fallback giả trong production.

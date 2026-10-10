@@ -36,3 +36,11 @@ Verify frontend HMR and backend rebuild with watch panes active; closing panes l
 Backend CI installs Docker Compose v5.0.2 explicitly so the full Compose configuration, including frontend Watch initial_sync, validates independently of the runner image.
 
 Auth E2E runs against `compose.auth-test.yaml`, an isolated PostgreSQL database. Runtime auth has no mock session, seed login accounts or test bypass. Test fixtures are provisioned explicitly by `scripts/setup-auth-e2e.mjs`. PostgreSQL migration tests use `AUTH_TEST_DB_URL` and a unique test schema.
+
+## Milestone and AI acceptance
+
+Run `MilestoneLifecycleIntegrationTest` with AUTH_TEST_DB_URL for real Flyway/JPA, assignment initialization, revisions, ownership/CSRF, concurrent decisions, completion and audit rollback. Domain tests verify transitions and quote/criterion checks; parser tests cover UTF-8, real PDF pages, scans, invalid/encrypted files. Gemini adapter tests use a local HTTP server and verify structured output plus header-only secrets.
+
+The `compose.milestone-test.yaml` overlay adds local HTTP fixtures to `compose.auth-test.yaml`; production adapters still perform real HTTP. Run `node --test scripts/milestone-test-provider.test.mjs` to check fixture behavior. Never activate fixture credentials/endpoints outside test.
+
+`milestone-review.spec.ts` uses separate SME/contributor browser contexts, real business APIs/PostgreSQL and frontend rendering. It covers upload/download, shared AI evidence, retained revisions, request changes, resubmit, funding/completion, fabricated-quote rejection and provider failure without blocking manual review. See [verification instructions](milestone-review-verification.md).

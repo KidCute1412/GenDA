@@ -100,3 +100,23 @@ Preserve current routes/statuses/semantics. Prefer additive fields. Renames/remo
 
 
 Login is limited to 10 requests per normalized email and 30 per source in 15 minutes; registration to 5 per source per hour. Denial returns `429 AUTH_RATE_LIMITED` and `Retry-After` seconds, exposed through CORS. Counters are bounded, process-local and reset on restart; a shared store is required before adding replicas.
+
+## Milestone execution contract
+
+All routes below require an active assignment participant; mutations also require CSRF. Resource IDs outside the caller's assignment return 404.
+
+| Route (under /api/v1) | Method | Behavior |
+| --- | --- | --- |
+| `/projects/{projectId}/workspace` | GET | Shared snapshots, revisions, reports, role, AI/storage availability |
+| `/milestones/{milestoneId}/attachments` | POST multipart `file` | Contributor uploads PDF/TXT, at most 5 MB; returns safe metadata |
+| `/attachments/{attachmentId}/download` | GET | Private attachment download, no-store and attachment disposition |
+| `/milestones/{milestoneId}/submissions` | GET / POST | Read history / submit `expectedRevision`, `note`, `links`, `attachmentIds` |
+| `/milestones/{milestoneId}/submissions/{revisionId}/decision` | POST | Owner chooses `ACCEPTED` or `CHANGES_REQUESTED`; changes need reason |
+| `/milestones/{milestoneId}/funding` | POST | Owner records `FUNDED` or `RELEASED`; release requires acceptance |
+| `/admin/milestones/{milestoneId}/funding` | POST | Active admin support, mandatory reason and audit |
+| `/milestones/{milestoneId}/submissions/{revisionId}/ai-review` | GET / POST | Read attempt / explicitly request review; cached success reused |
+| `/ai-reviews/{reviewId}/feedback` | PUT | Upsert caller's `helpful` boolean |
+
+Submit/decision/funding/feedback return 204. Missing AI attempt reads return 204. AI POST returns an attempt in `PROCESSING`, `SUCCEEDED` or `FAILED`; processing cannot block submission/acceptance. Failed model responses are stored as failed attempts, with no plausible report. Missing key returns 503 `AI_NOT_CONFIGURED`; caller limit returns 429 `AI_RATE_LIMIT`. Stale revision/invalid transition returns 409 `MILESTONE_CONFLICT`; invalid evidence/reason returns 422. DTOs never expose object keys, credentials, JPA entities or raw AI source text.
+
+Clients send the current `expectedRevision`; a lost response is resolved by reading history, not automatically creating another revision. Only the latest revision may get a new AI attempt. Reports and feedback remain readable after resubmission/completion.

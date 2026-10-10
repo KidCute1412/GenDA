@@ -46,6 +46,16 @@ Project root: `apps/web`; Node 22; enable workspace sources outside the root. Ch
 - Add any actual preview origins explicitly to CORS; no trailing slash or wildcard.
 - Wake/test Render Free before presenting because it sleeps when idle.
 
-UI workflows remain browser demos until business APIs are implemented. Migrations create schema, not a copy of local records. For failure, inspect Render logs; fix migration/connectivity rather than deleting history. Roll back code only if compatible with applied schema.
+Auth, profiles, project moderation, applications and real milestone workspaces use business APIs. Explicit demo routes remain separate. Migrations create schema and milestone snapshots for existing assignments, not a copy of local/browser records. For failure, inspect Render logs; fix migration/connectivity rather than deleting history. Roll back code only if compatible with applied schema.
 
 Auth MVP has no CAPTCHA configuration or default accounts. Keep one API instance while rate limits use process memory. Configure `AUTH_TRUSTED_PROXIES` to an anchored regex matching only the immediate proxy addresses controlled by the hosting platform; default trusts loopback only. Do not trust arbitrary public forwarded headers. Email verification is deferred; no mail credentials are needed. Prefer same-site frontend/API domains for browser cookie compatibility.
+
+## Milestone storage and AI configuration
+
+On the Render backend, configure `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` and `DELIVERABLES_BUCKET=milestone-deliverables`. Create the private bucket first. Supabase JDBC credentials do not authorize Storage HTTP access. Keep all keys out of Vercel and NEXT_PUBLIC variables.
+
+Add `GEMINI_API_KEY` in Render secrets when available and restart/redeploy backend. `GEMINI_MODEL` defaults to `gemini-3.5-flash-lite`; an absent key disables AI only. The Blueprint does not require a Gemini key at initial startup. Check model access/quota with a real review after configuration.
+
+Backend owns uploads/downloads and participant authorization; no Supabase Auth/browser service-role access is introduced. Render filesystem is not used for deliverable persistence. Flyway V20/V21 preserve existing assignments and create immutable execution records; do not delete migration history on rollback.
+
+Live Supabase/Gemini and hosted browser acceptance require separate verification. A successful HTTP fixture test does not verify live provider credentials, quota or semantic quality.

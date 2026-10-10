@@ -1,0 +1,16 @@
+# Overlay for compose.auth-test.yaml only. All credentials and providers are test fixtures.
+services:
+  providers:
+    image: node:22-alpine
+    working_dir: /fixtures
+    command: ["node", "milestone-test-provider.mjs"]
+    volumes: ["./scripts/milestone-test-provider.mjs:/fixtures/milestone-test-provider.mjs:ro"]
+    ports: ["127.0.0.1:3039:3039"]
+  backend:
+    environment:
+      SUPABASE_URL: http://providers:3039
+      SUPABASE_SERVICE_ROLE_KEY: test-storage-key
+      GEMINI_API_KEY: test-gemini-key
+      JAVA_TOOL_OPTIONS: -Dapp.milestones.gemini-url=http://providers:3039/v1beta
+    depends_on:
+      providers: { condition: service_started }

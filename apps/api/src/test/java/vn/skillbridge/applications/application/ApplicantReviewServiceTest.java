@@ -43,7 +43,7 @@ class ApplicantReviewServiceTest {
     private final SkillQueryService skills = mock(SkillQueryService.class);
     private final AccountProfileService accounts = mock(AccountProfileService.class);
     private final ApplicantReviewService service = new ApplicantReviewService(applications, projects, contributors,
-            skills, accounts, Clock.fixed(NOW, ZoneOffset.UTC));
+            skills, accounts, Clock.fixed(NOW, ZoneOffset.UTC), mock(vn.skillbridge.milestones.application.MilestoneService.class));
 
     private final Application early = application(REACT_PERSON, NOW.minusSeconds(3600));
     private final Application late = application(FIGMA_PERSON, NOW.minusSeconds(60));

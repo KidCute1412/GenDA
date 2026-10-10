@@ -60,13 +60,14 @@ Education is self-declared profile data in MVP. A future `EDUCATION_CREDENTIAL` 
 ## Core lifecycle
 
 ```text
-Project: DRAFT → PENDING_REVIEW → PUBLISHED → IN_PROGRESS
-       → SUBMITTED → COMPLETED / CANCELLED
+Project: DRAFT → PENDING_REVIEW → PUBLISHED → IN_PROGRESS → COMPLETED / CANCELLED
 Application: SUBMITTED → SHORTLISTED → ACCEPTED / REJECTED / WITHDRAWN
 Milestone: PENDING → IN_PROGRESS → SUBMITTED → ACCEPTED / CHANGES_REQUESTED
 ```
 
 Only the owning use case may perform a transition. Invalid transitions return a stable domain error.
+
+Milestones execute in plan order. Accepting one opens the next; accepting the final milestone completes the project in the same transaction. `CHANGES_REQUESTED` may submit a new revision; previous revisions and decisions remain immutable. Simulated funding is independent of delivery and AI, and may be released only after human acceptance. AI review never performs business transitions. Completing this workflow does not yet write the users experience ledger; that integration and post-project reviews are separate work.
 
 ## Project complexity and budget range guard
 

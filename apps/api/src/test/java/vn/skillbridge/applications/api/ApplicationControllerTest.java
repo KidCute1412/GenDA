@@ -8,6 +8,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,5 +95,60 @@ class ApplicationControllerTest {
         mvc.perform(post("/api/v1/applications").contentType(MediaType.APPLICATION_JSON)
                         .content("{\"projectId\":\"\",\"coverLetter\":\"x\"}"))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void smeCanListApplicantsOfOwnedProject() throws Exception {
+        UUID appId = UUID.randomUUID();
+        var mockApp = new vn.skillbridge.applications.domain.Application(appId, "p-coffee-lab", USER,
+                "Em đã làm ba dự án tương tự, có thể bàn giao bản nháp sau năm ngày và rảnh mọi buổi tối.",
+                vn.skillbridge.applications.domain.ApplicationStatus.SUBMITTED,
+                vn.skillbridge.applications.domain.EligibilitySource.SELF, Instant.now(), Instant.now(), null, null);
+        var mockProfile = new vn.skillbridge.users.application.eligibility.ApplicantProfile(USER, "Lê Tuấn Lộc",
+                "loc@example.com", "STUDENT", "Web", List.of(), List.of(), "SILVER", 14, Map.of(), null);
+        var mockView = new vn.skillbridge.applications.application.ApplicantView(mockApp, mockProfile,
+                new vn.skillbridge.matching.domain.SkillMatch(List.of("react"), 1, 100));
+        var staffingProject = new vn.skillbridge.projects.application.staffing.StaffingProject("p-coffee-lab", USER,
+                "Landing page", "Coffee Lab", "contact@coffeelab.vn", "PUBLISHED", "HIGH", 4000000L,
+                java.time.LocalDate.now().plusDays(30), List.of("react"), null);
+        var projectApplicants = new vn.skillbridge.applications.application.ProjectApplicantsView(staffingProject,
+                List.of(), List.of(mockView));
+        when(review.applicants(USER, "p-coffee-lab")).thenReturn(projectApplicants);
+
+        mvc.perform(get("/api/v1/sme/projects/{projectId}/applications", "p-coffee-lab"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.projectId").value("p-coffee-lab"))
+                .andExpect(jsonPath("$.applicants[0].displayName").value("Lê Tuấn Lộc"))
+                .andExpect(jsonPath("$.applicants[0].match.percent").value(100));
+    }
+
+    @Test
+    void smeCanAcceptApplicant() throws Exception {
+        UUID appId = UUID.randomUUID();
+        var mockApp = new vn.skillbridge.applications.domain.Application(appId, "p-coffee-lab", USER,
+                "Em đã làm ba dự án tương tự, có thể bàn giao bản nháp sau năm ngày và rảnh mọi buổi tối.",
+                vn.skillbridge.applications.domain.ApplicationStatus.ACCEPTED,
+                vn.skillbridge.applications.domain.EligibilitySource.SELF, Instant.now(), Instant.now(), Instant.now(), USER);
+        var mockProfile = new vn.skillbridge.users.application.eligibility.ApplicantProfile(USER, "Phạm Gia Huy",
+                "huy@example.com", "RECENT_GRADUATE", "Web", List.of(), List.of(), "GOLD", 33, Map.of(), null);
+        var mockView = new vn.skillbridge.applications.application.ApplicantView(mockApp, mockProfile,
+                new vn.skillbridge.matching.domain.SkillMatch(List.of("react"), 1, 100));
+        when(review.accept(USER, appId)).thenReturn(mockView);
+
+        mvc.perform(post("/api/v1/sme/applications/{applicationId}/accept", appId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("ACCEPTED"))
+                .andExpect(jsonPath("$.contactEmail").value("huy@example.com"));
+    }
+
+    @Test
+    void smeCanDownloadCv() throws Exception {
+        UUID appId = UUID.randomUUID();
+        var cvFile = new vn.skillbridge.users.application.CvFile("CV_Test.pdf", new byte[]{0x25, 0x50, 0x44, 0x46});
+        when(review.cv(USER, appId)).thenReturn(cvFile);
+
+        mvc.perform(get("/api/v1/sme/applications/{applicationId}/cv", appId))
+                .andExpect(status().isOk())
+                .andExpect(result -> assertThat(result.getResponse().getContentType()).contains("application/pdf"));
     }
 }

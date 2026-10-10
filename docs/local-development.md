@@ -68,4 +68,14 @@ This builds only the API and needs no database or email service for the current 
 
 If Playwright's browser is missing, install Chromium with `corepack pnpm --filter @genda/web exec playwright install chromium`. The existing `PLAYWRIGHT_CHROME_PATH` override can use installed Chrome when download is unavailable.
 
-The backend serves contributor/SME registration, authentication, the skill/project catalog, contributor profiles, applications and SME project drafting, submission and admin review. Registration creates an active account; users sign in with email and password. CV upload (PDF validated by the API), applications and XP/tier use the API. The workspace (milestones, deliveries, acceptance, review) still uses browser-ledger behavior. Set a unique AUTH_JWT_SECRET of at least 32 bytes outside local development.
+The backend serves contributor/SME registration, authentication, the skill/project catalog, contributor profiles, applications, SME project moderation and milestone execution. Registration creates an active account; users sign in with email and password. CV upload, applications, existing XP/tier reads and real workspace delivery/acceptance use the API. Post-project ratings and completion writes to the XP ledger remain separate work; `/workspace/demo` retains browser-ledger behavior. Set a unique AUTH_JWT_SECRET of at least 32 bytes outside local development.
+
+## Milestones and Gemini
+
+Real workspace now reads/writes milestone APIs. `/workspace/demo` remains explicitly demo-only. In local Compose, place storage/AI values in the ignored `apps/api/.env`, which backend already loads; root `.env` remains the local database/port configuration.
+
+Set `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` and `DELIVERABLES_BUCKET=milestone-deliverables`; create that private bucket in Supabase. Set `GEMINI_API_KEY` when available; `GEMINI_MODEL` defaults to `gemini-3.5-flash-lite`. Restart/recreate backend after env changes. Never copy hosted JDBC credentials from the template when configuring local Compose.
+
+Without Gemini key, ordinary delivery, change requests and acceptance work. Without storage settings, note/link delivery works and upload reports storage unavailable. There is no production fixture fallback.
+
+See [milestone verification](milestone-review-verification.md) for the isolated fixture E2E commands.

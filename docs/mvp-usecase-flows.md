@@ -10,7 +10,7 @@ Mục tiêu: một SME đăng dự án, chọn một cá nhân thực hiện, nh
 | **2. Đăng và duyệt dự án** | SME tạo/lưu nháp → Khai phạm vi, kỹ năng, cấp độ, ngân sách, hạn chót, tiêu chí nghiệm thu và kế hoạch milestone → Gửi duyệt → Admin công khai hoặc trả về có lý do → SME sửa/gửi lại | REST API tạo/sửa/gửi duyệt/publish/return; Spring Data JPA + PostgreSQL. Backend kiểm tra quyền, trạng thái, ngân sách theo cấp độ và milestone; lưu người quyết định và thời điểm. |
 | **3. Tìm dự án và ứng tuyển** | Cá nhân xem dự án → Lọc hoặc xem gợi ý → Xem chi tiết → Gửi thư ngỏ và CV → Xem trạng thái đơn | API danh sách có phân trang, lọc kỹ năng/ngân sách/cấp độ; API ứng tuyển. Matching bằng mức trùng kỹ năng, hiển thị lý do phù hợp. Backend kiểm tra hồ sơ, CV và hạng trước khi nhận đơn. |
 | **4. Chọn người thực hiện** | SME xem ứng viên và CV → So sánh mức phù hợp → Chọn một người → Dự án bắt đầu | Tái sử dụng API danh sách ứng viên và chấp nhận đơn. Dùng transaction và khóa bản ghi dự án để chọn đúng một người, đóng các đơn còn lại và chuyển trạng thái cùng lúc. |
-| **5. Thực hiện và nghiệm thu** | Sử dụng kế hoạch milestone đã khai trước khi gửi duyệt → Cá nhân thực hiện → Nộp tệp hoặc liên kết → SME nghiệm thu → Hoàn tất các milestone | API milestone, bàn giao và nghiệm thu; lưu lịch sử các lần nộp. Ngân sách milestone cộng lại bằng ngân sách dự án. Bắt đầu với bàn giao bằng liên kết; khi nhận tệp, dùng object storage riêng tư và tải qua API có kiểm tra quyền. |
+| **5. Thực hiện và nghiệm thu** | Sử dụng kế hoạch milestone đã khai trước khi gửi duyệt → Cá nhân thực hiện → Nộp ghi chú/tệp/liên kết → AI theo nút bấm tùy chọn → SME nghiệm thu hoặc yêu cầu sửa → Hoàn tất các milestone | API milestone/revision/nghiệm thu đã triển khai; snapshot tiêu chí giữ nguyên. Tệp PDF/TXT dùng Supabase Storage riêng tư và tải qua backend kiểm tra assignment. AI không quyết định nghiệm thu. |
 | **6. Hoàn tất và ghi nhận kết quả** | Nghiệm thu milestone cuối → Dự án hoàn tất → Ghi nhận thanh toán mô phỏng → SME đánh giá → Cập nhật XP và hạng | API trạng thái thanh toán mô phỏng, đánh giá và kinh nghiệm. Backend suy ra XP/hạng từ lịch sử hoàn thành; chỉ cho đánh giá dự án đã hoàn tất. Hiển thị rõ thanh toán mô phỏng. |
 
 **Luồng xuyên suốt:** Đăng ký → Hồ sơ/CV → Đăng và duyệt dự án → Ứng tuyển → Chọn người → Bàn giao theo milestone → Nghiệm thu → Đánh giá và tích lũy kinh nghiệm.
@@ -50,6 +50,25 @@ Mục tiêu: một SME đăng dự án, chọn một cá nhân thực hiện, nh
   - Trang "Đơn của tôi" (`/student/applications`) đọc danh sách đơn thật qua `/api/v1/applications/me`, phân loại theo tab trạng thái (Đang chờ duyệt, Được nhận, Không được nhận, Đã rút).
   - Cá nhân có thể rút đơn đang chờ duyệt qua `/api/v1/applications/{id}/withdraw` và trạng thái chuyển sang `WITHDRAWN` ngay lập tức.
 - Frontend typecheck (`tsc --noEmit`), 41 test Vitest và production build (`next build`) đạt 100%. Backend unit test (`ApplicationControllerTest`, `ContributorApplicationServiceTest`) đạt 11/11 test. Đã bổ sung kịch bản Playwright E2E `flow3-application.spec.ts`.
+
+### Trạng thái triển khai và nghiệm thu luồng 4 (2026-10-10)
+
+- Nghiệp vụ xét duyệt và chọn ứng viên chạy hoàn toàn bằng API backend và PostgreSQL thật:
+  - Backend `SmeApplicationController` bảo vệ bằng role `SME`, kiểm tra quyền sở hữu dự án (`ProjectStaffingService.ownedBy`).
+  - Điểm match % và danh sách kỹ năng trùng khớp được tính toán tự động bằng quy tắc tường minh `SkillMatch.of`, ứng viên được xếp hạng theo % match giảm dần và thời gian nộp đơn sớm nhất.
+  - SME xem được thông tin hồ sơ tự khai, lịch sử dự án hoàn thành, hạng, XP và xem trực tiếp bản CV PDF inline qua API backend có kiểm soát bảo mật.
+  - Quyền riêng tư: Email liên hệ của ứng viên được giữ bí mật (`null`) cho đến khi đơn được chấp nhận.
+  - Chấp nhận ứng viên: Dùng transaction có Pessimistic Write Lock trên bản ghi dự án và các đơn ứng tuyển; chuyển dự án sang `IN_PROGRESS` có gán `contributorId`, chuyển đơn được chọn sang `ACCEPTED`, và tự động chuyển mọi đơn còn lại của dự án sang `REJECTED`.
+  - Kết nối luồng 5: Ngay khi chấp nhận, hệ thống tự động khởi tạo các mốc milestone (`milestones.initialize`) từ kế hoạch đã duyệt để mở Workspace làm việc.
+  - Cho phép xem lại đề bài công khai qua `findPublishedById` ở cả các trạng thái `PUBLISHED`, `IN_PROGRESS`, `COMPLETED` để Contributor không bị lỗi 404 khi bấm "Xem đề bài".
+- Mở rộng seed data phong phú, đa dạng cho bản demo:
+  - Bổ sung thêm nhiều dự án phong phú thuộc các lĩnh vực F&B, Thủ công, Du lịch, Xuất bản trên các mức `BASIC`, `MEDIUM`, `HIGH`.
+  - Bổ sung nhiều ứng viên mẫu với đủ hạng Đồng, Bạc, Vàng, hồ sơ học vấn và tệp CV PDF thực tế.
+  - Dự án demo `p-coffee-lab` sở hữu 2 ứng viên hạng Vàng với tỷ lệ match khác biệt (100% vs 67%) giúp SME demo trực quan việc so sánh ứng viên và thấy rõ hiệu ứng tự động đóng các đơn còn lại.
+- Kiểm thử và chất lượng code:
+  - Backend: 198/198 test đạt (Surefire), gồm 22 test trong module `applications` và 11 ArchUnit boundary test.
+  - Frontend: `tsc --noEmit`, 41/41 Vitest test và `next build` đạt 100%.
+  - Playwright E2E: Đã bổ sung kịch bản `e2e/flow4-applicant-selection.spec.ts`.
 
 Ưu tiên stack và thành phần đã có trong repository:
 

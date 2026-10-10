@@ -7,11 +7,8 @@ import { Button } from "../../../components/ui/button";
 import { EmptyState, ErrorState, Skeleton } from "../../../components/ui/feedback";
 import { Check, CheckCircle, ICON_WEIGHT, Star } from "../../../components/ui/icons";
 import { formatDate } from "../../../lib/utils/format";
-import { useAuthSession } from "../../auth/hooks/use-auth-session";
 import { ApiRequestError } from "../../auth/services/session-request";
-import { mirrorAcceptedApplication } from "../../demo-ledger/store";
 import { LEVEL_COPY } from "../../projects/level-copy";
-import { getMyProject, type ManagedProject } from "../../projects/sme-api";
 import { TierBadge } from "../../users/components/tier-insignia";
 import { BACKGROUND_COPY, EDUCATION_LEVEL_COPY, EDUCATION_STATUS_COPY, formatPeriod } from "../../users/profile-copy";
 import type { BackgroundType, EducationLevel, EducationStatus } from "../../users/services/contributor-api";
@@ -39,9 +36,7 @@ const STATUS_COPY: Record<Applicant["status"], string> = {
  * là thông tin tự khai. Chọn một người thì mọi đơn còn lại tự đóng.
  */
 export function ApplicantReview({ projectId }: { projectId: string }) {
-  const { session } = useAuthSession();
   const [data, setData] = useState<ProjectApplicants | null>(null);
-  const [project, setProject] = useState<ManagedProject | null>(null);
   const [loadError, setLoadError] = useState<ApiRequestError | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
@@ -50,9 +45,8 @@ export function ApplicantReview({ projectId }: { projectId: string }) {
 
   const load = useCallback(async () => {
     try {
-      const [applicants, managed] = await Promise.all([listApplicants(projectId), getMyProject(projectId)]);
+      const applicants = await listApplicants(projectId);
       setData(applicants);
-      setProject(managed);
       setLoadError(null);
     } catch (error) {
       setLoadError(error instanceof ApiRequestError ? error : new ApiRequestError("LOAD_FAILED", "Không thể tải danh sách ứng viên.", 0));
@@ -86,33 +80,7 @@ export function ApplicantReview({ projectId }: { projectId: string }) {
     setBusy(confirming.applicationId);
     setActionError(null);
     try {
-      const chosen = await acceptApplicant(confirming.applicationId);
-      if (project && session && chosen.contactEmail) {
-        mirrorAcceptedApplication({
-          project: {
-            id: project.id,
-            title: project.title,
-            smeName: project.smeName,
-            smeContact: session.email,
-            budget: project.budget ?? 0,
-            deadline: project.deadline ?? "",
-            summary: project.summary ?? "",
-            problem: project.problem ?? "",
-            skills: project.skills.map((skill) => skill.name),
-            acceptance: project.acceptanceCriteria,
-            milestones: project.milestones.map((milestone) => ({
-              order: milestone.order,
-              title: milestone.title ?? "",
-              budget: milestone.budget,
-              deadline: milestone.deadline ?? "",
-              criteria: milestone.criteria.join(" · ")
-            }))
-          },
-          sme: { email: session.email, name: session.name },
-          contributor: { email: chosen.contactEmail, name: chosen.displayName },
-          application: { id: chosen.applicationId, coverLetter: chosen.coverLetter, submittedAt: chosen.submittedAt }
-        });
-      }
+      await acceptApplicant(confirming.applicationId);
       dialogRef.current?.close();
       await load();
     } catch (error) {
@@ -160,7 +128,7 @@ export function ApplicantReview({ projectId }: { projectId: string }) {
         <Alert variant="success" title={`Bạn đã chọn ${chosen.displayName}`} live="polite">
           <p style={{ margin: 0 }}>
             Dự án đã bắt đầu. Liên hệ: <strong>{chosen.contactEmail}</strong>.{" "}
-            <Link href={`/workspace/${data.projectId}?ledger=1`}>Vào workspace</Link>
+            <Link href={`/workspace/${data.projectId}`}>Vào workspace</Link>
           </p>
         </Alert>
       ) : null}
