@@ -27,7 +27,7 @@ services:
       - key: OPENAPI_ENABLED
         value: "false"
       - key: SPRING_PROFILES_ACTIVE
-        value: "production"
+        value: "production,demo"
       # Add GEMINI_API_KEY privately in Render when available; startup does not require it.
       - key: GEMINI_MODEL
         value: gemini-3.5-flash-lite
