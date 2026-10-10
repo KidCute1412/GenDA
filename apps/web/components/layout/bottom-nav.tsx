@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Briefcase, FileText, House, ICON_WEIGHT, UserCircle } from "../ui/icons";
 import { useDemoSession } from "../../features/auth/hooks/use-demo-session";
 
@@ -37,12 +37,20 @@ const SME_TABS = [
   { href: "/student/profile", label: "Hồ sơ", icon: UserCircle }
 ];
 
-function BottomNavContent() {
+export function BottomNav() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const [isRegisterView, setIsRegisterView] = useState(false);
   const { session, hydrated } = useDemoSession();
+
+  useEffect(() => {
+    const syncRegisterView = () => setIsRegisterView(pathname === "/login" && new URLSearchParams(window.location.search).get("mode") === "register");
+    syncRegisterView();
+    window.addEventListener("popstate", syncRegisterView);
+    return () => window.removeEventListener("popstate", syncRegisterView);
+  }, [pathname]);
+
   const tabs = !hydrated || !session ? GUEST_TABS : session.role === "SME" ? SME_TABS : STUDENT_TABS;
-  const currentPath = !session && pathname === "/login" && searchParams.get("mode") === "register" ? "/login?mode=register" : pathname;
+  const currentPath = !session && isRegisterView ? "/login?mode=register" : pathname;
   const activeHref = currentPath.startsWith("/workspace/")
     ? session?.role === "SME" ? "/sme/projects" : session?.role === "STUDENT" ? "/student/applications" : undefined
     : tabs.find((tab) => currentPath === tab.href || (tab.href !== "/" && currentPath.startsWith(`${tab.href}/`)))?.href;
@@ -56,6 +64,7 @@ function BottomNavContent() {
             href={tab.href}
             className="bottom-nav__item"
             aria-current={activeHref === tab.href ? "page" : undefined}
+            onClick={() => setIsRegisterView(tab.href === "/login?mode=register")}
           >
             <Icon weight={ICON_WEIGHT} aria-hidden="true" />
             {tab.label}
@@ -63,13 +72,5 @@ function BottomNavContent() {
         );
       })}
     </nav>
-  );
-}
-
-export function BottomNav() {
-  return (
-    <Suspense fallback={<nav className="bottom-nav" aria-label="Điều hướng nhanh" />}>
-      <BottomNavContent />
-    </Suspense>
   );
 }
