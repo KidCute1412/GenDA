@@ -2,9 +2,11 @@ package vn.skillbridge.projects.domain;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 public record PublishedProject(
         String id,
+        UUID ownerId,
         String title,
         String smeName,
         String smeIndustry,

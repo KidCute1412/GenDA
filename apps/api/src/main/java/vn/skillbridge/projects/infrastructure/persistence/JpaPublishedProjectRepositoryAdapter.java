@@ -39,7 +39,7 @@ class JpaPublishedProjectRepositoryAdapter implements PublishedProjectRepository
     // Published rows are complete: the schema rejects missing scope fields outside DRAFT.
     private PublishedProject toDomain(ProjectJpaEntity entity) {
         return new PublishedProject(
-                entity.publicId(), entity.title(), entity.smeName(), entity.smeIndustry(), entity.smeSize(),
+                entity.publicId(), entity.ownerId(), entity.title(), entity.smeName(), entity.smeIndustry(), entity.smeSize(),
                 entity.smeContact(), ProjectComplexity.valueOf(entity.complexity()), entity.budget(),
                 entity.deadline(), entity.summary(), entity.problem(), entity.skillCodes(),
                 entity.acceptanceCriteria(),

@@ -7,6 +7,7 @@ import vn.skillbridge.users.application.SkillSummary;
 
 public record ProjectView(
         String id,
+        String posterDisplayName,
         String title,
         String smeName,
         String smeIndustry,

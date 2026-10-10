@@ -4597,6 +4597,13 @@
           "id": {
             "type": "string"
           },
+          "posterDisplayName": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Display name of the account that posted the project"
+          },
           "title": {
             "type": "string"
           },

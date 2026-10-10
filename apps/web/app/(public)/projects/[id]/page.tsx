@@ -68,6 +68,9 @@ export default async function ProjectDetailPage({
                 {project.title}
               </h1>
               <p className="lede" style={{ color: "var(--color-text-muted)" }}>{project.summary}</p>
+              <p className="text-caption" style={{ margin: 0 }}>
+                Người đăng: <strong>{project.posterDisplayName ?? "Chưa xác định"}</strong>
+              </p>
             </div>
 
             <section>

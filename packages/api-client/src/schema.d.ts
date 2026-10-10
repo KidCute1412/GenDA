@@ -1213,6 +1213,8 @@ export interface components {
         };
         ProjectDetailResponse: {
             id: string;
+            /** @description Display name of the account that posted the project */
+            posterDisplayName?: string | null;
             title: string;
             smeName: string;
             smeIndustry: string;

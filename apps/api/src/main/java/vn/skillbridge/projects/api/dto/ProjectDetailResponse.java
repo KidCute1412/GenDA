@@ -8,6 +8,7 @@ import vn.skillbridge.projects.domain.ProjectComplexity;
 
 public record ProjectDetailResponse(
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED) String id,
+        @Schema(description = "Display name of the account that posted the project", nullable = true) String posterDisplayName,
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED) String title,
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED) String smeName,
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED) String smeIndustry,
@@ -24,7 +25,7 @@ public record ProjectDetailResponse(
 
     public static ProjectDetailResponse from(ProjectView project) {
         return new ProjectDetailResponse(
-                project.id(), project.title(), project.smeName(), project.smeIndustry(), project.smeSize(),
+                project.id(), project.posterDisplayName(), project.title(), project.smeName(), project.smeIndustry(), project.smeSize(),
                 project.smeContact(), project.complexity(), project.budget(), project.deadline(), project.summary(), project.problem(),
                 project.skills().stream().map(SkillResponse::from).toList(), project.acceptanceCriteria(),
                 project.milestones().stream().map(MilestoneResponse::from).toList());

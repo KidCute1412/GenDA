@@ -48,6 +48,15 @@ class ProjectControllerTest {
     }
 
     @Test
+    void includesPosterDisplayNameInProjectDetail() throws Exception {
+        when(service.getPublished("p-test")).thenReturn(project());
+
+        mvc.perform(get("/api/v1/projects/p-test"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.posterDisplayName").value("Poster Name"));
+    }
+
+    @Test
     void returnsStableNotFoundError() throws Exception {
         when(service.getPublished("missing")).thenThrow(new ProjectNotFoundException("missing"));
         mvc.perform(get("/api/v1/projects/missing"))
@@ -58,7 +67,7 @@ class ProjectControllerTest {
 
     private ProjectView project() {
         return new ProjectView(
-                "p-test", "Test project", "Test SME", "Technology", "1-10", "test@example.com",
+                "p-test", "Poster Name", "Test project", "Test SME", "Technology", "1-10", "test@example.com",
                 ProjectComplexity.MEDIUM, 2_000_000, LocalDate.of(2027, 1, 1), "Summary", "Problem",
                 List.of(new SkillSummary("react", "React")), List.of("Done"), List.of());
     }

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import vn.skillbridge.auth.application.account.AccountProfileService;
 import vn.skillbridge.projects.domain.BudgetRange;
 import vn.skillbridge.projects.domain.ProjectBudgetPolicy;
 import vn.skillbridge.projects.domain.ProjectComplexity;
@@ -20,12 +21,14 @@ public class ProjectQueryService {
     private final PublishedProjectRepository projects;
     private final SkillQueryService skills;
     private final ProjectBudgetPolicy budgetPolicy;
+    private final AccountProfileService accounts;
 
     public ProjectQueryService(PublishedProjectRepository projects, SkillQueryService skills,
-            ProjectBudgetPolicy budgetPolicy) {
+            ProjectBudgetPolicy budgetPolicy, AccountProfileService accounts) {
         this.projects = projects;
         this.skills = skills;
         this.budgetPolicy = budgetPolicy;
+        this.accounts = accounts;
     }
 
     public ProjectCreationPolicyView creationPolicy() {
@@ -53,16 +56,21 @@ public class ProjectQueryService {
     public ProjectView getPublished(String projectId) {
         PublishedProject project = projects.findPublishedById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
-        return toView(project, skills.findByCodes(project.skillCodes()));
+        String posterName = project.ownerId() == null ? null : accounts.get(project.ownerId()).displayName();
+        return toView(project, skills.findByCodes(project.skillCodes()), posterName);
     }
 
     private ProjectView toView(PublishedProject project, Map<String, SkillSummary> skillIndex) {
+        return toView(project, skillIndex, null);
+    }
+
+    private ProjectView toView(PublishedProject project, Map<String, SkillSummary> skillIndex, String posterName) {
         List<SkillSummary> resolvedSkills = project.skillCodes().stream()
                 .map(skillIndex::get)
                 .filter(java.util.Objects::nonNull)
                 .toList();
         return new ProjectView(
-                project.id(), project.title(), project.smeName(), project.smeIndustry(), project.smeSize(),
+                project.id(), posterName, project.title(), project.smeName(), project.smeIndustry(), project.smeSize(),
                 project.smeContact(), project.complexity(), project.budget(), project.deadline(), project.summary(), project.problem(),
                 resolvedSkills, project.acceptanceCriteria(),
                 project.milestones().stream().map(this::toMilestoneView).toList());

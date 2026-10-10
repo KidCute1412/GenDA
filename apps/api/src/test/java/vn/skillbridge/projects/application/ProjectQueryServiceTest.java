@@ -4,7 +4,10 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
+import vn.skillbridge.auth.application.account.AccountProfile;
+import vn.skillbridge.auth.application.account.AccountProfileService;
 import vn.skillbridge.projects.domain.ProjectBudgetPolicy;
 import vn.skillbridge.projects.domain.ProjectComplexity;
 import vn.skillbridge.projects.domain.ProjectMilestone;
@@ -20,8 +23,9 @@ import static org.mockito.ArgumentMatchers.anyCollection;
 class ProjectQueryServiceTest {
     private final PublishedProjectRepository projects = mock(PublishedProjectRepository.class);
     private final SkillQueryService skills = mock(SkillQueryService.class);
+    private final AccountProfileService accounts = mock(AccountProfileService.class);
     private final ProjectQueryService service = new ProjectQueryService(projects, skills,
-            ProjectBudgetPolicy.standard());
+            ProjectBudgetPolicy.standard(), accounts);
 
     @Test
     void mapsSkillCodesAndPreservesPagingMetadata() {
@@ -46,6 +50,18 @@ class ProjectQueryServiceTest {
     }
 
     @Test
+    void includesTheProjectAuthorsDisplayNameOnDetail() {
+        UUID ownerId = UUID.fromString("40000000-0000-0000-0000-000000000002");
+        PublishedProject project = new PublishedProject("p-test", ownerId, "Test project", "Test SME",
+                "Technology", "1-10", "test@example.com", ProjectComplexity.MEDIUM, 2_000_000,
+                LocalDate.of(2027, 1, 1), "Summary", "Problem", List.of("react"), List.of("Done"), List.of());
+        when(projects.findPublishedById("p-test")).thenReturn(Optional.of(project));
+        when(accounts.get(ownerId)).thenReturn(new AccountProfile(ownerId, "poster@example.com", "Poster Name", "SME"));
+
+        assertThat(service.getPublished("p-test").posterDisplayName()).isEqualTo("Poster Name");
+    }
+
+    @Test
     void exposesTheInclusiveBudgetRangeOfEveryLevel() {
         ProjectCreationPolicyView policy = service.creationPolicy();
 
@@ -59,7 +75,7 @@ class ProjectQueryServiceTest {
 
     private PublishedProject project() {
         return new PublishedProject(
-                "p-test", "Test project", "Test SME", "Technology", "1-10", "test@example.com",
+                "p-test", null, "Test project", "Test SME", "Technology", "1-10", "test@example.com",
                 ProjectComplexity.MEDIUM, 2_000_000, LocalDate.of(2027, 1, 1), "Summary", "Problem", List.of("react"),
                 List.of("Done"), List.of(new ProjectMilestone("m1", 1, "First", 2_000_000,
                         LocalDate.of(2027, 1, 1), List.of("Done"))));
