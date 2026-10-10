@@ -8,8 +8,8 @@ import { Alert } from "../../../components/ui/alert";
 import { StatusBadge } from "../../../components/ui/status-badge";
 import { Stepper, type Step } from "../../../components/ui/stepper";
 import { ICON_WEIGHT, SealCheck } from "../../../components/ui/icons";
-import { DeliverableForm } from "../../../features/milestones/components/deliverable-form";
-import { ReviewActions } from "../../../features/milestones/components/review-actions";
+import { WorkspaceRoleActions } from "../../../features/workspace/components/workspace-role-actions";
+import { WorkspaceEscrowPanel } from "../../../features/workspace/components/workspace-escrow-panel";
 import { APPLICANTS, DELIVERY_HISTORY, PROJECTS, getProject } from "../../../mocks/data";
 import { formatDate, formatVnd } from "../../../lib/utils/format";
 
@@ -42,13 +42,6 @@ export async function generateMetadata({
  * Mật độ ở màn hình này CHẶT hơn hẳn khu marketing — đây là nơi làm việc hằng
  * ngày, người dùng cần thấy nhiều thứ cùng lúc (design.md 4.9).
  */
-const ESCROW_STAGES = ["PENDING_FUNDING", "FUNDED", "RELEASED"] as const;
-const ESCROW_LABELS: Record<string, string> = {
-  PENDING_FUNDING: "Chưa ghi nhận quỹ",
-  FUNDED: "Đã ghi nhận quỹ",
-  RELEASED: "Đã ghi nhận giải ngân"
-};
-
 export default async function WorkspacePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const project = getProject(id);
@@ -68,8 +61,6 @@ export default async function WorkspacePage({ params }: { params: Promise<{ id: 
           ? "current"
           : "upcoming"
   }));
-
-  const escrowIndex = ESCROW_STAGES.indexOf(active.escrow);
 
   return (
     <>
@@ -197,22 +188,11 @@ export default async function WorkspacePage({ params }: { params: Promise<{ id: 
               </ol>
             </section>
 
-            {/* --- Khối thao tác: phần DUY NHẤT khác nhau giữa hai vai trò --- */}
-            <section className="card">
-              <h2 style={{ fontSize: "var(--text-h3-size)" }}>Khu vực bàn giao của sinh viên</h2>
-              <p className="text-muted" style={{ marginBlock: "var(--space-2) var(--space-5)" }}>
-                Nộp kết quả cho mốc {active.order}. Doanh nghiệp nhận thông báo ngay khi bạn gửi.
-              </p>
-              <DeliverableForm milestoneTitle={active.title} />
-            </section>
-
-            <section className="card">
-              <h2 style={{ fontSize: "var(--text-h3-size)" }}>Thao tác của doanh nghiệp</h2>
-              <p className="text-muted" style={{ marginBlock: "var(--space-2) var(--space-5)" }}>
-                So kết quả sinh viên vừa nộp với tiêu chí đã thống nhất ở trên, rồi chọn một trong hai.
-              </p>
-              <ReviewActions enabled={active.status === "SUBMITTED"} />
-            </section>
+            <WorkspaceRoleActions
+              milestoneTitle={active.title}
+              milestoneSubmitted={active.status === "SUBMITTED"}
+              isFinalMilestone={active.order === project.milestones.length}
+            />
           </div>
 
           {/* --- Cột phụ --- */}
@@ -255,50 +235,7 @@ export default async function WorkspacePage({ params }: { params: Promise<{ id: 
             <section className="card stack stack--sm">
               <h2 style={{ fontSize: "var(--text-h4-size)" }}>Trạng thái quỹ của mốc này</h2>
 
-              <ol
-                className="stack stack--sm"
-                style={{ listStyle: "none", margin: 0, padding: 0 }}
-              >
-                {ESCROW_STAGES.map((stage, index) => (
-                  <li key={stage} className="cluster" style={{ gap: "var(--space-3)" }}>
-                    <span
-                      className="stepper__marker"
-                      aria-hidden="true"
-                      style={
-                        index <= escrowIndex
-                          ? {
-                              backgroundColor: "var(--color-action-primary)",
-                              borderColor: "var(--color-action-primary)",
-                              color: "var(--color-text-on-accent)"
-                            }
-                          : undefined
-                      }
-                    >
-                      {index + 1}
-                    </span>
-                    <span
-                      className={index === escrowIndex ? undefined : "text-muted"}
-                      style={
-                        index === escrowIndex
-                          ? { color: "var(--color-text-heading)", fontWeight: "var(--weight-semibold)" }
-                          : undefined
-                      }
-                    >
-                      {ESCROW_LABELS[stage]}
-                      {index === escrowIndex ? (
-                        <span className="visually-hidden"> - đang ở trạng thái này</span>
-                      ) : null}
-                    </span>
-                  </li>
-                ))}
-              </ol>
-
-              {/* Banner Ký quỹ mô phỏng: nói thẳng giới hạn của bản MVP ngay tại
-                  nơi hiển thị trạng thái quỹ, không giấu xuống chân trang. */}
-              <Alert variant="warning" title="Đây là ghi nhận mô phỏng">
-                GenDA ghi lại trạng thái tiền để hai bên cùng nhìn vào một chỗ, nhưng chưa giữ tiền thật.
-                Việc chuyển tiền diễn ra trực tiếp giữa doanh nghiệp và sinh viên.
-              </Alert>
+              <WorkspaceEscrowPanel initialStage={active.escrow} />
             </section>
           </aside>
         </div>

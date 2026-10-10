@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { TextField } from "../../../components/ui/field";
 import { PasswordField } from "../../../features/auth/components/password-field";
+import { setDemoSession } from "../services/demo-session";
 
 export function LoginFormClient() {
   const router = useRouter();
@@ -22,6 +23,11 @@ export function LoginFormClient() {
     setPassword("••••••••");
   }
 
+  function quickLogin(name: string, accountEmail: string, role: "STUDENT" | "SME" | "ADMIN", destination: string) {
+    setDemoSession({ name, email: accountEmail, role, emailVerified: true });
+    router.push(destination);
+  }
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setIsLoading(true);
@@ -29,8 +35,10 @@ export function LoginFormClient() {
     setTimeout(() => {
       // Tự động phân luồng theo role hoặc email
       if (email.includes("sme") || email.includes("coffee") || email.includes("corp") || email.includes("lab")) {
+        setDemoSession({ name: "The Coffee Lab", email, role: "SME", emailVerified: true });
         router.push("/sme/projects");
       } else {
+        setDemoSession({ name: "Lê Tuấn Lộc", email, role: "STUDENT", emailVerified: true });
         router.push("/student/profile");
       }
     }, 600);
@@ -138,27 +146,15 @@ export function LoginFormClient() {
           {"// VÀO THẲNG GIAO DIỆN (BYPASS):"}
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "var(--space-2)" }}>
-          <Link 
-            href="/student/profile" 
-            className="btn--tactile-zinc"
-            style={{ height: "30px", fontSize: "10px", padding: 0, textDecoration: "none" }}
-          >
+          <button type="button" onClick={() => quickLogin("Lê Tuấn Lộc", "letuanloc.2203@hcmus.edu.vn", "STUDENT", "/student/profile")} className="btn--tactile-zinc" style={{ height: "30px", fontSize: "10px", padding: 0 }}>
             SINH VIÊN
-          </Link>
-          <Link 
-            href="/sme/projects" 
-            className="btn--tactile-zinc"
-            style={{ height: "30px", fontSize: "10px", padding: 0, textDecoration: "none" }}
-          >
+          </button>
+          <button type="button" onClick={() => quickLogin("The Coffee Lab", "contact@coffeelab.vn", "SME", "/sme/projects")} className="btn--tactile-zinc" style={{ height: "30px", fontSize: "10px", padding: 0 }}>
             DOANH NGHIỆP
-          </Link>
-          <Link 
-            href="/admin" 
-            className="btn--tactile-zinc"
-            style={{ height: "30px", fontSize: "10px", padding: 0, textDecoration: "none" }}
-          >
+          </button>
+          <button type="button" onClick={() => quickLogin("Đỗ Minh Triết", "admin@genda.vn", "ADMIN", "/admin")} className="btn--tactile-zinc" style={{ height: "30px", fontSize: "10px", padding: 0 }}>
             QUẢN TRỊ
-          </Link>
+          </button>
         </div>
       </div>
     </div>

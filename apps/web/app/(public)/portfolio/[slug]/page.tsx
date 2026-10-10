@@ -213,7 +213,7 @@ export default async function PortfolioPage({ params }: { params: Promise<{ slug
                 {"// LỚP NIỀM TIN XÁC THỰC BỞI DOANH NGHIỆP"}
               </div>
               <p style={{ margin: "4px 0 0", fontSize: "13px", lineHeight: 1.5, color: "var(--color-text-body)" }}>
-                Toàn bộ dữ liệu dưới đây do hệ thống tự sinh và đóng dấu mã hóa sau khi doanh nghiệp đối tác hoàn tất nghiệm thu và chuyển quỹ. Sinh viên không thể tự biên tập nội dung, bảo chứng tính xác thực 100% cho nhà tuyển dụng.
+                Toàn bộ dữ liệu dưới đây do hệ thống tự sinh và đóng dấu sau khi dự án COMPLETED và doanh nghiệp gửi đánh giá. Sinh viên không thể tự biên tập nội dung, bảo chứng tính xác thực cho nhà tuyển dụng.
               </p>
             </div>
           </div>

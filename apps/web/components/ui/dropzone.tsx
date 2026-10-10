@@ -19,12 +19,14 @@ export function Dropzone({
   id,
   accept,
   hint,
-  multiple
+  multiple,
+  onFilesSelected
 }: {
   id: string;
   accept: string;
   hint: string;
   multiple?: boolean;
+  onFilesSelected?: (files: File[]) => void;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragover, setDragover] = useState(false);
@@ -32,7 +34,9 @@ export function Dropzone({
 
   function addFiles(list: FileList | null) {
     if (!list || list.length === 0) return;
-    setFiles(Array.from(list).map((file) => file.name));
+    const selected = Array.from(list);
+    setFiles(selected.map((file) => file.name));
+    onFilesSelected?.(selected);
   }
 
   return (

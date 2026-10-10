@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { BrandMark } from "../ui/icons";
-import { ButtonLink } from "../ui/button";
 import { ThemeToggle } from "./theme-toggle";
+import { AuthControls } from "../../features/auth/components/auth-controls";
 
 /**
  * Top Navigation Bar (docs/design.md Mục 6, nhóm pattern 1).
@@ -36,32 +36,7 @@ export function SiteHeader({ current }: { current?: string }) {
 
         <div className="cluster" style={{ gap: "var(--space-2)" }}>
           <ThemeToggle />
-          <Link 
-            href="/login" 
-            style={{ 
-              fontFamily: "ui-monospace, monospace", 
-              fontSize: "12px", 
-              fontWeight: 700, 
-              color: "var(--color-text-body)", 
-              textTransform: "uppercase", 
-              padding: "6px 12px", 
-              textDecoration: "none" 
-            }}
-          >
-            Đăng nhập
-          </Link>
-          <Link 
-            href="/register" 
-            className="btn--tactile-orange" 
-            style={{ 
-              height: "36px", 
-              paddingInline: "var(--space-4)", 
-              fontSize: "12px",
-              boxShadow: "2px 2px 0px var(--machinery-shadow)"
-            }}
-          >
-            Tham gia
-          </Link>
+          <AuthControls />
         </div>
       </div>
     </header>

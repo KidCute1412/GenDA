@@ -7,6 +7,7 @@ import { StatusBadge } from "../../../../components/ui/status-badge";
 import { EmptyState } from "../../../../components/ui/feedback";
 import { PROJECTS, TODAY } from "../../../../mocks/data";
 import { daysUntil, formatDate, formatVnd } from "../../../../lib/utils/format";
+import { CreatedProjectsPanel } from "../../../../features/projects/components/created-projects-panel";
 
 export const metadata: Metadata = {
   title: "Dự án của tôi",
@@ -166,6 +167,8 @@ export default async function SmeProjectsPage({
               );
             })}
           </div>
+
+          <CreatedProjectsPanel />
 
           {/* NỘI DUNG DANH SÁCH DỰ ÁN */}
           {projects.length === 0 ? (
