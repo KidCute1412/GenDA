@@ -14,6 +14,10 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+      - name: Set up Docker Compose
+        uses: docker/setup-compose-action@v2
+        with:
+          version: v5.0.2
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -25,6 +29,8 @@ jobs:
       - name: Compose smoke test
         run: |
           cp .env.example .env
+          docker compose version
+          docker compose config --quiet
           docker compose up --build --wait --wait-timeout 300 database backend
           curl --fail http://localhost:3001/api/v1/health
           curl --fail http://localhost:3001/api/v1/openapi -o /tmp/openapi.json

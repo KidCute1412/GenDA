@@ -2,7 +2,7 @@
 
 ## Start/stop
 
-Install Docker Desktop with Linux containers and Compose 2.32+, plus Windows Terminal. No host Java/Node/Maven/pnpm needed to launch.
+Install Docker Desktop with Linux containers and Compose 5.0.2+, plus Windows Terminal. No host Java/Node/Maven/pnpm needed to launch.
 
 ```bat
 start.bat

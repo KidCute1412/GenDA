@@ -15,3 +15,4 @@ With services running, `node scripts/verify-local.mjs` checks API/frontend/datab
 
 Verify frontend HMR and backend rebuild with watch panes active; closing panes leaves containers running and stop/restart retains data. Report unverified Windows Terminal/reload/hosting behavior explicitly.
 
+Backend CI installs Docker Compose v5.0.2 explicitly so the full Compose configuration, including frontend Watch initial_sync, validates independently of the runner image.
