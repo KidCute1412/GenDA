@@ -49,8 +49,24 @@ export async function registerAccount(input: components["schemas"]["RegisterRequ
     body: input
   });
   if (!data) throw toError(error, "REGISTRATION_FAILED", "Không thể tạo tài khoản.");
-  if (data.role === "STUDENT") changed();
   return data;
+}
+
+export async function confirmEmailVerification(email: string, code: string) {
+  const { data, error } = await api.POST("/api/v1/auth/email-verifications/confirm", {
+    headers: await getAuthMutationHeaders(),
+    body: { email, code }
+  });
+  if (!data) throw toError(error, "OTP_CONFIRMATION_FAILED", "Không thể xác minh email.");
+  return data;
+}
+
+export async function resendEmailVerification(email: string) {
+  const { error, response } = await api.POST("/api/v1/auth/email-verifications/resend", {
+    headers: await getAuthMutationHeaders(),
+    body: { email }
+  });
+  if (!response.ok) throw toError(error, "OTP_RESEND_FAILED", "Không thể gửi lại mã xác minh.");
 }
 
 export async function refreshSession() {

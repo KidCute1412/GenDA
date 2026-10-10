@@ -6,6 +6,5 @@ public record AccountProfile(
         UUID id,
         String email,
         String displayName,
-        String role,
-        String studentVerificationStatus) {
+        String role) {
 }

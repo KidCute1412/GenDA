@@ -174,7 +174,7 @@ export function LedgerWorkspace({ projectId }: { projectId?: string } = {}) {
                   Tiêu chí: {active.criteria}
                 </p>
 
-                {session.role === "STUDENT" ? (
+                {session.role === "CONTRIBUTOR" ? (
                   <div className="stack stack--md" style={{ marginTop: "var(--space-3)", borderTop: "1px dashed var(--machinery-border)", paddingTop: "var(--space-3)" }}>
                     <TextField
                       id="demo-deliverable-link"

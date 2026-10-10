@@ -1,6 +1,6 @@
 # Authorization Matrix
 
-Authentication proves identity; the application use case must still verify role, ownership, eligibility, and current state. This matrix describes the approved `CONTRIBUTOR` target; current code still exposes `STUDENT` until the coordinated migration is implemented.
+Authentication proves identity; the application use case must still verify role, ownership, eligibility, and current state. Actor role, account state and email OTP verification are implemented; registration grants no session and the student-verification gate is removed. Contributor readiness and the remaining target gates are not yet implemented.
 
 | Use case | Contributor | SME | Admin |
 |---|---:|---:|---:|

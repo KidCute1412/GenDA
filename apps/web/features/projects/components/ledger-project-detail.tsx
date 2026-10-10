@@ -192,7 +192,6 @@ export function LedgerProjectDetail({ id }: { id: string }) {
                     projectTitle={project.title}
                     smeName={project.smeName}
                     budget={project.budget}
-                    verified={CURRENT_STUDENT.verification === "VERIFIED"}
                   />
                 ) : (
                   <Alert variant="info">Dự án này hiện đang ở trạng thái {project.status}.</Alert>

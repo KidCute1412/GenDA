@@ -18,7 +18,9 @@ Creates local `.env` if missing, starts frontend/backend/PostgreSQL, waits for h
 | OpenAPI | http://localhost:3001/api/v1/openapi |
 | PostgreSQL | localhost:15432 |
 
-Database credentials and host ports are in root `.env`. Internal database port stays 5432. The unusual host port avoids existing PostgreSQL services on this development machine.
+Database credentials and host ports are in root `.env`; transactional SMTP credentials are in `apps/api/.env`. Internal database port stays 5432. The unusual host port avoids existing PostgreSQL services on this development machine. SMTP secrets must never be committed.
+
+To deliver OTP messages to real user inboxes, configure `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_AUTH`, `SMTP_STARTTLS`, and a provider-verified `AUTH_EMAIL_FROM` in `apps/api/.env`. The checked-in example uses Brevo's relay host, but the values may come from any SMTP provider. `SMTP_PASSWORD` must be the provider's SMTP credential, not an unrelated API key or account password. Restart the backend after changing these values.
 
 One Compose Watch runs in the background. Frontend source sync triggers Next.js HMR; Java/resources/POM changes rebuild and restart backend. Two panes follow only frontend/backend logs. Closing panes leaves services and reload running. Close old panes before launching new ones.
 
@@ -58,4 +60,4 @@ From `apps/api`, run `mvnw.cmd verify` (Windows) or `sh mvnw verify` (Linux). Co
 
 If Playwright's browser is missing, install Chromium with `corepack pnpm --filter @genda/web exec playwright install chromium`. The existing `PLAYWRIGHT_CHROME_PATH` override can use installed Chrome when download is unavailable.
 
-The backend also serves student/SME registration, authentication and the read-only skill/project catalog. Docker Compose activates the local-only `demo` profile, which seeds three login accounts with password `Demo@12345`: `letuanloc.2203@hcmus.edu.vn`, `contact@coffeelab.vn`, and `admin@genda.vn`. Email verification, matching, applications and later workflows remain sample/local browser behavior. Set a unique `AUTH_JWT_SECRET` of at least 32 bytes outside local development.
+The backend also serves contributor/SME registration, email OTP verification, authentication and the read-only skill/project catalog. Docker Compose sends verification mail through the external SMTP account configured in `apps/api/.env` and activates the local-only `demo` profile, which seeds three `ACTIVE` login accounts with password `Demo@12345`. New registrations remain pending until the OTP delivered to their registered mailbox is confirmed at `/verify-email`. Matching, applications and later workflows remain sample/local browser behavior. Set a unique `AUTH_JWT_SECRET` of at least 32 bytes outside local development.

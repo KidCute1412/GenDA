@@ -37,8 +37,11 @@ public class SessionService {
             if (session.isUsableAt(now)) sessions.revoke(session.id(), now);
             throw invalidRefresh();
         }
-        AuthUser user = accounts.findById(claims.userId()).filter(AuthUser::canSignIn)
-                .orElseThrow(SessionService::invalidRefresh);
+        AuthUser user = accounts.findById(claims.userId()).orElseThrow(SessionService::invalidRefresh);
+        if (!user.canSignIn()) {
+            sessions.revoke(session.id(), now);
+            throw invalidRefresh();
+        }
         Duration ttl = session.rememberDevice() ? settings.rememberedRefreshTtl() : settings.refreshTtl();
         String nextRefreshToken = tokens.issueRefreshToken(user, session.id(), now, ttl);
         sessions.rotate(session.id(), tokens.fingerprint(nextRefreshToken), now.plus(ttl), now);

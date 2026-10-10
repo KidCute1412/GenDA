@@ -79,14 +79,14 @@ class StudentProfileServiceTest {
 
     @Test
     void rejectsAProfileRequestFromANonStudentAccount() {
-        when(accounts.get(USER_ID)).thenReturn(new AccountProfile(USER_ID, "sme@example.com", "SME", "SME", null));
+        when(accounts.get(USER_ID)).thenReturn(new AccountProfile(USER_ID, "sme@example.com", "SME", "SME"));
 
         assertThatThrownBy(() -> service.get(USER_ID))
                 .isInstanceOf(UsersException.class)
-                .extracting("code").isEqualTo("STUDENT_ROLE_REQUIRED");
+                .extracting("code").isEqualTo("CONTRIBUTOR_ROLE_REQUIRED");
     }
 
     private AccountProfile studentAccount() {
-        return new AccountProfile(USER_ID, "student@example.com", "Lê Tuấn Lộc", "STUDENT", "VERIFIED");
+        return new AccountProfile(USER_ID, "student@example.com", "Lê Tuấn Lộc", "CONTRIBUTOR");
     }
 }

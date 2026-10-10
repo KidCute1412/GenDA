@@ -33,7 +33,7 @@ export function groupOf(status: ApplicationStatus): ApplicationGroupKey {
 export function useMyApplications(): { hydrated: boolean; isStudent: boolean; items: MyApplication[] } {
   const ledger = useDemoLedger();
   const { session, hydrated } = useDemoSession();
-  const isStudent = session?.role === "STUDENT";
+  const isStudent = session?.role === "CONTRIBUTOR";
   if (!hydrated || !isStudent) return { hydrated, isStudent, items: [] };
 
   const student = ledger.users.find((user) => user.email === session.email);

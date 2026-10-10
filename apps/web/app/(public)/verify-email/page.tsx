@@ -6,17 +6,16 @@ import { VerifyEmailResult } from "../../../features/auth/components/verify-emai
 export default async function VerifyEmailPage({
   searchParams
 }: {
-  searchParams: Promise<{ next?: string; token?: string }>;
+  searchParams: Promise<{ email?: string }>;
 }) {
-  const { next, token } = await searchParams;
-  const destination = next?.startsWith("/") ? next : "/";
+  const { email } = await searchParams;
 
   return (
     <>
       <SiteHeader hideOnMobile />
       <main id="main-content" className="industrial-canvas has-bottom-nav">
         <div className="container" style={{ maxWidth: "680px", paddingBlock: "var(--space-16)" }}>
-          <VerifyEmailResult token={token} next={destination} />
+          <VerifyEmailResult initialEmail={email ?? ""} />
         </div>
       </main>
       <SiteFooter />

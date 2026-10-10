@@ -98,7 +98,8 @@ export function ProjectWizard() {
       ) : null}
       {!hasVerifiedEmail ? (
         <Alert variant="warning" title="Cần xác minh email trước khi gửi dự án">
-          Bạn vẫn có thể điền nội dung để chuẩn bị, nhưng chỉ gửi duyệt được sau khi mở liên kết xác minh email. <Link href="/verify-email?token=genda-demo-valid-2026&next=%2Fsme%2Fprojects%2Fnew%3FemailVerified%3D1">Xác minh email</Link>
+          Bạn vẫn có thể điền nội dung để chuẩn bị, nhưng chỉ gửi duyệt được sau khi xác minh email bằng OTP.{" "}
+          <Link href={`/verify-email?email=${encodeURIComponent(session?.email ?? "")}`}>Nhập mã OTP</Link>
         </Alert>
       ) : null}
       {submitError ? <Alert variant="danger" title="Không thể gửi dự án">{submitError}</Alert> : null}

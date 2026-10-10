@@ -27,13 +27,13 @@ class DemoAuthSeed implements ApplicationRunner {
         List<AuthUserJpaEntity> seeds = List.of(
                 new AuthUserJpaEntity(UUID.fromString("40000000-0000-0000-0000-000000000001"),
                         "letuanloc.2203@hcmus.edu.vn", passwordEncoder.encode(DEMO_PASSWORD), "Lê Tuấn Lộc",
-                        "STUDENT", true, "VERIFIED", null, null, null, true),
+                        "CONTRIBUTOR", "ACTIVE", true, null, null, null),
                 new AuthUserJpaEntity(UUID.fromString("40000000-0000-0000-0000-000000000002"),
                         "contact@coffeelab.vn", passwordEncoder.encode(DEMO_PASSWORD), "The Coffee Lab",
-                        "SME", true, null, "APPROVED", "0316789012", null, true),
+                        "SME", "ACTIVE", true, "APPROVED", "0316789012", null),
                 new AuthUserJpaEntity(UUID.fromString("40000000-0000-0000-0000-000000000003"),
                         "admin@genda.vn", passwordEncoder.encode(DEMO_PASSWORD), "Đỗ Minh Triết",
-                        "ADMIN", true, null, null, null, null, true));
+                        "ADMIN", "ACTIVE", true, null, null, null));
         seeds.stream().filter(seed -> !users.existsById(seed.id)).forEach(users::save);
     }
 }

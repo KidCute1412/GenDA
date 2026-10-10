@@ -10,7 +10,7 @@ export function StudentRouteGuard({ children }: { children: ReactNode }) {
   const { session, hydrated } = useDemoSession();
 
   if (!hydrated) return null;
-  if (session?.role === "STUDENT") return children;
+  if (session?.role === "CONTRIBUTOR") return children;
 
   return (
     <main id="main-content" className="container has-bottom-nav" style={{ paddingBlock: "var(--space-section)" }}>

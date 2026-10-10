@@ -19,6 +19,13 @@ SPRING_DATASOURCE_URL=jdbc:postgresql://<session-pooler-host>:5432/postgres?sslm
 SPRING_DATASOURCE_USERNAME=<session-pooler-username>
 SPRING_DATASOURCE_PASSWORD=<database-password>
 AUTH_JWT_SECRET=<at-least-32-random-bytes>
+SMTP_HOST=<smtp-host>
+SMTP_PORT=587
+SMTP_USERNAME=<smtp-username>
+SMTP_PASSWORD=<smtp-password>
+SMTP_AUTH=true
+SMTP_STARTTLS=true
+AUTH_EMAIL_FROM=no-reply@your-domain.example
 ```
 
 Blueprint sets `PORT=10000`, `DB_POOL_SIZE=3`, production OpenAPI disabled, exact CORS origin, a generated JWT secret, and secure `SameSite=None` auth cookies. Prefer a custom API subdomain under the same parent site when available so browser privacy controls do not treat authentication cookies as third-party cookies.

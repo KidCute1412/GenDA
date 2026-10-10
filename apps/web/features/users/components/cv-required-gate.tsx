@@ -22,7 +22,7 @@ export function CvRequiredGate({ children }: { children: ReactNode }) {
   const ledger = useDemoLedger();
   const router = useRouter();
   const pathname = usePathname();
-  const blocked = hydrated && session?.role === "STUDENT" && needsCv(ledger.users.find((user) => user.email === session.email));
+  const blocked = hydrated && session?.role === "CONTRIBUTOR" && needsCv(ledger.users.find((user) => user.email === session.email));
 
   useEffect(() => {
     if (!blocked) return;

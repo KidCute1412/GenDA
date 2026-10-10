@@ -25,7 +25,12 @@ public class LoginService {
                 .filter(candidate -> passwords.matches(password, candidate.passwordHash()))
                 .orElseThrow(LoginService::invalidCredentials);
         if (!user.canSignIn()) {
-            String code = user.active() ? "SME_NOT_APPROVED" : "ACCOUNT_DISABLED";
+            String code = switch (user.accountState()) {
+                case PENDING_EMAIL_VERIFICATION -> "EMAIL_VERIFICATION_REQUIRED";
+                case EMAIL_VERIFIED -> "SME_NOT_APPROVED";
+                case DISABLED -> "ACCOUNT_DISABLED";
+                case ACTIVE -> "SME_NOT_APPROVED";
+            };
             throw new AuthException(code, "Account is not allowed to sign in");
         }
         return sessions.issue(user, rememberDevice);

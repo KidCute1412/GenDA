@@ -35,7 +35,7 @@ export function RegisterAction({ opportunity, today }: { opportunity: DemoOpport
       </Link>
     );
   }
-  if (session.role !== "STUDENT") {
+  if (session.role !== "CONTRIBUTOR") {
     return <Alert variant="info" title="Chỉ tài khoản cá nhân đăng ký được">Doanh nghiệp và quản trị viên xem được tin nhưng không đăng ký tham gia.</Alert>;
   }
 

@@ -9,11 +9,12 @@ public record AuthUser(
         String displayName,
         UserRole role,
         boolean emailVerified,
-        String studentVerificationStatus,
-        String smeApprovalStatus,
-        boolean active) {
+        AccountState accountState,
+        String smeApprovalStatus) {
 
     public boolean canSignIn() {
-        return active && (role != UserRole.SME || "APPROVED".equals(smeApprovalStatus));
+        return accountState == AccountState.ACTIVE
+                && emailVerified
+                && (role != UserRole.SME || "APPROVED".equals(smeApprovalStatus));
     }
 }
