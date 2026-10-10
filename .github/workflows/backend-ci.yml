@@ -31,15 +31,6 @@ jobs:
           docker compose -f compose.auth-test.yaml up --wait database
           cd apps/api
           AUTH_TEST_DB_URL=jdbc:postgresql://localhost:15433/auth_test sh mvnw -B -ntp -Dtest=AuthPersistenceIntegrationTest test
-      - name: Compose smoke test
-        run: |
-          cp .env.example .env
-          cp apps/api/.env.example apps/api/.env
-          docker compose version
-          docker compose config --quiet
-          docker compose up --build --wait --wait-timeout 300 database backend
-          curl --fail http://localhost:3001/api/v1/health
-          curl --fail http://localhost:3001/api/v1/openapi -o /tmp/openapi.json
       - uses: pnpm/action-setup@v4
         with:
           version: 10.15.0
@@ -47,10 +38,17 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-      - name: Check generated contract
+      - name: Compose smoke test and generated contract
         run: |
           pnpm install --frozen-lockfile
-          node scripts/export-openapi.mjs
+          cp .env.example .env
+          cp apps/api/.env.example apps/api/.env
+          docker compose version
+          docker compose config --quiet
+          docker compose up --build --wait --wait-timeout 300 database backend
+          curl --fail http://127.0.0.1:3001/api/v1/health
+          curl --fail http://127.0.0.1:3001/api/v1/openapi -o /tmp/openapi.json
+          API_URL=http://127.0.0.1:3001 node scripts/export-openapi.mjs
           pnpm --filter @genda/api-client generate
           git diff --exit-code -- packages/api-client/openapi.json packages/api-client/src/schema.d.ts
       - name: Logs and cleanup
