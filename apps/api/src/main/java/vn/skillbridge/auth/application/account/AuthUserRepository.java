@@ -8,4 +8,5 @@ public interface AuthUserRepository {
     Optional<AuthUser> findByEmail(String normalizedEmail);
     Optional<AuthUser> findById(UUID id);
     void create(AuthUser user, String taxCode, String companyWebsite);
+    void updateDisplayName(UUID id, String displayName);
 }

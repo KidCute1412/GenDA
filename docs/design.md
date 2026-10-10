@@ -18,11 +18,11 @@ Nguồn tham chiếu nền tảng:
 ### 1.1. Sứ mệnh & Đề xuất Giá trị (UVP)
 GenDA mang khẩu hiệu **"From Learn to Earn"** — là nền tảng số chuyên biệt đóng vai trò **Lớp Niềm Tin (Trust Layer)**, giải quyết triệt để sự đứt gãy giữa đào tạo lý thuyết và thực tiễn tuyển dụng tại TP.HCM.
 
-Nền tảng chuẩn hóa các mini-project chuyên môn ngắn hạn (ngân sách 1.000.000 – 5.000.000 VNĐ) giữa sinh viên đại học (nguồn cung) và doanh nghiệp nhỏ & vừa (SME - nguồn cầu) thông qua quy trình 4 trụ cột khép kín:
+Nền tảng chuẩn hóa các mini-project chuyên môn ngắn hạn (ngân sách 1.000.000 – 5.000.000 VNĐ) giữa cá nhân nhận dự án — với sinh viên là phân khúc trọng tâm ban đầu — và doanh nghiệp nhỏ & vừa (SME - nguồn cầu) thông qua quy trình 4 trụ cột khép kín:
 
 ```mermaid
 graph LR
-    subgraph Supply["Sinh viên (Cung)"]
+    subgraph Supply["Cá nhân nhận dự án (Cung)"]
         S1["Kỹ năng chuyên môn"] --> S2["Cần dự án thực tế để đưa vào CV"]
     end
     subgraph TrustLayer["GenDA Trust Layer (Lớp Niềm Tin)"]
@@ -98,7 +98,7 @@ graph LR
 
 #### Persona 3: Quản trị viên — Đỗ Minh Triết (24 tuổi)
 - **Hồ sơ**: Thành viên đội ngũ vận hành GenDA.
-- **Mục tiêu**: Duyệt dự án trong vòng 4 giờ; xác minh thẻ sinh viên chính xác; hỗ trợ xử lý khiếu nại bằng nhật ký kiểm toán.
+- **Mục tiêu**: Duyệt dự án trong vòng 4 giờ; xác minh hồ sơ SME; hỗ trợ xử lý khiếu nại bằng nhật ký kiểm toán.
 - **Kỳ vọng**: Giao diện hàng đợi (Queue) tinh giản, hỗ trợ duyệt hàng loạt hoặc phím tắt.
 
 ---
@@ -117,10 +117,11 @@ Theo phương pháp chuẩn hóa trong `LN04 - Task Analysis`, các tác vụ c�
         1.1. Nhập tiêu đề dự án
         1.2. Nhập mô tả bài toán & yêu cầu công việc
         1.3. Chọn lĩnh vực hoạt động (F&B, Bán lẻ, TMĐT, Công nghệ, Khác)
-     2. Thiết lập Kỹ năng & Ngân sách
-        2.1. Chọn các kỹ năng yêu cầu từ danh mục chuẩn (FR-USR-05)
-        2.2. Nhập ngân sách dự án (Ràng buộc: 1.000.000 - 5.000.000 VNĐ - BR-10)
-        2.3. Chọn hạn chót hoàn thành (Ràng buộc: Ngày tương lai - BR-11)
+             2. Thiết lập Kỹ năng, Complexity & Ngân sách
+                2.1. Chọn các kỹ năng yêu cầu từ danh mục chuẩn (FR-USR-05)
+                2.2. Chọn complexity: BASIC / MEDIUM / HIGH
+                2.3. Xem minimum budget tương ứng và nhập ngân sách dự án (BR-10, BR-18)
+                2.4. Chọn hạn chót hoàn thành (Ràng buộc: Ngày tương lai - BR-11)
      3. Thiết lập Tiêu chí Nghiệm thu & Phân bổ Mốc
         3.1. Nhập tiêu chí nghiệm thu chi tiết
         3.2. Định nghĩa các mốc bàn giao (Milestones)
@@ -129,7 +130,7 @@ Theo phương pháp chuẩn hóa trong `LN04 - Task Analysis`, các tác vụ c�
         4.1. Xem lại bản tóm tắt dự án
         4.2. Lưu bản nháp (DRAFT) HOẶC Bấm Gửi duyệt (DRAFT -> PENDING_REVIEW)
   ```
-- **Kế hoạch thực hiện (Plan 0)**: Thực hiện tuần tự $1 \rightarrow 2 \rightarrow 3 \rightarrow 4$. Nếu có lỗi xác thực tại bước bất kỳ, dừng lại và thông báo lỗi tại trường đó.
+- **Kế hoạch thực hiện (Plan 0)**: Thực hiện tuần tự $1 \rightarrow 2 \rightarrow 3 \rightarrow 4$. Nếu có lỗi xác thực tại bước bất kỳ, dừng lại và thông báo lỗi tại trường đó. Không cho gửi duyệt khi budget thấp hơn minimum của complexity đã chọn; admin tiếp tục đối chiếu scope với level trước khi publish và trả về `DRAFT` nếu dự án bị under-classified.
 
 > #### Quyết định thiết kế DD-01: Milestone được khai báo **trước** khi xuất bản dự án
 >
@@ -144,9 +145,9 @@ Theo phương pháp chuẩn hóa trong `LN04 - Task Analysis`, các tác vụ c�
 
 ---
 
-#### HTA 2: Sinh viên Khám phá & Ứng tuyển Dự án (Apply for Project)
+#### HTA 2: Cá nhân Khám phá & Ứng tuyển Dự án (Apply for Project)
 - **Mục tiêu tổng quát (0)**: Tìm dự án phù hợp với năng lực và nộp hồ sơ ứng tuyển.
-- **Điều kiện tiên quyết (Preconditions)**: Sinh viên đã đăng nhập và đã được xác thực danh tính sinh viên (`VERIFIED` - BR-03).
+- **Điều kiện tiên quyết (Preconditions)**: Cá nhân đã xác minh email nên có thể đăng nhập và duyệt dự án. Để gửi đơn, tài khoản phải hoạt động, hồ sơ hoàn tất và CV ở trạng thái `READY` (BR-03).
 - **Cây phân rã nhiệm vụ**:
   ```text
   0. Khám phá & Ứng tuyển dự án
@@ -161,10 +162,10 @@ Theo phương pháp chuẩn hóa trong `LN04 - Task Analysis`, các tác vụ c�
      3. Nộp đơn ứng tuyển (Apply)
         3.1. Bấm nút "Ứng tuyển ngay" để mở modal nộp đơn
         3.2. Soạn thư ngỏ giới thiệu bản thân & cam kết
-        3.3. Đính kèm CV dạng PDF (lấy sẵn từ hồ sơ, có thể thay tệp khác ngay trong modal)
+        3.3. Chọn CV `READY` hiện hành từ hồ sơ
         3.4. Gửi đơn ứng tuyển (Tạo bản ghi Application trạng thái SUBMITTED)
   ```
-- **Kế hoạch thực hiện (Plan 0)**: Thực hiện $1 \rightarrow 2$. Nếu phù hợp thực hiện $3$. Ngoại lệ: Nếu sinh viên chưa `VERIFIED`, hệ thống chặn bước 3.1 và chuyển hướng sang trang xác thực hồ sơ (BR-03). Nếu đã nộp trước đó, chặn nộp lần 2 (FR-APP-02).
+- **Kế hoạch thực hiện (Plan 0)**: Thực hiện $1 \rightarrow 2$. Nếu phù hợp thực hiện $3$. Nếu checklist application readiness còn thiếu, vẫn cho mở modal nhưng chặn nút gửi, chỉ rõ bước cần hoàn tất và dẫn tới profile/CV tương ứng (BR-03). Nếu đã nộp trước đó, chặn nộp lần 2 (FR-APP-02).
 
 ---
 
@@ -178,7 +179,7 @@ Theo phương pháp chuẩn hóa trong `LN04 - Task Analysis`, các tác vụ c�
         1.1. Mở trang quản lý ứng viên của dự án
         1.2. Xem danh sách sắp xếp ưu tiên theo điểm phù hợp (FR-MAT-03)
      2. Thẩm định năng lực từng ứng viên
-        2.1. Xem hồ sơ kỹ năng, trường lớp và huy hiệu xác thực
+        2.1. Xem hồ sơ kỹ năng, Education tự khai và lịch sử dự án
         2.2. Đọc thư ngỏ và xem các sản phẩm minh chứng đính kèm
         2.3. Đánh dấu danh sách rút gọn (SHORTLISTED - tùy chọn)
      3. Chấp nhận ứng viên duy nhất
@@ -913,20 +914,24 @@ GenDA Web Platform
 │   ├── /projects                  (Danh mục dự án PUBLISHED, thanh tìm kiếm & bộ lọc)
 │   ├── /projects/[id]             (Chi tiết dự án, tiêu chí nghiệm thu, các mốc thanh toán)
 │   ├── /login                     (Đăng nhập tài khoản)
-│   ├── /register                  (Đăng ký tài khoản: Chọn vai trò STUDENT hoặc SME)
+│   ├── /register                  (Đăng ký: Chọn CONTRIBUTOR hoặc SME)
+│   ├── /verify-email              (Nhập/gửi lại OTP xác minh email đăng ký)
 │   ├── /phap-ly/[doc]             (Quy chế sàn, chính sách bảo mật, quy trình khiếu nại)
 │   └── /ho-tro/[doc]              (Câu hỏi thường gặp)
-├── (student) - Dành riêng cho Sinh viên
-│   ├── /student/profile           (Khai báo hồ sơ, kỹ năng, nộp thẻ sinh viên xác thực)
-│   └── /student/applications      (Quản lý trạng thái các đơn ứng tuyển cá nhân)
+├── (contributor) - Dành cho Cá nhân nhận dự án
+│   ├── /contributor/profile       (Khai báo hồ sơ, Education và kỹ năng)
+│   ├── /contributor/cv            (Tải, xem trạng thái kỹ thuật và thay CV)
+│   └── /contributor/applications  (Quản lý trạng thái các đơn ứng tuyển cá nhân)
 ├── (sme) - Dành riêng cho Doanh nghiệp SME
 │   ├── /sme/projects              (Danh sách dự án của tôi theo trạng thái)
 │   ├── /sme/projects/new          (Wizard 3 bước đăng bài toán mới)
 │   └── /sme/projects/[id]/review  (Danh sách ứng viên nộp đơn, xem Match Score & chọn 1 người)
 ├── /workspace/[prjId]             (Không gian cộng tác DÙNG CHUNG cho cả hai bên — xem DD-02)
 └── (admin) - Dành cho Đội ngũ Vận hành
-    └── /admin?tab=…               (Ba tab: duyệt dự án | duyệt thẻ SV | nhật ký kiểm toán — xem DD-02)
+    └── /admin?tab=…               (Ba tab: duyệt dự án | xác minh SME | audit — xem DD-02)
 ```
+
+Biến thể SME của `/register` bổ sung thông tin doanh nghiệp theo FR-USR-12. Sau OTP thành công, contributor đi tiếp tới onboarding profile; SME thấy trạng thái “Đang chờ GenDA xác minh doanh nghiệp”, chưa được chuyển vào workspace hoặc trang tạo dự án. Trạng thái từ chối phải hiển thị lý do và kênh hỗ trợ, không dùng thông báo đăng nhập sai chung chung.
 
 > #### Quyết định thiết kế DD-02: Workspace dùng chung và Admin gộp tab
 >
@@ -938,7 +943,7 @@ GenDA Web Platform
 >    Chỉ khối thao tác ở cuối là khác nhau (sinh viên thấy khu vực nộp bài; SME thấy nút nghiệm thu / yêu cầu
 >    chỉnh sửa). Tách đôi sẽ nhân đôi màn hình để rồi phải giữ cho chúng luôn khớp nhau — một nguồn lỗi không
 >    cần thiết. Vai trò lấy từ phiên đăng nhập, không lấy từ đường dẫn.
-> 2. **Admin gộp ba hàng đợi vào một trang có tab** thay vì ba route riêng, đúng như Mục 7.8 đã mô tả
+> 2. **Admin gộp hai hàng đợi và audit vào một trang có tab** thay vì các route riêng, đúng như Mục 7.8 đã mô tả
 >    ("Giao diện 3 tab chuyên biệt"). Quản trị viên làm việc theo phiên xử lý hàng đợi, chuyển qua lại liên
 >    tục giữa ba khu vực; gộp tab giúp giữ ngữ cảnh và giảm số lần tải trang.
 
@@ -1014,23 +1019,24 @@ GenDA Web Platform
 
 ---
 
-### 7.2. Màn hình 2: Hồ sơ & Xác thực Sinh viên (`/student/profile`)
-- **Mục tiêu**: Thu thập hồ sơ năng lực (FR-USR-01) và xác minh sinh viên chính quy (FR-USR-02, FR-USR-03) để đảm bảo luật BR-03.
+### 7.2. Màn hình 2: Hồ sơ Cá nhân (`/contributor/profile`)
+- **Mục tiêu**: Thu thập hồ sơ contributor và thể hiện checklist đủ điều kiện ứng tuyển (FR-USR-01, FR-USR-07..11). GenDA không xác minh tư cách sinh viên.
 - **Thành phần giao diện**:
-  - **Visual Verification Banner** (mỗi trạng thái mã hóa đủ ba lớp màu + icon + nhãn chữ theo [Mục 4.5](#45-sử-dụng-màu-trong-mã-hóa-trạng-thái-redundant-coding)):
-    - Nếu `UNVERIFIED`: Thẻ nền `color-surface-subtle` + icon thông tin: *"Bạn cần xác thực tài khoản sinh viên để có thể nộp đơn ứng tuyển dự án."*
-    - Nếu `PENDING`: Thẻ nền `color-status-warning-bg` + icon đồng hồ, chữ `color-status-warning-text`: *"Minh chứng đang được BQT xét duyệt trong 24 giờ."*
-    - Nếu `VERIFIED`: Thẻ nền `color-status-verified-bg` + icon dấu tích, chữ `color-status-verified-text`: *"Đã xác thực sinh viên chính quy — Sẵn sàng nhận dự án."*
-    - Nếu `REJECTED`: Thẻ nền `color-status-danger-bg` + icon dấu X, chữ `color-status-danger-text`: *"Minh chứng bị từ chối: [Lý do từ Admin]"* kèm nút tải lại ảnh mới.
-  - **Tabs Phương thức Minh chứng**:
-    - *Tab 1*: Nhập email đuôi trường (`@hcmus.edu.vn`, `@uel.edu.vn`,...).
-    - *Tab 2*: Vùng kéo thả tải ảnh Thẻ sinh viên còn hiệu lực (JPG/PNG tối đa 5MB).
+  - **Application Readiness Checklist**: bốn dòng Tài khoản hoạt động / Email đã xác minh / Hồ sơ hoàn tất / CV `READY`; mỗi dòng có icon, nhãn chữ và liên kết gỡ chặn. Checklist không tự cấp quyền, backend vẫn kiểm tra khi gửi đơn.
+  - **Thông tin nền tảng tự khai**: loại nền tảng, chuyên môn và kỹ năng chuẩn.
+  - **Education / Học vấn (FR-USR-10, FR-USR-11)**:
+    - Hiển thị danh sách theo thời gian; empty state giải thích đây là mục tùy chọn và có CTA “Thêm học vấn”.
+    - Mỗi thẻ hiển thị cơ sở đào tạo, chuyên ngành, bậc học/tên bằng cấp, thời gian và trạng thái: Đang học / Đã tốt nghiệp / Đã hoàn thành / Chưa hoàn thành.
+    - Form thêm/sửa cho phép khai thời gian và trạng thái trung thực; không buộc người đã từng học phải chọn “Đã tốt nghiệp”. Người dùng có thể thêm nhiều, sửa hoặc xóa từng bản ghi.
+    - Mỗi bản ghi mang nhãn trung tính “Thông tin tự khai”, không dùng màu/icon verified. Không có Education không làm checklist readiness thất bại.
   - **Chọn danh mục kỹ năng chuẩn (FR-USR-05)**: Dropdown chọn kỹ năng có sẵn (React, Next.js, Figma, SEO, Content...), không nhập tự do.
 
 ---
 
 ### 7.3. Màn hình 3: Wizard Đăng Dự án phía SME (`/sme/projects/new`)
-- **Mục tiêu**: Giúp chủ doanh nghiệp tạo đề bài chuẩn mực trong 3 bước, bảo đảm các luật BR-01, BR-10, BR-11, FR-MIL-02.
+- **Mục tiêu**: Giúp chủ doanh nghiệp tạo đề bài chuẩn mực trong 3 bước, bảo đảm các luật BR-01, BR-10, BR-11, BR-18, BR-19 và FR-MIL-02.
+- **Bước Kỹ năng, Complexity & Ngân sách**: Hiển thị ba lựa chọn `BASIC`, `MEDIUM`, `HIGH` kèm mô tả phạm vi dễ hiểu. Khi level thay đổi, giao diện lấy policy từ backend và hiển thị minimum budget tương ứng cạnh ô nhập/slider. Nếu budget thấp hơn ngưỡng, hiện lỗi inline nêu số tối thiểu và vô hiệu hóa nút gửi duyệt; không tự nâng budget hoặc âm thầm đổi level thay SME.
+- **Review state**: Bản xem trước đặt scope, deliverables, skills, deadline, milestones, complexity và budget trong cùng vùng đối chiếu. Admin Queue hiển thị cùng tập dữ liệu; khi scope không khớp level, admin chọn “Trả về chỉnh sửa”, bắt buộc nhập lý do và có thể đề xuất complexity. Project quay về `DRAFT`, không bị admin sửa trực tiếp.
 - **Bố cục Stepper 3 bước**:
   ```text
   [ Bước 1: Mô tả bài toán ] ---> [ Bước 2: Kỹ năng & Ngân sách ] ---> [ Bước 3: Mốc & Nghiệm thu ]
@@ -1058,17 +1064,18 @@ GenDA Web Platform
     - Hiển thị tên SME, tiêu đề bài toán, ngân sách VNĐ và hạn chót.
     - **Điểm phù hợp kỹ năng (Match Score Breakdown)**: Ví dụ: `[ 90% Match: Trùng 3/3 kỹ năng của bạn ]`.
   - **Hộp thoại Ứng tuyển (Apply Modal Dialog)**:
-    - Nếu sinh viên chưa xác thực: Hiển thị thông báo màu hổ phách chặn ứng tuyển và nút chuyển sang trang xác thực hồ sơ (BR-03).
-    - Nếu đã xác thực: Form nhập Thư ngỏ (Cover letter) và CV dạng PDF đính kèm (lấy từ hồ sơ, thay được ngay trong modal). Nút bấm "Gửi đơn ứng tuyển".
-  - **Chặn tài khoản mới chưa có CV (FR-USR-07)**: Sinh viên mới đăng ký chưa nộp CV sẽ được chuyển từ `/projects` sang `/student/cv` để tải CV (PDF, tối đa 2 MB) rồi mới quay lại danh sách dự án.
+    - Luôn cho cá nhân đã xác minh email mở modal để đọc yêu cầu. Form có thư ngỏ và CV `READY` hiện hành.
+    - Nếu thiếu profile hoặc CV `READY`: hiển thị checklist màu hổ phách, vô hiệu hóa nút gửi và dẫn tới `/contributor/profile` hoặc `/contributor/cv` (BR-03).
+    - Nếu đủ điều kiện: nút "Gửi đơn ứng tuyển" hoạt động; backend kiểm tra lại toàn bộ điều kiện khi submit.
+  - **Không chặn khám phá dự án (FR-USR-07)**: tài khoản chưa có CV vẫn xem `/projects`; chỉ hành động gửi đơn bị chặn.
 
 ---
 
 ### 7.5. Màn hình 5: Xem & Lựa chọn Ứng viên phía SME (`/sme/projects/[id]/review`)
-- **Mục tiêu**: SME so sánh các ứng viên và chấp nhận đúng 1 sinh viên (FR-APP-03, FR-APP-05, BR-05, BR-13).
+- **Mục tiêu**: SME so sánh các ứng viên và chấp nhận đúng 1 cá nhân (FR-APP-03, FR-APP-05, BR-05, BR-13).
 - **Bố cục giao diện**:
   - Danh sách ứng viên được hệ thống tự động sắp xếp giảm dần theo **Điểm phù hợp Match Score** (FR-MAT-03).
-  - Mỗi thẻ ứng viên hiển thị: Tên sinh viên, trường đại học, huy hiệu thẻ SV đã xác thực, thư ngỏ và nút xem CV (PDF).
+  - Mỗi thẻ ứng viên hiển thị: tên, nền tảng/chuyên môn tự khai, kỹ năng, thư ngỏ và nút xem CV (PDF). `STUDENT` và CV `READY` không được gắn nhãn xác minh.
   - Nút **"Chấp nhận ứng viên này"**:
     - Nhấp nút sẽ bật **Modal Xác nhận Quan trọng (Irreversible Confirmation Dialog)**:
       > *"Bạn có chắc chắn muốn chọn ứng viên **Nguyễn Hải Nam**?*  
@@ -1085,7 +1092,7 @@ GenDA Web Platform
   | [DỰ ÁN: Xây dựng Landing Page Nông Sản]        Trạng thái: ĐANG THỰC HIỆN|
   +-------------------------------------------------------------------------+
   | ĐỐI TÁC TRONG DỰ ÁN NÀY (FR-USR-06):                                    |
-  | [Avatar] Nguyễn Hải Nam - SV năm 3, ĐH KHTN [✓ Đã xác thực]            |
+  | [Avatar] Nguyễn Hải Nam - Frontend Contributor                         |
   |          Kỹ năng: Next.js, Tailwind CSS      [ Xem hồ sơ đầy đủ ]       |
   +-------------------------------------------------------------------------+
   | BANNER THÔNG BÁO KÝ QUỸ MÔ PHỎNG (SIMULATED ESCROW - FR-MIL-07):        |
@@ -1116,19 +1123,21 @@ GenDA Web Platform
   | [ Yêu cầu chỉnh sửa (Bắt buộc nhập lý do) ]       [ NGHIỆM THU MỐC NÀY ]|
   +-------------------------------------------------------------------------+
   ```
-- **Thẻ Hồ sơ Đối tác (Partner Profile Card — FR-USR-06)**: Hiển thị cho cả hai phía trong phạm vi dự án đang tương tác. Sinh viên thấy hồ sơ SME (tên doanh nghiệp, lĩnh vực, quy mô, người liên hệ); SME thấy hồ sơ sinh viên (trường, ngành, kỹ năng, huy hiệu xác thực). Nút "Xem hồ sơ đầy đủ" mở panel trượt, **không điều hướng rời khỏi Workspace** để người dùng không mất ngữ cảnh công việc đang làm.
+- **Thẻ Hồ sơ Đối tác (Partner Profile Card — FR-USR-06)**: Hiển thị cho cả hai phía trong phạm vi dự án đang tương tác. Contributor thấy hồ sơ SME (tên doanh nghiệp, lĩnh vực, quy mô, người liên hệ và trạng thái SME đã xác minh); SME thấy hồ sơ contributor (chuyên môn, kỹ năng, Education tự khai và lịch sử dự án). Không hiển thị huy hiệu xác minh sinh viên. Nút "Xem hồ sơ đầy đủ" mở panel trượt, **không điều hướng rời khỏi Workspace** để người dùng không mất ngữ cảnh công việc đang làm.
 - **Visible Constraint theo BR-07**: Nút "NGHIỆM THU MỐC NÀY" và "Yêu cầu chỉnh sửa" chỉ được kích hoạt khi mốc đang ở trạng thái `SUBMITTED`. Khi mốc chưa có kết quả bàn giao, hai nút hiển thị ở trạng thái `disabled` kèm dòng giải thích *"Chờ sinh viên nộp kết quả bàn giao"* — ngăn lỗi ngay tại giao diện thay vì để API trả lỗi (Quy tắc Vàng số 5).
 
 ---
 
-### 7.7. Màn hình 7: Nghiệm thu, Đánh giá & CV của sinh viên (`/student/cv`)
-- **Mục tiêu**: Đóng vòng đời dự án bằng đánh giá của SME (FR-REV-01..03) và cho sinh viên quản lý CV gửi kèm đơn ứng tuyển (FR-USR-01, FR-USR-07). Portfolio xác thực (FR-CERT) đã bị loại khỏi phạm vi.
+### 7.7. Màn hình 7: Nghiệm thu, Đánh giá & CV của cá nhân (`/contributor/cv`)
+- **Mục tiêu**: Đóng vòng đời dự án bằng đánh giá của SME (FR-REV-01..03) và cho cá nhân quản lý CV phục vụ ứng tuyển (FR-USR-07..09). Portfolio xác thực (FR-CERT) đã bị loại khỏi phạm vi.
 - **Quy trình đóng dự án**:
   1. Khi mốc cuối cùng được SME nghiệm thu: Dự án chuyển sang `COMPLETED`.
-  2. Hệ thống hiển thị form đánh giá 1 chiều: SME chấm điểm sao (1–5 sao) và nhận xét thái độ, chuyên môn của sinh viên (FR-REV-01). Đánh giá gửi một lần, không sửa được.
-- **Trang CV của tôi (`/student/cv`)**:
-  - Chưa có CV: vùng kéo thả (Dropzone) chỉ nhận PDF, tối đa 2 MB. Đây cũng là bước bắt buộc của tài khoản sinh viên mới trước khi xem `/projects`.
-  - Đã có CV: thẻ tệp (tên, dung lượng, ngày nộp) kèm nút "Xem CV" và "Thay CV khác".
+  2. Hệ thống hiển thị form đánh giá 1 chiều: SME chấm điểm sao (1–5 sao) và nhận xét thái độ, chuyên môn của cá nhân (FR-REV-01). Đánh giá gửi một lần, không sửa được.
+- **Trang CV của tôi (`/contributor/cv`)**:
+  - Chưa có CV: vùng kéo thả chỉ nhận PDF, tối đa 2 MB; người dùng vẫn có thể quay lại xem dự án.
+  - Đang xử lý: hiển thị `UPLOADING`/`PROCESSING`, không cho submit application bằng tệp này.
+  - Bị từ chối kỹ thuật: hiển thị lý do cụ thể (quá dung lượng, không phải PDF thật, hỏng, khóa mật khẩu hoặc không an toàn) và nút thay tệp.
+  - `READY`: thẻ tệp (tên, dung lượng, ngày nộp) kèm nút "Xem CV" và "Thay CV khác", cùng chú thích “Đã kiểm tra kỹ thuật — nội dung chưa được GenDA xác minh”.
   - Lối tắt "CV của tôi" nằm trong menu người dùng trên header; trang Hồ sơ cũng có mục CV.
 
 ---
@@ -1137,8 +1146,8 @@ GenDA Web Platform
 - **Mục tiêu**: Hỗ trợ đội ngũ vận hành kiểm soát rủi ro, duyệt hàng đợi và tra cứu kiểm toán (FR-ADM-01..04).
 - **Giao diện 3 tab chuyên biệt**:
   1. **Hàng đợi Duyệt Dự án (`PENDING_REVIEW`)**: Xem nội dung dự án; nút "Duyệt xuất bản (`PUBLISHED`)" hoặc "Từ chối kèm lý do bắt buộc" (quay về `DRAFT`).
-  2. **Hàng đợi Duyệt Thẻ Sinh viên (`PENDING`)**: Xem ảnh thẻ/email trường; nút "Xác thực (`VERIFIED`)" hoặc "Từ chối kèm lý do" để sinh viên nộp lại.
-  3. **Nhật ký Kiểm toán (Audit Logs - FR-ADM-02, FR-ADM-03)**: Bảng dữ liệu ghi nhận mọi biến động trạng thái gồm: Tên tác nhân, Vai trò, Hành động, Thời điểm và Lý do ghi nhận.
+  2. **Hàng đợi Xác minh SME (`PENDING`)**: Xem tên doanh nghiệp, mã số thuế hoặc website, người phụ trách và thông tin liên hệ; nút "Xác minh (`VERIFIED`)" hoặc "Từ chối" với lý do bắt buộc. Copy nhắc rõ đây là duyệt doanh nghiệp, không phải duyệt dự án.
+  3. **Nhật ký Kiểm toán (Audit Logs - FR-ADM-02, FR-ADM-03)**: Bảng dữ liệu ghi nhận mọi biến động trạng thái gồm: Tên tác nhân, Vai trò, Hành động, Thời điểm và Lý do ghi nhận. Không có hàng đợi duyệt tư cách sinh viên, CV hoặc học vấn.
 
 ---
 
@@ -1159,13 +1168,13 @@ stateDiagram-v2
     SuccessState --> [*]
 ```
 
-> #### Sai lệch cần đồng bộ ngược: NFR-UX-02 ghi 4 trạng thái, tài liệu này quy định 5
+> #### Quyết định đã đồng bộ: NFR-UX-02 quy định 5 trạng thái
 >
-> `NFR-UX-02` trong [`requirement.md`](./requirement.md) liệt kê **4** trạng thái (Loading, Empty, Error, Success). Kỹ năng frontend của chính kho mã (`.agents/skills/nextjs-frontend`) lại yêu cầu **5**: *"Implement loading, empty, error, permission, and success states."*
+> `NFR-UX-02` trong [`requirement.md`](./requirement.md) đã được đồng bộ thành **5** trạng thái (Loading, Empty, Error, Success, Blocked/Permission) theo convention frontend của kho mã.
 >
-> **Tài liệu này theo bản 5 trạng thái**, vì trạng thái thứ năm không phải chi tiết kỹ thuật mà là một bề mặt nghiệp vụ có thật của GenDA: `BR-03` chặn sinh viên chưa xác thực nộp đơn, `BR-07` chặn SME nghiệm thu mốc chưa có kết quả bàn giao, và `FR-AUTH-04` chặn người chưa xác minh email tạo dự án. Ba tình huống này đều **không phải lỗi** và **không phải danh sách rỗng**; gộp chúng vào `ErrorState` sẽ nói với người dùng rằng hệ thống hỏng, trong khi thứ họ cần là biết mình còn thiếu bước nào.
+> **Tài liệu này theo bản 5 trạng thái**, vì trạng thái thứ năm không phải chi tiết kỹ thuật mà là một bề mặt nghiệp vụ có thật của GenDA: `BR-03` chặn cá nhân thiếu profile/CV `READY` gửi đơn, `BR-07` chặn SME nghiệm thu mốc chưa có kết quả bàn giao, và `FR-AUTH-04` giữ tài khoản đăng ký ở bước nhập OTP. Ba tình huống này đều **không phải lỗi** và **không phải danh sách rỗng**; gộp chúng vào `ErrorState` sẽ nói với người dùng rằng hệ thống hỏng, trong khi thứ họ cần là biết mình còn thiếu bước nào.
 >
-> **Hệ quả cần đồng bộ ngược (action item).** `NFR-UX-02` cần được sửa thành 5 trạng thái, và bảng truy vết ở [Mục 10](#10-ma-trận-truy-vết-thiết-kế-design-traceability-matrix) đã ghi nhận theo bản 5. Ghi nhận ở đây theo đúng quy ước của kỹ năng `requirements-spec`: khi hai nguồn mâu thuẫn thì nêu rõ cả hai và ghi vào danh sách câu hỏi mở, không lặng lẽ chọn một bên.
+> Bảng truy vết ở [Mục 10](#10-ma-trận-truy-vết-thiết-kế-design-traceability-matrix) dùng cùng định nghĩa này.
 
 ### 8.1. Trạng thái Đang tải (Loading State — Skeleton Shimmer Pattern)
 - **Quy tắc**: Tuyệt đối không dùng vòng quay spinner đơn điệu giữa trang trắng.
@@ -1186,10 +1195,10 @@ stateDiagram-v2
 ### 8.5. Trạng thái Bị chặn (Blocked State — Explain & Unblock Pattern)
 
 - **Quy tắc**: Người dùng bị chặn phải biết **ba** điều, và phải biết ngay tại chỗ họ bị chặn: (1) vì sao đang bị chặn, (2) cần làm gì để hết bị chặn, (3) mất khoảng bao lâu. Thiếu điều thứ ba là lý do phổ biến nhất khiến người dùng bỏ ngang, vì "chờ duyệt" không có thời hạn thì đọc ra như "không bao giờ".
-- **Quy tắc phụ — chặn mềm, không chặn cứng**: điểm chặn đặt ở **nút gửi**, không đặt ở nút mở. Sinh viên chưa xác thực vẫn mở được hộp thoại ứng tuyển để **đọc** yêu cầu; chỉ nút gửi bị vô hiệu hóa. Chặn ngay từ nút mở sẽ khiến bạn ấy không bao giờ biết mình vừa bỏ lỡ cái gì và vì sao.
+- **Quy tắc phụ — chặn mềm, không chặn cứng**: điểm chặn đặt ở **nút gửi**, không đặt ở nút mở. Cá nhân thiếu profile/CV vẫn xem dự án và mở được hộp thoại ứng tuyển để **đọc** yêu cầu; chỉ nút gửi bị vô hiệu hóa.
 - **Quy tắc phụ — nút bị vô hiệu hóa luôn đi kèm lý do**: một nút xám không kèm chữ giải thích là nguồn gốc của phần lớn cảm giác "hệ thống hỏng". Ràng buộc này đã nêu ở [Mục 7.6](#76-màn-hình-6-không-gian-quản-lý-milestone--bàn-giao-workspaceid) cho `BR-07` và được nâng lên thành quy tắc chung cho mọi nút bị vô hiệu hóa trong sản phẩm.
 - **Hiện thực**: Banner nền hổ phách (`color-status-warning-bg`) + icon + nhãn chữ theo đúng ba lớp của [Mục 4.5](#45-sử-dụng-màu-trong-mã-hóa-trạng-thái-redundant-coding), kèm **một liên kết dẫn thẳng tới nơi gỡ chặn**. Dùng màu hổ phách chứ không dùng đỏ là có chủ đích: người dùng chưa làm gì sai, họ chỉ chưa xong một bước.
-- **Ba bề mặt bị chặn của GenDA**: `BR-03` (sinh viên chưa xác thực nộp đơn), `BR-07` (SME nghiệm thu mốc chưa có kết quả bàn giao), `FR-AUTH-04` (người chưa xác minh email tạo dự án hoặc ứng tuyển).
+- **Ba bề mặt bị chặn của GenDA**: `BR-03` (cá nhân thiếu điều kiện ứng tuyển), `BR-07` (SME nghiệm thu mốc chưa có kết quả bàn giao), `FR-AUTH-04` (tài khoản đăng ký chưa xác minh OTP).
 
 ### 8.6. Ràng buộc hiện thực: năm trạng thái phải là mã chạy thật
 
@@ -1255,20 +1264,25 @@ Thử nghiệm trên nhóm mẫu thử nghiệm giai đoạn Soft-launch (15–2
 
 ## 10. Ma trận Truy vết Thiết kế (Design Traceability Matrix)
 
-**Phạm vi của bảng này.** Bảng đối chiếu dưới đây bao phủ **toàn bộ các yêu cầu có bề mặt giao diện** trong [`requirement.md`](./requirement.md). Các yêu cầu thuần tầng hạ tầng — `NFR-SEC-01..03`, `NFR-PRIV-01..02`, `NFR-AUD-01`, `NFR-PERF-01..02`, `NFR-OPS-01`, `NFR-TEST-01`, `NFR-DATA-01` — **nằm ngoài phạm vi tài liệu này** và được truy vết tại [`architecture.md`](./architecture.md) cùng [`testing-strategy.md`](./testing-strategy.md). Ghi nhận tường minh như vậy để tránh ngộ nhận rằng thiết kế giao diện đã phủ hết mọi yêu cầu của hệ thống.
+**Phạm vi của bảng này.** Bảng đối chiếu dưới đây bao phủ **toàn bộ các yêu cầu có bề mặt giao diện** trong [`requirement.md`](./requirement.md). Các yêu cầu thuần tầng hạ tầng — `NFR-SEC-01..04`, `NFR-PRIV-01..02`, `NFR-AUD-01`, `NFR-PERF-01..02`, `NFR-OPS-01`, `NFR-TEST-01`, `NFR-DATA-01` — **nằm ngoài phạm vi tài liệu này** và được truy vết tại [`architecture.md`](./architecture.md) cùng [`testing-strategy.md`](./testing-strategy.md). Ghi nhận tường minh như vậy để tránh ngộ nhận rằng thiết kế giao diện đã phủ hết mọi yêu cầu của hệ thống.
 
 | Mã Yêu cầu | Nội dung Yêu cầu Nghiệp vụ | Thành phần Giao diện & Mẫu Thiết kế Đảm nhiệm |
 | :--- | :--- | :--- |
-| **FR-AUTH-01..03, 05** | Đăng ký, chọn vai trò SV/SME, đăng nhập, đăng xuất, đặt lại mật khẩu | Màn hình `/login`, `/register`, Password Strength Meter Pattern |
-| **FR-AUTH-04** | Xác minh email trước khi tạo dự án hoặc ứng tuyển | Banner nhắc xác minh email trên toàn bộ trang riêng tư + chặn mềm tại điểm vào của Wizard đăng dự án và Apply Modal (cùng mẫu chặn với BR-03) |
-| **FR-USR-01..03** | Hồ sơ SV, nộp thẻ SV/email trường, duyệt minh chứng | Màn hình 2 (`/student/profile`), Visual Verification Banner 4 trạng thái |
+| **FR-AUTH-01..03, 05** | Đăng ký CONTRIBUTOR/SME, đăng nhập, đăng xuất, đặt lại mật khẩu | Màn hình `/login`, `/register`, Password Strength Meter Pattern |
+| **FR-AUTH-04, 06** | Nhập/gửi lại OTP xác minh email trước khi nhận phiên đầy đủ | `/verify-email`: OTP input, đếm ngược hết hạn/gửi lại, giới hạn thử và thông báo không làm lộ sự tồn tại tài khoản |
+| **FR-USR-01** | Hồ sơ contributor cơ bản | Màn hình 2 (`/contributor/profile`), Readiness Checklist |
+| **FR-USR-02..03** *(đã loại bỏ)* | Không xác minh tư cách sinh viên | Không có UI upload email/thẻ sinh viên, admin queue hoặc verified-student badge |
 | **FR-USR-04..05** | Hồ sơ SME, chọn kỹ năng từ danh mục hệ thống chuẩn | Màn hình Profile & Wizard, Component Tag Multi-select kỹ năng |
 | **FR-USR-06** | Xem hồ sơ công khai của bên kia trong phạm vi dự án đang tương tác | Màn hình 6 — Thẻ Hồ sơ Đối tác (Partner Profile Card) + panel trượt xem đầy đủ |
+| **FR-USR-07..09** | Quản lý CV kỹ thuật và điều kiện ứng tuyển GENERAL | `/contributor/cv`, Readiness Checklist, Apply Modal chặn mềm tại nút gửi |
+| **FR-USR-10..11** | Quản lý nhiều bản ghi Education tự khai, không phải hard gate | Màn hình 2 (`/contributor/profile`), Education Cards, empty state và form thêm/sửa/xóa |
+| **FR-USR-12..13** | SME nộp thông tin doanh nghiệp; admin xác minh/từ chối trước khi cấp quyền SME | Biến thể SME của `/register`, completion state sau `/verify-email`, Màn hình 8 — SME Verification Queue |
 | **FR-PRJ-01..04** | SME tạo dự án nháp, gửi duyệt; Admin duyệt/từ chối kèm lý do | Màn hình 3 (Wizard 3 bước) & Màn hình 8 (Admin Queue) |
 | **FR-PRJ-05..07** | Xem danh sách PUBLISHED, lọc phân trang, hủy dự án, nhận ứng viên | Màn hình 4 (Thẻ dự án, Faceted Filter) & Màn hình 5 |
+| **FR-PRJ-10..11** | Minimum budget theo complexity và admin phát hiện scope bị khai level thấp | Màn hình 3 (complexity selector, minimum-budget hint, inline block) & Màn hình 8 (scope-level review, trả về DRAFT kèm lý do/level đề xuất) |
 | **FR-PRJ-08** | Mọi milestone nghiệm thu xong thì dự án chuyển `COMPLETED` | Màn hình 7 (Quy trình đóng dự án, bước 1) + cập nhật Milestone Stepper ở Màn hình 6 |
 | **FR-PRJ-09** | SME xem danh sách dự án của chính mình theo trạng thái | `/sme/projects` — danh sách nhóm theo tab trạng thái (Nháp / Chờ duyệt / Đang tuyển / Đang thực hiện / Hoàn tất) |
-| **FR-APP-01..03, 05..07** | SV ứng tuyển kèm thư ngỏ; SME xem và chọn 1 bạn duy nhất; SV rút đơn | Màn hình 4 (Apply Modal) & Màn hình 5 (Applicant Selection Card, Irreversible Confirmation Dialog) |
+| **FR-APP-01..03, 05..07** | Contributor ứng tuyển kèm thư ngỏ/CV; SME xem và chọn 1 người; contributor rút đơn | Màn hình 4 (Apply Modal) & Màn hình 5 (Applicant Selection Card, Irreversible Confirmation Dialog) |
 | **FR-APP-04** *(Should)* | Đánh dấu danh sách rút gọn `SHORTLISTED` | Màn hình 5 — nút đánh dấu rút gọn trên từng thẻ ứng viên (HTA 3, bước 2.3) |
 | **FR-MAT-01..04** | Tính điểm phù hợp kỹ năng (Match Score); sắp xếp gợi ý | Match Score Badge kèm diễn giải (`90% Match: Trùng 3/3 kỹ năng`) tại Màn hình 4 & 5 |
 | **FR-MIL-01..05** | Định nghĩa mốc, tổng ngân sách khớp, SV nộp bài, lưu lịch sử | Màn hình 3 (Wizard bước 3 — xem [DD-01](#hta-1-doanh-nghiệp-đăng-dự-án-mới-post-project)) & Màn hình 6 (Immutable Audit Trail) |
@@ -1276,11 +1290,11 @@ Thử nghiệm trên nhóm mẫu thử nghiệm giai đoạn Soft-launch (15–2
 | **FR-MIL-08** | Cả hai bên xem tiến độ từng mốc kèm trạng thái và hạn chót | Màn hình 6 — Milestone Stepper hiển thị chung cho cả SV và SME |
 | **FR-MIL-09** | Tệp bàn giao lưu ở object storage | Màn hình 6 — Dropzone tải tệp, hiển thị tên/dung lượng/thời điểm nộp; liên kết tải có thời hạn (ràng buộc kỹ thuật thuộc `architecture.md`) |
 | **FR-REV-01..03** | SME đánh giá SV sau khi hoàn thành, hiển thị công khai | Màn hình 7 (Form đánh giá 1 chiều 5 sao + nhận xét thực tế) |
-| **FR-ADM-01..04** | Hàng đợi duyệt dự án, duyệt thẻ sinh viên, nhật ký kiểm toán, khóa tài khoản | Màn hình 8 (Bảng điều khiển Quản trị viên 3 tab chuyên biệt) |
-| **BR-01..14** | Các bất biến miền (ngân sách 1-5M, SV verified mới được nộp, BR-07...) | Visible Constraints: slider giới hạn ngân sách, date picker khóa ngày quá khứ, nút nghiệm thu `disabled` khi mốc chưa `SUBMITTED`, modal xác nhận hành động không đảo ngược |
+| **FR-ADM-01..04** | Hàng đợi duyệt dự án, xác minh SME, audit và khóa tài khoản | Màn hình 8 (Bảng điều khiển Quản trị viên 3 tab); không có hàng đợi duyệt contributor |
+| **BR-01..19** | Các bất biến miền (ngân sách 1-5M, minimum theo complexity, review chống under-classification, contributor đủ readiness mới được nộp, SME verified mới tạo dự án, BR-07...) | Visible Constraints: readiness checklist, SME pending/rejected state, complexity selector + minimum-budget hint, slider giới hạn ngân sách, date picker khóa ngày quá khứ, nút nghiệm thu `disabled` khi mốc chưa `SUBMITTED`, modal xác nhận hành động không đảo ngược |
 | **NFR-UX-01** | Giao diện tiếng Việt, Mobile-First, Semantic HTML, hỗ trợ bàn phím | Mục 4.6 (focus ring, thứ tự Tab, focus trap, ARIA, vùng chạm 44px) + lưới bố cục Mục 4.1 |
-| **NFR-UX-02** | Bắt buộc các trạng thái giao diện chuẩn mực | Mục 8 — **5 trạng thái**: Skeleton Shimmer (8.1), Empty kèm CTA (8.2), Error kèm Request ID (8.3), Success kèm bước kế tiếp (8.4), Blocked kèm lối gỡ chặn (8.5). Yêu cầu gốc ghi 4 trạng thái; sai lệch đã ghi nhận tại [Mục 8](#8-chuẩn-mực-xử-lý-5-trạng-thái-giao-diện-the-5-ui-states---nfr-ux-02) |
-| **BR-03, BR-07, FR-AUTH-04** | Các điều kiện chặn thao tác | Mục 8.5 — Blocked State: chặn mềm tại nút gửi, nút vô hiệu hóa luôn kèm dòng lý do |
+| **NFR-UX-02** | Bắt buộc các trạng thái giao diện chuẩn mực | Mục 8 — **5 trạng thái**: Skeleton Shimmer (8.1), Empty kèm CTA (8.2), Error kèm Request ID (8.3), Success kèm bước kế tiếp (8.4), Blocked kèm lối gỡ chặn (8.5) |
+| **BR-03, BR-07, FR-AUTH-04** | Các điều kiện chặn thao tác | Mục 8.5 — Blocked State: OTP là bước đăng ký bắt buộc; readiness chặn mềm tại nút gửi; nút vô hiệu hóa luôn kèm dòng lý do |
 | **NFR-OPS-02** | Lỗi kèm `requestId` để truy vết | Mục 8.3 — Error State hiển thị `Mã yêu cầu (Request ID)` cho người dùng đọc lại khi khiếu nại |
 
 ---
@@ -1466,12 +1480,12 @@ Bảng này trả lời câu hỏi *"quy định ở mục nào thì nằm ở t
 | DD-11 — nhân vật Gen | `apps/web/features/assistant/components/gen-portrait.tsx` |
 | DD-12 — tab loại cơ hội, thẻ cơ hội ngắn | `apps/web/features/opportunities/components/`, mục "CƠ HỘI NGẮN" trong `apps/web/app/components.css` |
 | Màn hình 1 — Trang chủ | `apps/web/app/page.tsx` |
-| Màn hình 2 — Hồ sơ & Xác thực | `apps/web/app/(student)/student/profile/page.tsx` |
+| Màn hình 2 — Hồ sơ Contributor | Target: `apps/web/app/(contributor)/contributor/profile/page.tsx`; hiện tại: `apps/web/app/(student)/student/profile/page.tsx` |
 | Màn hình 3 — Wizard đăng dự án | `apps/web/features/projects/components/project-wizard.tsx` |
 | Màn hình 4 — Khám phá & Lọc | `apps/web/app/(public)/projects/page.tsx` |
 | Màn hình 5 — Chọn ứng viên | `apps/web/app/(sme)/sme/projects/[id]/review/page.tsx` |
 | Màn hình 6 — Workspace | `apps/web/app/workspace/[id]/page.tsx` |
-| Màn hình 7 — CV của sinh viên | `apps/web/app/(student)/student/cv/page.tsx` |
+| Màn hình 7 — CV của Contributor | Target: `apps/web/app/(contributor)/contributor/cv/page.tsx`; route hiện tại chưa được migrate |
 | Màn hình 8 — Bảng điều khiển quản trị | `apps/web/app/(admin)/admin/page.tsx` |
 
 ---

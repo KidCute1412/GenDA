@@ -5,6 +5,66 @@
     "version": "v0"
   },
   "paths": {
+    "/api/v1/users/me/profile": {
+      "get": {
+        "tags": [
+          "student-profile-controller"
+        ],
+        "summary": "View the authenticated student's profile",
+        "operationId": "get",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentProfileResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "student-profile-controller"
+        ],
+        "summary": "Replace the authenticated student's editable profile information",
+        "operationId": "update",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateStudentProfileRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentProfileResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
     "/api/v1/auth/register": {
       "post": {
         "tags": [
@@ -403,6 +463,128 @@
   },
   "components": {
     "schemas": {
+      "UpdateStudentProfileRequest": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string",
+            "maxLength": 180,
+            "minLength": 0
+          },
+          "school": {
+            "type": "string",
+            "maxLength": 180,
+            "minLength": 0
+          },
+          "major": {
+            "type": "string",
+            "maxLength": 180,
+            "minLength": 0
+          },
+          "studyYear": {
+            "type": "string",
+            "enum": [
+              "YEAR_1",
+              "YEAR_2",
+              "YEAR_3",
+              "YEAR_4",
+              "RECENT_GRADUATE"
+            ]
+          },
+          "skillCodes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 64,
+              "minLength": 0
+            },
+            "maxItems": 8,
+            "minItems": 1
+          }
+        },
+        "required": [
+          "displayName",
+          "major",
+          "school",
+          "skillCodes",
+          "studyYear"
+        ]
+      },
+      "SkillCatalogItemResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "name"
+        ]
+      },
+      "StudentProfileResponse": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "email": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "school": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "major": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "studyYear": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "YEAR_1",
+              "YEAR_2",
+              "YEAR_3",
+              "YEAR_4",
+              "RECENT_GRADUATE"
+            ]
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SkillCatalogItemResponse"
+            }
+          },
+          "verificationStatus": {
+            "type": "string"
+          },
+          "complete": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "complete",
+          "displayName",
+          "email",
+          "skills",
+          "userId",
+          "verificationStatus"
+        ]
+      },
       "RegisterRequest": {
         "type": "object",
         "properties": {
@@ -526,21 +708,6 @@
           "code",
           "message",
           "requestId"
-        ]
-      },
-      "SkillCatalogItemResponse": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "code",
-          "name"
         ]
       },
       "ProjectPageResponse": {

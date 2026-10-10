@@ -9,6 +9,7 @@ The backend is the source of truth for:
 - `GET /api/v1/skills`: canonical skill codes and display names.
 - `GET /api/v1/projects`: published projects only, with keyword, repeated skill-code, budget and paging filters.
 - `GET /api/v1/projects/{projectId}`: one published project, including acceptance criteria and the milestone plan visible before applying. Execution status, deliverables and escrow remain owned by the future `milestones` slice.
+- The project-creation policy supplied by the backend: allowed complexity levels and the current minimum budget for each level. The wizard may display and pre-validate this policy, but must not duplicate it as trusted frontend constants.
 
 List responses use `{ data, page, pageSize, total }`. Errors use `{ code, message, requestId }`. The OpenAPI snapshot and generated TypeScript schema are committed with contract changes.
 
@@ -31,4 +32,6 @@ These values never grant backend authorization. Do not send them as trusted role
 
 ## Authentication boundary
 
-The login and registration UI use the generated client with `credentials: include`. JavaScript receives only the authenticated user DTO; both JWTs remain in `HttpOnly` cookies. Student registration creates a session with an unverified account. SME registration creates a `PENDING` account without a session and the API blocks login until approval. On page load, the frontend calls `/auth/me`; an expired access cookie triggers one `/auth/refresh` rotation before retrying. Email verification and SME moderation remain separate future backend slices. Catalog reads remain public while all mutations are protected by backend authentication, authorization and CSRF checks.
+The current login and registration UI use the generated client with `credentials: include`. JavaScript receives only the authenticated user DTO; both JWTs remain in `HttpOnly` cookies. The current student registration creates a session immediately, while SME registration creates a `PENDING` account without a session. This is legacy behavior.
+
+The approved target UI sends every new `CONTRIBUTOR` or `SME` registration to `/verify-email`, confirms a six-digit OTP through the generated client, supports cooldown-bound resend, and receives no access/refresh cookies before successful email verification. SME registration also collects the business identity required for manual review. After OTP confirmation, contributor onboarding may continue, while SME shows a pending/rejected/verified business-review result and receives no full session until `VERIFIED`. On authenticated page load, the frontend calls `/auth/me`; an expired access cookie triggers one `/auth/refresh` rotation before retrying. Frontend OTP/readiness/approval state is display state only; backend account and business use cases remain authoritative.
