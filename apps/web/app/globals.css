@@ -1,10 +1,17 @@
 /* ==========================================================================
-   GenDA Design Tokens
+   GenDA Design Tokens — BẢN ẤM, SÁNG, THÂN THIỆN
    Nguồn chân lý: docs/design.md (Mục 4.4 màu, 4.7 chữ, 4.8 khoảng cách)
    Đặc tả component:  docs/design-tokens.md
 
    Kiến trúc ba lớp: PRIMITIVE -> SEMANTIC -> COMPONENT
    Component chỉ được gọi lớp SEMANTIC trở lên. Không dùng hex thô.
+
+   Ngôn ngữ thị giác của bản này, tóm tắt trong bốn câu:
+     1. Trang KHÔNG lặp một kiểu khối. Có BỐN kiểu nền khối, và hai khối liền
+        nhau không bao giờ được dùng cùng một kiểu (design.md 4.9.3).
+     2. Bốn kiểu: tràn mép / phẳng không nền / tấm bo góc thụt vào / tấm bo mép.
+     3. Hành động dùng XANH NAVY; điểm nhấn và chú thích dùng CAM SAN HÔ.
+     4. Có một giọng CHỮ VIẾT TAY chạy xuyên suốt, dùng rất tiết chế.
    ========================================================================== */
 
 /* ==========================================================================
@@ -13,49 +20,61 @@
    ========================================================================== */
 
 :root {
-  /* --- Màu: Teal (neo từ khối gradient logo GenDA) --- */
-  --teal-50: #eff7fa;
-  --teal-100: #d7ecf3;
-  --teal-200: #aedae7;
-  --teal-300: #7fc3d9; /* neo logo (phần sáng) */
-  --teal-400: #4fa6c4;
-  --teal-500: #2c89ab; /* neo logo (phần đậm) */
-  --teal-600: #1f6f8e;
-  --teal-700: #1a5a73;
-  --teal-800: #154a5f;
-  --teal-900: #103a4b;
+  /* --- Màu: Blue (hành động) ---
+     Hai bậc 100 và 600 là mã LẤY NGUYÊN từ bảng màu: #E8F1FD và #1B3FD8
+     (nút chính). Các bậc còn lại nội suy giữ nguyên hue. */
+  --blue-50: #edf1fe;
+  --blue-100: #e8f1fd; /* TẤM NHẤN — mã gốc bảng màu */
+  --blue-200: #c7d5fa;
+  --blue-300: #9ab0f5;
+  --blue-400: #5c7bea;
+  --blue-500: #2f52e0;
+  --blue-600: #1b3fd8; /* NÚT CHÍNH — mã gốc bảng màu */
+  --blue-700: #1631ac;
+  --blue-800: #122782;
+  --blue-900: #0d1c5c;
 
-  /* --- Màu: Green (neo từ chữ "DA" trong logo) --- */
-  --green-50: #f2fae9;
-  --green-100: #e2f5cc;
-  --green-200: #c8eba0;
-  --green-300: #a8dc6e;
-  --green-400: #7dc242; /* neo logo */
-  --green-500: #63a22e;
-  --green-600: #4a7f1f;
-  --green-700: #396317;
-  --green-800: #2c4d12;
-  --green-900: #21390e;
+  /* --- Màu: Coral (nhấn, chú thích, nét vẽ tay) ---
+     Bậc 50 là #FDF3EC (nền kem) và bậc 500 là #E85D2C, cả hai lấy nguyên từ
+     bảng màu. Nền kem là một màu trung tính ẤM nằm gần hue của coral, nên nó
+     được đặt vào chính thang này thay vì thang trung tính — như vậy nền kem và
+     màu nhấn luôn cùng một tông và không bao giờ bị lệch sắc. */
+  --coral-50: #fdf3ec; /* NỀN KEM — mã gốc bảng màu */
+  --coral-100: #fbe4d6;
+  --coral-200: #f7c7ae;
+  --coral-300: #f2a37c;
+  --coral-400: #ed7e4f;
+  --coral-500: #e85d2c; /* NHẤN — mã gốc bảng màu */
+  --coral-600: #c94a1e;
+  --coral-700: #a33a16;
+  --coral-800: #7d2c11;
+  --coral-900: #58200c;
 
-  /* --- Màu: Slate (neo từ chữ "Gen" trong logo) --- */
-  --slate-0: #ffffff;
-  --slate-50: #f6f9fb;
-  --slate-100: #ecf1f5;
-  --slate-200: #d8e1e8;
-  --slate-300: #b9c7d1;
-  --slate-400: #8ca0ad;
-  --slate-500: #6b7f8c; /* neo logo */
-  --slate-600: #52646f;
-  --slate-700: #3c4a54;
-  --slate-900: #16222b;
+  /* --- Màu: Ink (trung tính ấm) ---
+     Bậc 900 là #1A1A1A và bậc 0 là #FFFFFF, lấy nguyên từ bảng màu. Các bậc
+     giữa ám nhẹ sắc ấm để không chửi nhau với nền kem: một thang xám lạnh đặt
+     cạnh #FDF3EC sẽ đọc ra như hai hệ màu khác nhau bị ghép nhầm. */
+  --ink-0: #ffffff; /* NỀN THẺ — mã gốc bảng màu */
+  --ink-50: #faf8f6;
+  --ink-100: #efebe7;
+  --ink-200: #dfd9d3;
+  --ink-300: #c3bbb3;
+  --ink-400: #8c837b;
+  --ink-500: #6e655e;
+  --ink-700: #403b37;
+  --ink-900: #1a1a1a; /* CHỮ — mã gốc bảng màu */
 
-  /* --- Màu trạng thái (ngoài nhận diện thương hiệu, theo quy ước phổ quát) --- */
-  --amber-50: #fdf4e3;
-  --amber-700: #a15c07;
-  --amber-800: #7a4a05;
+  /* --- Màu trạng thái (ngoài nhận diện, theo quy ước phổ quát) --- */
+  --green-50: #e9f7ee;
+  --green-700: #1f7a43;
+  --green-800: #176034;
 
-  --red-50: #fdf0ef;
-  --red-700: #b42318;
+  --amber-50: #fdf3e0;
+  --amber-700: #9a5b06;
+  --amber-800: #7a4705;
+
+  --red-50: #fdeeed;
+  --red-700: #b3261e;
 
   /* --- Khoảng cách: cơ số 4px (design.md 4.8.1) --- */
   --space-0: 0;
@@ -73,18 +92,24 @@
   --space-20: 5rem; /* 80px */
   --space-24: 6rem; /* 96px */
 
-  /* --- Bo góc (design.md 4.8.2) --- */
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-  --radius-2xl: 24px; /* khối lớn: vùng tô màu, ô nổi bật */
+  /* --- Bo góc (design.md 4.8.2) ---
+     Thang này RỘNG hơn hẳn hai bản trước. Nhưng bo góc lớn nay chỉ dành cho
+     MỘT trong bốn kiểu khối, không rải cho tất cả — rải cho tất cả chính là
+     thứ làm bản trước đọc ra đều đều. */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-2xl: 36px;
   --radius-full: 9999px;
 
-  /* --- Đổ bóng: chỉ dùng cho bề mặt THẬT SỰ nhấc lên được (4.9) --- */
-  --shadow-sm: 0 1px 2px 0 rgb(22 34 43 / 0.06);
-  --shadow-md: 0 4px 6px -1px rgb(22 34 43 / 0.08), 0 2px 4px -2px rgb(22 34 43 / 0.06);
-  --shadow-lg: 0 10px 15px -3px rgb(22 34 43 / 0.1), 0 4px 6px -4px rgb(22 34 43 / 0.06);
+  /* --- Đổ bóng ---
+     Bóng RẤT mềm và ám ấm (lấy từ ink-900 chứ không phải đen thuần), dùng để
+     nói "vật này nổi lên khỏi tấm nền". Đây là chỗ bản này cố ý nới lỏng kỷ
+     luật của hai bản trước — lý do ghi ở design.md 4.9. */
+  --shadow-sm: 0 1px 2px 0 rgb(26 26 26 / 0.05);
+  --shadow-md: 0 8px 20px -6px rgb(26 26 26 / 0.12);
+  --shadow-lg: 0 24px 48px -16px rgb(26 26 26 / 0.16);
 
   /* --- Thời lượng chuyển động --- */
   --duration-fast: 150ms;
@@ -98,10 +123,28 @@
   --z-toast: 1400;
 
   /* --- Họ phông chữ ---
-     Biến --font-be-vietnam-pro / --font-inter do next/font cấp ở layout.tsx.
-     Chuỗi dự phòng bảo đảm giao diện vẫn đọc được nếu phông chưa tải xong. */
-  --font-heading: var(--font-heading-family), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --font-body: var(--font-inter), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+     HAI họ, hai vai trò rạch ròi. Biến --font-sans / --font-hand do next/font
+     cấp ở layout.tsx.
+
+     Be Vietnam Pro cho toàn bộ giao diện. Đây là chỗ đảo ngược một quyết định
+     cũ: bản trước loại nó vì "geometric sans, cùng họ hình với Poppins nên đọc
+     ra mẫu có sẵn". Lý do đó gắn với một đích đến khác — khi ấy sản phẩm nhắm
+     tới vẻ công cụ kỹ thuật nghiêm túc. Phong cách mới nhắm tới vẻ ẤM và DỄ
+     GẦN, và geometric sans chính là dáng chữ của vẻ đó. Thêm nữa nó dựng dấu
+     tiếng Việt nguyên bản, không phải bản chắp vá.
+
+     Vì sao không phải chính phông trong ảnh tham chiếu: Poppins và Outfit — hai
+     phông gần nhất về dáng — đều KHÔNG có subset `vietnamese` (đã kiểm trong
+     next/dist/compiled/@next/font/dist/google/font-data.json). Với một giao
+     diện toàn tiếng Việt thì đó là điều kiện loại, không phải điểm trừ.
+
+     Playpen Sans cho giọng viết tay. Caveat (phông viết tay phổ biến nhất) cũng
+     không có subset `vietnamese`, nên bị loại vì đúng lý do trên. */
+  --font-sans:
+    var(--font-sans-family), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-hand: var(--font-hand-family), "Segoe Script", cursive;
+  --font-heading: var(--font-sans);
+  --font-body: var(--font-sans);
 
   /* --- Trọng lượng chữ --- */
   --weight-regular: 400;
@@ -109,15 +152,11 @@
   --weight-semibold: 600;
   --weight-bold: 700;
 
-  /* --- Giãn chữ (letter-spacing) ---
-     Chữ càng lớn thì khoảng cách giữa các con chữ càng phải siết lại, nếu không
-     tiêu đề cỡ lớn sẽ trông rời rạc và "mặc định". Đây là thứ tạo ra độ chặt của
-     chữ in editorial, thay cho việc siết giãn dòng — vì giãn dòng còn phải chừa
-     chỗ cho dấu phụ tiếng Việt (design.md 4.7.1). */
-  --tracking-display: -0.03em;
+  /* --- Giãn chữ (letter-spacing) --- */
+  --tracking-display: -0.025em;
   --tracking-heading: -0.015em;
   --tracking-normal: 0;
-  --tracking-label: 0.08em; /* chữ nhãn viết hoa nhỏ, cần nới ra mới đọc được */
+  --tracking-label: 0.08em;
 }
 
 /* ==========================================================================
@@ -128,88 +167,96 @@
 
 :root {
   /* --- Hành động --- */
-  --color-action-primary: var(--teal-600); /* chữ trắng: 5.64:1 AA */
-  --color-action-primary-hover: var(--teal-700); /* chữ trắng: 7.63:1 AAA */
-  --color-action-primary-active: var(--teal-800);
-  --color-action-link: var(--teal-600); /* trên nền trang: 5.34:1 AA */
+  --color-action-primary: var(--blue-600); /* chữ trắng: 7.64:1 AAA */
+  --color-action-primary-hover: var(--blue-700); /* chữ trắng: 10.15:1 AAA */
+  --color-action-primary-active: var(--blue-800);
+  --color-action-link: var(--blue-600); /* trên nền kem: 6.99:1 AA */
 
-  /* --- Thương hiệu, CHỈ dùng cho phần tử phi văn bản (3.98:1) ---
-     Cái bẫy nguy hiểm nhất của hệ màu: đẹp nhất nhưng KHÔNG đủ tương phản
-     cho chữ. Cấm dùng làm nền nút có chữ trắng (design.md 4.4.3). */
-  --color-brand-decorative: var(--teal-500);
+  /* --- Nhấn: CAM SAN HÔ ---
+     Đây là màu đẹp nhất của bảng và cũng là cái bẫy nguy hiểm nhất, đúng như
+     vai trò mà teal-500 từng giữ ở bản đầu. #E85D2C trên nền kem chỉ đạt
+     3.18:1: đủ cho phần tử phi văn bản và cho CHỮ CỠ LỚN (>= 24px), nhưng
+     KHÔNG đủ cho chữ thường và tuyệt đối không được làm nền nút có chữ trắng
+     (trắng trên coral-500 chỉ 3.48:1). Muốn viết chữ cam cỡ nhỏ thì dùng
+     --color-accent-text. */
+  --color-brand-decorative: var(--coral-500); /* trên nền kem: 3.18:1 — phi văn bản */
+  --color-accent-text: var(--coral-700); /* trên nền kem: 6.05:1 AA */
+  --color-accent-strong: var(--coral-600); /* chữ trắng: 4.69:1 AA */
 
   /* --- Trạng thái: đã xác thực / thành quả --- */
-  --color-status-verified: var(--green-600); /* chữ trắng: 4.83:1 AA */
-  --color-status-verified-text: var(--green-700); /* trên nền tint: 6.60:1 AA */
+  --color-status-verified: var(--green-700); /* chữ trắng: 5.35:1 AA */
+  --color-status-verified-text: var(--green-800); /* trên nền tint: 6.89:1 AA */
   --color-status-verified-bg: var(--green-50);
 
   /* --- Trạng thái: lưu ý --- */
-  --color-status-warning: var(--amber-700); /* chữ trắng: 5.19:1 AA */
-  --color-status-warning-text: var(--amber-800); /* trên nền tint: 6.84:1 AA */
+  --color-status-warning: var(--amber-700); /* chữ trắng: 5.42:1 AA */
+  --color-status-warning-text: var(--amber-800); /* trên nền tint: 6.98:1 AA */
   --color-status-warning-bg: var(--amber-50);
 
   /* --- Trạng thái: lỗi / từ chối --- */
-  --color-status-danger: var(--red-700); /* chữ trắng: 6.57:1 AA */
-  --color-status-danger-text: var(--red-700); /* trên nền tint: 5.91:1 AA */
+  --color-status-danger: var(--red-700); /* chữ trắng: 6.54:1 AA */
+  --color-status-danger-text: var(--red-700); /* trên nền tint: 5.80:1 AA */
   --color-status-danger-bg: var(--red-50);
 
   /* --- Trạng thái: đang thực hiện --- */
-  --color-status-progress: var(--teal-700);
-  --color-status-progress-bg: var(--teal-50);
+  --color-status-progress: var(--blue-700); /* trên nền tint: 9.00:1 AAA */
+  --color-status-progress-bg: var(--blue-50);
 
   /* --- Chữ --- */
-  --color-text-heading: var(--slate-900); /* trên nền trang: 15.31:1 AAA */
-  --color-text-body: var(--slate-700); /* trên nền trang: 8.64:1 AAA */
-  --color-text-muted: var(--slate-600); /* trên nền trắng: 6.16:1 AA */
-  --color-text-on-dark: var(--slate-0);
+  --color-text-heading: var(--ink-900); /* trên nền kem: 15.92:1 AAA */
+  --color-text-body: var(--ink-700); /* trên nền kem: 10.12:1 AAA */
+  --color-text-muted: var(--ink-500); /* trên nền kem: 5.21:1 AA */
+  --color-text-on-dark: var(--ink-0);
+  --color-text-on-accent: var(--ink-0);
+  /* Chữ "bóng ma": số thứ tự cỡ lớn làm nền trang trí. Thuần trang trí nên
+     KHÔNG chịu ngưỡng tương phản, và bắt buộc luôn đi kèm aria-hidden. */
+  --color-text-ghost: var(--coral-200);
 
-  /* --- Bề mặt --- */
-  --color-surface-page: var(--slate-50);
-  --color-surface-card: var(--slate-0);
-  --color-surface-subtle: var(--slate-100);
+  /* --- Bề mặt ---
+     HAI tầng, không phải ba. Bản trước lồng khung xanh -> panel trắng bo góc ->
+     tấm kem bo góc; mọi khối đều là một tấm bo tròn nên trang đọc ra đều đều và
+     lặp. Nay chỉ còn: NỀN TRANG (trắng) -> KHỐI (nền thay đổi theo kiểu) -> THẺ.
+     Sự đa dạng chuyển từ "lồng nhiều tầng" sang "bốn kiểu khối xen kẽ nhau" —
+     xem design.md 4.9.3. */
+  --color-surface-page: var(--ink-0);
+  --color-surface-card: var(--ink-0);
+  --color-surface-subtle: var(--coral-50);
 
-  /* Vùng tô màu diện rộng (design.md 4.9.1, đòn bẩy 2). Đây là đòn bẩy "thân
-     thiện" lớn nhất mà không đánh đổi độ rõ: màu thương hiệu được dùng hào phóng
-     làm nền cả khối, thay vì chỉ nhỏ giọt trên vài cái nút. Chữ đặt trên hai nền
-     này vẫn dùng token chữ thường — cả hai nền đều rất sáng nên tỷ lệ tương phản
-     gần như không đổi so với nền trang (8.4:1 và 8.5:1 cho chữ nội dung). */
-  --color-surface-brand: var(--teal-50);
-  --color-surface-achieve: var(--green-50);
-
-  /* Vùng tô màu ĐẬM, chiếm trọn bề ngang. Đây mới là hiện thực đúng của đòn bẩy
-     làm ấm số 2 ở design.md 4.9.1: màu thương hiệu dùng HÀO PHÓNG làm nền cả
-     khối. Hai nền tint ở trên sáng tới mức gần như không phân biệt được với nền
-     trắng, nên một mình chúng không tạo ra được nhịp màu nào cho trang.
-
-     Số đo tương phản với chữ trắng (đã kiểm định, xem design.md 4.4.5):
-       teal-800  #154a5f : 9.65:1  AAA
-       green-800 #2c4d12 : 9.64:1  AAA */
-  --color-surface-brand-strong: var(--teal-800);
-  --color-surface-achieve-strong: var(--green-800);
+  /* Vùng tô màu diện rộng (design.md 4.9.1, đòn bẩy 2).
+     Hai màu này KHÔNG chỉ khác màu mà còn gắn với hai KIỂU KHỐI khác nhau:
+     kem đi với khối tràn mép, xanh nhạt đi với tấm bo góc thụt vào. Nhờ vậy
+     người đọc phân biệt hai loại khối bằng cả màu lẫn hình, không chỉ bằng màu. */
+  --color-surface-brand: var(--coral-50);
+  --color-surface-brand-strong: var(--coral-50);
+  --color-surface-achieve: var(--blue-100);
+  --color-surface-achieve-strong: var(--blue-100);
 
   /* --- Đường viền --- */
-  --color-border-input: var(--slate-500); /* ranh giới MANG THÔNG TIN: 4.17:1 */
-  --color-border-subtle: var(--slate-200); /* thuần trang trí: 1.32:1 */
-  --color-border-focus: var(--teal-600); /* vòng focus: 5.34:1 */
+  --color-border-input: var(--ink-400); /* ranh giới MANG THÔNG TIN: 3.40:1 trên kem */
+  --color-border-subtle: var(--ink-200); /* thuần trang trí: 1.40:1 */
+  --color-border-focus: var(--blue-600); /* vòng focus trên nền kem: 6.99:1 */
 
   /* --- Khoảng cách ngữ nghĩa (design.md 4.8.1) --- */
-  --space-field-label: var(--space-1-5); /* nhãn -> ô nhập: 6px */
-  --space-field-error: var(--space-1-5); /* ô nhập -> dòng lỗi: 6px */
-  --space-field-group: var(--space-5); /* giữa hai nhóm trường: 20px */
-  --space-card-padding: var(--space-6); /* đệm trong thẻ: 24px */
-  --space-card-gap: var(--space-4); /* giữa các thẻ: 16px */
-  --space-section: var(--space-12); /* giữa các khối lớn (mobile): 48px */
+  --space-field-label: var(--space-1-5);
+  --space-field-error: var(--space-1-5);
+  --space-field-group: var(--space-5);
+  --space-card-padding: var(--space-6);
+  --space-card-gap: var(--space-4);
+  --space-section: var(--space-12);
 
   /* --- Bố cục (design.md 4.8.3) --- */
   --layout-container-max: 1200px;
-  --layout-gutter: var(--space-4); /* lề hai bên (mobile): 16px */
+  --layout-gutter: var(--space-4);
   --layout-grid-gap: var(--space-4);
+  /* Khoảng thụt vào hai bên của KIỂU C (tấm bo góc). Nhỏ trên mobile để không
+     ăn mất bề ngang vốn đã hẹp. */
+  --layout-panel-inset: var(--space-4);
 
   /* --- Vai trò chữ: giá trị MOBILE-FIRST, được nâng cấp ở breakpoint md --- */
-  --text-display-size: 2.25rem; /* 36px */
-  --text-display-height: 1.2;
-  --text-h1-size: 1.75rem; /* 28px */
-  --text-h1-height: 1.25;
+  --text-display-size: 2.5rem; /* 40px */
+  --text-display-height: 1.12;
+  --text-h1-size: 1.875rem; /* 30px */
+  --text-h1-height: 1.2;
   --text-h2-size: 1.5rem; /* 24px */
   --text-h2-height: 1.3;
   --text-h3-size: 1.25rem; /* 20px */
@@ -231,21 +278,22 @@
    lại giá trị ở đây thay vì tham chiếu một token breakpoint. */
 @media (min-width: 768px) {
   :root {
-    --text-display-size: 4rem; /* 64px — khoảng nhảy lớn so với h1 là thứ tạo ra sức nặng thị giác */
-    --text-h1-size: 2.25rem; /* 36px */
+    --text-display-size: 4.25rem; /* 68px — chữ lớn là một phần của giọng nói ấm */
+    --text-h1-size: 2.5rem; /* 40px */
     --text-h2-size: 1.875rem; /* 30px */
     --text-h3-size: 1.5rem; /* 24px */
     --text-h4-size: 1.25rem; /* 20px */
     --text-body-lg-size: 1.125rem; /* 18px */
 
-    --layout-gutter: var(--space-6); /* 24px */
+    --layout-gutter: var(--space-8); /* 32px */
     --layout-grid-gap: var(--space-5); /* 20px */
+    --layout-panel-inset: var(--space-8); /* 32px */
   }
 }
 
 @media (min-width: 1024px) {
   :root {
-    --layout-gutter: var(--space-8); /* 32px */
+    --layout-gutter: var(--space-10); /* 40px */
     --layout-grid-gap: var(--space-6); /* 24px */
     --space-section: var(--space-20); /* 80px */
   }
@@ -258,21 +306,18 @@
 
 :root {
   /* --- Button (design-tokens.md 3.1) --- */
-  --btn-height-sm: 32px;
-  --btn-height-md: 44px; /* = ngưỡng vùng chạm WCAG 2.5.8 */
-  --btn-height-lg: 52px;
-  /* Đệm ngang rộng hơn mức tối thiểu: nút "béo" đọc ra thân thiện và dễ bấm hơn */
+  --btn-height-sm: 36px;
+  --btn-height-md: 48px; /* vượt ngưỡng vùng chạm 44px của WCAG 2.5.8 */
+  --btn-height-lg: 56px;
   --btn-padding-x-sm: var(--space-4);
   --btn-padding-x-md: var(--space-6);
   --btn-padding-x-lg: var(--space-8);
-  /* Bo góc VỪA, không bo tròn hoàn toàn.
-     Bản trước dùng `radius-full` với lập luận "bo tròn là tín hiệu thân thiện
-     nhất". Lập luận đó đúng về mặt thân thiện nhưng bỏ qua một vế: viên thuốc
-     bo tròn hoàn toàn là hình nút mặc định của mọi mẫu SaaS dựng sẵn, nên nó
-     đọc ra "vui vẻ, đại trà" chứ không ra "đáng tin, chuyên nghiệp". Với một
-     nền tảng mà người dùng phải giao tiền và thời gian, vế thứ hai quan trọng
-     hơn. Góc 8px giữ được vẻ mềm mà vẫn nghiêm túc. */
-  --btn-radius: var(--radius-md);
+  /* Nút BO TRÒN HOÀN TOÀN. Đây là đảo ngược có chủ đích một quyết định cũ —
+     lý do đầy đủ tại design.md 4.8.2. Tóm tắt: lập luận cũ ("viên thuốc bo tròn
+     là hình nút mặc định của mọi mẫu SaaS nên đọc ra đại trà") đúng với một
+     sản phẩm muốn đọc ra nghiêm túc như chứng từ tài chính. Phong cách mới
+     muốn đọc ra DỄ GẦN, và ở đó hình viên thuốc là hình đúng. */
+  --btn-radius: var(--radius-full);
 
   --btn-primary-bg: var(--color-action-primary);
   --btn-primary-fg: var(--color-text-on-dark);
@@ -291,43 +336,40 @@
   --btn-danger-fg: var(--color-text-on-dark);
 
   /* --- Input (design-tokens.md 3.2) --- */
-  --input-height: 44px;
+  --input-height: 48px;
   --input-bg: var(--color-surface-card);
   --input-border: var(--color-border-input);
   --input-border-focus: var(--color-border-focus);
   --input-border-error: var(--color-status-danger);
+  /* Ô nhập bo VỪA chứ không bo tròn hoàn toàn: đây là chỗ khác biệt phải giữ
+     giữa "chỗ bấm" (viên thuốc) và "chỗ gõ" (hộp). Khi nút đã bo tròn hết cỡ,
+     hình dạng góc trở lại thành tín hiệu phân biệt có ích. */
   --input-radius: var(--radius-md);
-  --input-padding-x: var(--space-3);
+  --input-padding-x: var(--space-4);
 
   /* --- Card (design-tokens.md 3.3) --- */
   --card-bg: var(--color-surface-card);
   --card-border: var(--color-border-subtle);
-  /* Bo 12px thay cho 16px: khối bo càng lớn càng đọc ra "tiêu dùng, thân thiện";
-     khối bo vừa đọc ra "công cụ, chuyên nghiệp". */
   --card-radius: var(--radius-lg);
   --card-padding: var(--space-card-padding);
-  /* Bóng RẤT nhẹ ở trạng thái mặc định. Mục 4.9 cấm rải bóng mềm khắp nơi và
-     lập luận đó vẫn đúng — nhưng bề mặt hoàn toàn phẳng, chỉ có viền 1px, lại
-     đọc ra như bản vẽ khung. Một lớp bóng gần như không thấy được đủ để tách
-     thẻ khỏi nền mà không giả vờ rằng nó nhấc lên được. */
-  --card-shadow: 0 1px 2px 0 rgb(22 34 43 / 0.04);
+  --card-shadow: var(--shadow-sm);
   --card-shadow-hover: var(--shadow-md);
 
   /* --- Badge (design-tokens.md 3.4) --- */
-  --badge-radius: var(--radius-sm);
-  --badge-padding: var(--space-1) 10px;
+  --badge-radius: var(--radius-full);
+  --badge-padding: var(--space-1) 12px;
   --badge-icon-size: 14px;
 
   /* --- Alert (design-tokens.md 3.5) --- */
-  --alert-padding: var(--space-4);
+  --alert-padding: var(--space-5);
   --alert-radius: var(--radius-lg);
   --alert-accent-width: 4px;
 
   /* --- Dialog (design-tokens.md 3.6) --- */
-  --dialog-overlay: rgb(22 34 43 / 0.5);
+  --dialog-overlay: rgb(26 26 26 / 0.45);
   --dialog-bg: var(--color-surface-card);
   --dialog-radius: var(--radius-xl);
-  --dialog-padding: var(--space-card-padding);
+  --dialog-padding: var(--space-8);
   --dialog-width-sm: 400px;
   --dialog-width-md: 520px;
   --dialog-width-lg: 640px;
@@ -347,8 +389,8 @@
      Khai báo thành token vì chúng được dùng ở HAI nơi phải luôn khớp nhau:
      chiều cao thật của thanh, và khoảng chừa của scroll-padding bên dưới.
      Lệch nhau là vòng focus bị che (design.md 4.6h). */
-  --layout-header-height: 64px;
-  --layout-bottom-nav-height: 56px;
+  --layout-header-height: 72px;
+  --layout-bottom-nav-height: 60px;
 }
 
 /* ==========================================================================
@@ -421,7 +463,7 @@ h1 {
 h2 {
   font-size: var(--text-h2-size);
   line-height: var(--text-h2-height);
-  font-weight: var(--weight-semibold);
+  font-weight: var(--weight-bold);
 }
 
 h3 {
@@ -493,10 +535,10 @@ button {
   left: var(--space-4);
   top: calc(-1 * var(--space-16));
   z-index: var(--z-sticky);
-  padding: var(--space-2) var(--space-4);
+  padding: var(--space-3) var(--space-5);
   background-color: var(--color-action-primary);
   color: var(--color-text-on-dark);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-full);
   text-decoration: none;
   transition: top var(--duration-fast) ease;
 }

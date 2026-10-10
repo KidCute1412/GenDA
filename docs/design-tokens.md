@@ -24,7 +24,7 @@ Tài liệu bàn giao thiết kế → mã nguồn (design-to-code handoff). Đ�
 │  Gán ý nghĩa. Đây là lớp đổi khi làm dark mode / đổi thương   │
 │  hiệu. Component CHỈ ĐƯỢC gọi lớp này trở lên.                │
 ├──────────────────────────────────────────────────────────────┤
-│  LỚP 1 — PRIMITIVE     --teal-600, --space-5, --text-base     │
+│  LỚP 1 — PRIMITIVE     --blue-600, --space-5, --text-base     │
 │  Giá trị thô, không mang ý nghĩa. Gần như không bao giờ sửa.  │
 └──────────────────────────────────────────────────────────────┘
 ```
@@ -33,18 +33,28 @@ Tài liệu bàn giao thiết kế → mã nguồn (design-to-code handoff). Đ�
 
 ```css
 /* SAI — hex thô, không đổi theme được */
-.btn-primary { background: #1F6F8E; }
+.btn-primary { background: #1b3fd8; }
 
 /* SAI — gọi thẳng primitive, mất tầng ngữ nghĩa */
-.btn-primary { background: var(--teal-600); }
+.btn-primary { background: var(--blue-600); }
 
 /* ĐÚNG */
 .btn-primary { background: var(--btn-primary-bg); }
 /* với --btn-primary-bg: var(--color-action-primary); */
-/* và  --color-action-primary: var(--teal-600);        */
+/* và  --color-action-primary: var(--blue-600);        */
 ```
 
-**Vì sao đáng công?** Bảng màu GenDA neo vào logo. Nếu logo đổi ở V1.1, chỉ cần sửa ~20 dòng ở lớp primitive + semantic; nếu hex nằm rải rác trong component thì phải sửa hàng trăm chỗ và chắc chắn sót.
+**Vì sao đáng công? — nay đã có bằng chứng ba lần, không còn là giả thiết.** Lập luận ban đầu là: nếu nhận diện đổi, chỉ cần sửa lớp primitive + semantic. Điều đó **đã thật sự xảy ra ba lần liên tiếp**:
+
+| Lần | Đổi gì | Phải sửa gì |
+| :--- | :--- | :--- |
+| 1 | Teal/green/slate nền sáng → neon/cyan/ink **nền tối** ([DD-07](./design.md#quyết-định-thiết-kế-dd-07-chuyển-toàn-sản-phẩm-sang-nền-tối-theo-bảng-màu-nhận-diện-mới)) | Lớp primitive + semantic |
+| 2 | Một họ phông → hai họ, thêm giọng **viết tay** | `layout.tsx` + token phông |
+| 3 | Nền tối → **kem/navy/coral nền sáng**, bo góc rộng gấp đôi, nút bo tròn lại ([DD-08](./design.md#quyết-định-thiết-kế-dd-08-chuyển-sang-phong-cách-ấm-sáng-thân-thiện)) | `globals.css` + `components.css` viết lại, **giữ nguyên mọi tên class** |
+
+Kết quả cả ba lần: **không một màn hình nào trong tám màn hình phải dựng lại, không một tên class nào bị đổi.** Nếu hex nằm rải rác trong component thì mỗi lần như vậy đã là một đợt viết lại toàn bộ giao diện.
+
+> Lần thứ ba nói thêm một điều mà hai lần đầu chưa nói: lớp component **được phép viết lại hoàn toàn về mặt thị giác** — đổi bo góc, đổi bóng, đổi cấu trúc nền — miễn là giữ nguyên hợp đồng tên class với các trang. Tên class mới là ranh giới thật giữa thiết kế và màn hình, không phải giá trị token.
 
 ---
 
@@ -56,11 +66,13 @@ Chi tiết giá trị và số đo tương phản: [`design.md` Mục 4.4.5](./d
 | :--- | :--- |
 | Hành động | `--color-action-primary`, `--color-action-primary-hover`, `--color-action-link` |
 | Thương hiệu phi văn bản | `--color-brand-decorative` |
+| Nhấn dạng chữ | `--color-accent-text` (chữ cam cỡ nhỏ), `--color-accent-strong` (nền cam có chữ trắng) |
 | Trạng thái xác thực | `--color-status-verified`, `--color-status-verified-text`, `--color-status-verified-bg` |
 | Trạng thái lưu ý | `--color-status-warning`, `--color-status-warning-text`, `--color-status-warning-bg` |
 | Trạng thái lỗi | `--color-status-danger`, `--color-status-danger-text`, `--color-status-danger-bg` |
-| Chữ | `--color-text-heading`, `--color-text-body`, `--color-text-muted`, `--color-text-on-dark` |
-| Bề mặt | `--color-surface-page`, `--color-surface-card`, `--color-surface-subtle` |
+| Chữ | `--color-text-heading`, `--color-text-body`, `--color-text-muted`, `--color-text-on-dark`, `--color-text-on-accent`, `--color-text-ghost` |
+| Bề mặt | `--color-surface-page` (nền trang), `--color-surface-subtle` (kem), `--color-surface-card` (thẻ trắng) |
+| Nền của bốn kiểu khối | `--color-surface-brand`, `--color-surface-brand-strong` (kiểu A, B — kem), `--color-surface-achieve`, `--color-surface-achieve-strong` (kiểu C — xanh nhạt). Hai luật xen kẽ ở [`design.md` Mục 4.9.3](./design.md#493-bốn-kiểu-khối--luật-xen-kẽ) |
 | Đường viền | `--color-border-input`, `--color-border-subtle`, `--color-border-focus` |
 | Khoảng cách | `--space-field-label`, `--space-field-error`, `--space-field-group`, `--space-card-padding`, `--space-card-gap`, `--space-section` |
 | Chữ (vai trò) | `--text-display`, `--text-h1`…`--text-h4`, `--text-body-lg`, `--text-body`, `--text-body-sm`, `--text-caption` |
@@ -77,13 +89,15 @@ Mọi component dưới đây **bắt buộc** tuân thủ [`design.md` Mục 4.
 
 | Biến thể | Nền | Chữ | Viền | Tương phản chữ/nền | Dùng khi |
 | :--- | :--- | :--- | :--- | ---: | :--- |
-| `primary` | `--color-action-primary` | trắng | không | **5.64:1** ✅ | Hành động chính. **Tối đa 1 nút/màn hình** |
-| `secondary` | `--color-surface-subtle` | `--color-text-heading` | không | **14.23:1** ✅ | Hành động phụ ("Lưu bản nháp") |
-| `outline` | trong suốt | `--color-text-heading` | `--color-border-input` | **16.18:1** ✅ | Hành động cấp ba ("Hủy") |
-| `ghost` | trong suốt | `--color-text-body` | không | **8.64:1** ✅ | Hành động chìm trong bảng/thẻ |
-| `danger` | `--color-status-danger` | trắng | không | **6.57:1** ✅ | Từ chối, hủy dự án, xóa |
+| `primary` | `--color-action-primary` (navy) | trắng | không | **7.64:1** ✅ | Hành động chính. **Tối đa 1 nút/màn hình** |
+| `secondary` | `--color-surface-subtle` | `--color-text-heading` | không | **15.24:1** ✅ | Hành động phụ ("Lưu bản nháp") |
+| `outline` | trong suốt | `--color-text-heading` | `--color-border-input` | **19.94:1** ✅ | Hành động cấp ba ("Hủy") |
+| `ghost` | trong suốt | `--color-text-body` | không | **16.07:1** ✅ | Hành động chìm trong bảng/thẻ |
+| `danger` | `--color-status-danger` | trắng | không | **6.54:1** ✅ | Từ chối, hủy dự án, xóa |
 
-> **Không có biến thể `success` màu xanh lá.** Theo *quy tắc khan hiếm* ở [`design.md` Mục 4.4.2](./design.md#442-ba-màu-neo-trích-xuất-từ-logo-genda), xanh lá chỉ dành cho **trạng thái đã xác thực**, không dành cho nút bấm. Nút "Nghiệm thu mốc này" dùng biến thể `primary`.
+> **Không có biến thể nút màu CORAL.** Coral là màu nhấn của nhận diện nên đây là thứ ai cũng muốn thử. Nó không đạt: `#E85D2C` với chữ trắng chỉ **3.48:1**, dưới ngưỡng 4.5:1. Muốn một khối cam đặc có chữ trắng thì phải xuống `--color-accent-strong` (coral-600, 4.69:1), và khi ấy nó không còn là màu trong bảng nhận diện nữa. Vai trò của coral là **nét vẽ và giọng nói**, không phải nền nút — xem [`design.md` Mục 4.4.2](./design.md#442-bảng-màu-nhận-diện--bốn-vai-trò).
+
+> **Không có biến thể `success` riêng.** Quy tắc này đã sống qua ba bảng màu với ba lý do khác nhau, và lần nào cũng đứng vững. Bản đầu cấm vì xanh lá được giữ khan hiếm cho trạng thái "đã xác thực"; bản nền tối lấy chính xanh lá làm màu thương hiệu nên lý do đó mất chỗ dựa, nhưng kết luận vẫn giữ vì nút `success` khi ấy trông y hệt nút `primary`. Ở bảng màu hiện tại, lý do là thứ ba: hành động là **navy**, còn xanh lá chỉ nói "đã xong". Một nút xanh lá sẽ bảo người dùng bấm vào một thứ vốn là **kết quả**, không phải hành động. Nút "Nghiệm thu mốc này" dùng biến thể `primary`.
 
 #### Kích cỡ (Sizes)
 
@@ -93,17 +107,19 @@ Mọi component dưới đây **bắt buộc** tuân thủ [`design.md` Mục 4.
 | `md` *(mặc định)* | 44px | 24px | `--text-body-sm` | 18px | **44px = ngưỡng GenDA tự đặt**, vượt sàn 24px của WCAG 2.2 AA (2.5.8) — lý do tại [`design.md` 4.6f](./design.md#46-đặc-tả-tiếp-cận-bàn-phím--trình-đọc-màn-hình-nfr-ux-01) |
 | `lg` | 52px | 32px | `--text-body` | 20px | CTA trang chủ |
 
-Bo góc: `--radius-md` (8px).
+Bo góc: `--radius-full` — nút là **viên thuốc bo tròn hoàn toàn**.
 
-> **Hai lựa chọn có chủ đích.** (1) Chiều cao mặc định là **44px chứ không phải 40px** như thường thấy, vì `md` là cỡ dùng trên mobile — nơi 85% sinh viên thao tác; hạ xuống 40px là vi phạm ngưỡng vùng chạm. (2) Nút **bo 8px, đệm ngang rộng hơn mức tối thiểu**. Bản trước dùng `--radius-full`; xem lý do đổi tại [`design.md` Mục 4.8.2](./design.md#482-bo-góc-border-radius--đính-chính-ký-hiệu) — tóm tắt: viên thuốc bo tròn hoàn toàn là hình nút mặc định của mọi mẫu SaaS dựng sẵn và đọc ra "đại trà" chứ không ra "đáng tin". Nút và ô nhập nay cùng bán kính; phân biệt **chỗ bấm** với **chỗ gõ** dựa vào nền đặc và nhãn chữ, vốn đã là tín hiệu mạnh hơn hình dạng góc.
+> **Hai lựa chọn có chủ đích.** (1) Chiều cao mặc định là **48px**, vượt hẳn ngưỡng vùng chạm 44px, vì `md` là cỡ dùng trên mobile — nơi 85% sinh viên thao tác. (2) Nút **bo tròn hoàn toàn trở lại**, sau khi bản trước hạ xuống 8px. Đây là lần đảo chiều thứ hai của cùng một quyết định và lý do đầy đủ nằm ở [`design.md` Mục 4.8.2](./design.md#482-bo-góc-border-radius) — tóm tắt: cả hai lập luận đều đúng, chúng chỉ phục vụ hai đích đến khác nhau.
+>
+> **Hệ quả có lợi:** nút bo tròn còn ô nhập bo 12px, nên **hình dạng góc lại phân biệt được chỗ bấm với chỗ gõ**. Ở bản trước hai thứ cùng bán kính nên việc phân biệt phải dồn hết cho nền đặc và nhãn chữ.
 
 #### Trạng thái (States)
 
 | Trạng thái | Nền | Chữ | Viền ngoài | Con trỏ |
 | :--- | :--- | :--- | :--- | :--- |
 | `default` | token biến thể | token biến thể | không | `pointer` |
-| `hover` | `--color-action-primary-hover` (đậm hơn 1 bậc) | giữ nguyên | không | `pointer` |
-| `active` | đậm hơn 2 bậc | giữ nguyên | không | `pointer` |
+| `hover` | `--color-action-primary-hover` (đậm hơn 1 bậc) + `--shadow-md` | giữ nguyên | không | `pointer` |
+| `active` | `--color-action-primary-active`, tắt bóng | giữ nguyên | không | `pointer` |
 | `focus-visible` | giữ nguyên `default` | giữ nguyên | **2px `--color-border-focus`, cách 2px** | `pointer` |
 | `disabled` | giữ nguyên, `opacity: 0.5` | giữ nguyên | không | `not-allowed` |
 | `loading` | giữ nguyên, `opacity: 0.7` | spinner + giữ nhãn | không | `wait` |
@@ -133,7 +149,7 @@ Ghi chú triển khai:
 Nhãn trường (--text-body-sm, 500)
    ↕ --space-field-label (6px)
 ┌────────────────────────────────────────┐
-│ Giá trị / gợi ý mờ    (--text-body)    │  cao 44px, bo --radius-md
+│ Giá trị / gợi ý mờ    (--text-body)    │  cao 48px, bo --radius-md (12px)
 └────────────────────────────────────────┘
    ↕ --space-field-error (6px)
 Dòng lỗi (--text-caption, --color-status-danger-text)
@@ -161,8 +177,8 @@ Dòng lỗi (--text-caption, --color-status-danger-text)
 | :--- | :--- |
 | Nền | `--color-surface-card` |
 | Viền | 1px `--color-border-subtle` |
-| Bo góc | `--radius-lg` (12px) |
-| Đổ bóng | `0 1px 2px rgb(22 34 43 / 0.04)` — mảnh tới mức gần như không thấy |
+| Bo góc | `--radius-lg` (20px) |
+| Đổ bóng | `--shadow-sm` — rất nhẹ, chỉ đủ để mép thẻ trắng không cắt gắt vào tấm kem |
 | Đệm trong | `--space-card-padding` (24px) |
 | Khoảng cách giữa các thẻ | `--space-card-gap` (16px) |
 
@@ -176,7 +192,7 @@ Dòng lỗi (--text-caption, --color-status-danger-text)
 | :--- | :--- |
 | `default` | Như trên |
 | `interactive` | Thêm `cursor: pointer`; hover nâng lên `--shadow-md`; **bắt buộc có `focus-visible`** vì là phần tử bấm được |
-| `selected` | Viền 2px `--color-action-primary` + nền `--color-primary-50` |
+| `selected` | Viền 2px `--color-action-primary` + nền `--color-status-progress-bg` |
 
 Ba loại thẻ **Project / Milestone / Applicant** dùng chung toàn bộ giá trị trên — đây chính là nguyên lý *Repetition* của bộ quy tắc CRAP.
 
@@ -202,13 +218,13 @@ Component quan trọng nhất về mặt khả dụng, vì nó hiện thực hó
 | `PENDING` / `PENDING_REVIEW` | `--color-status-warning-bg` | `--color-status-warning-text` | đồng hồ | "Đang chờ duyệt" |
 | `CHANGES_REQUESTED` | `--color-status-warning-bg` | `--color-status-warning-text` | mũi tên quay lại | "Yêu cầu chỉnh sửa" |
 | `REJECTED` / `CANCELLED` | `--color-status-danger-bg` | `--color-status-danger-text` | dấu X | "Bị từ chối" / "Đã hủy" |
-| `SUBMITTED` / `IN_PROGRESS` | `--color-primary-50` | `--color-action-primary-hover` | vòng tròn tiến độ | "Đang thực hiện" |
+| `SUBMITTED` / `IN_PROGRESS` | `--color-status-progress-bg` | `--color-status-progress` | vòng tròn tiến độ | "Đang thực hiện" |
 
 | Thuộc tính | Giá trị |
 | :--- | :--- |
 | Cỡ chữ | `--text-caption` (12px, weight 500) |
 | Đệm | 4px 10px |
-| Bo góc | `--radius-sm` (6px) |
+| Bo góc | `--radius-full` — viên thuốc, cùng ngôn ngữ hình với nút và chip |
 | Kích thước icon | 14px |
 
 **Điều kiện nghiệm thu component:** chụp màn hình → chuyển sang ảnh xám → vẫn đọc được đầy đủ mọi trạng thái.
@@ -219,7 +235,7 @@ Component quan trọng nhất về mặt khả dụng, vì nó hiện thực hó
 
 | Biến thể | Nền | Chữ | Viền trái | Dùng ở đâu |
 | :--- | :--- | :--- | :--- | :--- |
-| `info` | `--color-primary-50` | `--color-text-body` | 4px `--color-brand-decorative` | Hướng dẫn chung |
+| `info` | `--color-status-progress-bg` | `--color-text-body` | 4px `--color-brand-decorative` | Hướng dẫn chung |
 | `warning` | `--color-status-warning-bg` | `--color-status-warning-text` | 4px `--color-status-warning` | **Banner Ký quỹ mô phỏng (FR-MIL-07)**, hồ sơ chờ duyệt |
 | `success` | `--color-status-verified-bg` | `--color-status-verified-text` | 4px `--color-status-verified` | Đã xác thực sinh viên |
 | `danger` | `--color-status-danger-bg` | `--color-status-danger-text` | 4px `--color-status-danger` | Minh chứng bị từ chối, lỗi hệ thống |
@@ -227,7 +243,7 @@ Component quan trọng nhất về mặt khả dụng, vì nó hiện thực hó
 | Thuộc tính | Giá trị |
 | :--- | :--- |
 | Đệm | 16px |
-| Bo góc | `--radius-lg` (12px) |
+| Bo góc | `--radius-lg` (20px) |
 | Icon | 20px, canh theo dòng đầu tiên |
 | Vùng thông báo động | `aria-live="polite"` (lỗi chặn tác vụ: `assertive`) |
 
@@ -243,9 +259,9 @@ Component quan trọng nhất về mặt khả dụng, vì nó hiện thực hó
 
 | Thuộc tính | Giá trị |
 | :--- | :--- |
-| Nền phủ (overlay) | `rgb(22 34 43 / 0.5)` |
+| Nền phủ (overlay) | `rgb(26 26 26 / 0.45)` |
 | Nền hộp | `--color-surface-card` |
-| Bo góc | `--radius-xl` (16px) |
+| Bo góc | `--radius-xl` (28px) — cùng bán kính với tấm panel của trang |
 | Đệm | `--space-card-padding` (24px) |
 | Trên mobile | Chiếm toàn màn hình, trượt lên từ đáy |
 
@@ -270,8 +286,8 @@ Component quan trọng nhất về mặt khả dụng, vì nó hiện thực hó
 | Trạng thái | Viền | Nền |
 | :--- | :--- | :--- |
 | `idle` | 2px nét đứt `--color-border-input` | `--color-surface-subtle` |
-| `hover` / `focus-visible` | 2px nét đứt `--color-action-primary` | `--color-primary-50` |
-| `dragover` | 2px nét liền `--color-action-primary` | `--color-primary-50` |
+| `hover` / `focus-visible` | 2px nét đứt `--color-action-primary` | `--color-status-progress-bg` |
+| `dragover` | 2px nét liền `--color-action-primary` | `--color-status-progress-bg` |
 | `error` | 2px nét đứt `--color-status-danger` | `--color-status-danger-bg` |
 
 - Bo góc `--radius-lg`, chiều cao tối thiểu 160px.
@@ -291,8 +307,8 @@ Hai kiểu dùng chung một component:
 
 | Trạng thái bước | Vòng tròn | Nhãn |
 | :--- | :--- | :--- |
-| `completed` | Nền `--color-status-verified` + dấu tích trắng | `--color-text-body` |
-| `current` | Nền `--color-action-primary` + số thứ tự trắng | `--color-text-heading`, weight 600 |
+| `completed` | Nền `--color-status-verified` + dấu tích `--color-text-on-dark` | `--color-text-body` |
+| `current` | Nền `--color-action-primary` + số thứ tự `--color-text-on-dark` | `--color-text-heading`, weight 600 |
 | `upcoming` | Viền `--color-border-input`, nền trong suốt, số màu `--color-text-muted` | `--color-text-muted` |
 
 Khi chuyển bước trong `wizard`, **đưa tiêu điểm về tiêu đề của bước mới** để trình đọc màn hình đọc đúng ngữ cảnh.
@@ -303,8 +319,8 @@ Khi chuyển bước trong `wizard`, **đưa tiêu điểm về tiêu đề củ
 
 | Thuộc tính | Giá trị |
 | :--- | :--- |
-| Nền cơ sở | `--color-border-subtle` |
-| Hiệu ứng | Quét sáng (shimmer), chu kỳ 1.5s |
+| Nền cơ sở | `--color-surface-subtle` |
+| Hiệu ứng | Quét sáng (shimmer), chu kỳ 1.5s — vệt quét đi từ nền lên **sáng hơn** nền. Giữ công thức của bản nền sáng sẽ cho một vệt *tối hơn* chạy qua, đọc ra như lỗi dựng hình chứ không ra "đang tải". |
 | Bo góc | Khớp với phần tử thật mà nó thay thế |
 
 Skeleton phải **mô phỏng đúng hình khối** của nội dung sắp hiển thị (đúng số dòng, đúng chiều cao thẻ) — đó là lý do tồn tại của nó: khử giật bố cục (CLS).
@@ -324,4 +340,7 @@ Skeleton phải **mô phỏng đúng hình khối** của nội dung sắp hiể
 - [ ] Vòng focus không bị thanh dính hoặc thanh cố định che khuất (WCAG 2.2 AA 2.4.11).
 - [ ] Trạng thái không chỉ mã hóa bằng màu (kiểm thử ảnh xám).
 - [ ] Chữ < 24px dùng token màu có tương phản ≥ 4.5:1.
+- [ ] Không dùng `--color-brand-decorative` (coral-500) làm màu chữ thường hay nền nút — chữ cam cỡ nhỏ dùng `--color-accent-text`.
+- [ ] Chữ viết tay (`--font-hand`) chỉ ở nhãn phụ, $\ge$ 14px, không dùng cho nội dung, nhãn trường hay chữ trong nút.
+- [ ] Bóng mặc định là `--shadow-sm`; `--shadow-md`/`--shadow-lg` chỉ cho phần tử thật sự nổi (hover, hero, modal).
 - [ ] Cỡ chữ ô nhập ≥ 16px trên mobile.

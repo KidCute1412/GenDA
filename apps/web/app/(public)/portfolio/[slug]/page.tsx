@@ -80,7 +80,7 @@ export default async function PortfolioPage({ params }: { params: Promise<{ slug
         {/* Phần đầu hồ sơ đặt trên vùng màu đậm. Đây là trang nhà tuyển dụng mở
             ra đầu tiên, nên nó cần sức nặng thị giác của một trang giới thiệu
             chứ không phải vẻ của một biểu mẫu. */}
-        <section className="band--brand-strong on-dark" style={{ paddingBlock: "var(--space-12)" }}>
+        <section className="band--brand-strong" style={{ paddingBlock: "var(--space-12)" }}>
           <div className="container split" style={{ alignItems: "flex-end" }}>
             <div className="stack stack--sm">
               <h1>{student.name}</h1>
@@ -189,7 +189,7 @@ export default async function PortfolioPage({ params }: { params: Promise<{ slug
         </section>
         </div>
 
-        <section className="band band--achieve-strong on-dark">
+        <section className="band band--achieve-strong">
           <div className="container" style={{ textAlign: "center" }}>
             <h2>Bạn cũng muốn có một hồ sơ như thế này?</h2>
             <p className="lede" style={{ marginInline: "auto", marginBlock: "var(--space-3) var(--space-6)" }}>
