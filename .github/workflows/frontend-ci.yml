@@ -105,6 +105,7 @@ jobs:
       - name: Start backend
         run: |
           cp .env.example .env
+          cp apps/api/.env.example apps/api/.env
           docker compose up --build --wait --wait-timeout 300 database backend
 
       - name: Run Playwright tests
