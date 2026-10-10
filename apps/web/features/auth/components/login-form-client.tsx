@@ -4,93 +4,58 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { TextField } from "../../../components/ui/field";
-import { PasswordField } from "../../../features/auth/components/password-field";
-import { setDemoSession } from "../services/demo-session";
-import { findDemoAccount, needsCv } from "../../demo-ledger/store";
-import { cvOnboardingHref } from "../../users/components/cv-required-gate";
+import { PasswordField } from "./password-field";
+import { AuthApiError, login } from "../services/auth-api";
 import { RecaptchaField, verifyRecaptcha } from "./recaptcha-field";
 
-/** Sinh viên đăng nhập xong vào thẳng danh sách dự án đang tuyển, không vào trang hồ sơ. */
 const STUDENT_HOME = "/projects";
+const DEMO_PASSWORD = "Demo@12345";
 
 export function LoginFormClient() {
   const router = useRouter();
   const [email, setEmail] = useState("letuanloc.2203@hcmus.edu.vn");
-  const [password, setPassword] = useState("••••••••");
+  const [password, setPassword] = useState(DEMO_PASSWORD);
+  const [rememberDevice, setRememberDevice] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-  // Đổi key để gắn lại widget reCAPTCHA (bắt giải lại) khi xác minh thất bại
   const [captchaKey, setCaptchaKey] = useState(0);
-  const [captchaError, setCaptchaError] = useState("");
+  const [formError, setFormError] = useState("");
 
-  function handleFillStudent() {
-    setEmail("letuanloc.2203@hcmus.edu.vn");
-    setPassword("••••••••");
+  function fillDemo(accountEmail: string) {
+    setEmail(accountEmail);
+    setPassword(DEMO_PASSWORD);
+    setFormError("");
   }
 
-  function handleFillSme() {
-    setEmail("contact@coffeelab.vn");
-    setPassword("••••••••");
-  }
-
-  function quickLogin(name: string, accountEmail: string, role: "STUDENT" | "SME" | "ADMIN", destination: string) {
-    setDemoSession({ name, email: accountEmail, role, emailVerified: true });
-    router.replace(destination);
-    router.refresh();
-  }
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  async function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
     if (!captchaToken) {
-      setCaptchaError("Hãy tick ô reCAPTCHA \"Tôi không phải người máy\" trước khi đăng nhập.");
+      setFormError("Hãy hoàn thành bước xác minh chống người máy trước khi đăng nhập.");
       return;
     }
-    setCaptchaError("");
+    setFormError("");
     setIsLoading(true);
 
-    if (!(await verifyRecaptcha(captchaToken))) {
-      setIsLoading(false);
+    try {
+      if (!(await verifyRecaptcha(captchaToken))) {
+        throw new AuthApiError("RECAPTCHA_FAILED", "Xác minh reCAPTCHA không thành công hoặc đã hết hạn.");
+      }
+      const session = await login(email, password, rememberDevice);
+      const destination = session.role === "SME" ? "/sme/projects" : session.role === "ADMIN" ? "/admin" : STUDENT_HOME;
+      router.replace(destination);
+      router.refresh();
+    } catch (error) {
       setCaptchaToken(null);
-      setCaptchaKey((key) => key + 1);
-      setCaptchaError("Xác minh reCAPTCHA không thành công hoặc đã hết hạn. Hãy tick lại rồi thử lần nữa.");
-      return;
-    }
-
-    // Doanh nghiệp đã đăng ký nhưng chưa được duyệt (hoặc bị từ chối) thì chưa được đăng nhập
-    const account = findDemoAccount(email);
-    if (account?.role === "SME" && account.smeApprovalStatus === "PENDING") {
-      setIsLoading(false);
-      setCaptchaError("Tài khoản doanh nghiệp này đang chờ quản trị viên duyệt. Bạn sẽ đăng nhập được sau khi hồ sơ được duyệt.");
-      return;
-    }
-    if (account?.role === "SME" && account.smeApprovalStatus === "REJECTED") {
-      setIsLoading(false);
-      setCaptchaError(
-        `Đăng ký doanh nghiệp đã bị từ chối${account.smeRejectionReason ? `: ${account.smeRejectionReason}` : "."}`
-      );
-      return;
-    }
-
-    setTimeout(() => {
-      // Tài khoản đã đăng ký trong ledger demo: đăng nhập đúng tên và vai trò của tài khoản đó
-      if (account && account.role !== "ADMIN") {
-        setDemoSession({ name: account.name, email: account.email, role: account.role, emailVerified: account.emailVerified });
-        // Sinh viên mới chưa nộp CV thì vào bước nộp CV trước
-        router.replace(account.role === "SME" ? "/sme/projects" : needsCv(account) ? cvOnboardingHref(STUDENT_HOME) : STUDENT_HOME);
-        router.refresh();
-        return;
-      }
-      // Tự động phân luồng theo role hoặc email
-      if (email.includes("sme") || email.includes("coffee") || email.includes("corp") || email.includes("lab")) {
-        setDemoSession({ name: "The Coffee Lab", email, role: "SME", emailVerified: true });
-        router.replace("/sme/projects");
-        router.refresh();
+      setCaptchaKey((value) => value + 1);
+      if (error instanceof AuthApiError) {
+        const suffix = error.requestId ? ` Mã yêu cầu: ${error.requestId}.` : "";
+        setFormError(`${error.message}${suffix}`);
       } else {
-        setDemoSession({ name: "Lê Tuấn Lộc", email, role: "STUDENT", emailVerified: true });
-        router.replace(STUDENT_HOME);
-        router.refresh();
+        setFormError("Không thể kết nối tới hệ thống đăng nhập. Hãy thử lại.");
       }
-    }, 600);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -99,75 +64,41 @@ export function LoginFormClient() {
         XÁC THỰC TÀI KHOẢN
       </h2>
       <p className="text-muted" style={{ marginTop: "2px", marginBottom: 0, fontSize: "12px" }}>
-        Dùng chung một tài khoản cho cả sinh viên và doanh nghiệp.
+        Dùng chung một tài khoản cho sinh viên, doanh nghiệp và quản trị viên.
       </p>
 
-      {/* Preset Đăng nhập mẫu (Click là điền ngay) */}
       <div style={{ marginTop: "var(--space-3)", padding: "8px 10px", backgroundColor: "var(--color-surface-subtle)", border: "1px dashed var(--machinery-border)" }}>
         <div style={{ fontFamily: "ui-monospace, monospace", fontSize: "10px", color: "var(--color-text-muted)", marginBottom: "4px" }}>
-          {"// CHỌN TÀI KHOẢN DEMO CÓ SẴN:"}
+          {"// TÀI KHOẢN DEMO, MẬT KHẨU: Demo@12345"}
         </div>
-        <div style={{ display: "flex", gap: "6px" }}>
-          <button
-            type="button"
-            onClick={handleFillStudent}
-            className="chip"
-            style={{ 
-              fontSize: "11px", 
-              height: "26px", 
-              paddingInline: "8px", 
-              cursor: "pointer",
-              borderColor: email === "letuanloc.2203@hcmus.edu.vn" ? "var(--orange-500)" : "var(--machinery-border)",
-              backgroundColor: email === "letuanloc.2203@hcmus.edu.vn" ? "var(--color-surface-card)" : "transparent"
-            }}
-          >
-            Sinh viên (Lê Tuấn Lộc)
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+          <button type="button" onClick={() => fillDemo("letuanloc.2203@hcmus.edu.vn")} className="chip">
+            Sinh viên
           </button>
-          <button
-            type="button"
-            onClick={handleFillSme}
-            className="chip"
-            style={{ 
-              fontSize: "11px", 
-              height: "26px", 
-              paddingInline: "8px", 
-              cursor: "pointer",
-              borderColor: email === "contact@coffeelab.vn" ? "var(--orange-500)" : "var(--machinery-border)",
-              backgroundColor: email === "contact@coffeelab.vn" ? "var(--color-surface-card)" : "transparent"
-            }}
-          >
-            Doanh nghiệp (The Coffee Lab)
+          <button type="button" onClick={() => fillDemo("contact@coffeelab.vn")} className="chip">
+            Doanh nghiệp
+          </button>
+          <button type="button" onClick={() => fillDemo("admin@genda.vn")} className="chip">
+            Quản trị viên
           </button>
         </div>
       </div>
 
       <form onSubmit={handleSubmit} className="stack" style={{ marginTop: "var(--space-3)", gap: "var(--space-3)" }}>
         <div className="stack" style={{ gap: "var(--space-2)" }}>
-          <TextField
-            id="login-email"
-            label="EMAIL ĐĂNG NHẬP"
-            type="email"
-            required
-            autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="ban@example.com"
-          />
-
+          <TextField id="login-email" label="EMAIL ĐĂNG NHẬP" type="email" required autoComplete="email"
+            value={email} onChange={(event) => setEmail(event.target.value)} placeholder="ban@example.com" />
           <div>
-            <PasswordField 
-              label="MẬT KHẨU BẢO MẬT" 
-              autoComplete="current-password" 
-              required={false}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "2px" }}>
-              <Link 
-                href="/quen-mat-khau" 
-                className="text-caption"
-                style={{ fontFamily: "ui-monospace, monospace", textDecoration: "underline", color: "var(--color-text-muted)", fontSize: "11px" }}
-              >
+            <PasswordField label="MẬT KHẨU BẢO MẬT" autoComplete="current-password" required
+              value={password} onChange={(event) => setPassword(event.target.value)} />
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "var(--space-3)", marginTop: "var(--space-2)" }}>
+              <label style={{ display: "inline-flex", alignItems: "center", gap: "8px", fontSize: "12px" }}>
+                <input type="checkbox" checked={rememberDevice}
+                  onChange={(event) => setRememberDevice(event.target.checked)} />
+                Ghi nhớ thiết bị trong 7 ngày
+              </label>
+              <Link href="/quen-mat-khau" className="text-caption"
+                style={{ fontFamily: "ui-monospace, monospace", textDecoration: "underline", color: "var(--color-text-muted)", fontSize: "11px" }}>
                 Quên mật khẩu?
               </Link>
             </div>
@@ -175,47 +106,15 @@ export function LoginFormClient() {
         </div>
 
         <div>
-          <RecaptchaField
-            key={captchaKey}
-            onChange={(token) => {
-              setCaptchaToken(token);
-              if (token) setCaptchaError("");
-            }}
-          />
-          {captchaError ? (
-            <p role="alert" style={{ margin: "4px 0 0", fontSize: "12px", color: "var(--color-danger-text, #b91c1c)" }}>
-              {captchaError}
-            </p>
-          ) : null}
+          <RecaptchaField key={captchaKey} onChange={(token) => { setCaptchaToken(token); if (token) setFormError(""); }} />
+          {formError ? <p role="alert" style={{ margin: "4px 0 0", fontSize: "12px", color: "var(--color-danger-text)" }}>{formError}</p> : null}
         </div>
 
-        <button
-          type="submit"
-          disabled={isLoading || !captchaToken}
-          className="btn--tactile-orange"
-          style={{ width: "100%", height: "40px", fontSize: "12px", cursor: isLoading ? "wait" : !captchaToken ? "not-allowed" : "pointer", opacity: captchaToken ? 1 : 0.55 }}
-        >
+        <button type="submit" disabled={isLoading || !captchaToken} className="btn--tactile-orange"
+          style={{ width: "100%", height: "40px", fontSize: "12px", cursor: isLoading ? "wait" : !captchaToken ? "not-allowed" : "pointer", opacity: captchaToken ? 1 : 0.55 }}>
           {isLoading ? "ĐANG XÁC THỰC..." : "XÁC NHẬN ĐĂNG NHẬP"}
         </button>
       </form>
-
-      {/* Phím tắt Prototype */}
-      <div style={{ marginTop: "var(--space-3)", paddingTop: "var(--space-2)", borderTop: "1px dashed var(--machinery-border)" }}>
-        <div style={{ fontFamily: "ui-monospace, monospace", fontSize: "10px", color: "var(--color-text-muted)", marginBottom: "6px" }}>
-          {"// VÀO THẲNG GIAO DIỆN (BYPASS):"}
-        </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "var(--space-2)" }}>
-          <button type="button" onClick={() => quickLogin("Lê Tuấn Lộc", "letuanloc.2203@hcmus.edu.vn", "STUDENT", STUDENT_HOME)} className="btn--tactile-zinc" style={{ height: "30px", fontSize: "10px", padding: 0 }}>
-            SINH VIÊN
-          </button>
-          <button type="button" onClick={() => quickLogin("The Coffee Lab", "contact@coffeelab.vn", "SME", "/sme/projects")} className="btn--tactile-zinc" style={{ height: "30px", fontSize: "10px", padding: 0 }}>
-            DOANH NGHIỆP
-          </button>
-          <button type="button" onClick={() => quickLogin("Đỗ Minh Triết", "admin@genda.vn", "ADMIN", "/admin")} className="btn--tactile-zinc" style={{ height: "30px", fontSize: "10px", padding: 0 }}>
-            QUẢN TRỊ
-          </button>
-        </div>
-      </div>
     </div>
   );
 }

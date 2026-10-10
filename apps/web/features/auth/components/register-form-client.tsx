@@ -5,8 +5,7 @@ import Link from "next/link";
 import { cvOnboardingHref } from "../../users/components/cv-required-gate";
 import { TextField } from "../../../components/ui/field";
 import { PasswordField } from "../../../features/auth/components/password-field";
-import { setDemoSession } from "../services/demo-session";
-import { registerDemoUser } from "../../demo-ledger/store";
+import { AuthApiError, registerAccount } from "../services/auth-api";
 import { RecaptchaField, verifyRecaptcha } from "./recaptcha-field";
 import { isValidTaxCode, isValidWebsite, validateSmeIdentity } from "../../../lib/utils/sme-identity";
 
@@ -40,14 +39,14 @@ export function RegisterFormClient({ initialRole = "STUDENT" }: { initialRole?: 
 
   function handleFillSample(targetRole: "STUDENT" | "SME") {
     setRole(targetRole);
-    setPassword("••••••••");
-    setConfirmPassword("••••••••");
+    setPassword("Demo@12345");
+    setConfirmPassword("Demo@12345");
     if (targetRole === "STUDENT") {
-      setName("Lê Tuấn Lộc");
-      setEmail("letuanloc.2203@hcmus.edu.vn");
+      setName("Sinh viên mới");
+      setEmail(`student.${Date.now()}@example.com`);
     } else {
-      setName("The Coffee Lab");
-      setEmail("contact@coffeelab.vn");
+      setName("Doanh nghiệp mới");
+      setEmail(`sme.${Date.now()}@example.com`);
       setNoTaxCode(false);
       setTaxCode("0316789012");
     }
@@ -82,27 +81,33 @@ export function RegisterFormClient({ initialRole = "STUDENT" }: { initialRole?: 
       return;
     }
 
-    setTimeout(() => {
-      setIsLoading(false);
-      const result = registerDemoUser({
+    try {
+      await registerAccount({
         name,
         email,
+        password,
         role,
-        ...(role === "SME" ? (noTaxCode ? { companyWebsite: website } : { taxCode }) : {})
+        taxCode: role === "SME" && !noTaxCode ? taxCode : undefined,
+        companyWebsite: role === "SME" && noTaxCode ? website : undefined
       });
-      if (!result.ok) {
-        setFormError(result.message);
-        return;
-      }
       // Doanh nghiệp: chưa tạo phiên đăng nhập, chờ quản trị viên duyệt
       if (role === "SME") {
         setRegistered(true);
         return;
       }
-      setDemoSession({ name, email, role, emailVerified: false });
       setRegistered(true);
       setResendAfter(30);
-    }, 600);
+    } catch (error) {
+      if (error instanceof AuthApiError && error.code === "EMAIL_ALREADY_REGISTERED") {
+        setFormError("Email này đã được đăng ký. Hãy đăng nhập hoặc dùng email khác.");
+      } else if (error instanceof AuthApiError && error.code === "SME_IDENTITY_REQUIRED") {
+        setFormError("Doanh nghiệp cần mã số thuế hợp lệ hoặc website công ty.");
+      } else {
+        setFormError(error instanceof Error ? error.message : "Không thể tạo tài khoản.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   const smeIdentityError = role === "SME" ? validateSmeIdentity(noTaxCode ? { companyWebsite: website } : { taxCode }) : null;

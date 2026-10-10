@@ -12,7 +12,6 @@ import { BudgetInput } from "./budget-input";
 import { MilestoneEditor } from "../../milestones/components/milestone-editor";
 import { DraftSaveButton } from "./draft-save-button";
 import { TODAY } from "../../../mocks/data";
-import { getDemoSession } from "../../auth/services/demo-session";
 import { useDemoSession } from "../../auth/hooks/use-demo-session";
 import { createProject } from "../../demo-ledger/store";
 
@@ -106,7 +105,7 @@ export function ProjectWizard() {
     <form
       onSubmit={(event) => {
         event.preventDefault();
-        const currentSession = getDemoSession();
+        const currentSession = session;
         if (!hasVerifiedEmail || currentSession?.role !== "SME") return;
         const form = event.currentTarget;
         const title = form.querySelector<HTMLInputElement>("#project-title")?.value.trim() ?? "Dự án chưa đặt tên";

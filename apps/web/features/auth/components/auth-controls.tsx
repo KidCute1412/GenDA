@@ -1,28 +1,32 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { clearDemoSession, DEMO_SESSION_EVENT, getDemoSession, type DemoSession } from "../services/demo-session";
+import { logout } from "../services/auth-api";
+import { useDemoSession } from "../hooks/use-demo-session";
 import { ICON_WEIGHT, SignOut } from "../../../components/ui/icons";
 import { UserMenu } from "./user-menu";
 
 export function AuthControls() {
   const router = useRouter();
-  const [session, setSession] = useState<DemoSession | null>(null);
+  const { session, hydrated } = useDemoSession();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  useEffect(() => {
-    const sync = () => setSession(getDemoSession());
-    sync();
-    window.addEventListener(DEMO_SESSION_EVENT, sync);
-    window.addEventListener("storage", sync);
-    return () => {
-      window.removeEventListener(DEMO_SESSION_EVENT, sync);
-      window.removeEventListener("storage", sync);
-    };
-  }, []);
+  async function handleLogout() {
+    setIsLoggingOut(true);
+    try {
+      await logout();
+      router.replace("/");
+      router.refresh();
+    } catch {
+      window.alert("Không thể đăng xuất. Vui lòng kiểm tra kết nối và thử lại.");
+    } finally {
+      setIsLoggingOut(false);
+    }
+  }
 
-  if (!session) {
+  if (!hydrated || !session) {
     return (
       <>
         <Link href="/login" className="nav-link">ĐĂNG NHẬP</Link>
@@ -39,7 +43,9 @@ export function AuthControls() {
         className="icon-btn auth-logout"
         aria-label="Đăng xuất"
         title="Đăng xuất"
-        onClick={() => { clearDemoSession(); router.push("/"); }}
+        aria-busy={isLoggingOut}
+        disabled={isLoggingOut}
+        onClick={() => void handleLogout()}
       >
         <SignOut weight={ICON_WEIGHT} aria-hidden="true" />
       </button>

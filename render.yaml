@@ -18,6 +18,12 @@ services:
         sync: false
       - key: CORS_ALLOWED_ORIGINS
         value: https://gen-da-web.lok1412.site
+      - key: AUTH_JWT_SECRET
+        generateValue: true
+      - key: AUTH_COOKIE_SECURE
+        value: "true"
+      - key: AUTH_COOKIE_SAME_SITE
+        value: None
       - key: DB_POOL_SIZE
         value: "3"
       - key: OPENAPI_ENABLED
