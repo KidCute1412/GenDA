@@ -1,0 +1,6 @@
+# Maven Wrapper must remain executable by a Linux shell after Windows checkout.
+apps/api/mvnw text eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+packages/api-client/openapi.json text eol=lf
+packages/api-client/src/schema.d.ts text eol=lf

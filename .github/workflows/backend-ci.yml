@@ -1,0 +1,48 @@
+name: Backend CI
+on:
+  pull_request:
+    paths: ["apps/api/**", "packages/api-client/**", "compose.yaml", "render.yaml", "scripts/api-maven.mjs", ".github/workflows/backend-ci.yml"]
+  push:
+    branches: [main]
+    paths: ["apps/api/**", "packages/api-client/**", "compose.yaml", "render.yaml", "scripts/api-maven.mjs", ".github/workflows/backend-ci.yml"]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Test and package
+        working-directory: apps/api
+        run: sh mvnw -B -ntp verify
+      - name: Compose smoke test
+        run: |
+          cp .env.example .env
+          docker compose up --build --wait --wait-timeout 300 database backend
+          curl --fail http://localhost:3001/api/v1/health
+          curl --fail http://localhost:3001/api/v1/openapi -o /tmp/openapi.json
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.15.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Check generated contract
+        run: |
+          pnpm install --frozen-lockfile
+          node scripts/export-openapi.mjs
+          pnpm --filter @genda/api-client generate
+          git diff --exit-code -- packages/api-client/openapi.json packages/api-client/src/schema.d.ts
+      - name: Logs and cleanup
+        if: always()
+        run: |
+          docker compose logs backend database
+          docker compose down

@@ -1,7 +1,7 @@
 ---
 name: architecture-guardrails
-description: Check or implement SkillBridge changes while enforcing modular-monolith module boundaries and dependency direction.
+description: Enforce Spring Boot modular-monolith boundaries and frontend business-domain ownership in SkillBridge.
 ---
 
-Before editing, identify the owning business module and its public interface. Keep the dependency direction `controller → application → domain → repository interface → infrastructure`. Do not import Prisma or HTTP concerns into domain code, and do not reach into another module's private repository. Flag boundary violations and propose the smallest compliant design. Verify changed imports and tests before finishing.
+Read `docs/architecture.md`. Identify the owning business module and public facade. Controller -> application -> domain/repository port; infrastructure implements ports. Domain imports no Spring, JPA, servlet, HTTP or infrastructure types. Application may use transaction annotations but not HTTP DTOs/infrastructure repositories. Cross-module calls use public application interfaces, never entities/repositories. Frontend audience routes compose business domains; `workspace`/`demo-ledger` are not backend domains. Verify imports and ArchUnit; add concrete cross-module tests as modules appear. Keep one application; no speculative event bus or empty scaffolding.
 

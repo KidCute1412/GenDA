@@ -1,0 +1,44 @@
+package vn.skillbridge.platform.api;
+
+import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import java.util.UUID;
+
+@RestControllerAdvice
+public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
+    private static final Logger LOG = LoggerFactory.getLogger(ApiExceptionHandler.class);
+
+    @Override
+    protected ResponseEntity<Object> handleExceptionInternal(Exception exception, Object body,
+            HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        return new ResponseEntity<>(new ApiError("HTTP_" + status.value(),
+                "Request could not be completed", UUID.randomUUID().toString()), headers, status);
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    ResponseEntity<ApiError> status(ResponseStatusException exception) {
+        String code = exception.getStatusCode().value() == 503 ? "SERVICE_UNAVAILABLE" : "REQUEST_REJECTED";
+        return ResponseEntity.status(exception.getStatusCode()).body(
+                new ApiError(code, "Request could not be completed", UUID.randomUUID().toString()));
+    }
+
+    @ExceptionHandler(Exception.class)
+    ResponseEntity<ApiError> unexpected(Exception exception, HttpServletRequest request) {
+        String requestId = UUID.randomUUID().toString();
+        LOG.error("Unhandled request error requestId={}", requestId, exception);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                new ApiError("INTERNAL_ERROR", "Unexpected server error", requestId));
+    }
+
+    public record ApiError(String code, String message, String requestId) {}
+}

@@ -1,6 +1,6 @@
 ---
 name: feature-workflow
-description: Deliver a SkillBridge feature from requirement to verified vertical slice across Next.js, NestJS, Prisma, tests, and documentation.
+description: Deliver SkillBridge slices across Next.js, Spring Boot, JPA/Flyway, OpenAPI clients, tests and docs.
 ---
 
-Start by reading `AGENTS.md`, the project context, relevant domain rules, and the authorization matrix. Identify the owning module, affected API contract, data changes, UI states, authorization matrix, and acceptance criteria. Implement the smallest vertical slice in dependency order: domain/use case, persistence, API contract/client generation, frontend, then tests. Keep the change reviewable, update docs for decisions, and finish with lint, typecheck, tests, build, and the definition-of-done checklist.
+Read `AGENTS.md`, architecture, relevant domain rules and authorization matrix. Identify ownership, existing contract/schema, UI states and acceptance criteria. Implement the smallest slice: domain/use case, JPA/Flyway, HTTP DTOs, springdoc/client generation, frontend adapter, tests/docs. Preserve DD-10 and distinguish browser demo from backend implementation. Finish with Maven Wrapper verify, generated-contract check, frontend lint/typecheck/tests/build and definition of done. Do not silently replace auth or seed hosted databases.
