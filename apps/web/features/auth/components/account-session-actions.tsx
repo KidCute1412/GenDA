@@ -21,8 +21,10 @@ export function AccountSessionActions() {
     setLogoutError("");
     try {
       await logoutSession();
-      router.replace("/");
-      router.refresh();
+      // Tải lại hẳn trang chủ thay vì router.replace + router.refresh: refresh gọi ngay sau replace có thể
+      // hủy lượt chuyển trang, để người dùng kẹt ở trang cần đăng nhập (vd. /sme/projects). Tải lại cũng xóa
+      // sạch trạng thái của phiên cũ; `replace` để nút Quay lại không mở lại trang vừa rời.
+      window.location.replace("/");
     } catch {
       setLogoutError("Không thể đăng xuất. Vui lòng kiểm tra kết nối và thử lại.");
     } finally {

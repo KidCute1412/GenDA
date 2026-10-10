@@ -58,3 +58,13 @@ test("runs the demo lifecycle across SME, Admin and Student", async ({ page }) =
   await page.getByLabel("Nhận xét").fill("Sinh viên bàn giao đầy đủ, đúng hạn và phản hồi tốt."); await page.getByRole("button", { name: "Gửi đánh giá" }).click();
   await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("genda-demo:ledger:v2") ?? "{}").reviews?.length ?? 0)).toBeGreaterThan(0);
 });
+
+test("logging out from an SME page returns to the home page", async ({ page }) => {
+  await loginAs(page, "sme");
+  await page.goto("/sme/projects");
+  await expect(page.getByRole("heading", { name: /DỰ ÁN CỦA TÔI/i })).toBeVisible();
+  await page.getByRole("button", { name: "Đăng xuất" }).click();
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.getByText(/Không có quyền truy cập/i)).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "ĐĂNG NHẬP" }).first()).toBeVisible();
+});
