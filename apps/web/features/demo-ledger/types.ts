@@ -15,6 +15,40 @@ export type DemoReview = { id: string; projectId: string; studentId: string; rat
 export type DemoAudit = { id: string; at: string; actorId: string; action: string; targetId: string; reason?: string };
 export type DemoUiStateValue = { value: unknown; expiresAt: number };
 
+/**
+ * Cơ hội ngắn (docs/opportunities.md): việc cộng tác viên và sự kiện/workshop. Tách khỏi DemoProject
+ * vì vòng đời khác hẳn: nhiều người một tin, thù lao theo buổi/người, đăng ký nhanh thay cho đơn + CV.
+ */
+export type OpportunityKind = "GIG" | "EVENT";
+export type OpportunityStatus = "PENDING_REVIEW" | "PUBLISHED" | "REJECTED";
+export type OpportunityMode = "OFFLINE" | "ONLINE";
+export type PayUnit = "PER_PERSON" | "PER_SESSION";
+/** Một buổi: ngày `YYYY-MM-DD`, giờ `HH:mm`. */
+export type OpportunitySession = { date: string; start: string; end: string };
+export type DemoOpportunity = {
+  id: string;
+  kind: OpportunityKind;
+  ownerId: string;
+  orgName: string;
+  industry: string;
+  title: string;
+  summary: string;
+  details: string;
+  pay: number;
+  payUnit: PayUnit;
+  sessions: OpportunitySession[];
+  mode: OpportunityMode;
+  location: string;
+  slots: number;
+  requirements: string[];
+  status: OpportunityStatus;
+  createdAt: string;
+  rejectionReason?: string;
+};
+/** Sự kiện: giữ chỗ ngay (CONFIRMED). Cộng tác viên: chờ đơn vị đăng tin duyệt (PENDING). */
+export type RegistrationStatus = "PENDING" | "CONFIRMED" | "DECLINED" | "CANCELLED";
+export type DemoRegistration = { id: string; opportunityId: string; userId: string; name: string; status: RegistrationStatus; createdAt: string };
+
 export type DemoLedger = {
   version: 2;
   users: DemoUser[];
@@ -23,9 +57,11 @@ export type DemoLedger = {
   applications: DemoApplication[];
   submissions: DemoSubmission[];
   reviews: DemoReview[];
+  opportunities: DemoOpportunity[];
+  registrations: DemoRegistration[];
   audits: DemoAudit[];
   uiState: Record<string, DemoUiStateValue>;
 };
 
-export type DemoErrorCode = "AUTH_REQUIRED" | "WRONG_ROLE" | "NOT_OWNER" | "NOT_ASSIGNED" | "EMAIL_NOT_VERIFIED" | "STUDENT_NOT_VERIFIED" | "INVALID_TRANSITION" | "DUPLICATE_APPLICATION" | "MILESTONE_BUDGET_MISMATCH" | "REASON_REQUIRED" | "NOT_FOUND" | "STORAGE_WRITE_FAILED" | "SME_IDENTITY_REQUIRED" | "SME_NOT_APPROVED" | "CV_REQUIRED" | "INVALID_FILE";
+export type DemoErrorCode = "AUTH_REQUIRED" | "WRONG_ROLE" | "NOT_OWNER" | "NOT_ASSIGNED" | "EMAIL_NOT_VERIFIED" | "STUDENT_NOT_VERIFIED" | "INVALID_TRANSITION" | "DUPLICATE_APPLICATION" | "MILESTONE_BUDGET_MISMATCH" | "REASON_REQUIRED" | "NOT_FOUND" | "STORAGE_WRITE_FAILED" | "SME_IDENTITY_REQUIRED" | "SME_NOT_APPROVED" | "CV_REQUIRED" | "INVALID_FILE" | "INVALID_INPUT" | "OPPORTUNITY_FULL" | "DUPLICATE_REGISTRATION";
 export type DemoResult<T = undefined> = { ok: true; value: T } | { ok: false; code: DemoErrorCode; message: string };

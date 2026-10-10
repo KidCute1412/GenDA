@@ -1429,6 +1429,17 @@ Các quyết định dưới đây phát sinh khi dựng mã nguồn, không có
 >
 > **Điều kiện xem lại.** (1) Chỉ số "tỷ lệ tắt tự bật" ở [`assistant.md`](./assistant.md) mục 8 tăng cao trong pilot: hạ tần suất trước, đổi hình thức sau. (2) Có ngân sách họa sĩ: nâng nhân vật lên Live2D **từ chính thiết kế này**, giữ nguyên bảng màu và phụ kiện nhận diện.
 
+
+> #### Quyết định thiết kế DD-12: "Tìm cơ hội" chia tab theo loại, thẻ có một dòng thông tin cố định
+>
+> **Bối cảnh.** GenDA mở rộng sang cơ hội ngắn ([`opportunities.md`](./opportunities.md)): cộng tác viên trả theo buổi và sự kiện, workshop trả theo người, từ 50.000đ, ở mọi lĩnh vực. Đặt chung với dự án 1–5 triệu trong một danh sách làm người xem phải đọc từng thẻ mới biết đó là việc trọn gói hay một buổi khán giả, và không so được 150k/người với 3 triệu trọn gói.
+>
+> **Quyết định.** (1) **Loại là tab, lĩnh vực là bộ lọc.** Trang "Tìm cơ hội" có ba tab: Dự án, Cộng tác viên, Sự kiện & workshop, mỗi tab kèm số tin đang mở và một câu nói rõ loại đó nhận tiền và đăng ký thế nào. Lĩnh vực (Truyền thông, F&B, Giáo dục…) là chip lọc bên trong tab. (2) **Một dòng thông tin cố định.** Thẻ cơ hội dùng lại khung cột của danh sách dự án (mục 4.9): bên trái là lịch rồi hình thức/địa điểm; cột phải là thù lao **luôn kèm đơn vị** (`/người`, `/buổi`) rồi số chỗ còn. Mắt quét dọc một cột là so được. (3) **Xếp theo ngày diễn ra**, nhóm "Trong 7 ngày tới / 7–14 ngày tới / Sau đó", vì với việc theo buổi câu hỏi đầu tiên là "khi nào". (4) **Nhãn loại** là chữ (`SỰ KIỆN`, `CỘNG TÁC VIÊN`), màu nền chỉ để quét nhanh. (5) **Nhãn "Không thu phí người tham gia"** trên mọi thẻ và một khối cảnh báo trên trang chi tiết, vì tin "tuyển cộng tác viên / khán giả" là kiểu lừa đảo phổ biến.
+>
+> **Đánh đổi.** Thêm một tầng điều hướng (tab) trước danh sách dự án. Chấp nhận được vì tab mặc định vẫn là Dự án, đường dẫn `/projects` cũ không đổi.
+>
+> **Điều kiện xem lại.** Khi một loại chiếm áp đảo lượt xem trong pilot, cân nhắc đặt loại đó làm tab mặc định.
+
 ---
 
 ## 12. Bản đồ Bàn giao Thiết kế → Mã nguồn
@@ -1453,6 +1464,7 @@ Bảng này trả lời câu hỏi *"quy định ở mục nào thì nằm ở t
 | Mục 8.6 — Error gắn vào route | `apps/web/app/error.tsx` |
 | DD-11 — hộp thoại kiểu game của trợ lý Gen | `apps/web/features/assistant/components/gen-dialogue.tsx`, mục "TRỢ LÝ GEN" trong `apps/web/app/components.css` |
 | DD-11 — nhân vật Gen | `apps/web/features/assistant/components/gen-portrait.tsx` |
+| DD-12 — tab loại cơ hội, thẻ cơ hội ngắn | `apps/web/features/opportunities/components/`, mục "CƠ HỘI NGẮN" trong `apps/web/app/components.css` |
 | Màn hình 1 — Trang chủ | `apps/web/app/page.tsx` |
 | Màn hình 2 — Hồ sơ & Xác thực | `apps/web/app/(student)/student/profile/page.tsx` |
 | Màn hình 3 — Wizard đăng dự án | `apps/web/features/projects/components/project-wizard.tsx` |

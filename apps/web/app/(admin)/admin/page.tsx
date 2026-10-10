@@ -10,6 +10,7 @@ import { formatDate, formatVnd } from "../../../lib/utils/format";
 import { AdminActionButtons } from "../../../features/admin/components/admin-action-buttons";
 import { LedgerAuditPanel } from "../../../features/admin/components/ledger-audit-panel";
 import { LedgerProjectQueue } from "../../../features/admin/components/ledger-project-queue";
+import { LedgerOpportunityQueue, LedgerOpportunityQueueCount } from "../../../features/admin/components/ledger-opportunity-queue";
 import { LedgerVerificationQueue } from "../../../features/admin/components/ledger-verification-queue";
 import { LedgerSmeQueue, LedgerSmeQueueCount } from "../../../features/admin/components/ledger-sme-queue";
 import { RoleRouteGuard } from "../../../features/auth/components/role-route-guard";
@@ -38,6 +39,7 @@ const TABS = [
   { key: "projects", label: "Duyệt dự án", code: "QUEUE.01" },
   { key: "students", label: "Duyệt thẻ sinh viên", code: "QUEUE.02" },
   { key: "smes", label: "Duyệt doanh nghiệp", code: "QUEUE.03" },
+  { key: "opportunities", label: "Duyệt tin ngắn", code: "QUEUE.04" },
   { key: "audit", label: "Nhật ký kiểm toán", code: "LEDGER.LOG" }
 ];
 
@@ -154,11 +156,14 @@ export default async function AdminPage({
                     fontWeight: 800
                   }}
                 >
-                  {item.key === "smes" ? <LedgerSmeQueueCount /> : counts[item.key]}
+                  {item.key === "smes" ? <LedgerSmeQueueCount /> : item.key === "opportunities" ? <LedgerOpportunityQueueCount /> : counts[item.key]}
                 </span>
               </Link>
             ))}
           </nav>
+
+          {/* TAB 4: TIN CỘNG TÁC VIÊN / SỰ KIỆN (docs/opportunities.md) */}
+          {active === "opportunities" ? <LedgerOpportunityQueue /> : null}
 
           {/* TAB 1: HÀNG ĐỢI DUYỆT DỰ ÁN */}
           {active === "projects" ? <LedgerProjectQueue /> : null}

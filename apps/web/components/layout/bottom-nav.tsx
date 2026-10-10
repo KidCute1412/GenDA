@@ -18,14 +18,14 @@ import { useDemoSession } from "../../features/auth/hooks/use-demo-session";
  */
 const STUDENT_TABS = [
   { href: "/", label: "Trang chủ", icon: House },
-  { href: "/projects", label: "Dự án", icon: Briefcase },
+  { href: "/projects", label: "Cơ hội", icon: Briefcase },
   { href: "/student/applications", label: "Đơn của tôi", icon: FileText },
   { href: "/student/profile", label: "Hồ sơ", icon: UserCircle }
 ];
 
 const GUEST_TABS = [
   { href: "/", label: "Trang chủ", icon: House },
-  { href: "/projects", label: "Dự án", icon: Briefcase },
+  { href: "/projects", label: "Cơ hội", icon: Briefcase },
   { href: "/login", label: "Đăng nhập", icon: UserCircle },
   { href: "/login?mode=register", label: "Tham gia", icon: FileText }
 ];
