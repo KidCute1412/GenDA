@@ -105,7 +105,7 @@ export default async function DocPage({
               }}
             >
               <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-3)" }}>
-                <div style={{ backgroundColor: "var(--orange-500)", color: "#ffffff", padding: "4px 8px", borderRadius: "2px", fontFamily: "ui-monospace, monospace", fontSize: "11px", fontWeight: 800 }}>
+                <div style={{ backgroundColor: "var(--brand-500)", color: "#ffffff", padding: "4px 8px", borderRadius: "2px", fontFamily: "ui-monospace, monospace", fontSize: "11px", fontWeight: 800 }}>
                   INFO
                 </div>
                 <div>
@@ -128,7 +128,7 @@ export default async function DocPage({
                 <Link href="/" className="btn--tactile-zinc" style={{ height: "40px", fontSize: "12px", textDecoration: "none" }}>
                   ← VỀ TRANG CHỦ
                 </Link>
-                <Link href="/projects" className="btn--tactile-orange" style={{ height: "40px", fontSize: "12px", textDecoration: "none" }}>
+                <Link href="/projects" className="btn--tactile-brand" style={{ height: "40px", fontSize: "12px", textDecoration: "none" }}>
                   KHÁM PHÁ DỰ ÁN
                 </Link>
               </div>

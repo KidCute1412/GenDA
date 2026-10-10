@@ -38,14 +38,15 @@
   --blue-800: #1e40af;
   --blue-900: #1e3a8a;
 
-  /* --- Màu: Industrial Safety Orange (Teenage Engineering Metaphor) --- */
-  --orange-50: #fff7ed;
-  --orange-100: #ffedd5;
-  --orange-200: #fed7aa;
-  --orange-400: #fb923c;
-  --orange-500: #f97316; /* INTERNATIONAL SAFETY ORANGE */
-  --orange-600: #ea580c;
-  --orange-700: #c2410c;
+  /* --- Màu thương hiệu: Navy #0A285A. 50–300 là sắc nhạt (nền nhấn, chữ/đèn trên nền tối), 600–700 đậm hơn cho hover/active --- */
+  --brand-50: #eef3fb;
+  --brand-100: #dce5f4;
+  --brand-200: #b9cbea;
+  --brand-300: #7f9fd6;
+  --brand-400: #3d63a6;
+  --brand-500: #0a285a; /* MÀU THƯƠNG HIỆU */
+  --brand-600: #071f47;
+  --brand-700: #051733;
 
   /* Industrial Ledger Material */
   --machinery-plate: #f4f4f5;
@@ -135,16 +136,16 @@
    ========================================================================== */
 
 :root {
-  /* --- Hành động (Neo-Industrial Safety Orange - DD-10) --- */
-  --color-action-primary: var(--orange-500);
-  --color-action-primary-hover: var(--orange-600);
-  --color-action-primary-active: var(--orange-700);
-  --color-action-link: var(--orange-500);
+  /* --- Hành động (màu thương hiệu Navy - DD-10) --- */
+  --color-action-primary: var(--brand-500);
+  --color-action-primary-hover: var(--brand-600);
+  --color-action-primary-active: var(--brand-700);
+  --color-action-link: var(--brand-500);
 
   /* --- Điểm nhấn & Trang trí --- */
-  --color-brand-decorative: var(--orange-500);
-  --color-accent-text: var(--orange-600);
-  --color-accent-strong: var(--orange-700);
+  --color-brand-decorative: var(--brand-500);
+  --color-accent-text: var(--brand-600);
+  --color-accent-strong: var(--brand-700);
 
   /* --- Trạng thái: đã xác thực / thành công --- */
   --color-status-verified: var(--green-600);
@@ -181,8 +182,8 @@
   /* Khối & Dải section */
   --color-surface-brand: #f4f4f5;
   --color-surface-brand-strong: #e4e4e7;
-  --color-surface-achieve: #fff7ed;
-  --color-surface-achieve-strong: #ffedd5;
+  --color-surface-achieve: var(--brand-50);
+  --color-surface-achieve-strong: var(--brand-100);
 
   /* --- Đường viền & Bóng cơ khí --- */
   --machinery-border: #18181b;
@@ -193,7 +194,7 @@
   --shadow-press-sm: 1px 1px 0 rgba(24, 24, 27, 0.22);
   --color-border-input: #18181b;
   --color-border-subtle: #e4e4e7;
-  --color-border-focus: var(--orange-500);
+  --color-border-focus: var(--brand-500);
 
   /* --- Khoảng cách ngữ nghĩa --- */
   --space-field-label: var(--space-1-5);

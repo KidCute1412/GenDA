@@ -36,18 +36,18 @@ export function AcceptApplicantButton({
     <>
       <Button 
         onClick={() => dialogRef.current?.showModal()}
-        className="btn--tactile-orange"
+        className="btn--tactile-brand"
         style={{ height: "36px", fontSize: "11px" }}
       >
         Chấp nhận ứng viên này
       </Button>
 
       <dialog ref={dialogRef} className="dialog" aria-labelledby="accept-title">
-        <div className="module-bay__header" style={{ borderColor: "var(--orange-500)", marginBottom: "var(--space-4)" }}>
-          <span className="module-bay__id" style={{ backgroundColor: "var(--orange-500)", color: "#ffffff" }}>
+        <div className="module-bay__header" style={{ borderColor: "var(--brand-500)", marginBottom: "var(--space-4)" }}>
+          <span className="module-bay__id" style={{ backgroundColor: "var(--brand-500)", color: "#ffffff" }}>
             ACTION // IRREVERSIBLE
           </span>
-          <span style={{ color: "var(--orange-500)", fontWeight: 800, fontFamily: "ui-monospace, monospace", fontSize: "11px" }}>
+          <span style={{ color: "var(--brand-500)", fontWeight: 800, fontFamily: "ui-monospace, monospace", fontSize: "11px" }}>
             XÁC NHẬN GIAO DỰ ÁN
           </span>
         </div>
@@ -86,7 +86,7 @@ export function AcceptApplicantButton({
           </Button>
           <Button
             loading={pending}
-            className="btn--tactile-orange"
+            className="btn--tactile-brand"
             style={{ height: "40px", fontSize: "12px" }}
             onClick={() => {
               setPending(true);

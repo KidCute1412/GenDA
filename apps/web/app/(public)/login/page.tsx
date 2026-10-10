@@ -129,7 +129,7 @@ export default async function LoginPage({
                     <span className="text-muted">CHƯA CÓ TÀI KHOẢN? </span>
                     <Link 
                       href="/login?mode=register" 
-                      style={{ color: "var(--orange-500)", fontWeight: 700, textDecoration: "none" }}
+                      style={{ color: "var(--brand-500)", fontWeight: 700, textDecoration: "none" }}
                     >
                       [CHUYỂN SANG ĐĂNG KÝ]
                     </Link>
@@ -139,7 +139,7 @@ export default async function LoginPage({
                     <span className="text-muted">ĐÃ CÓ TÀI KHOẢN? </span>
                     <Link 
                       href="/login" 
-                      style={{ color: "var(--orange-500)", fontWeight: 700, textDecoration: "none" }}
+                      style={{ color: "var(--brand-500)", fontWeight: 700, textDecoration: "none" }}
                     >
                       [CHUYỂN SANG ĐĂNG NHẬP]
                     </Link>

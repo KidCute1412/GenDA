@@ -21,6 +21,8 @@ MVP số hóa đúng một vòng đời: **SME đăng dự án → admin duyệt
 | Matching | Rule-based theo kỹ năng, không AI | Slides, mục MVP Roadmap |
 | Phí nền tảng | Không thu ở MVP | Slides, Business Model |
 
+**Mở rộng 2026-10-07: cơ hội ngắn.** Ngoài dự án, GenDA nhận tin **cộng tác viên** (làm theo buổi) và **sự kiện & workshop** (khán giả, người dùng thử, học viên thử) ở mọi lĩnh vực, thù lao từ 50.000đ theo buổi hoặc theo người. Các ràng buộc "1 người / dự án" và "1–5 triệu" ở bảng trên **chỉ áp cho dự án**. Cơ hội ngắn có vòng đời riêng (đăng ký một chạm, nhiều người một tin, không mốc bàn giao): yêu cầu ở mục 3.11 và [`opportunities.md`](./opportunities.md). Hiện là bản demo trên trình duyệt, chưa có backend.
+
 ## 2. Tác nhân
 
 | Tác nhân | Mô tả | Vai trò hệ thống |
@@ -143,6 +145,35 @@ Portfolio xác thực (FR-CERT-01…05) đã bị loại khỏi phạm vi. CV ch
 | FR-ADM-03 | Quản trị viên xem nhật ký chuyển trạng thái của một dự án để xử lý khiếu nại. | M |
 | FR-ADM-04 | Quản trị viên khóa hoặc mở khóa một tài khoản kèm lý do bắt buộc. | S |
 
+### 3.10 Trợ lý tìm việc — module `assistant`
+
+Đặc tả đầy đủ: [`assistant.md`](./assistant.md). Trợ lý là **hệ quy tắc**, không dùng AI, cùng ràng buộc với matching ở mục 1. Mọi yêu cầu ở đây là `S`: bỏ đi không ảnh hưởng vòng đời MVP.
+
+| ID | Yêu cầu | Ưu tiên |
+| --- | --- | --- |
+| FR-AST-01 | Hệ thống suy ra các lời nhắc cho sinh viên từ dữ liệu của chính sinh viên đó (hồ sơ, đơn, mốc bàn giao, đánh giá, dự án đang công khai) theo các quy tắc và ngưỡng tường minh ở `assistant.md` mục 4, kiểm thử được bằng unit test. | S |
+| FR-AST-02 | Khi sinh viên có từ 2 đơn bị từ chối liên tiếp trở lên, trợ lý chỉ ra tối đa 3 nguyên nhân sửa được (nộp lệch kỹ năng, thiếu một kỹ năng lặp lại, thư ngỏ dùng lại hoặc sơ sài, CV cũ) kèm một bước làm tiếp. | S |
+| FR-AST-03 | Khi đơn chờ từ 7 ngày trở lên chưa có phản hồi, trợ lý báo số ngày chờ và gợi ý dự án khác đang khớp. | S |
+| FR-AST-04 | Khi sinh viên quay lại sau từ 7 ngày vắng trở lên, trợ lý chào lại và tóm tắt những thay đổi về đơn, mốc bàn giao và dự án mới khớp trong khoảng vắng. | S |
+| FR-AST-05 | Trợ lý tự bật nhiều nhất một lần mỗi phiên với lời nhắc quan trọng nhất chưa nghe; lời nhắc đã nghe không lặp lại cho tới khi tình huống đổi; sinh viên tắt được chế độ tự bật. | S |
+| FR-AST-06 | Mỗi lời nhắc nêu dữ liệu đã dẫn tới nó ("Vì sao Gen nói vậy?"). | S |
+| FR-AST-07 | Trợ lý chỉ đọc dữ liệu của sinh viên đang đăng nhập, không hiển thị thông tin về ứng viên khác. | S |
+
+### 3.11 Cơ hội ngắn — tính năng `opportunities` (bản demo)
+
+Đặc tả đầy đủ, quy tắc BR-OPP và lý do tách khỏi dự án: [`opportunities.md`](./opportunities.md).
+
+| Mã | Yêu cầu | Mức |
+| --- | --- | --- |
+| FR-OPP-01 | Doanh nghiệp đã được duyệt đăng tin loại cộng tác viên hoặc sự kiện & workshop, gồm lĩnh vực, thù lao, số chỗ, hình thức, địa điểm, 1–5 buổi và điều kiện tham gia. | M |
+| FR-OPP-02 | Thù lao tối thiểu 50.000đ; sự kiện tính theo người, cộng tác viên tính theo buổi; luôn hiển thị kèm đơn vị. | M |
+| FR-OPP-03 | Tin chỉ gửi duyệt được khi người đăng cam kết không thu phí người tham gia; thẻ và trang chi tiết hiện nhãn "Không thu phí người tham gia". | M |
+| FR-OPP-04 | Quản trị viên duyệt hoặc từ chối tin (từ chối bắt buộc có lý do); tin chưa duyệt không công khai. | M |
+| FR-OPP-05 | Cá nhân đã xác minh email đăng ký một chạm, không CV. Sự kiện giữ chỗ ngay; cộng tác viên chờ chủ tin nhận hoặc từ chối. | M |
+| FR-OPP-06 | Hết chỗ thì đóng đăng ký; hủy đăng ký trả lại chỗ. | M |
+| FR-OPP-07 | Trang "Tìm cơ hội" có ba tab loại kèm số tin; tab cơ hội ngắn lọc theo lĩnh vực, thù lao, hình thức và nhóm theo ngày diễn ra. | M |
+| FR-OPP-08 | Người tham gia xem lịch đã đăng ký ở "Đơn của tôi"; chủ tin xem tin của mình kèm số người đã chốt và chờ duyệt. | M |
+
 ## 4. Quy tắc nghiệp vụ
 
 Bất biến áp dụng xuyên suốt mọi use case. Vi phạm trả về lỗi miền ổn định theo `docs/api-conventions.md`, không phải lỗi 500.
@@ -226,6 +257,9 @@ Ngoài ra, điều kiện đóng theo `docs/definition-of-done.md` phải đạt
 | FR-CERT-01…05 | `certificates` | `docs/domain-model.md`, `docs/authorization-matrix.md` |
 | FR-ADM-01…04 | `admin` | `docs/authorization-matrix.md` |
 | BR-01…23 | Tầng domain của module sở hữu | `docs/domain-model.md`, `docs/architecture.md`, `docs/GenDA_Verification_and_Matching_Flow.md` |
+| FR-AST-01…07 | `assistant` | `docs/assistant.md`, `docs/design.md` DD-11 |
+| FR-OPP-01…08 | `opportunities` (frontend demo) | `docs/opportunities.md`, `docs/design.md` DD-12 |
+| BR-01…14 | Tầng domain của module sở hữu | `docs/domain-model.md`, `docs/architecture.md` |
 | NFR-SEC, NFR-PRIV, NFR-AUD | Xuyên suốt | `docs/architecture.md`, `docs/authorization-matrix.md` |
 | NFR-PERF, NFR-DATA | `projects`, `applications`, `milestones` | `docs/database-conventions.md`, `docs/api-conventions.md` |
 | NFR-UX-01…02 | `apps/web` | `docs/frontend-conventions.md` |
@@ -249,6 +283,8 @@ Các mục sau **không** được xây ở MVP. Liệt kê tường minh để 
 | Ngoại lệ cho contributor chưa đủ lịch sử GenDA ứng tuyển project `HIGH` bằng CV hoặc kinh nghiệm ngoài nền tảng | Sau MVP, chỉ khi có quy trình xác minh năng lực riêng |
 | Xác minh tư cách sinh viên hoặc dự án chỉ dành riêng cho sinh viên | Không nằm trong hướng sản phẩm hiện tại |
 | Upload và xác minh bằng cấp (`EDUCATION_CREDENTIAL`) | Sau MVP; học vấn MVP là thông tin tự khai |
+| Trợ lý Gen ở backend, nhắc qua email khi sinh viên vắng, nhắc SME về đơn chờ lâu | V1.1 |
+| Trợ lý Gen dùng AI: đọc CV và thư ngỏ, trò chuyện tự do | V2.0 |
 | SME Premium, chứng nhận QR, Talent Pool | V2.0 |
 | Ứng dụng di động native | Chưa lên lịch |
 | Mở rộng ngoài TP.HCM | Sau khi kiểm chứng pilot |
@@ -273,6 +309,8 @@ Các điểm cần quyết định trước khi module liên quan được imple
 **Xung đột complexity đã giải quyết (2026-10-07):** flow legacy chấp nhận rủi ro SME tự khai level thấp. Quyết định hiện hành không chấp nhận rủi ro đó: minimum budget theo level là lớp kiểm tra định lượng, còn admin review scope là lớp phát hiện under-classification trước khi publish (FR-PRJ-10..11, BR-18..19).
 
 **Eligibility theo project level đã chốt (2026-10-07):** `GENERAL` không còn là project type riêng. `BASIC`, `MEDIUM`, `HIGH` là một trục project level duy nhất, đồng thời điều khiển complexity, minimum budget và application eligibility. MVP dùng progression `BASIC = 1`, `MEDIUM = 2`, `HIGH = 3` experience points; tự ứng tuyển cần lần lượt 0, 1, và 3 điểm, trong đó `HIGH` còn yêu cầu ít nhất một project `MEDIUM` đã hoàn thành. SME invitation chỉ miễn điểm cho `MEDIUM`, không vượt readiness chung hoặc gate `HIGH`.
+| OQ-08 | **Lý do đóng đơn có cấu trúc.** Trợ lý hiện chỉ suy luận nguyên nhân trượt từ dữ liệu (FR-AST-02). Cho SME chọn một lý do có cấu trúc khi đơn bị đóng sẽ làm lời khuyên chính xác hơn, nhưng thêm một bước cho SME và đụng tới FR-APP-05 (đơn còn lại tự động `REJECTED`). Cần chốt trước khi dựng module `assistant` ở backend. | `docs/assistant.md` mục 7 |
+| OQ-09 | **Cơ hội ngắn lên backend.** Bản demo chưa có điểm danh, xác nhận đã trả thù lao và cách xử lý tiền cho khoản nhỏ nhiều người. Cần chốt trước khi dựng module `opportunities`: GenDA chỉ ghi nhận hay giữ tiền, và cổng CV ở `/projects` có chặn người chỉ muốn tham gia sự kiện hay không. | `docs/opportunities.md` mục 6 |
 
 ## 10. Giả định và rủi ro
 

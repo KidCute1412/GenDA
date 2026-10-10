@@ -166,7 +166,7 @@ export function RegisterFormClient({ initialRole = "STUDENT" }: { initialRole?: 
           <p className="text-caption" style={{ margin: 0, fontFamily: "ui-monospace, monospace" }}>EMAIL ACTIVATION // SENT</p>
           <p style={{ margin: "var(--space-2) 0 0", fontSize: "13px" }}>Mở email và bấm “Xác minh địa chỉ email” để kích hoạt tài khoản.</p>
         </div>
-        <Link href={verificationHref} className="btn--tactile-orange" style={{ height: "42px", textDecoration: "none" }}>
+        <Link href={verificationHref} className="btn--tactile-brand" style={{ height: "42px", textDecoration: "none" }}>
           MỞ EMAIL XÁC MINH
         </Link>
         <div className="cluster" style={{ gap: "var(--space-2)" }}>
@@ -233,7 +233,7 @@ export function RegisterFormClient({ initialRole = "STUDENT" }: { initialRole?: 
               alignItems: "center", 
               gap: "6px", 
               padding: "6px 8px", 
-              border: `2px solid ${role === "STUDENT" ? "var(--orange-500)" : "var(--machinery-border)"}`,
+              border: `2px solid ${role === "STUDENT" ? "var(--brand-500)" : "var(--machinery-border)"}`,
               backgroundColor: role === "STUDENT" ? "var(--color-surface-subtle)" : "var(--color-surface-card)",
               cursor: "pointer"
             }}
@@ -244,7 +244,7 @@ export function RegisterFormClient({ initialRole = "STUDENT" }: { initialRole?: 
               value="STUDENT" 
               checked={role === "STUDENT"} 
               onChange={() => setRole("STUDENT")}
-              style={{ accentColor: "var(--orange-500)", margin: 0 }}
+              style={{ accentColor: "var(--brand-500)", margin: 0 }}
             />
             <div style={{ lineHeight: 1.2 }}>
               <strong style={{ display: "block", fontSize: "11px", fontFamily: "ui-monospace, monospace" }}>SINH VIÊN</strong>
@@ -258,7 +258,7 @@ export function RegisterFormClient({ initialRole = "STUDENT" }: { initialRole?: 
               alignItems: "center", 
               gap: "6px", 
               padding: "6px 8px", 
-              border: `2px solid ${role === "SME" ? "var(--orange-500)" : "var(--machinery-border)"}`,
+              border: `2px solid ${role === "SME" ? "var(--brand-500)" : "var(--machinery-border)"}`,
               backgroundColor: role === "SME" ? "var(--color-surface-subtle)" : "var(--color-surface-card)",
               cursor: "pointer"
             }}
@@ -269,7 +269,7 @@ export function RegisterFormClient({ initialRole = "STUDENT" }: { initialRole?: 
               value="SME" 
               checked={role === "SME"} 
               onChange={() => setRole("SME")}
-              style={{ accentColor: "var(--orange-500)", margin: 0 }}
+              style={{ accentColor: "var(--brand-500)", margin: 0 }}
             />
             <div style={{ lineHeight: 1.2 }}>
               <strong style={{ display: "block", fontSize: "11px", fontFamily: "ui-monospace, monospace" }}>DOANH NGHIỆP</strong>
@@ -328,7 +328,7 @@ export function RegisterFormClient({ initialRole = "STUDENT" }: { initialRole?: 
                   setNoTaxCode(e.target.checked);
                   setSmeTouched(false);
                 }}
-                style={{ width: "16px", height: "16px", margin: 0, accentColor: "var(--orange-500)", cursor: "pointer" }}
+                style={{ width: "16px", height: "16px", margin: 0, accentColor: "var(--brand-500)", cursor: "pointer" }}
               />
               Chưa có mã số thuế, dùng website công ty thay thế
             </label>
@@ -397,15 +397,15 @@ export function RegisterFormClient({ initialRole = "STUDENT" }: { initialRole?: 
               setAgreed(e.target.checked);
               if (e.target.checked) setFormError("");
             }}
-            style={{ width: "18px", height: "18px", marginTop: "1px", flexShrink: 0, accentColor: "var(--orange-500)", cursor: "pointer" }}
+            style={{ width: "18px", height: "18px", marginTop: "1px", flexShrink: 0, accentColor: "var(--brand-500)", cursor: "pointer" }}
           />
           <span>
             Tôi đồng ý với{" "}
-            <Link href="/phap-ly/quy-che-san" target="_blank" style={{ textDecoration: "underline", color: "var(--orange-500)" }}>
+            <Link href="/phap-ly/quy-che-san" target="_blank" style={{ textDecoration: "underline", color: "var(--brand-500)" }}>
               Quy chế sàn
             </Link>{" "}
             &{" "}
-            <Link href="/phap-ly/bao-mat" target="_blank" style={{ textDecoration: "underline", color: "var(--orange-500)" }}>
+            <Link href="/phap-ly/bao-mat" target="_blank" style={{ textDecoration: "underline", color: "var(--brand-500)" }}>
               Bảo mật
             </Link>
             .
@@ -429,7 +429,7 @@ export function RegisterFormClient({ initialRole = "STUDENT" }: { initialRole?: 
         <button
           type="submit"
           disabled={isLoading || !agreed || !captchaToken}
-          className="btn--tactile-orange"
+          className="btn--tactile-brand"
           style={{
             width: "100%",
             height: "40px",
