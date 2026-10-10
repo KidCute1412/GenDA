@@ -7,10 +7,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import vn.skillbridge.auth.application.session.AuthCookieSettings;
 import vn.skillbridge.auth.application.session.AuthSettings;
-import vn.skillbridge.auth.application.emailverification.EmailVerificationSettings;
 
 @Configuration
-@EnableConfigurationProperties({AuthProperties.class, EmailVerificationProperties.class})
+@EnableConfigurationProperties(AuthProperties.class)
 public class AuthInfrastructureConfiguration {
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -27,10 +26,4 @@ public class AuthInfrastructureConfiguration {
         return new AuthCookieSettings(properties.accessTtl(), properties.cookieSecure(), properties.cookieSameSite());
     }
 
-    @Bean
-    EmailVerificationSettings emailVerificationSettings(EmailVerificationProperties properties) {
-        return new EmailVerificationSettings(properties.otpTtl(), properties.resendCooldown(),
-                properties.sourceRateWindow(), properties.confirmationSourceRateWindow(), properties.maxAttempts(),
-                properties.maxSendsPerSourceWindow(), properties.maxConfirmAttemptsPerSourceWindow());
-    }
 }

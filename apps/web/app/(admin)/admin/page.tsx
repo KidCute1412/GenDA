@@ -7,7 +7,6 @@ import { AUDIT_LOG } from "../../../mocks/data";
 import { LedgerAuditPanel } from "../../../features/admin/components/ledger-audit-panel";
 import { ProjectReviewQueue, ProjectReviewQueueCount } from "../../../features/admin/components/project-review-queue";
 import { LedgerOpportunityQueue, LedgerOpportunityQueueCount } from "../../../features/admin/components/ledger-opportunity-queue";
-import { LedgerSmeQueue, LedgerSmeQueueCount } from "../../../features/admin/components/ledger-sme-queue";
 import { RoleRouteGuard } from "../../../features/auth/components/role-route-guard";
 
 export const metadata: Metadata = {
@@ -23,8 +22,7 @@ export const metadata: Metadata = {
  */
 const TABS = [
   { key: "projects", label: "Duyệt dự án", code: "QUEUE.01" },
-  { key: "smes", label: "Duyệt doanh nghiệp", code: "QUEUE.02" },
-  { key: "opportunities", label: "Duyệt tin ngắn", code: "QUEUE.03" },
+  { key: "opportunities", label: "Duyệt tin ngắn", code: "QUEUE.02" },
   { key: "audit", label: "Nhật ký kiểm toán", code: "LEDGER.LOG" }
 ];
 
@@ -132,7 +130,7 @@ export default async function AdminPage({
                     fontWeight: 800
                   }}
                 >
-                  {item.key === "projects" ? <ProjectReviewQueueCount /> : item.key === "smes" ? <LedgerSmeQueueCount /> : item.key === "opportunities" ? <LedgerOpportunityQueueCount /> : counts[item.key]}
+                  {item.key === "projects" ? <ProjectReviewQueueCount /> : item.key === "opportunities" ? <LedgerOpportunityQueueCount /> : counts[item.key]}
                 </span>
               </Link>
             ))}
@@ -143,9 +141,6 @@ export default async function AdminPage({
 
           {/* TAB 1: HÀNG ĐỢI DUYỆT DỰ ÁN */}
           {active === "projects" ? <ProjectReviewQueue /> : null}
-
-          {/* TAB: HÀNG ĐỢI DUYỆT ĐĂNG KÝ DOANH NGHIỆP */}
-          {active === "smes" ? <LedgerSmeQueue /> : null}
 
           {/* TAB: NHẬT KÝ KIỂM TOÁN */}
           {active === "audit" ? <LedgerAuditPanel /> : null}

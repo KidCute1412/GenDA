@@ -25,8 +25,7 @@ class LoginServiceTest {
     @BeforeEach
     void setUp() {
         service = new LoginService(accounts, passwords, sessions);
-        user = new AuthUser(UUID.randomUUID(), "student@example.com", "hash", "Student", UserRole.CONTRIBUTOR,
-                true, AccountState.ACTIVE, null);
+        user = new AuthUser(UUID.randomUUID(), "student@example.com", "hash", "Student", UserRole.CONTRIBUTOR, AccountState.ACTIVE, null);
         when(accounts.findByEmail("student@example.com")).thenReturn(Optional.of(user));
         when(passwords.matches("Password@1", "hash")).thenReturn(true);
     }
@@ -48,27 +47,23 @@ class LoginServiceTest {
                 .isEqualTo("INVALID_CREDENTIALS");
     }
 
-    @Test
-    void rejectsAnAccountPendingEmailVerification() {
-        user = new AuthUser(user.id(), user.email(), user.passwordHash(), user.displayName(), user.role(),
-                false, AccountState.PENDING_EMAIL_VERIFICATION, null);
-        when(accounts.findByEmail("student@example.com")).thenReturn(Optional.of(user));
-
-        assertThatThrownBy(() -> service.login("student@example.com", "Password@1", false))
-                .isInstanceOf(AuthException.class)
-                .extracting(exception -> ((AuthException) exception).code())
-                .isEqualTo("EMAIL_VERIFICATION_REQUIRED");
-    }
 
     @Test
     void rejectsADisabledAccount() {
-        user = new AuthUser(user.id(), user.email(), user.passwordHash(), user.displayName(), user.role(),
-                true, AccountState.DISABLED, null);
+        user = new AuthUser(user.id(), user.email(), user.passwordHash(), user.displayName(), user.role(), AccountState.DISABLED, null);
         when(accounts.findByEmail("student@example.com")).thenReturn(Optional.of(user));
 
         assertThatThrownBy(() -> service.login("student@example.com", "Password@1", false))
                 .isInstanceOf(AuthException.class)
                 .extracting(exception -> ((AuthException) exception).code())
                 .isEqualTo("ACCOUNT_DISABLED");
+    }
+
+    @Test
+    void allowsVerifiedActiveSmeWithoutBusinessApproval() {
+        user = new AuthUser(user.id(), user.email(), user.passwordHash(), "Company", UserRole.SME, AccountState.ACTIVE, null);
+        when(accounts.findByEmail("student@example.com")).thenReturn(Optional.of(user));
+        service.login("student@example.com", "Password@1", false);
+        verify(sessions).issue(user, false);
     }
 }

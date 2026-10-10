@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useDemoSession } from "../../auth/hooks/use-demo-session";
+import { useAuthSession } from "../../auth/hooks/use-auth-session";
 import { useDemoLedger } from "../../demo-ledger/use-demo-ledger";
 import type { OpportunityStatus } from "../../demo-ledger/types";
 import { formatVnd } from "../../../lib/utils/format";
@@ -12,7 +12,7 @@ const STATUS_TEXT: Record<OpportunityStatus, string> = { PENDING_REVIEW: "Chờ 
 /** Tin cộng tác viên / sự kiện của doanh nghiệp đang đăng nhập, kèm số người đã chốt và số người chờ duyệt. */
 export function MyOpportunitiesPanel() {
   const ledger = useDemoLedger();
-  const { session, hydrated } = useDemoSession();
+  const { session, hydrated } = useAuthSession();
   if (!hydrated || session?.role !== "SME") return null;
   const owner = ledger.users.find((user) => user.email === session.email);
   const mine = ledger.opportunities.filter((item) => item.ownerId === owner?.id);

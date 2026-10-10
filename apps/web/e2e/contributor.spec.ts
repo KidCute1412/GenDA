@@ -26,26 +26,6 @@ test("the profile shows tier, XP bar and which project levels are unlocked", asy
   await expect(page.getByText("Sẵn sàng ứng tuyển")).toBeVisible();
 });
 
-test("a bronze contributor sees a MEDIUM project but cannot apply to it yet", async ({ page }) => {
-  await loginAs(page, "bronze");
-  await page.goto("/projects/p-zen");
-  await expect(page.getByRole("heading", { name: /Bộ nhận diện social/i })).toBeVisible();
-  await page.getByRole("button", { name: /CẦN HẠNG BẠC/ }).click();
-  const dialog = page.getByRole("dialog");
-  await expect(dialog.getByText("Dự án Trung bình cần hạng Bạc. Bạn đang ở hạng Đồng (7/10 XP), còn 3 XP nữa.")).toBeVisible();
-  await expect(dialog.getByRole("button", { name: "Gửi đơn ứng tuyển" })).toBeDisabled();
-  await expect(dialog.getByText("Dự án này cần hạng bạc.")).toBeVisible();
-});
-
-test("a gold contributor qualifies for a HIGH project and sees the application already sent", async ({ page }) => {
-  await loginAs(page, "gold");
-  await page.goto("/projects/p-coffee-lab");
-  await expect(page.getByText("Bạn đủ hạng")).toBeVisible();
-  await expect(page.getByRole("button", { name: /ĐÃ NỘP ĐƠN/ })).toBeVisible();
-  await page.goto("/student/applications");
-  await expect(page.locator(".app-card").filter({ hasText: "Landing page cho chiến dịch cà phê mới" })).toContainText("Đang chờ duyệt");
-});
-
 test("the SME reviews applicants with tier, XP and an explained skill match", async ({ page }) => {
   await loginAs(page, "sme");
   await page.goto("/sme/projects/p-coffee-lab/review");
@@ -58,7 +38,7 @@ test("the SME reviews applicants with tier, XP and an explained skill match", as
 });
 
 test("a fake PDF is rejected with its reason and a real one becomes READY", async ({ page }) => {
-  await loginAs(page, "bronze");
+  await loginAs(page, "student");
   await page.goto("/student/profile");
   const input = page.locator("#profile-cv");
   await input.setInputFiles({ name: "cv.pdf", mimeType: "application/pdf", buffer: Buffer.from("<html>đây không phải PDF</html>") });

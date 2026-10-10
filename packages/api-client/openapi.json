@@ -651,7 +651,7 @@
         "tags": [
           "auth-controller"
         ],
-        "summary": "Register a contributor or SME account pending email verification",
+        "summary": "Register an active contributor or SME account",
         "operationId": "register",
         "requestBody": {
           "content": {
@@ -665,11 +665,30 @@
         },
         "responses": {
           "201": {
-            "description": "Created",
+            "description": "Account created; sign in to start a session",
             "content": {
               "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/AuthUserResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "AUTH_RATE_LIMITED",
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds until retry",
+                "style": "simple",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -751,7 +770,7 @@
         },
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Authenticated account",
             "content": {
               "*/*": {
                 "schema": {
@@ -759,58 +778,22 @@
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/api/v1/auth/email-verifications/resend": {
-      "post": {
-        "tags": [
-          "auth-controller"
-        ],
-        "summary": "Issue a replacement email-verification code after the resend cooldown",
-        "operationId": "resendEmail",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ResendEmailVerificationRequest"
-              }
-            }
           },
-          "required": true
-        },
-        "responses": {
-          "202": {
-            "description": "Accepted"
-          }
-        }
-      }
-    },
-    "/api/v1/auth/email-verifications/confirm": {
-      "post": {
-        "tags": [
-          "auth-controller"
-        ],
-        "summary": "Confirm a registered email with a six-digit one-time code",
-        "operationId": "confirmEmail",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ConfirmEmailVerificationRequest"
+          "429": {
+            "description": "AUTH_RATE_LIMITED",
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds until retry",
+                "style": "simple",
+                "schema": {
+                  "type": "integer"
+                }
               }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
+            },
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/AuthUserResponse"
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -824,7 +807,7 @@
           "application-controller"
         ],
         "summary": "Apply to a published project",
-        "description": "422 APPLICATION_NOT_ELIGIBLE lists details.missing (ACCOUNT_INACTIVE, EMAIL_NOT_VERIFIED, PROFILE_INCOMPLETE, CV_NOT_READY, TIER_REQUIRED) with requiredTier, currentTier and missingXp.",
+        "description": "422 APPLICATION_NOT_ELIGIBLE lists details.missing (ACCOUNT_INACTIVE, PROFILE_INCOMPLETE, PROFILE_INCOMPLETE, CV_NOT_READY, TIER_REQUIRED) with requiredTier, currentTier and missingXp.",
         "operationId": "apply",
         "requestBody": {
           "content": {
@@ -2533,23 +2516,19 @@
           "accountState": {
             "type": "string",
             "enum": [
-              "PENDING_EMAIL_VERIFICATION",
-              "EMAIL_VERIFIED",
               "ACTIVE",
               "DISABLED"
             ]
           },
-          "emailVerified": {
-            "type": "boolean"
-          },
           "smeApprovalStatus": {
-            "type": "string"
+            "type": "string",
+            "deprecated": true,
+            "description": "Legacy historical value; unused for MVP access"
           }
         },
         "required": [
           "accountState",
           "email",
-          "emailVerified",
           "id",
           "name",
           "role"
@@ -2576,40 +2555,6 @@
         "required": [
           "email",
           "password"
-        ]
-      },
-      "ResendEmailVerificationRequest": {
-        "type": "object",
-        "properties": {
-          "email": {
-            "type": "string",
-            "format": "email",
-            "maxLength": 254,
-            "minLength": 0
-          }
-        },
-        "required": [
-          "email"
-        ]
-      },
-      "ConfirmEmailVerificationRequest": {
-        "type": "object",
-        "properties": {
-          "email": {
-            "type": "string",
-            "format": "email",
-            "maxLength": 254,
-            "minLength": 0
-          },
-          "code": {
-            "type": "string",
-            "minLength": 1,
-            "pattern": "\\d{6}"
-          }
-        },
-        "required": [
-          "code",
-          "email"
         ]
       },
       "CreateApplicationRequest": {
@@ -2729,9 +2674,6 @@
           "accountActive": {
             "type": "boolean"
           },
-          "emailVerified": {
-            "type": "boolean"
-          },
           "profileComplete": {
             "type": "boolean"
           },
@@ -2745,7 +2687,6 @@
         "required": [
           "accountActive",
           "cvReady",
-          "emailVerified",
           "profileComplete",
           "ready"
         ]

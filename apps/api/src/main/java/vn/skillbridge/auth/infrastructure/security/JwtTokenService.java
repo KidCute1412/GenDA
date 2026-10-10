@@ -37,7 +37,6 @@ public class JwtTokenService implements TokenService {
                 .id(UUID.randomUUID().toString()).claim("typ", "access").claim("email", user.email())
                 .claim("name", user.displayName()).claim("role", user.role().name())
                 .claim("accountState", user.accountState().name())
-                .claim("emailVerified", user.emailVerified())
                 .claim("smeApprovalStatus", user.smeApprovalStatus()).signWith(key).compact();
     }
 
@@ -60,7 +59,6 @@ public class JwtTokenService implements TokenService {
         return new AccessTokenClaims(UUID.fromString(claims.getSubject()), claims.get("email", String.class),
                 claims.get("name", String.class), claims.get("role", String.class),
                 AccountState.valueOf(claims.get("accountState", String.class)),
-                Boolean.TRUE.equals(claims.get("emailVerified", Boolean.class)),
                 claims.get("smeApprovalStatus", String.class));
     }
 

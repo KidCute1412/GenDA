@@ -20,7 +20,6 @@ The public project list and detail Server Components call the backend through `A
 Until their backend slices exist, these behaviors stay behind the existing demo adapters:
 
 - the current demo student's skill set and the displayed match score;
-- email-verification state;
 - the apply action and application lifecycle;
 - SME/admin/workspace workflows.
 
@@ -32,6 +31,6 @@ These values never grant backend authorization. Do not send them as trusted role
 
 ## Authentication boundary
 
-The current login and registration UI use the generated client with `credentials: include`. JavaScript receives only the authenticated user DTO; both JWTs remain in `HttpOnly` cookies. Both contributor and SME registration now create `PENDING_EMAIL_VERIFICATION` accounts without a session, and frontend session types expose `accountState`. The legacy student-verification UI/admin queue is removed. OTP confirm/resend integration remains the next implementation batch.
+The login and registration UI use the generated client with `credentials: include`. JavaScript receives the authenticated user DTO; JWTs remain in `HttpOnly` cookies. Registration creates an active Contributor or SME without email verification and redirects to sign-in.
 
-The approved target UI sends every new `CONTRIBUTOR` or `SME` registration to `/verify-email`, confirms a six-digit OTP through the generated client, supports cooldown-bound resend, and receives no access/refresh cookies before successful email verification. SME registration also collects the business identity required for manual review. After OTP confirmation, contributor onboarding may continue, while SME shows a pending/rejected/verified business-review result and receives no full session until `VERIFIED`. On authenticated page load, the frontend calls `/auth/me`; an expired access cookie triggers one `/auth/refresh` rotation before retrying. Frontend OTP/readiness/approval state is display state only; backend account and business use cases remain authoritative.
+After login, the frontend calls `/auth/me`; an expired access cookie triggers one `/auth/refresh` rotation before retrying. Backend account and role use cases remain authoritative.

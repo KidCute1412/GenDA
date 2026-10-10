@@ -32,7 +32,7 @@ public class ApplicationController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Apply to a published project",
-            description = "422 APPLICATION_NOT_ELIGIBLE lists details.missing (ACCOUNT_INACTIVE, EMAIL_NOT_VERIFIED, "
+            description = "422 APPLICATION_NOT_ELIGIBLE lists details.missing (ACCOUNT_INACTIVE, PROFILE_INCOMPLETE, "
                     + "PROFILE_INCOMPLETE, CV_NOT_READY, TIER_REQUIRED) with requiredTier, currentTier and missingXp.")
     public ContributorApplicationResponse apply(@AuthenticationPrincipal AuthenticatedPrincipal principal,
             @Valid @RequestBody CreateApplicationRequest request) {

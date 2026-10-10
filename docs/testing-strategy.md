@@ -9,9 +9,9 @@
 
 Stateful features cover authorized success, unauthenticated/wrong-role/wrong-owner access, invalid transition, validation and relevant database failures. Use isolated deterministic data, never production services.
 
-Email-verification tests cover correct, incorrect, expired, consumed and superseded OTPs; maximum attempts; resend cooldown/rate limits; hash-only persistence; no session before verification; and the independent SME-approval gate. Avoid asserting or logging a real OTP outside dedicated test fixtures.
+Registration tests assert immediate activation, rate limits and no session issuance. Persistence integration tests cover the V15 migration that activates legacy pending accounts, preserves disabled accounts and removes OTP tables.
 
-SME-verification tests cover required business identity, tax-code format/uniqueness and website fallback; `PENDING → VERIFIED` and `PENDING → REJECTED`; mandatory rejection reason; reviewer/timestamp audit; no full session or project creation while pending/rejected; successful login only after both email and business verification; and confirmation that SME approval never publishes a project automatically.
+Auth tests cover required self-declared SME identity, disabled/pending sign-in denial, active verified SME sign-in without business approval, BCrypt byte boundaries, rate-limit windows/capacity, CSRF, refresh rotation and logout. Business-review tests are outside MVP.
 
 Contributor-readiness tests cover every missing predicate in `canApplyGeneral`, project browsing while incomplete, authoritative rejection at application submission, and successful submission only with an active account, verified email, complete profile and `READY` CV. CV tests include spoofed MIME/signature, oversize, corrupt/password-protected files, scanner failure/unavailability policy, private download authorization and replacement behavior. `READY` must never be interpreted as verified CV content.
 
@@ -28,3 +28,5 @@ With services running, `node scripts/verify-local.mjs` checks API/frontend/datab
 Verify frontend HMR and backend rebuild with watch panes active; closing panes leaves containers running and stop/restart retains data. Report unverified Windows Terminal/reload/hosting behavior explicitly.
 
 Backend CI installs Docker Compose v5.0.2 explicitly so the full Compose configuration, including frontend Watch initial_sync, validates independently of the runner image.
+
+Auth E2E runs against `compose.auth-test.yaml`, an isolated PostgreSQL database. Runtime auth has no mock session, seed login accounts or test bypass. Test fixtures are provisioned explicitly by `scripts/setup-auth-e2e.mjs`. PostgreSQL migration tests use `AUTH_TEST_DB_URL` and a unique test schema.

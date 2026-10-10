@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Alert } from "../../../components/ui/alert";
-import { useDemoSession } from "../../auth/hooks/use-demo-session";
+import { useAuthSession } from "../../auth/hooks/use-auth-session";
 import { cancelRegistration, registerForOpportunity } from "../../demo-ledger/store";
 import { useDemoLedger } from "../../demo-ledger/use-demo-ledger";
 import type { DemoOpportunity } from "../../demo-ledger/types";
@@ -17,7 +17,7 @@ const BUTTON_STYLE = { width: "100%", height: "48px" } as const;
  */
 export function RegisterAction({ opportunity, today }: { opportunity: DemoOpportunity; today: string }) {
   const ledger = useDemoLedger();
-  const { session, hydrated } = useDemoSession();
+  const { session, hydrated } = useAuthSession();
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 

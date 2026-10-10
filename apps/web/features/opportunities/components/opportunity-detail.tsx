@@ -4,7 +4,7 @@ import { Alert } from "../../../components/ui/alert";
 import { ButtonLink } from "../../../components/ui/button";
 import { EmptyState, ProjectListSkeleton } from "../../../components/ui/feedback";
 import { formatVnd } from "../../../lib/utils/format";
-import { useDemoSession } from "../../auth/hooks/use-demo-session";
+import { useAuthSession } from "../../auth/hooks/use-auth-session";
 import { useDemoLedger } from "../../demo-ledger/use-demo-ledger";
 import { KIND_META, PAY_UNIT_LABEL, formatSession, isOver, slotsLeft, sortedSessions } from "../model";
 import { useToday } from "../hooks/use-today";
@@ -21,7 +21,7 @@ const ROW_STYLE = { fontFamily: "ui-monospace, monospace", fontSize: "12px" } as
 export function OpportunityDetail({ id }: { id: string }) {
   const ledger = useDemoLedger();
   const today = useToday();
-  const { session } = useDemoSession();
+  const { session } = useAuthSession();
 
   if (!today) return <ProjectListSkeleton rows={2} />;
 

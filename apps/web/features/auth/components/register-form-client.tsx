@@ -6,7 +6,6 @@ import Link from "next/link";
 import { TextField } from "../../../components/ui/field";
 import { PasswordField } from "../../../features/auth/components/password-field";
 import { AuthApiError, registerAccount } from "../services/auth-api";
-import { RECAPTCHA_ENABLED, RecaptchaField, verifyRecaptcha } from "./recaptcha-field";
 import { isValidTaxCode, isValidWebsite, validateSmeIdentity } from "../../../lib/utils/sme-identity";
 
 export function RegisterFormClient({ initialRole = "CONTRIBUTOR" }: { initialRole?: "CONTRIBUTOR" | "SME" }) {
@@ -24,27 +23,7 @@ export function RegisterFormClient({ initialRole = "CONTRIBUTOR" }: { initialRol
   const [smeTouched, setSmeTouched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [agreed, setAgreed] = useState(false);
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-  // Đổi key để gắn lại widget reCAPTCHA (bắt giải lại) khi xác minh thất bại
-  const [captchaKey, setCaptchaKey] = useState(0);
-  // reCAPTCHA đang tạm tắt (RECAPTCHA_ENABLED): khi đó biểu mẫu không chờ token.
-  const captchaReady = !RECAPTCHA_ENABLED || Boolean(captchaToken);
   const [formError, setFormError] = useState("");
-
-  function handleFillSample(targetRole: "CONTRIBUTOR" | "SME") {
-    setRole(targetRole);
-    setPassword("Demo@12345");
-    setConfirmPassword("Demo@12345");
-    if (targetRole === "CONTRIBUTOR") {
-      setName("Sinh viên mới");
-      setEmail(`student.${Date.now()}@example.com`);
-    } else {
-      setName("Doanh nghiệp mới");
-      setEmail(`sme.${Date.now()}@example.com`);
-      setNoTaxCode(false);
-      setTaxCode("0316789012");
-    }
-  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -60,20 +39,8 @@ export function RegisterFormClient({ initialRole = "CONTRIBUTOR" }: { initialRol
       setFormError("Bạn cần đồng ý với Quy chế sàn và Chính sách bảo mật để tạo tài khoản.");
       return;
     }
-    if (!captchaReady) {
-      setFormError("Bước xác minh chống người máy chưa xong. Đợi vài giây rồi bấm tạo tài khoản lại.");
-      return;
-    }
     setFormError("");
     setIsLoading(true);
-
-    if (RECAPTCHA_ENABLED && !(await verifyRecaptcha(captchaToken ?? "", "register"))) {
-      setIsLoading(false);
-      setCaptchaToken(null);
-      setCaptchaKey((key) => key + 1);
-      setFormError("Xác minh reCAPTCHA không thành công hoặc đã hết hạn. Hãy thử lại lần nữa.");
-      return;
-    }
 
     try {
       await registerAccount({
@@ -84,7 +51,7 @@ export function RegisterFormClient({ initialRole = "CONTRIBUTOR" }: { initialRol
         taxCode: role === "SME" && !noTaxCode ? taxCode : undefined,
         companyWebsite: role === "SME" && noTaxCode ? website : undefined
       });
-      router.push(`/verify-email?email=${encodeURIComponent(email)}`);
+      router.replace("/login?registered=1");
     } catch (error) {
       if (error instanceof AuthApiError && error.code === "EMAIL_ALREADY_REGISTERED") {
         setFormError("Email này đã được đăng ký. Hãy đăng nhập hoặc dùng email khác.");
@@ -123,33 +90,6 @@ export function RegisterFormClient({ initialRole = "CONTRIBUTOR" }: { initialRol
         Khởi tạo mã định danh năng lực & tham gia mạng lưới GenDA.
       </p>
 
-      {/* Preset Đăng ký nhanh */}
-      <div style={{ marginTop: "var(--space-2)", padding: "6px 10px", backgroundColor: "var(--color-surface-subtle)", border: "1px dashed var(--machinery-border)" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <span style={{ fontFamily: "ui-monospace, monospace", fontSize: "10px", color: "var(--color-text-muted)" }}>
-            {"// ĐIỀN MẪU THỬ NHANH:"}
-          </span>
-          <div style={{ display: "flex", gap: "6px" }}>
-            <button
-              type="button"
-              onClick={() => handleFillSample("CONTRIBUTOR")}
-              className="chip"
-              style={{ fontSize: "10px", height: "24px", paddingInline: "6px", cursor: "pointer" }}
-            >
-              Mẫu Sinh viên
-            </button>
-            <button
-              type="button"
-              onClick={() => handleFillSample("SME")}
-              className="chip"
-              style={{ fontSize: "10px", height: "24px", paddingInline: "6px", cursor: "pointer" }}
-            >
-              Mẫu Doanh nghiệp
-            </button>
-          </div>
-        </div>
-      </div>
-
       <form onSubmit={handleSubmit} className="stack" style={{ marginTop: "var(--space-2)", gap: "var(--space-2)" }}>
         
         {/* Bộ chọn vai trò cơ khí (Hardware Radio Switcher) */}
@@ -174,7 +114,7 @@ export function RegisterFormClient({ initialRole = "CONTRIBUTOR" }: { initialRol
               style={{ accentColor: "var(--brand-500)", margin: 0 }}
             />
             <div style={{ lineHeight: 1.2 }}>
-              <strong style={{ display: "block", fontSize: "11px", fontFamily: "ui-monospace, monospace" }}>SINH VIÊN</strong>
+              <strong style={{ display: "block", fontSize: "11px", fontFamily: "ui-monospace, monospace" }}>CONTRIBUTOR</strong>
               <span style={{ fontSize: "10px", color: "var(--color-text-muted)", display: "block" }}>Nhận dự án thực</span>
             </div>
           </label>
@@ -218,14 +158,14 @@ export function RegisterFormClient({ initialRole = "CONTRIBUTOR" }: { initialRol
               <TextField
                 id="register-website"
                 label="WEBSITE CÔNG TY"
-                type="url"
+                type="text"
                 inputMode="url"
                 required
                 autoComplete="url"
                 value={website}
                 onChange={(e) => setWebsite(e.target.value)}
                 placeholder="congty.vn"
-                hint="Dùng thay cho mã số thuế. Chúng tôi sẽ đối chiếu website khi duyệt tài khoản."
+                hint="Dùng thay cho mã số thuế; đây là thông tin doanh nghiệp tự khai."
                 error={websiteError}
               />
             ) : (
@@ -277,7 +217,7 @@ export function RegisterFormClient({ initialRole = "CONTRIBUTOR" }: { initialRol
 
           <TextField
             id="register-email"
-            label="EMAIL KÍCH HOẠT"
+            label="EMAIL"
             type="email"
             required
             autoComplete="email"
@@ -339,17 +279,6 @@ export function RegisterFormClient({ initialRole = "CONTRIBUTOR" }: { initialRol
           </span>
         </label>
 
-        {RECAPTCHA_ENABLED ? (
-          <RecaptchaField
-            key={captchaKey}
-            action="register"
-            onChange={(token) => {
-              setCaptchaToken(token);
-              if (token) setFormError("");
-            }}
-          />
-        ) : null}
-
         {formError ? (
           <p role="alert" style={{ margin: 0, fontSize: "12px", color: "var(--color-danger-text, #b91c1c)" }}>
             {formError}
@@ -358,15 +287,15 @@ export function RegisterFormClient({ initialRole = "CONTRIBUTOR" }: { initialRol
 
         <button
           type="submit"
-          disabled={isLoading || !agreed || !captchaReady}
+          disabled={isLoading || !agreed}
           className="btn--tactile-brand"
           style={{
             width: "100%",
             height: "40px",
             fontSize: "12px",
             marginTop: "4px",
-            cursor: isLoading ? "wait" : !agreed || !captchaReady ? "not-allowed" : "pointer",
-            opacity: agreed && captchaReady ? 1 : 0.55
+            cursor: isLoading ? "wait" : !agreed ? "not-allowed" : "pointer",
+            opacity: agreed ? 1 : 0.55
           }}
         >
           {isLoading ? "ĐANG TẠO TÀI KHOẢN..." : "TẠO TÀI KHOẢN MỚI"}

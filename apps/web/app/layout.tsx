@@ -3,6 +3,7 @@ import "./components.css";
 import type { Metadata, Viewport } from "next";
 import { Be_Vietnam_Pro } from "next/font/google";
 import { AssistantHost } from "../features/assistant/components/assistant-host";
+import { AuthSessionProvider } from "../features/auth/components/auth-session-provider";
 
 /**
  * Phông chữ duy nhất: Be Vietnam Pro (Clean Modern SaaS - DD-09).
@@ -46,9 +47,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <a href="#main-content" className="skip-link">
           Bỏ qua tới nội dung chính
         </a>
+        <AuthSessionProvider>
         {children}
         {/* Trợ lý Gen: chỉ hiện với phiên sinh viên, đứng ngoài từng trang để theo sinh viên qua mọi màn hình */}
         <AssistantHost />
+        </AuthSessionProvider>
       </body>
     </html>
   );

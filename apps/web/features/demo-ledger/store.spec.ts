@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { applyToProject, findDemoAccount, getLedger, mirrorPublishedProject, mirrorContributor, moderateSmeRegistration, registerDemoUser, resetLedger,reviewMilestone, seedAssistantScenario, setApplicationStatus, submitDeliverable, submitReview, verifyDemoEmail } from "./store";
+import { applyToProject, findDemoAccount, getLedger, mirrorPublishedProject, mirrorContributor, resetLedger, reviewMilestone, seedAssistantScenario, setApplicationStatus, submitDeliverable, submitReview } from "./store";
 
 const published = { id: "p-backend-demo", title: "Demo xuyên vai trò", smeName: "The Coffee Lab", smeContact: "contact@coffeelab.vn", budget: 3_000_000, deadline: "2027-01-01", skills: ["React"], summary: "Demo", problem: "Cần một sản phẩm demo", acceptance: ["Hoàn tất"], milestones: [{ order: 1, title: "Mốc một", budget: 1_000_000, deadline: "2026-12-01", criteria: "Đạt" }, { order: 2, title: "Mốc hai", budget: 2_000_000, deadline: "2027-01-01", criteria: "Đạt" }] };
 /** Dự án đã được backend xuất bản, sao vào ledger như ApplyButton làm trước khi ứng tuyển. */
@@ -7,31 +7,6 @@ function publish() { expect(mirrorPublishedProject(published).ok).toBe(true); re
 
 describe("demo ledger lifecycle", () => {
   beforeEach(() => { localStorage.clear(); resetLedger(); });
-  it("requires an SME to provide a tax code or, failing that, a company website", () => {
-    expect(registerDemoUser({ name: "Công ty A", email: "a@congty.vn", role: "SME" })).toMatchObject({ ok: false, code: "SME_IDENTITY_REQUIRED" });
-    expect(registerDemoUser({ name: "Công ty A", email: "a@congty.vn", role: "SME", taxCode: "12345" })).toMatchObject({ ok: false, code: "SME_IDENTITY_REQUIRED" });
-    expect(registerDemoUser({ name: "Công ty A", email: "a@congty.vn", role: "SME", companyWebsite: "khong-hop-le" })).toMatchObject({ ok: false, code: "SME_IDENTITY_REQUIRED" });
-    expect(registerDemoUser({ name: "Công ty A", email: "a@congty.vn", role: "SME", taxCode: "0316789012001" })).toMatchObject({ ok: true, value: { taxCode: "0316789012-001" } });
-    expect(registerDemoUser({ name: "Công ty B", email: "b@congty.vn", role: "SME", companyWebsite: "congtyb.vn" })).toMatchObject({ ok: true, value: { companyWebsite: "https://congtyb.vn" } });
-    expect(registerDemoUser({ name: "Sinh viên", email: "sv@hcmus.edu.vn", role: "CONTRIBUTOR" }).ok).toBe(true);
-  });
-  it("keeps a new SME pending until an admin approves it", () => {
-    const registered = registerDemoUser({ name: "Công ty C", email: "c@congty.vn", role: "SME", taxCode: "0316789012" });
-    expect(registered).toMatchObject({ ok: true, value: { smeApprovalStatus: "PENDING" } }); if (!registered.ok) return;
-    expect(moderateSmeRegistration("contact@coffeelab.vn", registered.value.id, "approve")).toMatchObject({ ok: false, code: "WRONG_ROLE" });
-    expect(moderateSmeRegistration("admin@genda.vn", registered.value.id, "reject")).toMatchObject({ ok: false, code: "REASON_REQUIRED" });
-    expect(verifyDemoEmail("c@congty.vn").ok).toBe(true);
-    expect(moderateSmeRegistration("admin@genda.vn", registered.value.id, "approve").ok).toBe(true);
-    expect(findDemoAccount("c@congty.vn")).toMatchObject({ smeApprovalStatus: "APPROVED", emailVerified: true, accountState: "ACTIVE" });
-    expect(moderateSmeRegistration("admin@genda.vn", registered.value.id, "approve")).toMatchObject({ ok: false, code: "INVALID_TRANSITION" });
-  });
-  it("requires a verified contributor with a CV before applying", () => {
-    const registered = registerDemoUser({ name: "Sinh viên mới", email: "moi@hcmus.edu.vn", role: "CONTRIBUTOR" }); if (!registered.ok) throw new Error();
-    const created = publish();
-    expect(applyToProject({ email: "moi@hcmus.edu.vn", projectId: created.value, coverLetter: "Thư ngỏ" })).toMatchObject({ ok: false, code: "EMAIL_NOT_VERIFIED" });
-    verifyDemoEmail("moi@hcmus.edu.vn");
-    expect(applyToProject({ email: "moi@hcmus.edu.vn", projectId: created.value, coverLetter: "Thư ngỏ" })).toMatchObject({ ok: false, code: "CV_REQUIRED" });
-  });
   it("mirrors a backend contributor and their READY CV so the demo application carries it", () => {
     const created = publish();
     expect(mirrorContributor({ email: "backend@hcmus.edu.vn", name: "Người dùng backend" }).ok).toBe(true);

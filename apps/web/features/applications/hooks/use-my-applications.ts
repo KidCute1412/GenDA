@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { useDemoSession } from "../../auth/hooks/use-demo-session";
+import { useAuthSession } from "../../auth/hooks/use-auth-session";
 import { listMyApplications, type ApplicationStatus, type MyApplication } from "../services/applications-api";
 
 export type { ApplicationStatus, MyApplication };
@@ -39,7 +39,7 @@ export function useMyApplications(): {
   items: MyApplication[];
   reload: () => Promise<void>;
 } {
-  const { session, hydrated } = useDemoSession();
+  const { session, hydrated } = useAuthSession();
   const isStudent = session?.role === "CONTRIBUTOR";
   const [items, setItems] = useState<MyApplication[]>([]);
   const [loading, setLoading] = useState(true);

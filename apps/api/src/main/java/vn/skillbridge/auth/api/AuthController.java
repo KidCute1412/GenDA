@@ -1,6 +1,11 @@
 package vn.skillbridge.auth.api;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,41 +21,39 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import vn.skillbridge.auth.api.dto.AuthUserResponse;
 import vn.skillbridge.auth.api.dto.CsrfResponse;
-import vn.skillbridge.auth.api.dto.ConfirmEmailVerificationRequest;
 import vn.skillbridge.auth.api.dto.LoginRequest;
 import vn.skillbridge.auth.api.dto.RegisterRequest;
-import vn.skillbridge.auth.api.dto.ResendEmailVerificationRequest;
-import vn.skillbridge.auth.application.AuthException;
 import vn.skillbridge.auth.application.account.LoginService;
+import vn.skillbridge.auth.application.account.AuthRateLimitService;
 import vn.skillbridge.auth.application.account.RegistrationCommand;
-import vn.skillbridge.auth.application.account.RegistrationResult;
 import vn.skillbridge.auth.application.account.RegistrationService;
-import vn.skillbridge.auth.application.emailverification.EmailVerificationService;
 import vn.skillbridge.auth.application.session.AuthResult;
 import vn.skillbridge.auth.application.session.AuthenticatedPrincipal;
 import vn.skillbridge.auth.application.session.CsrfTokenService;
 import vn.skillbridge.auth.application.session.SessionService;
+import vn.skillbridge.auth.domain.account.AuthUser;
 import vn.skillbridge.auth.domain.account.UserRole;
+import vn.skillbridge.platform.api.dto.ApiError;
 
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthController {
     private final LoginService loginService;
     private final RegistrationService registrationService;
-    private final EmailVerificationService emailVerificationService;
     private final SessionService sessionService;
     private final AuthCookieWriter cookies;
     private final CsrfTokenService csrf;
+    private final AuthRateLimitService rateLimits;
 
     public AuthController(LoginService loginService, RegistrationService registrationService,
-            EmailVerificationService emailVerificationService,
-            SessionService sessionService, AuthCookieWriter cookies, CsrfTokenService csrf) {
+            SessionService sessionService, AuthCookieWriter cookies, CsrfTokenService csrf,
+            AuthRateLimitService rateLimits) {
         this.loginService = loginService;
         this.registrationService = registrationService;
-        this.emailVerificationService = emailVerificationService;
         this.sessionService = sessionService;
         this.cookies = cookies;
         this.csrf = csrf;
+        this.rateLimits = rateLimits;
     }
 
     @GetMapping("/csrf")
@@ -65,7 +68,15 @@ public class AuthController {
 
     @PostMapping("/login")
     @Operation(summary = "Sign in and issue HttpOnly access and refresh cookies")
-    public AuthUserResponse login(@Valid @RequestBody LoginRequest request, HttpServletResponse response) {
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Authenticated account"),
+            @ApiResponse(responseCode = "429", description = "AUTH_RATE_LIMITED",
+                    headers = @Header(name = "Retry-After", description = "Seconds until retry", schema = @Schema(type = "integer")),
+                    content = @Content(schema = @Schema(implementation = ApiError.class)))
+    })
+    public AuthUserResponse login(@Valid @RequestBody LoginRequest request, HttpServletResponse response,
+            HttpServletRequest servletRequest) {
+        rateLimits.login(request.email(), servletRequest.getRemoteAddr());
         AuthResult result = loginService.login(request.email(), request.password(), request.rememberDevice());
         cookies.write(response, result);
         return AuthUserResponse.from(result.user());
@@ -73,38 +84,19 @@ public class AuthController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Register a contributor or SME account pending email verification")
+    @Operation(summary = "Register an active contributor or SME account")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Account created; sign in to start a session"),
+            @ApiResponse(responseCode = "429", description = "AUTH_RATE_LIMITED",
+                    headers = @Header(name = "Retry-After", description = "Seconds until retry", schema = @Schema(type = "integer")),
+                    content = @Content(schema = @Schema(implementation = ApiError.class)))
+    })
     public AuthUserResponse register(@Valid @RequestBody RegisterRequest request, HttpServletRequest servletRequest) {
-        RegistrationResult result = registrationService.register(new RegistrationCommand(request.name(), request.email(),
+        rateLimits.register(servletRequest.getRemoteAddr());
+        AuthUser result = registrationService.register(new RegistrationCommand(request.name(), request.email(),
                 request.password(), UserRole.valueOf(request.role().name()), request.taxCode(),
-                request.companyWebsite(), servletRequest.getRemoteAddr()));
-        return AuthUserResponse.from(result.user());
-    }
-
-    @PostMapping("/email-verifications/confirm")
-    @Operation(summary = "Confirm a registered email with a six-digit one-time code")
-    public AuthUserResponse confirmEmail(@Valid @RequestBody ConfirmEmailVerificationRequest request,
-            HttpServletRequest servletRequest) {
-        return AuthUserResponse.from(emailVerificationService.confirm(
-                request.email(), request.code(), servletRequest.getRemoteAddr()));
-    }
-
-    @PostMapping("/email-verifications/resend")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    @Operation(summary = "Issue a replacement email-verification code after the resend cooldown")
-    public void resendEmail(@Valid @RequestBody ResendEmailVerificationRequest request,
-            HttpServletRequest servletRequest) {
-        try {
-            emailVerificationService.resend(request.email(), servletRequest.getRemoteAddr());
-        } catch (AuthException exception) {
-            if (!"OTP_RESEND_TOO_SOON".equals(exception.code())
-                    && !"OTP_RATE_LIMITED".equals(exception.code())
-                    && !"EMAIL_DELIVERY_FAILED".equals(exception.code())) {
-                throw exception;
-            }
-            // Always return 202 for resend outcomes so this public endpoint cannot be used
-            // to discover whether an email address has an account.
-        }
+                request.companyWebsite()));
+        return AuthUserResponse.from(result);
     }
 
     @PostMapping("/refresh")

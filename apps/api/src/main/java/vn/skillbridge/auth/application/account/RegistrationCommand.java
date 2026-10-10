@@ -8,6 +8,5 @@ public record RegistrationCommand(
         String password,
         UserRole role,
         String taxCode,
-        String companyWebsite,
-        String requestSource) {
+        String companyWebsite) {
 }

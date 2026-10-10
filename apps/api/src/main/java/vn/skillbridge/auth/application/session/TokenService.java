@@ -15,5 +15,5 @@ public interface TokenService {
 
     record RefreshTokenClaims(UUID userId, UUID sessionId) {}
     record AccessTokenClaims(UUID userId, String email, String displayName, String role, AccountState accountState,
-            boolean emailVerified, String smeApprovalStatus) {}
+            String smeApprovalStatus) {}
 }

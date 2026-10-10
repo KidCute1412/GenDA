@@ -9,13 +9,13 @@ import { Button, ButtonLink } from "../../../components/ui/button";
 import { StatusBadge } from "../../../components/ui/status-badge";
 import { EmptyState } from "../../../components/ui/feedback";
 import { TextAreaField, TextField } from "../../../components/ui/field";
-import { useDemoSession } from "../../auth/hooks/use-demo-session";
+import { useAuthSession } from "../../auth/hooks/use-auth-session";
 import { advanceEscrow, reviewMilestone, submitDeliverable, submitReview } from "../../demo-ledger/store";
 import { useDemoLedger } from "../../demo-ledger/use-demo-ledger";
 
 export function LedgerWorkspace({ projectId }: { projectId?: string } = {}) {
   const ledger = useDemoLedger();
-  const { session, hydrated } = useDemoSession();
+  const { session, hydrated } = useAuthSession();
   const [note, setNote] = useState("");
   const [link, setLink] = useState("");
   const [reason, setReason] = useState("");

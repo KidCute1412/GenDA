@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Alert } from "../../../components/ui/alert";
 import { formatVnd } from "../../../lib/utils/format";
-import { useDemoSession } from "../../auth/hooks/use-demo-session";
+import { useAuthSession } from "../../auth/hooks/use-auth-session";
 import { cancelRegistration } from "../../demo-ledger/store";
 import { useDemoLedger } from "../../demo-ledger/use-demo-ledger";
 import type { RegistrationStatus } from "../../demo-ledger/types";
@@ -26,7 +26,7 @@ const STATUS: Record<RegistrationStatus, { label: string; group: string }> = {
 export function MyRegistrations() {
   const ledger = useDemoLedger();
   const today = useToday();
-  const { session } = useDemoSession();
+  const { session } = useAuthSession();
   const [error, setError] = useState<string | null>(null);
   if (!today) return null;
   const user = ledger.users.find((item) => item.email === session?.email);

@@ -35,14 +35,11 @@ export async function generateMetadata({
  * ro trước khi nhận việc.
  */
 export default async function ProjectDetailPage({
-  params,
-  searchParams
+  params
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ emailVerified?: string }>;
 }) {
   const { id } = await params;
-  await searchParams;
   const project = await getPublishedProject(id);
 
   if (!project) {

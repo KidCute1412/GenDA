@@ -7,7 +7,7 @@ import { Dropzone } from "../../../components/ui/dropzone";
 import { Skeleton } from "../../../components/ui/feedback";
 import { FileText, ICON_WEIGHT, ShieldCheck } from "../../../components/ui/icons";
 import { formatDate } from "../../../lib/utils/format";
-import { useDemoSession } from "../../auth/hooks/use-demo-session";
+import { useAuthSession } from "../../auth/hooks/use-auth-session";
 import { ApiRequestError } from "../../auth/services/session-request";
 import { announceStandingChanged } from "../hooks/use-contributor-standing";
 import { fetchCvFile, getCv, uploadCv, type ContributorCv } from "../services/contributor-api";
@@ -42,7 +42,7 @@ function rejectionMessage(error: unknown) {
  * đạt thì báo lý do cụ thể và GIỮ NGUYÊN CV đang dùng. READY không có nghĩa nội dung CV đã được xác minh.
  */
 export function CvUploader({ id = "cv-file", onUploaded }: { id?: string; onUploaded?: (cv: ContributorCv) => void }) {
-  const { session } = useDemoSession();
+  const { session } = useAuthSession();
   const replaceRef = useRef<HTMLInputElement>(null);
   const [cv, setCv] = useState<ContributorCv | null | undefined>(undefined);
   const [loadError, setLoadError] = useState<string | null>(null);

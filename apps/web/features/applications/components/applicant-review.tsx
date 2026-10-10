@@ -7,7 +7,7 @@ import { Button } from "../../../components/ui/button";
 import { EmptyState, ErrorState, Skeleton } from "../../../components/ui/feedback";
 import { Check, CheckCircle, ICON_WEIGHT, Star } from "../../../components/ui/icons";
 import { formatDate } from "../../../lib/utils/format";
-import { useDemoSession } from "../../auth/hooks/use-demo-session";
+import { useAuthSession } from "../../auth/hooks/use-auth-session";
 import { ApiRequestError } from "../../auth/services/session-request";
 import { mirrorAcceptedApplication } from "../../demo-ledger/store";
 import { LEVEL_COPY } from "../../projects/level-copy";
@@ -39,7 +39,7 @@ const STATUS_COPY: Record<Applicant["status"], string> = {
  * là thông tin tự khai. Chọn một người thì mọi đơn còn lại tự đóng.
  */
 export function ApplicantReview({ projectId }: { projectId: string }) {
-  const { session } = useDemoSession();
+  const { session } = useAuthSession();
   const [data, setData] = useState<ProjectApplicants | null>(null);
   const [project, setProject] = useState<ManagedProject | null>(null);
   const [loadError, setLoadError] = useState<ApiRequestError | null>(null);

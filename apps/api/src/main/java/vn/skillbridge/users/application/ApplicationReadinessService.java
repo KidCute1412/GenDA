@@ -29,7 +29,7 @@ public class ApplicationReadinessService {
     public ApplicationReadiness readiness(UUID userId) {
         contributors.require(userId);
         AccountStanding standing = accounts.standing(userId);
-        return new ApplicationReadiness(standing.active(), standing.emailVerified(), profiles.isComplete(userId),
+        return new ApplicationReadiness(standing.active(), profiles.isComplete(userId),
                 cvs.hasReadyCv(userId));
     }
 }

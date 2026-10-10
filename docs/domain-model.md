@@ -2,32 +2,31 @@
 
 ## Implementation status
 
-This document describes the approved target domain. The account actor is `CONTRIBUTOR`; the account lifecycle is represented by `PENDING_EMAIL_VERIFICATION`, `EMAIL_VERIFIED`, `ACTIVE`, and `DISABLED`. Email OTP persistence, delivery, confirmation and resend are implemented, while the former `studentVerificationStatus` flow is removed. The legacy `student_profiles` table/name remains temporarily.
+This document describes the approved target domain. The account actor is `CONTRIBUTOR`; the account lifecycle is `ACTIVE` or `DISABLED`. Email verification is deferred from MVP. The legacy `student_profiles` table/name remains temporarily.
 
 ## Actors
 
 - `CONTRIBUTOR`: an individual who applies with a PDF CV and performs a project. Student status is optional background information, not the platform role.
 - `SME`: creates projects, selects applicants, defines milestones, and accepts deliverables.
-- `ADMIN`: moderates projects, verifies SME business profiles, supports disputes, and audits state changes.
+- `ADMIN`: moderates projects, supports disputes, and audits state changes. Business-identity review is outside MVP.
 
 ## Account and onboarding lifecycle
 
 ```text
-Contributor account: PENDING_EMAIL_VERIFICATION --valid OTP--> ACTIVE
-SME email:           PENDING_EMAIL_VERIFICATION --valid OTP--> EMAIL_VERIFIED
+Contributor account: register → ACTIVE or DISABLED
+SME account:         register → ACTIVE or DISABLED
 CV:           UPLOADING → PROCESSING → READY / REJECTED_TECHNICAL
-SME business verification: PENDING → VERIFIED / REJECTED
+SME business verification: outside MVP
 ```
 
-Email OTP verification proves control of the registered mailbox; it does not prove current enrollment or professional competence. GenDA has no student-verification lifecycle in the approved target.
+Email addresses are collected for account sign-in but are not verified in MVP.
 
-SME access is derived from an active account, verified email and `VERIFIED` business verification. Email verification and business verification are separate facts; project review remains a separate lifecycle again.
+SME access requires an active account. Business identity is self-declared; project review remains a separate lifecycle.
 
 General-project eligibility is derived at request time, never stored as an independent mutable flag:
 
 ```text
 canApplyGeneral = accountActive
-               && emailVerified
                && contributorProfileComplete
                && cv.status == READY
 ```
@@ -93,8 +92,8 @@ The numeric rule alone cannot prevent an SME from declaring a complex scope as `
 ## MVP invariants
 
 - An SME account must provide a Vietnamese tax code (10 digits, or `0123456789-001` for a branch) at registration; an SME without a tax code must provide its company website instead. Otherwise registration fails with `SME_IDENTITY_REQUIRED`.
-- A newly registered SME submits business identity data during registration. After its email is verified, business verification enters `PENDING` until an admin approves it; email verification does not bypass SME approval.
-- An SME cannot receive a full session or create projects until both email and business verification succeed (`SME_NOT_APPROVED`). An admin may approve, or reject with a required recorded reason; both decisions are audited.
+- A newly registered SME provides validated business identity and becomes ACTIVE after registration. No admin business approval is required in MVP.
+- Only active accounts can receive a full session. Historical SME approval data does not affect access.
 - Only an SME can create or edit its draft project.
 - Only an admin can publish or reject a pending project.
 - A project cannot enter `PENDING_REVIEW` or `PUBLISHED` when its budget is outside the server-owned range for its selected complexity.

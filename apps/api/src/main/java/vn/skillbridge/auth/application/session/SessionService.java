@@ -27,7 +27,7 @@ public class SessionService {
         this.settings = settings;
     }
 
-    @Transactional
+    @Transactional(noRollbackFor = AuthException.class)
     public AuthResult refresh(String rawRefreshToken) {
         TokenService.RefreshTokenClaims claims = parseRefresh(rawRefreshToken);
         Instant now = clock.instant();

@@ -22,8 +22,7 @@ class AuthCookieWriterTest {
     @Test
     void writesHttpOnlyScopedCookiesWithoutExposingTokensInTheBody() {
         AuthCookieWriter writer = writer();
-        var user = new AuthUser(UUID.randomUUID(), "student@example.com", "hash", "Student", UserRole.CONTRIBUTOR,
-                true, AccountState.ACTIVE, null);
+        var user = new AuthUser(UUID.randomUUID(), "student@example.com", "hash", "Student", UserRole.CONTRIBUTOR, AccountState.ACTIVE, null);
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         writer.write(response, new AuthResult(user, "access-token", "refresh-token", NOW.plus(Duration.ofDays(7))));

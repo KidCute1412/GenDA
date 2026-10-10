@@ -15,7 +15,6 @@ class AuthUserJpaEntity {
     @Column(name = "display_name", nullable = false, length = 180) String displayName;
     @Column(nullable = false, length = 16) String role;
     @Column(name = "account_state", nullable = false, length = 32) String accountState;
-    @Column(name = "email_verified", nullable = false) boolean emailVerified;
     @Column(name = "sme_approval_status", length = 16) String smeApprovalStatus;
     @Column(name = "tax_code", length = 14) String taxCode;
     @Column(name = "company_website", length = 512) String companyWebsite;
@@ -23,7 +22,7 @@ class AuthUserJpaEntity {
     protected AuthUserJpaEntity() {}
 
     AuthUserJpaEntity(UUID id, String email, String passwordHash, String displayName, String role,
-            String accountState, boolean emailVerified, String smeApprovalStatus,
+            String accountState, String smeApprovalStatus,
             String taxCode, String companyWebsite) {
         this.id = id;
         this.email = email;
@@ -31,7 +30,6 @@ class AuthUserJpaEntity {
         this.displayName = displayName;
         this.role = role;
         this.accountState = accountState;
-        this.emailVerified = emailVerified;
         this.smeApprovalStatus = smeApprovalStatus;
         this.taxCode = taxCode;
         this.companyWebsite = companyWebsite;
@@ -41,8 +39,4 @@ class AuthUserJpaEntity {
         this.displayName = displayName;
     }
 
-    void markEmailVerified(String accountState) {
-        this.emailVerified = true;
-        this.accountState = accountState;
-    }
 }

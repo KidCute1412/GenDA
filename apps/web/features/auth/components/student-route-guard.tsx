@@ -3,13 +3,14 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { Alert } from "../../../components/ui/alert";
-import { useDemoSession } from "../hooks/use-demo-session";
+import { useAuthSession } from "../hooks/use-auth-session";
 
 /** Prevents fixture student data from being presented as an anonymous user's profile. */
 export function StudentRouteGuard({ children }: { children: ReactNode }) {
-  const { session, hydrated } = useDemoSession();
+  const { session, hydrated, error, retry } = useAuthSession();
 
   if (!hydrated) return null;
+  if (error) return <main id="main-content" className="container"><Alert variant="danger">{error} <button type="button" onClick={retry}>Thử lại</button></Alert></main>;
   if (session?.role === "CONTRIBUTOR") return children;
 
   return (

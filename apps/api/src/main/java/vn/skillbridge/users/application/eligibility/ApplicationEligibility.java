@@ -17,7 +17,6 @@ public record ApplicationEligibility(
         boolean levelUnlocked) {
 
     public static final String ACCOUNT_INACTIVE = "ACCOUNT_INACTIVE";
-    public static final String EMAIL_NOT_VERIFIED = "EMAIL_NOT_VERIFIED";
     public static final String PROFILE_INCOMPLETE = "PROFILE_INCOMPLETE";
     public static final String CV_NOT_READY = "CV_NOT_READY";
     public static final String TIER_REQUIRED = "TIER_REQUIRED";
@@ -26,7 +25,6 @@ public record ApplicationEligibility(
     public List<String> missing() {
         List<String> missing = new ArrayList<>();
         if (!readiness.accountActive()) missing.add(ACCOUNT_INACTIVE);
-        if (!readiness.emailVerified()) missing.add(EMAIL_NOT_VERIFIED);
         if (!readiness.profileComplete()) missing.add(PROFILE_INCOMPLETE);
         if (!readiness.cvReady()) missing.add(CV_NOT_READY);
         if (!levelUnlocked) missing.add(TIER_REQUIRED);

@@ -178,7 +178,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Register a contributor or SME account pending email verification */
+        /** Register an active contributor or SME account */
         post: operations["register"];
         delete?: never;
         options?: never;
@@ -237,40 +237,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/auth/email-verifications/resend": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Issue a replacement email-verification code after the resend cooldown */
-        post: operations["resendEmail"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/auth/email-verifications/confirm": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Confirm a registered email with a six-digit one-time code */
-        post: operations["confirmEmail"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/v1/applications": {
         parameters: {
             query?: never;
@@ -282,7 +248,7 @@ export interface paths {
         put?: never;
         /**
          * Apply to a published project
-         * @description 422 APPLICATION_NOT_ELIGIBLE lists details.missing (ACCOUNT_INACTIVE, EMAIL_NOT_VERIFIED, PROFILE_INCOMPLETE, CV_NOT_READY, TIER_REQUIRED) with requiredTier, currentTier and missingXp.
+         * @description 422 APPLICATION_NOT_ELIGIBLE lists details.missing (ACCOUNT_INACTIVE, PROFILE_INCOMPLETE, PROFILE_INCOMPLETE, CV_NOT_READY, TIER_REQUIRED) with requiredTier, currentTier and missingXp.
          */
         post: operations["apply"];
         delete?: never;
@@ -845,8 +811,11 @@ export interface components {
             /** @enum {string} */
             role: "CONTRIBUTOR" | "SME" | "ADMIN";
             /** @enum {string} */
-            accountState: "PENDING_EMAIL_VERIFICATION" | "EMAIL_VERIFIED" | "ACTIVE" | "DISABLED";
-            emailVerified: boolean;
+            accountState: "ACTIVE" | "DISABLED";
+            /**
+             * @deprecated
+             * @description Legacy historical value; unused for MVP access
+             */
             smeApprovalStatus?: string;
         };
         LoginRequest: {
@@ -854,15 +823,6 @@ export interface components {
             email: string;
             password: string;
             rememberDevice?: boolean;
-        };
-        ResendEmailVerificationRequest: {
-            /** Format: email */
-            email: string;
-        };
-        ConfirmEmailVerificationRequest: {
-            /** Format: email */
-            email: string;
-            code: string;
         };
         CreateApplicationRequest: {
             projectId: string;
@@ -894,7 +854,6 @@ export interface components {
         };
         ApplicationReadinessResponse: {
             accountActive: boolean;
-            emailVerified: boolean;
             profileComplete: boolean;
             cvReady: boolean;
             ready: boolean;
@@ -1527,13 +1486,24 @@ export interface operations {
             };
         };
         responses: {
-            /** @description Created */
+            /** @description Account created; sign in to start a session */
             201: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "*/*": components["schemas"]["AuthUserResponse"];
+                };
+            };
+            /** @description AUTH_RATE_LIMITED */
+            429: {
+                headers: {
+                    /** @description Seconds until retry */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiError"];
                 };
             };
         };
@@ -1593,7 +1563,7 @@ export interface operations {
             };
         };
         responses: {
-            /** @description OK */
+            /** @description Authenticated account */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -1602,50 +1572,15 @@ export interface operations {
                     "*/*": components["schemas"]["AuthUserResponse"];
                 };
             };
-        };
-    };
-    resendEmail: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ResendEmailVerificationRequest"];
-            };
-        };
-        responses: {
-            /** @description Accepted */
-            202: {
+            /** @description AUTH_RATE_LIMITED */
+            429: {
                 headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    confirmEmail: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ConfirmEmailVerificationRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
+                    /** @description Seconds until retry */
+                    "Retry-After"?: number;
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["AuthUserResponse"];
+                    "*/*": components["schemas"]["ApiError"];
                 };
             };
         };

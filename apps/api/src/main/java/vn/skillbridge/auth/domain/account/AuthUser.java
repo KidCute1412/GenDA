@@ -8,13 +8,10 @@ public record AuthUser(
         String passwordHash,
         String displayName,
         UserRole role,
-        boolean emailVerified,
         AccountState accountState,
         String smeApprovalStatus) {
 
     public boolean canSignIn() {
-        return accountState == AccountState.ACTIVE
-                && emailVerified
-                && (role != UserRole.SME || "APPROVED".equals(smeApprovalStatus));
+        return accountState == AccountState.ACTIVE;
     }
 }

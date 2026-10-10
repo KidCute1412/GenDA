@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Alert } from "../../../components/ui/alert";
 import { SelectField, TextAreaField, TextField } from "../../../components/ui/field";
 import { groupThousands } from "../../../lib/utils/format";
-import { useDemoSession } from "../../auth/hooks/use-demo-session";
+import { useAuthSession } from "../../auth/hooks/use-auth-session";
 import { createOpportunity } from "../../demo-ledger/store";
 import { useDemoLedger } from "../../demo-ledger/use-demo-ledger";
 import type { OpportunityKind, OpportunityMode, OpportunitySession } from "../../demo-ledger/types";
@@ -28,7 +28,7 @@ const EMPTY_SESSION: OpportunitySession = { date: "", start: "", end: "" };
 export function OpportunityForm() {
   const ledger = useDemoLedger();
   const today = useToday();
-  const { session } = useDemoSession();
+  const { session } = useAuthSession();
   const [kind, setKind] = useState<OpportunityKind>("EVENT");
   const [title, setTitle] = useState("");
   const [industry, setIndustry] = useState("");

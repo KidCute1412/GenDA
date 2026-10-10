@@ -50,7 +50,7 @@ class ContributorApplicationServiceTest {
     void aBronzeContributorCannotSelfApplyToMediumAndLearnsWhatIsMissing() {
         when(projects.lockForApplication("p-zen")).thenReturn(project("PUBLISHED", "MEDIUM"));
         when(eligibility.evaluate(CONTRIBUTOR, "MEDIUM")).thenReturn(new ApplicationEligibility(
-                new ApplicationReadiness(true, true, true, false), "BRONZE", 7, "SILVER", 10, false));
+                new ApplicationReadiness(true, true, false), "BRONZE", 7, "SILVER", 10, false));
 
         assertThatThrownBy(() -> service.apply(CONTRIBUTOR, "p-zen", LETTER))
                 .isInstanceOfSatisfying(ApplicationException.class, exception -> {
@@ -136,7 +136,7 @@ class ContributorApplicationServiceTest {
     }
 
     private static ApplicationEligibility eligible() {
-        return new ApplicationEligibility(new ApplicationReadiness(true, true, true, true), "SILVER", 14, "SILVER", 10, true);
+        return new ApplicationEligibility(new ApplicationReadiness(true, true, true), "SILVER", 14, "SILVER", 10, true);
     }
 
     static StaffingProject project(String status, String complexity) {

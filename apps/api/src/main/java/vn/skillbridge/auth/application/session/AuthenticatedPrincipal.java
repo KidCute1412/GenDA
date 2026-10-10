@@ -9,6 +9,5 @@ public record AuthenticatedPrincipal(
         String displayName,
         String role,
         AccountState accountState,
-        boolean emailVerified,
         String smeApprovalStatus) {
 }

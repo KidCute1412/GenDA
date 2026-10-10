@@ -461,7 +461,7 @@ const skillsFew: Rule = (s) => {
    -------------------------------------------------------------------------- */
 
 const matchSuggestion: Rule = (s) => {
-  if (!s.user?.cv || !s.user.emailVerified || s.user.accountState !== "ACTIVE") return null;
+  if (!s.user?.cv || s.user.accountState !== "ACTIVE") return null;
   const applied = new Set(s.applications.map((application) => application.projectId));
   const since = s.previousVisitAt ? Date.parse(s.previousVisitAt) : null;
   const candidates = s.ledger.projects

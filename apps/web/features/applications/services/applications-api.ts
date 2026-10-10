@@ -11,7 +11,6 @@ export type ApplicationCount = components["schemas"]["ApplicationCountResponse"]
 /** Mã điều kiện còn thiếu trong lỗi APPLICATION_NOT_ELIGIBLE (details.missing). */
 export const MISSING_COPY: Record<string, string> = {
   ACCOUNT_INACTIVE: "Tài khoản chưa hoạt động.",
-  EMAIL_NOT_VERIFIED: "Email chưa được xác minh.",
   PROFILE_INCOMPLETE: "Hồ sơ còn thiếu nền tảng, chuyên môn hoặc kỹ năng.",
   CV_NOT_READY: "Chưa có CV PDF qua kiểm tra kỹ thuật.",
   TIER_REQUIRED: "Hạng hiện tại chưa đủ cho mức dự án này."

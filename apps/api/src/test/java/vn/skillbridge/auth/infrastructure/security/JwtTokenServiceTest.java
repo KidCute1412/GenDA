@@ -26,15 +26,14 @@ class JwtTokenServiceTest {
     @Test
     void accessTokenCarriesAccountStateWithoutLegacyStudentVerificationClaim() {
         var user = new AuthUser(UUID.randomUUID(), "contributor@example.com", "hash", "Contributor",
-                UserRole.CONTRIBUTOR, true, AccountState.ACTIVE, null);
+                UserRole.CONTRIBUTOR, AccountState.ACTIVE, null);
 
         String token = tokens.issueAccessToken(user, Instant.now(), Duration.ofMinutes(5));
         var claims = tokens.parseAccessToken(token);
         String payload = new String(Base64.getUrlDecoder().decode(token.split("\\.")[1]), StandardCharsets.UTF_8);
 
         assertThat(claims.accountState()).isEqualTo(AccountState.ACTIVE);
-        assertThat(claims.emailVerified()).isTrue();
         assertThat(payload).contains("\"accountState\":\"ACTIVE\"")
-                .doesNotContain("studentVerificationStatus");
+                .doesNotContain("studentVerificationStatus", "emailVerified");
     }
 }

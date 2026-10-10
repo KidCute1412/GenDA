@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Briefcase, FileText, House, ICON_WEIGHT, UserCircle } from "../ui/icons";
-import { useDemoSession } from "../../features/auth/hooks/use-demo-session";
+import { useAuthSession } from "../../features/auth/hooks/use-auth-session";
 
 /**
  * Mobile Bottom Navigation — bốn tab, chỉ hiện dưới breakpoint md.
@@ -40,7 +40,7 @@ const SME_TABS = [
 export function BottomNav() {
   const pathname = usePathname();
   const [isRegisterView, setIsRegisterView] = useState(false);
-  const { session, hydrated } = useDemoSession();
+  const { session, hydrated } = useAuthSession();
 
   useEffect(() => {
     const syncRegisterView = () => setIsRegisterView(pathname === "/login" && new URLSearchParams(window.location.search).get("mode") === "register");

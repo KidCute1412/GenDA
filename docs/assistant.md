@@ -112,7 +112,7 @@ Không chẩn đoán nào khớp thì Gen nói thật: đơn khớp tốt, có t
 | Hành vi | Quy định |
 | :--- | :--- |
 | Vị trí | Máy tính: giữa đáy màn hình, rộng tối đa 760px, chân dung đứng trong hộp ở góc trái và nhô lên khỏi mép trên. Điện thoại: phủ bề ngang phía trên thanh điều hướng đáy, chân dung đứng trên mép trên hộp. |
-| Tự bật | Một lần mỗi phiên (một tab), chờ 1,2 giây sau khi trang vẽ xong, với điều quan trọng nhất chưa nghe. Không bật ở trang đăng nhập, đăng ký, xác minh email, quên mật khẩu. Tắt chế độ tự bật thì chỉ lời chào lần đầu còn tự bật. |
+| Tự bật | Một lần mỗi phiên (một tab), chờ 1,2 giây sau khi trang vẽ xong, với điều quan trọng nhất chưa nghe. Không bật ở trang đăng nhập, đăng ký, đăng ký. Tắt chế độ tự bật thì chỉ lời chào lần đầu còn tự bật. |
 | Nút gọi | Phím vuông ở góc dưới phải có mặt Gen; huy hiệu màu thương hiệu ghi số điều chưa nghe. Bấm thì Gen hỏi *"Bạn muốn nghe điều nào trước?"* và liệt kê tối đa 4 việc. |
 | Chữ chạy | 24ms mỗi ký tự. Bấm vào vùng chữ hoặc nút "Hiện hết" thì hiện cả câu ngay; bấm tiếp thì sang câu sau. Vùng chữ giữ sẵn chỗ cho cả câu nên bố cục không nhảy. |
 | Lựa chọn | Câu cuối mở các lựa chọn đánh số; phím 1–4 chọn nhanh. Lựa chọn đầu là lựa chọn Gen đề xuất (ô số màu thương hiệu). Lựa chọn không dẫn đi đâu nghĩa là "nghe tiếp": còn điều chưa nghe thì Gen nói tiếp, hết thì khép lại. |

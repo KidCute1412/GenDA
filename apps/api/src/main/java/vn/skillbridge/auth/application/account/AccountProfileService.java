@@ -26,7 +26,7 @@ public class AccountProfileService {
     public AccountStanding standing(UUID userId) {
         var account = accounts.findById(userId)
                 .orElseThrow(() -> new AuthException("ACCOUNT_NOT_FOUND", "Account does not exist"));
-        return new AccountStanding(account.accountState() == AccountState.ACTIVE, account.emailVerified());
+        return new AccountStanding(account.accountState() == AccountState.ACTIVE);
     }
 
     /** Facade for modules that act on behalf of an SME: the account must currently be allowed to sign in. */

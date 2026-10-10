@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useDemoSession } from "../../features/auth/hooks/use-demo-session";
+import { useAuthSession } from "../../features/auth/hooks/use-auth-session";
 import { groupOf, useMyApplications } from "../../features/applications/hooks/use-my-applications";
 
 /**
@@ -17,7 +17,7 @@ type NavItem = { href: string; label: string; badge?: number; matches?: (path: s
 
 export function MainNav() {
   const pathname = usePathname();
-  const { session, hydrated } = useDemoSession();
+  const { session, hydrated } = useAuthSession();
   const { items } = useMyApplications();
 
   const pending = items.filter((item) => groupOf(item.status) === "pending").length;

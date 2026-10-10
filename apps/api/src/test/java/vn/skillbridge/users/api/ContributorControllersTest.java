@@ -66,7 +66,7 @@ class ContributorControllersTest {
     @BeforeEach
     void authenticate() {
         var principal = new AuthenticatedPrincipal(USER_ID, "loc@example.com", "Lộc", "CONTRIBUTOR",
-                AccountState.ACTIVE, true, null);
+                AccountState.ACTIVE, null);
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(principal, null));
     }
 
@@ -150,7 +150,7 @@ class ContributorControllersTest {
 
     @Test
     void readinessListsEveryChecklistItem() throws Exception {
-        when(readiness.readiness(USER_ID)).thenReturn(new ApplicationReadiness(true, true, true, false));
+        when(readiness.readiness(USER_ID)).thenReturn(new ApplicationReadiness(true, true, false));
 
         mvc.perform(get("/api/v1/users/me/readiness"))
                 .andExpect(status().isOk())

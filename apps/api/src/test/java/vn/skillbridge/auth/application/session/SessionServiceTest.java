@@ -74,22 +74,4 @@ class SessionServiceTest {
         assertThrows(IllegalStateException.class, () -> service.logout("valid-refresh"));
     }
 
-    @Test
-    void revokesRefreshSessionWhenAccountIsPendingEmailVerification() {
-        UUID userId = UUID.randomUUID();
-        UUID sessionId = UUID.randomUUID();
-        var refreshSession = new RefreshSession(sessionId, userId, "fingerprint", false,
-                NOW.plus(Duration.ofHours(1)), null, NOW.minus(Duration.ofHours(1)), NOW.minus(Duration.ofMinutes(1)));
-        var pendingUser = new AuthUser(userId, "pending@example.com", "hash", "Pending", UserRole.CONTRIBUTOR,
-                false, AccountState.PENDING_EMAIL_VERIFICATION, null);
-        when(tokens.parseRefreshToken("valid-refresh"))
-                .thenReturn(new TokenService.RefreshTokenClaims(userId, sessionId));
-        when(tokens.fingerprint("valid-refresh")).thenReturn("fingerprint");
-        when(sessions.findById(sessionId)).thenReturn(Optional.of(refreshSession));
-        when(accounts.findById(userId)).thenReturn(Optional.of(pendingUser));
-
-        assertThrows(AuthException.class, () -> service.refresh("valid-refresh"));
-
-        verify(sessions).revoke(sessionId, NOW);
-    }
 }

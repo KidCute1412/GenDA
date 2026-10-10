@@ -13,9 +13,9 @@ packages/config      existing shared frontend configuration placeholders
 
 Persistence uses PostgreSQL, Spring Data JPA/Hibernate and Flyway. Springdoc 3.0.3 generates the code-first REST contract. See [ADR 0002](decisions/0002-spring-boot-and-docker.md), [API conventions](api-conventions.md) and [database conventions](database-conventions.md).
 
-**Current capability:** the backend implements health/readiness, account registration, JWT cookie authentication, email OTP verification, the contributor profile (self-declared background, specialization, canonical skills), optional education history, a private technically validated PDF CV, the application-readiness checklist, derived XP and tier (`users` module), applications with a server-side readiness and tier gate, SME applicant review ranked by explicit skill match, shortlisting and single acceptance that starts the project (`applications`, `matching`), the published-project catalog, and the SME project lifecycle up to publication: an approved SME creates and edits drafts, submits them for review, and an admin publishes them or returns them to draft with a reason (`projects` module, admin entrypoint in `admin`). Every submit/publish/return is recorded in `project_moderation_events`. Authentication exposes CSRF bootstrap, `CONTRIBUTOR`/SME registration, OTP confirm/resend, login, refresh, logout and current-user endpoints. Registration creates a pending account, sends a six-digit OTP and issues no access/refresh cookies. OTP challenges are hash-only, single-use, expiring, attempt-limited and resend/source-rate-limited. A valid OTP activates a contributor or moves an SME to `EMAIL_VERIFIED`; SME business approval remains independent. Flyway owns users, OTP challenges/attempt audit, profiles, registration identity fields and revocable refresh sessions; local Compose reads an external transactional SMTP account from `apps/api/.env` and sends verification messages to the registered mailbox. CV storage, matching, applications, and the remaining workflows still use sample/local browser data; when a contributor applies to a backend-published project, the browser `demo-ledger` copies that project locally so the demo application, workspace and review steps keep working until `applications` has an API.
+**Current capability:** The backend implements JWT cookie authentication, immediate contributor/SME registration, contributor profiles and CV validation, project moderation, applications, applicant review, and the project/workspace flows. Registration creates an ACTIVE account without sending email or issuing a session; users sign in with email and password. Email OTP verification and SME business approval are deferred from the MVP.
 
-**Approved target direction (partially implemented):** the person-side actor is now `CONTRIBUTOR`; student remains only a future self-declared background type. Registration and six-digit email OTP verification are implemented without issuing a full session before verification. The `users` module owns contributor profile completeness, self-declared education history, private CV lifecycle/technical validation, and SME business-verification records. It exposes eligibility/approval facades instead of allowing `auth` or `applications` to read user persistence. Education is optional and does not affect general eligibility. GenDA does not collect or review student-status evidence. A `READY` CV is a technically valid artifact, not a GenDA endorsement. Admin reviews SME identity, not contributor education or CV content; AI CV review/scoring is outside MVP.
+**Approved target direction:** Contributor profiles and education remain self-declared; CV readiness is a technical file check, not an endorsement. Email verification and SME approval do not gate sign-in.
 
 ## Modular monolith and business ownership
 
@@ -89,20 +89,20 @@ auth/
   application/
     account/                     login, registration, password and user repository port
     session/                     token issuance, refresh, logout and session repository port
-    emailverification/           OTP issuance, confirmation, limits and outbound ports
+
     AuthException.java           error shared by auth use cases
   domain/
     account/                     AuthUser, UserRole and RegistrationIdentity
     session/                     RefreshSession and its usability rule
-    emailverification/           EmailVerificationChallenge
+
   infrastructure/
     config/                      AuthProperties and auth bean configuration
     security/                    JWT, BCrypt, CSRF and Spring Security implementations
-    email/                       SMTP implementation of the email-sender port
+
     persistence/
       account/                   auth-user JPA mapping and repository adapter
       session/                   refresh-session JPA mapping and repository adapter
-      emailverification/         OTP challenge/attempt mappings and repository adapter
+
 ```
 
 The package communicates ownership, so avoid repeating layer names inside capability names. For example, use `application.session.SessionService`, not `application.session.SessionApplicationService`.
@@ -183,7 +183,7 @@ Health preserves `{ status: "ok", service: "genda-api" }`, returning 503 if Post
 
 Authentication uses a five-minute access JWT and a rotating refresh JWT in scoped `HttpOnly` cookies. Refresh sessions are fingerprinted in PostgreSQL and revoked on logout. Refresh TTL is 24 hours by default or seven days when the user remembers the device. Cookie mutations require a double-submit CSRF token; CORS allows credentials only from configured exact origins. Frontend role checks remain UX only.
 
-The target email-verification flow stores only an OTP hash plus expiry, failed-attempt count, resend metadata and consumption time. Confirmation and resend are rate-limited; issuing a new OTP invalidates the old one. No access/refresh session is issued before email verification. SME approval remains an additional independent gate.
+Legacy email-verification requirements are deferred; active accounts can sign in without OTP or SME approval.
 
 `users` owns SME verification evidence, `PENDING`/`VERIFIED`/`REJECTED` state and review audit. Admin controllers invoke the public `users` verification use case. When an SME logs in, `auth` queries a narrow public approval facade in `users`; it never reads SME tables or repositories directly. Email verification, business verification and per-project moderation remain separate gates.
 
@@ -203,7 +203,7 @@ Next.js `GET /api/health` uses the generated client to verify frontend -> API ->
 
 Frontend Watch syncs source for Next.js HMR. Backend Watch rebuilds/restarts after Java/resources/POM changes; this is automatic reload, not instantaneous JVM hot swap. One shared Compose watcher runs in the background; each pane follows only its service logs.
 
-Host defaults: frontend 3000, backend 3001 and database 15432, bound to loopback. Inside Docker use `database:5432` and `backend:3001`; browsers use localhost. The backend connects to the external SMTP host configured in `apps/api/.env`. Database data lives in a named volume.
+
 
 Closing panes leaves the shared watcher and containers running. `stop.bat` stops the watcher and containers and retains data. Close old watch panes before starting new ones. Never use `docker compose down -v` unless intentionally deleting local data.
 

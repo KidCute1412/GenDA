@@ -6,7 +6,6 @@ type Item = { key: keyof Omit<ApplicationReadiness, "ready">; label: string; fix
 
 const ITEMS: Item[] = [
   { key: "accountActive", label: "Tài khoản đang hoạt động", fix: "Đăng nhập lại", href: "/login" },
-  { key: "emailVerified", label: "Email đã xác minh", fix: "Nhập mã OTP", href: "/verify-email" },
   { key: "profileComplete", label: "Hồ sơ có nền tảng, chuyên môn và kỹ năng", fix: "Điền hồ sơ", href: "/student/profile#profile-form" },
   { key: "cvReady", label: "CV PDF đã qua kiểm tra kỹ thuật", fix: "Nộp CV", href: "/student/profile#cv" }
 ];

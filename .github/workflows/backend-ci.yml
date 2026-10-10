@@ -26,6 +26,11 @@ jobs:
       - name: Test and package
         working-directory: apps/api
         run: sh mvnw -B -ntp verify
+      - name: PostgreSQL auth migration test
+        run: |
+          docker compose -f compose.auth-test.yaml up --wait database
+          cd apps/api
+          AUTH_TEST_DB_URL=jdbc:postgresql://localhost:15433/auth_test sh mvnw -B -ntp -Dtest=AuthPersistenceIntegrationTest test
       - name: Compose smoke test
         run: |
           cp .env.example .env
@@ -53,3 +58,4 @@ jobs:
         run: |
           docker compose logs backend database
           docker compose down
+          docker compose -f compose.auth-test.yaml down

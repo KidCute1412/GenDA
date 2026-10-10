@@ -1,5 +1,6 @@
 # Đặc tả Thiết kế Giao diện & Trải nghiệm Người dùng (UI/UX Design Specification) — GenDA
 
+
 Tài liệu này đặc tả toàn diện kiến trúc giao diện, trải nghiệm người dùng (UI/UX), cơ sở lý luận khả dụng (HCI Foundations), hệ thống thiết kế (Design System), phân tích nhiệm vụ phân cấp (HTA) và phương pháp đánh giá khả dụng cho nền tảng **GenDA** (SkillBridge) trong phiên bản **MVP**.
 
 > **Tài liệu đi kèm**: [`design-tokens.md`](./design-tokens.md) chứa kiến trúc token ba lớp và đặc tả chi tiết từng component (hợp đồng bàn giao thiết kế → mã nguồn). Tài liệu bạn đang đọc trả lời **"tại sao"**; `design-tokens.md` trả lời **"bằng giá trị gì"**; [Mục 12](#12-bản-đồ-bàn-giao-thiết-kế--mã-nguồn) của tài liệu này trả lời **"ở tệp nào"**. Khi hai tài liệu lệch nhau về giá trị màu, tài liệu này thắng.
@@ -147,7 +148,7 @@ Theo phương pháp chuẩn hóa trong `LN04 - Task Analysis`, các tác vụ c�
 
 #### HTA 2: Cá nhân Khám phá & Ứng tuyển Dự án (Apply for Project)
 - **Mục tiêu tổng quát (0)**: Tìm dự án phù hợp với năng lực và nộp hồ sơ ứng tuyển.
-- **Điều kiện tiên quyết (Preconditions)**: Cá nhân đã xác minh email nên có thể đăng nhập và duyệt dự án. Để gửi đơn, tài khoản phải hoạt động, hồ sơ hoàn tất và CV ở trạng thái `READY` (BR-03).
+- **Điều kiện tiên quyết (Preconditions)**: Cá nhân có tài khoản hoạt động nên có thể đăng nhập và duyệt dự án. Để gửi đơn, tài khoản phải hoạt động, hồ sơ hoàn tất và CV ở trạng thái `READY` (BR-03).
 - **Cây phân rã nhiệm vụ**:
   ```text
   0. Khám phá & Ứng tuyển dự án
@@ -497,7 +498,7 @@ Kịch bản hỏng: người dùng bấm Tab tới một phần tử vừa ra k
 
 - **Không bao giờ chặn dán (paste) vào ô mật khẩu hay ô mã xác minh.** Chặn dán là thói quen được biện minh bằng lý do bảo mật nhưng thực tế làm điều ngược lại: nó vô hiệu hóa trình quản lý mật khẩu, nên đẩy người dùng về phía mật khẩu ngắn dễ nhớ. Với người suy giảm trí nhớ hoặc khó khăn vận động, nó chặn hẳn đường đăng nhập.
 - Mọi ô nhập của luồng xác thực phải khai báo đúng `autocomplete` (`email`, `current-password`, `new-password`, `one-time-code`) để trình quản lý mật khẩu và tính năng tự điền của hệ điều hành hoạt động được.
-- Không dùng câu đố ghi nhớ, không bắt gõ lại mã OTP bằng tay mà không có đường thay thế.
+- Không dùng câu đố ghi nhớ.
 - **Mọi ô mật khẩu đều có nút hiện/ẩn.** Gõ mù một chuỗi dài trên bàn phím ảo là nguồn lỗi lớn nhất của màn hình đăng nhập trên điện thoại, và người dùng không có cách nào tự phát hiện mình gõ sai cho tới khi bị từ chối. Nút này mang `aria-pressed` và nhãn đọc được đổi theo trạng thái, để người dùng trình đọc màn hình cũng biết mật khẩu đang hiện hay đang ẩn.
 - Ô mật khẩu ở cả màn hình đăng nhập và đăng ký dùng **chung một component**. Tách đôi là cách chắc chắn nhất để một trong hai màn hình thiếu mất nút hiện/ẩn sau vài lần sửa.
 
@@ -915,7 +916,6 @@ GenDA Web Platform
 │   ├── /projects/[id]             (Chi tiết dự án, tiêu chí nghiệm thu, các mốc thanh toán)
 │   ├── /login                     (Đăng nhập tài khoản)
 │   ├── /register                  (Đăng ký: Chọn CONTRIBUTOR hoặc SME)
-│   ├── /verify-email              (Nhập/gửi lại OTP xác minh email đăng ký)
 │   ├── /phap-ly/[doc]             (Quy chế sàn, chính sách bảo mật, quy trình khiếu nại)
 │   └── /ho-tro/[doc]              (Câu hỏi thường gặp)
 ├── (contributor) - Dành cho Cá nhân nhận dự án
@@ -931,7 +931,7 @@ GenDA Web Platform
     └── /admin?tab=…               (Ba tab: duyệt dự án | xác minh SME | audit — xem DD-02)
 ```
 
-Biến thể SME của `/register` bổ sung thông tin doanh nghiệp theo FR-USR-12. Sau OTP thành công, contributor đi tiếp tới onboarding profile; SME thấy trạng thái “Đang chờ GenDA xác minh doanh nghiệp”, chưa được chuyển vào workspace hoặc trang tạo dự án. Trạng thái từ chối phải hiển thị lý do và kênh hỗ trợ, không dùng thông báo đăng nhập sai chung chung.
+Đăng ký SME hoàn tất ngay; tài khoản hoạt động và người dùng có thể đăng nhập. Thông tin doanh nghiệp vẫn là tự khai, không có bước duyệt identity.
 
 > #### Quyết định thiết kế DD-02: Workspace dùng chung và Admin gộp tab
 >
@@ -1064,7 +1064,7 @@ Biến thể SME của `/register` bổ sung thông tin doanh nghiệp theo FR-U
     - Hiển thị tên SME, tiêu đề bài toán, ngân sách VNĐ và hạn chót.
     - **Điểm phù hợp kỹ năng (Match Score Breakdown)**: Ví dụ: `[ 90% Match: Trùng 3/3 kỹ năng của bạn ]`.
   - **Hộp thoại Ứng tuyển (Apply Modal Dialog)**:
-    - Luôn cho cá nhân đã xác minh email mở modal để đọc yêu cầu. Form có thư ngỏ và CV `READY` hiện hành.
+    - Luôn cho cá nhân đã đăng nhập mở modal để đọc yêu cầu. Form có thư ngỏ và CV `READY` hiện hành.
     - Nếu thiếu profile hoặc CV `READY`: hiển thị checklist màu hổ phách, vô hiệu hóa nút gửi và dẫn tới `/contributor/profile` hoặc `/contributor/cv` (BR-03).
     - Nếu đủ điều kiện: nút "Gửi đơn ứng tuyển" hoạt động; backend kiểm tra lại toàn bộ điều kiện khi submit.
   - **Không chặn khám phá dự án (FR-USR-07)**: tài khoản chưa có CV vẫn xem `/projects`; chỉ hành động gửi đơn bị chặn.
@@ -1172,7 +1172,7 @@ stateDiagram-v2
 >
 > `NFR-UX-02` trong [`requirement.md`](./requirement.md) đã được đồng bộ thành **5** trạng thái (Loading, Empty, Error, Success, Blocked/Permission) theo convention frontend của kho mã.
 >
-> **Tài liệu này theo bản 5 trạng thái**, vì trạng thái thứ năm không phải chi tiết kỹ thuật mà là một bề mặt nghiệp vụ có thật của GenDA: `BR-03` chặn cá nhân thiếu profile/CV `READY` gửi đơn, `BR-07` chặn SME nghiệm thu mốc chưa có kết quả bàn giao, và `FR-AUTH-04` giữ tài khoản đăng ký ở bước nhập OTP. Ba tình huống này đều **không phải lỗi** và **không phải danh sách rỗng**; gộp chúng vào `ErrorState` sẽ nói với người dùng rằng hệ thống hỏng, trong khi thứ họ cần là biết mình còn thiếu bước nào.
+> **Tài liệu này theo bản 5 trạng thái** cho các bước readiness của contributor và nghiệm thu milestone. Email verification được hoãn khỏi MVP theo ADR 0004.
 >
 > Bảng truy vết ở [Mục 10](#10-ma-trận-truy-vết-thiết-kế-design-traceability-matrix) dùng cùng định nghĩa này.
 
@@ -1198,7 +1198,7 @@ stateDiagram-v2
 - **Quy tắc phụ — chặn mềm, không chặn cứng**: điểm chặn đặt ở **nút gửi**, không đặt ở nút mở. Cá nhân thiếu profile/CV vẫn xem dự án và mở được hộp thoại ứng tuyển để **đọc** yêu cầu; chỉ nút gửi bị vô hiệu hóa.
 - **Quy tắc phụ — nút bị vô hiệu hóa luôn đi kèm lý do**: một nút xám không kèm chữ giải thích là nguồn gốc của phần lớn cảm giác "hệ thống hỏng". Ràng buộc này đã nêu ở [Mục 7.6](#76-màn-hình-6-không-gian-quản-lý-milestone--bàn-giao-workspaceid) cho `BR-07` và được nâng lên thành quy tắc chung cho mọi nút bị vô hiệu hóa trong sản phẩm.
 - **Hiện thực**: Banner nền hổ phách (`color-status-warning-bg`) + icon + nhãn chữ theo đúng ba lớp của [Mục 4.5](#45-sử-dụng-màu-trong-mã-hóa-trạng-thái-redundant-coding), kèm **một liên kết dẫn thẳng tới nơi gỡ chặn**. Dùng màu hổ phách chứ không dùng đỏ là có chủ đích: người dùng chưa làm gì sai, họ chỉ chưa xong một bước.
-- **Ba bề mặt bị chặn của GenDA**: `BR-03` (cá nhân thiếu điều kiện ứng tuyển), `BR-07` (SME nghiệm thu mốc chưa có kết quả bàn giao), `FR-AUTH-04` (tài khoản đăng ký chưa xác minh OTP).
+- **Các bề mặt bị chặn của GenDA**: thiếu điều kiện ứng tuyển và SME nghiệm thu milestone chưa có kết quả bàn giao.
 
 ### 8.6. Ràng buộc hiện thực: năm trạng thái phải là mã chạy thật
 
@@ -1269,14 +1269,12 @@ Thử nghiệm trên nhóm mẫu thử nghiệm giai đoạn Soft-launch (15–2
 | Mã Yêu cầu | Nội dung Yêu cầu Nghiệp vụ | Thành phần Giao diện & Mẫu Thiết kế Đảm nhiệm |
 | :--- | :--- | :--- |
 | **FR-AUTH-01..03, 05** | Đăng ký CONTRIBUTOR/SME, đăng nhập, đăng xuất, đặt lại mật khẩu | Màn hình `/login`, `/register`, Password Strength Meter Pattern |
-| **FR-AUTH-04, 06** | Nhập/gửi lại OTP xác minh email trước khi nhận phiên đầy đủ | `/verify-email`: OTP input, đếm ngược hết hạn/gửi lại, giới hạn thử và thông báo không làm lộ sự tồn tại tài khoản |
 | **FR-USR-01** | Hồ sơ contributor cơ bản | Màn hình 2 (`/contributor/profile`), Readiness Checklist |
 | **FR-USR-02..03** *(đã loại bỏ)* | Không xác minh tư cách sinh viên | Không có UI upload email/thẻ sinh viên, admin queue hoặc verified-student badge |
 | **FR-USR-04..05** | Hồ sơ SME, chọn kỹ năng từ danh mục hệ thống chuẩn | Màn hình Profile & Wizard, Component Tag Multi-select kỹ năng |
 | **FR-USR-06** | Xem hồ sơ công khai của bên kia trong phạm vi dự án đang tương tác | Màn hình 6 — Thẻ Hồ sơ Đối tác (Partner Profile Card) + panel trượt xem đầy đủ |
 | **FR-USR-07..09** | Quản lý CV kỹ thuật và điều kiện ứng tuyển GENERAL | `/contributor/cv`, Readiness Checklist, Apply Modal chặn mềm tại nút gửi |
 | **FR-USR-10..11** | Quản lý nhiều bản ghi Education tự khai, không phải hard gate | Màn hình 2 (`/contributor/profile`), Education Cards, empty state và form thêm/sửa/xóa |
-| **FR-USR-12..13** | SME nộp thông tin doanh nghiệp; admin xác minh/từ chối trước khi cấp quyền SME | Biến thể SME của `/register`, completion state sau `/verify-email`, Màn hình 8 — SME Verification Queue |
 | **FR-PRJ-01..04** | SME tạo dự án nháp, gửi duyệt; Admin duyệt/từ chối kèm lý do | Màn hình 3 (Wizard 3 bước) & Màn hình 8 (Admin Queue) |
 | **FR-PRJ-05..07** | Xem danh sách PUBLISHED, lọc phân trang, hủy dự án, nhận ứng viên | Màn hình 4 (Thẻ dự án, Faceted Filter) & Màn hình 5 |
 | **FR-PRJ-10..11** | Khoảng ngân sách theo complexity và admin phát hiện scope bị khai level thấp | Màn hình 3 (complexity selector, budget-range hint, inline block) & Màn hình 8 (scope-level review, trả về DRAFT kèm lý do/level đề xuất) |
@@ -1294,7 +1292,7 @@ Thử nghiệm trên nhóm mẫu thử nghiệm giai đoạn Soft-launch (15–2
 | **BR-01..19** | Các bất biến miền (ngân sách 1-5M, minimum theo complexity, review chống under-classification, contributor đủ readiness mới được nộp, SME verified mới tạo dự án, BR-07...) | Visible Constraints: readiness checklist, SME pending/rejected state, complexity selector + minimum-budget hint, slider giới hạn ngân sách, date picker khóa ngày quá khứ, nút nghiệm thu `disabled` khi mốc chưa `SUBMITTED`, modal xác nhận hành động không đảo ngược |
 | **NFR-UX-01** | Giao diện tiếng Việt, Mobile-First, Semantic HTML, hỗ trợ bàn phím | Mục 4.6 (focus ring, thứ tự Tab, focus trap, ARIA, vùng chạm 44px) + lưới bố cục Mục 4.1 |
 | **NFR-UX-02** | Bắt buộc các trạng thái giao diện chuẩn mực | Mục 8 — **5 trạng thái**: Skeleton Shimmer (8.1), Empty kèm CTA (8.2), Error kèm Request ID (8.3), Success kèm bước kế tiếp (8.4), Blocked kèm lối gỡ chặn (8.5) |
-| **BR-03, BR-07, FR-AUTH-04** | Các điều kiện chặn thao tác | Mục 8.5 — Blocked State: OTP là bước đăng ký bắt buộc; readiness chặn mềm tại nút gửi; nút vô hiệu hóa luôn kèm dòng lý do |
+| **BR-03, BR-07** | Các điều kiện chặn thao tác | Mục 8.5 — Blocked State: readiness chặn thao tác kèm lý do rõ ràng. |
 | **NFR-OPS-02** | Lỗi kèm `requestId` để truy vết | Mục 8.3 — Error State hiển thị `Mã yêu cầu (Request ID)` cho người dùng đọc lại khi khiếu nại |
 
 ---

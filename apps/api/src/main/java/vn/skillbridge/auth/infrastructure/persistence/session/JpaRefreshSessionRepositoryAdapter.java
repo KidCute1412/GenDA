@@ -17,7 +17,7 @@ class JpaRefreshSessionRepositoryAdapter implements RefreshSessionRepository {
 
     @Override
     public Optional<RefreshSession> findById(UUID id) {
-        return repository.findById(id).map(JpaRefreshSessionRepositoryAdapter::toModel);
+        return repository.findForUpdate(id).map(JpaRefreshSessionRepositoryAdapter::toModel);
     }
 
     @Override

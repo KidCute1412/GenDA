@@ -42,7 +42,7 @@ class ApplicationControllerTest {
     @BeforeEach
     void authenticate() {
         var principal = new AuthenticatedPrincipal(USER, "a@example.com", "Minh Anh", "CONTRIBUTOR",
-                AccountState.ACTIVE, true, null);
+                AccountState.ACTIVE, null);
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(principal, null));
     }
 

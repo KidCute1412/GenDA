@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   description: "Đăng nhập vào tài khoản GenDA của bạn."
 };
 
-type AuthSearchParams = { mode?: string; role?: string };
+type AuthSearchParams = { mode?: string; role?: string; registered?: string };
 
 export default async function LoginPage({
   searchParams
@@ -102,11 +102,11 @@ export default async function LoginPage({
                   </Link>
                 </div>
 
-                {/* Nội dung tương ứng (Đã hỗ trợ mock đăng nhập & chọn tài khoản mẫu) */}
+                {/* Forms use the backend auth contract. */}
                 {/* Đổi key theo chế độ để biểu mẫu mới chạy animation hiện lên */}
                 <div key={isRegister ? "register" : "login"} className="auth-form-swap">
                   {!isRegister ? (
-                    <LoginFormClient />
+                    <LoginFormClient registered={params.registered === "1"} />
                   ) : (
                     <RegisterFormClient initialRole={selectedRole} />
                   )}

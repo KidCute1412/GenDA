@@ -3,12 +3,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import { logout } from "../services/auth-api";
-import { useDemoSession } from "../hooks/use-demo-session";
+import { useAuthSession } from "../hooks/use-auth-session";
 import { ICON_WEIGHT, SignOut } from "../../../components/ui/icons";
 import { UserMenu } from "./user-menu";
 
 export function AuthControls() {
-  const { session, hydrated } = useDemoSession();
+  const { session, hydrated, error, retry } = useAuthSession();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   async function handleLogout() {
@@ -26,7 +26,9 @@ export function AuthControls() {
     }
   }
 
-  if (!hydrated || !session) {
+  if (!hydrated) return <span role="status">Đang kiểm tra phiên…</span>;
+  if (error) return <button type="button" className="nav-link" onClick={retry}>{error}</button>;
+  if (!session) {
     return (
       <>
         <Link href="/login" className="nav-link">ĐĂNG NHẬP</Link>

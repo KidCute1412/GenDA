@@ -1,12 +1,12 @@
 "use client";
 
 import { Alert } from "../../../components/ui/alert";
-import { useDemoSession } from "../../auth/hooks/use-demo-session";
+import { useAuthSession } from "../../auth/hooks/use-auth-session";
 import { DeliverableForm } from "../../milestones/components/deliverable-form";
 import { ReviewActions } from "../../milestones/components/review-actions";
 
 export function WorkspaceRoleActions({ milestoneTitle, milestoneSubmitted, isFinalMilestone }: { milestoneTitle: string; milestoneSubmitted: boolean; isFinalMilestone: boolean }) {
-  const { session, hydrated } = useDemoSession();
+  const { session, hydrated } = useAuthSession();
 
   if (!hydrated) return null;
 

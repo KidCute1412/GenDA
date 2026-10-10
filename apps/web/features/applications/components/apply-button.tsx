@@ -6,7 +6,7 @@ import { Button } from "../../../components/ui/button";
 import { Field, TextAreaField } from "../../../components/ui/field";
 import { Alert } from "../../../components/ui/alert";
 import { CheckCircle, ICON_WEIGHT, Lock } from "../../../components/ui/icons";
-import { useDemoSession } from "../../auth/hooks/use-demo-session";
+import { useAuthSession } from "../../auth/hooks/use-auth-session";
 import { ApiRequestError } from "../../auth/services/session-request";
 import { LEVEL_COPY } from "../../projects/level-copy";
 import { CvUploader } from "../../users/components/cv-uploader";
@@ -45,7 +45,7 @@ export function ApplyButton({
   const [letter, setLetter] = useState("");
   const [touched, setTouched] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const { session, hydrated } = useDemoSession();
+  const { session, hydrated } = useAuthSession();
   const isContributor = session?.role === "CONTRIBUTOR";
   const { state: standing } = useContributorStanding(isContributor);
   const { items: myApplications } = useMyApplications();
@@ -98,7 +98,7 @@ export function ApplyButton({
   return (
     <>
       <LevelRequirement complexity={complexity} experience={ready?.experience ?? null} />
-      {hydrated && !isContributor ? <Alert variant="warning" title="Chỉ contributor được ứng tuyển">Hãy đăng nhập bằng tài khoản cá nhân đã xác minh để gửi đơn cho dự án này.</Alert> : null}
+      {hydrated && !isContributor ? <Alert variant="warning" title="Chỉ contributor được ứng tuyển">Hãy đăng nhập bằng tài khoản cá nhân để gửi đơn cho dự án này.</Alert> : null}
       {submitError ? <Alert variant="danger" title="Không thể gửi đơn">{submitError}</Alert> : null}
       <button
         type="button"
@@ -180,7 +180,7 @@ export function ApplyButton({
                 placeholder="Em đã làm một trang tương tự cho..."
               />
 
-              {ready && !locked && ready.readiness.emailVerified ? (
+              {ready && !locked ? (
                 <Field id="apply-cv" label="CV đính kèm (PDF)" required>
                   <CvUploader id="apply-cv" />
                   <p className="field__hint">Doanh nghiệp xem CV này cùng thư ngỏ. Thay CV ở đây cũng cập nhật CV trong hồ sơ của bạn.</p>

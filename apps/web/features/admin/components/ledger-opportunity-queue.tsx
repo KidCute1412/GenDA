@@ -5,7 +5,7 @@ import { Alert } from "../../../components/ui/alert";
 import { Button } from "../../../components/ui/button";
 import { EmptyState } from "../../../components/ui/feedback";
 import { TextAreaField } from "../../../components/ui/field";
-import { useDemoSession } from "../../auth/hooks/use-demo-session";
+import { useAuthSession } from "../../auth/hooks/use-auth-session";
 import { moderateOpportunity } from "../../demo-ledger/store";
 import { useDemoLedger } from "../../demo-ledger/use-demo-ledger";
 import { formatVnd } from "../../../lib/utils/format";
@@ -23,7 +23,7 @@ export function LedgerOpportunityQueueCount() {
  */
 export function LedgerOpportunityQueue() {
   const ledger = useDemoLedger();
-  const { session, hydrated } = useDemoSession();
+  const { session, hydrated } = useAuthSession();
   const [reasons, setReasons] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
   if (!hydrated) return null;

@@ -31,8 +31,7 @@ class SessionIssuerTest {
     void setUp() {
         issuer = new SessionIssuer(sessions, tokens, Clock.fixed(NOW, ZoneOffset.UTC),
                 new AuthSettings(Duration.ofMinutes(5), Duration.ofHours(24), Duration.ofDays(7)));
-        user = new AuthUser(UUID.randomUUID(), "student@example.com", "hash", "Student", UserRole.CONTRIBUTOR,
-                true, AccountState.ACTIVE, null);
+        user = new AuthUser(UUID.randomUUID(), "student@example.com", "hash", "Student", UserRole.CONTRIBUTOR, AccountState.ACTIVE, null);
         when(tokens.issueAccessToken(eq(user), eq(NOW), eq(Duration.ofMinutes(5)))).thenReturn("access");
         when(tokens.issueRefreshToken(eq(user), any(UUID.class), eq(NOW), any(Duration.class))).thenReturn("refresh");
         when(tokens.fingerprint("refresh")).thenReturn("fingerprint");

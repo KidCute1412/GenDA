@@ -22,7 +22,7 @@ import { useAuthMode } from "./auth-card";
  */
 const LEGEND = {
   login: ["Nhận dự án", "Làm theo mốc", "Nghiệm thu"],
-  register: ["Chọn vai trò", "Điền thông tin", "Kích hoạt email"]
+  register: ["Chọn vai trò", "Điền thông tin", "Bắt đầu sử dụng"]
 };
 
 const PARTICLES = [

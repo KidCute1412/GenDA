@@ -43,10 +43,10 @@ Phân quyền chi tiết theo `docs/authorization-matrix.md`. Mọi yêu cầu d
 | --- | --- | --- |
 | FR-AUTH-01 | Khách đăng ký tài khoản bằng email và mật khẩu, chọn vai trò `CONTRIBUTOR` hoặc `SME` tại thời điểm đăng ký. Vai trò `ADMIN` chỉ được cấp qua quy trình nội bộ, không qua form đăng ký. | M |
 | FR-AUTH-02 | Hệ thống lưu mật khẩu dưới dạng băm (bcrypt), không bao giờ lưu hoặc trả về mật khẩu gốc. | M |
-| FR-AUTH-03 | Chỉ tài khoản đã xác minh email và đang hoạt động mới đăng nhập để nhận phiên xác thực; token mang định danh người dùng và vai trò. | M |
-| FR-AUTH-04 | Sau khi đăng ký, hệ thống gửi mã OTP gồm 6 chữ số tới email đăng ký. Người dùng phải nhập đúng OTP còn hiệu lực trước khi đủ điều kiện nhận phiên xác thực theo gate của vai trò và tiếp tục onboarding. OTP dùng một lần, hết hạn sau thời lượng cấu hình mặc định 10 phút và bị vô hiệu ngay khi dùng thành công. | M |
+| FR-AUTH-03 | Active accounts sign in with email and password to receive an authenticated session; tokens identify the user and role. | M |
+| FR-AUTH-04 | Deferred from MVP: registration does not require email OTP verification. | - |
 | FR-AUTH-05 | Người dùng đăng xuất và yêu cầu đặt lại mật khẩu qua email. | S |
-| FR-AUTH-06 | Người dùng có thể yêu cầu gửi lại OTP sau thời gian chờ mặc định 60 giây. OTP mới làm OTP cũ mất hiệu lực; mỗi mã chỉ cho phép tối đa 5 lần nhập sai và việc gửi/xác nhận phải được giới hạn tần suất. | M |
+| FR-AUTH-06 | Deferred with FR-AUTH-04: OTP resend and OTP attempt limits are not part of MVP. | - |
 
 ### 3.2 Hồ sơ người dùng — module `users`
 
@@ -214,7 +214,7 @@ BR-01 đến BR-09 đồng nhất với bất biến trong `docs/domain-model.md
 | NFR-SEC-01 | Bảo mật | Mật khẩu băm bằng bcrypt. Token có thời hạn. Không ghi log dữ liệu nhạy cảm hay token. |
 | NFR-SEC-02 | Bảo mật | Phân quyền cưỡng chế ở tầng API; kiểm tra quyền phía giao diện chỉ phục vụ trải nghiệm. |
 | NFR-SEC-03 | Bảo mật | CV, minh chứng và tệp bàn giao được lưu riêng tư; liên kết tải chỉ cấp cho chủ sở hữu hoặc người có quyền nghiệp vụ và có thời hạn. |
-| NFR-SEC-04 | Bảo mật | OTP không được lưu dạng rõ hoặc ghi log; hệ thống giới hạn số lần xác nhận/gửi lại theo tài khoản, email và nguồn yêu cầu để giảm brute force và spam. |
+| NFR-SEC-04 | Security | Passwords and sessions are protected; rate limits reduce credential guessing and abuse. | M |
 | NFR-PRIV-01 | Dữ liệu cá nhân | Chỉ thu thập dữ liệu cần thiết cho vận hành nền tảng; công bố mục đích thu thập trong chính sách bảo mật. |
 | NFR-PRIV-02 | Dữ liệu cá nhân | Người dùng yêu cầu chỉnh sửa hoặc xóa dữ liệu cá nhân của mình; hồ sơ giao dịch giữ lại theo quy định và được ẩn danh khi xóa tài khoản. |
 | NFR-PRIV-03 | Pháp lý | Nền tảng công bố quy chế hoạt động, điều khoản sử dụng, chính sách bảo mật và quy trình khiếu nại trước khi mở vận hành chính thức. |
@@ -232,9 +232,9 @@ BR-01 đến BR-09 đồng nhất với bất biến trong `docs/domain-model.md
 
 Vòng đời MVP được coi là hoàn tất khi các kịch bản sau chạy được đầu–cuối trên dữ liệu seed xác định:
 
-1. **Đăng ký và xác minh email** — Đăng ký tạo tài khoản chưa xác minh và gửi OTP nhưng chưa cấp phiên đầy đủ. OTP sai, hết hạn, đã dùng hoặc vượt quá 5 lần thử bị từ chối; OTP mới làm mã cũ mất hiệu lực. OTP hợp lệ xác minh email; contributor có thể tiếp tục onboarding, còn SME chuyển hồ sơ doanh nghiệp sang hàng đợi và vẫn chưa được đăng nhập đầy đủ (FR-AUTH-03, FR-AUTH-04, FR-AUTH-06, FR-USR-12).
-2. **Hoàn thiện điều kiện ứng tuyển** — Cá nhân đã xác minh email vẫn xem được dự án ở mọi project level. Hệ thống từ chối tệp không phải PDF hợp lệ, quá 2 MB, hỏng hoặc khóa bằng mật khẩu; CV hợp lệ chuyển tới `READY`. Thiếu hồ sơ hoặc CV `READY` chỉ chặn tại hành động gửi đơn hoặc chấp nhận lời mời, không chặn duyệt dự án. Không có bản ghi học vấn không làm checklist profile thất bại (FR-USR-07…11, BR-03, BR-16).
-3. **Xác minh SME** — SME đã xác minh email nhưng hồ sơ doanh nghiệp còn `PENDING` bị chặn đăng nhập đầy đủ và tạo dự án. Admin từ chối không kèm lý do bị chặn; từ chối hợp lệ chuyển hồ sơ sang `REJECTED` và lưu audit. Khi admin duyệt, hồ sơ chuyển `VERIFIED`; SME đăng nhập và mới có thể tạo dự án (FR-USR-12, FR-USR-13, FR-ADM-01, BR-17).
+1. **Registration and sign-in** - Contributors and SMEs register with email/password, become ACTIVE immediately, and can sign in without email OTP or SME approval (FR-AUTH-01...03).
+2. **Application readiness** - Contributors can browse projects; sending an application requires an active account, a complete profile, a technically ready CV, and the required project-level tier.
+3. **SME projects** - An active SME can create a draft and submit it for project moderation.
 4. **Tạo và duyệt dự án** — Với policy test xác định, SME chọn từng project level và thấy đúng khoảng ngân sách cùng eligibility; `MEDIUM` với 1.400.000 hoặc `BASIC` với 2.000.000 bị chặn khi gửi duyệt, còn ngân sách đúng bằng đầu mút (ví dụ `BASIC` 1.500.000, `MEDIUM` 1.500.000, `HIGH` 5.000.000) được chấp nhận. Dự án có scope thực tế `HIGH` nhưng khai `BASIC` bị admin trả về `DRAFT` kèm lý do/level đề xuất; sau khi SME sửa level và ngân sách hợp lệ, admin mới publish. Quản trị viên từ chối không kèm lý do bị hệ thống chặn (FR-PRJ-01, FR-PRJ-03, FR-PRJ-04, FR-PRJ-10, FR-PRJ-11, BR-18, BR-19).
 5. **Ứng tuyển, tích lũy kinh nghiệm và lựa chọn** — Contributor mới ở hạng Đồng, tự ứng tuyển `BASIC` thành công nhưng bị chặn khi tự ứng tuyển `MEDIUM`, kèm thông báo cần hạng Bạc và còn thiếu bao nhiêu XP. Contributor có 9 XP từ `BASIC` vẫn ở hạng Đồng; hoàn thành thêm một `BASIC` thì đạt 10 XP, lên hạng Bạc và tự ứng tuyển `MEDIUM`. Hoàn thành thêm `BASIC` sau đó không cộng XP. Contributor có 28 XP bị chặn ở `HIGH`; hoàn thành thêm một `MEDIUM` thì đạt 30 XP, lên hạng Vàng và tự ứng tuyển `HIGH`. Một SME khác có thể mời contributor hạng Đồng vào project `MEDIUM`; contributor đủ readiness chấp nhận lời mời thì application `SUBMITTED` có nguồn `SME_INVITATION`, nhưng không tự động `ACCEPTED`. Invitation vào `HIGH` không vượt gate. Ứng tuyển thứ hai vào cùng dự án bị chặn; khi SME chấp nhận một ứng viên, các ứng viên còn lại chuyển `REJECTED` và dự án sang `IN_PROGRESS` trong cùng transaction (FR-APP-01…12, BR-20…23, BR-13).
 6. **Milestone và nghiệm thu** — SME tạo 2 milestone có tổng ngân sách đúng bằng ngân sách dự án; tạo milestone lệch tổng bị chặn (FR-MIL-02). Cá nhân nộp bàn giao; SME yêu cầu chỉnh sửa kèm lý do; cá nhân nộp lại; cả hai lần nộp đều còn trong lịch sử (FR-MIL-05). SME nghiệm thu milestone chưa có bàn giao bị chặn (BR-07).
@@ -320,7 +320,7 @@ Các điểm cần quyết định trước khi module liên quan được imple
 
 **Giả định**
 
-- Người dùng có quyền truy cập email đã đăng ký để nhận OTP.
+- Email OTP verification is deferred from the MVP; users can sign in after registration with their email and password.
 - SME sẵn sàng thanh toán ngoài nền tảng trong giai đoạn escrow mô phỏng.
 - Phạm vi công việc mỗi dự án đủ nhỏ để một cá nhân hoàn thành trong vài ngày đến vài tuần.
 - Quản trị viên duyệt dự án thủ công ở quy mô pilot; hàng đợi duyệt không cần tự động hóa.

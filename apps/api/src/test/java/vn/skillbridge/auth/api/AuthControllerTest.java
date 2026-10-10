@@ -16,11 +16,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import vn.skillbridge.auth.application.account.LoginService;
+import vn.skillbridge.auth.application.account.AuthRateLimitService;
 import vn.skillbridge.auth.application.AuthException;
 import vn.skillbridge.auth.application.account.RegistrationCommand;
-import vn.skillbridge.auth.application.account.RegistrationResult;
 import vn.skillbridge.auth.application.account.RegistrationService;
-import vn.skillbridge.auth.application.emailverification.EmailVerificationService;
 import vn.skillbridge.auth.application.session.CsrfTokenService;
 import vn.skillbridge.auth.application.session.SessionService;
 import vn.skillbridge.auth.domain.account.AccountState;
@@ -30,16 +29,16 @@ import vn.skillbridge.auth.domain.account.UserRole;
 class AuthControllerTest {
     private final RegistrationService registrations = mock(RegistrationService.class);
     private final AuthCookieWriter cookies = mock(AuthCookieWriter.class);
-    private final EmailVerificationService emailVerifications = mock(EmailVerificationService.class);
+    private final AuthRateLimitService rateLimits = mock(AuthRateLimitService.class);
     private final MockMvc mvc = MockMvcBuilders.standaloneSetup(new AuthController(
-            mock(LoginService.class), registrations, emailVerifications, mock(SessionService.class), cookies,
-            mock(CsrfTokenService.class))).build();
+            mock(LoginService.class), registrations, mock(SessionService.class), cookies,
+            mock(CsrfTokenService.class), rateLimits)).setControllerAdvice(new AuthExceptionHandler()).build();
 
     @Test
-    void registrationReturnsPendingAccountWithoutAuthenticationCookies() throws Exception {
+    void registrationReturnsActiveAccountWithoutCreatingAnAuthSession() throws Exception {
         var user = new AuthUser(UUID.randomUUID(), "new@example.com", "hash", "New Contributor",
-                UserRole.CONTRIBUTOR, false, AccountState.PENDING_EMAIL_VERIFICATION, null);
-        when(registrations.register(any(RegistrationCommand.class))).thenReturn(new RegistrationResult(user));
+                UserRole.CONTRIBUTOR, AccountState.ACTIVE, null);
+        when(registrations.register(any(RegistrationCommand.class))).thenReturn(user);
 
         mvc.perform(post("/api/v1/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -53,65 +52,36 @@ class AuthControllerTest {
                                 """))
                 .andExpect(status().isCreated())
                 .andExpect(header().doesNotExist("Set-Cookie"))
-                .andExpect(jsonPath("$.accountState").value("PENDING_EMAIL_VERIFICATION"))
-                .andExpect(jsonPath("$.emailVerified").value(false))
+                .andExpect(jsonPath("$.accountState").value("ACTIVE"))
                 .andExpect(jsonPath("$.studentVerificationStatus").doesNotExist());
 
         verifyNoInteractions(cookies);
     }
 
     @Test
-    void confirmationActivatesContributorWithoutIssuingCookies() throws Exception {
-        var user = new AuthUser(UUID.randomUUID(), "new@example.com", "hash", "New Contributor",
-                UserRole.CONTRIBUTOR, true, AccountState.ACTIVE, null);
-        when(emailVerifications.confirm("new@example.com", "123456", "127.0.0.1")).thenReturn(user);
-
-        mvc.perform(post("/api/v1/auth/email-verifications/confirm")
-                        .with(request -> { request.setRemoteAddr("127.0.0.1"); return request; })
-                        .contentType(MediaType.APPLICATION_JSON)
+    void rejectsPublicAdminRegistration() throws Exception {
+        mvc.perform(post("/api/v1/auth/register").contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                                {"email":"new@example.com","code":"123456"}
-                                """))
-                .andExpect(status().isOk())
-                .andExpect(header().doesNotExist("Set-Cookie"))
-                .andExpect(jsonPath("$.accountState").value("ACTIVE"))
-                .andExpect(jsonPath("$.emailVerified").value(true));
-
-        verifyNoInteractions(cookies);
-    }
-
-    @Test
-    void confirmationRejectsAValueThatIsNotSixDigits() throws Exception {
-        mvc.perform(post("/api/v1/auth/email-verifications/confirm")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {"email":"new@example.com","code":"12ab"}
+                                {"email":"new@example.com","name":"Admin","password":"Password@1","role":"ADMIN"}
                                 """))
                 .andExpect(status().isBadRequest());
+        verifyNoInteractions(registrations);
     }
 
     @Test
-    void resendIsAcceptedWithoutReturningAccountData() throws Exception {
-        mvc.perform(post("/api/v1/auth/email-verifications/resend")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {"email":"new@example.com"}
-                                """))
-                .andExpect(status().isAccepted())
-                .andExpect(header().doesNotExist("Set-Cookie"));
-    }
-
-    @Test
-    void resendConcealsCooldownToPreventEmailEnumeration() throws Exception {
-        doThrow(new AuthException("OTP_RESEND_TOO_SOON", "Wait before requesting another code"))
-                .when(emailVerifications).resend("new@example.com", "127.0.0.1");
-
-        mvc.perform(post("/api/v1/auth/email-verifications/resend")
+    void rateLimitReturnsRetryAfterAndDoesNotRegister() throws Exception {
+        doThrow(new AuthException("AUTH_RATE_LIMITED", "Too many attempts", 3600L))
+                .when(rateLimits).register("127.0.0.1");
+        mvc.perform(post("/api/v1/auth/register")
                         .with(request -> { request.setRemoteAddr("127.0.0.1"); return request; })
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                                {"email":"new@example.com"}
+                                {"email":"new@example.com","name":"New","password":"Password@1","role":"CONTRIBUTOR"}
                                 """))
-                .andExpect(status().isAccepted());
+                .andExpect(status().isTooManyRequests())
+                .andExpect(header().string("Retry-After", "3600"))
+                .andExpect(jsonPath("$.code").value("AUTH_RATE_LIMITED"));
+        verifyNoInteractions(registrations);
     }
+
 }

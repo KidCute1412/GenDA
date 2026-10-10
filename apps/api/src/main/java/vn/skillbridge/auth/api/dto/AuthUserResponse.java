@@ -12,16 +12,15 @@ public record AuthUserResponse(
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED) String name,
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED, allowableValues = {"CONTRIBUTOR", "SME", "ADMIN"}) String role,
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED) AccountState accountState,
-        @Schema(requiredMode = Schema.RequiredMode.REQUIRED) boolean emailVerified,
-        String smeApprovalStatus) {
+        @Schema(deprecated = true, description = "Legacy historical value; unused for MVP access") String smeApprovalStatus) {
 
     public static AuthUserResponse from(AuthUser user) {
         return new AuthUserResponse(user.id(), user.email(), user.displayName(), user.role().name(),
-                user.accountState(), user.emailVerified(), user.smeApprovalStatus());
+                user.accountState(), user.smeApprovalStatus());
     }
 
     public static AuthUserResponse from(AuthenticatedPrincipal principal) {
         return new AuthUserResponse(principal.id(), principal.email(), principal.displayName(), principal.role(),
-                principal.accountState(), principal.emailVerified(), principal.smeApprovalStatus());
+                principal.accountState(), principal.smeApprovalStatus());
     }
 }

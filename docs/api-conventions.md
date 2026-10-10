@@ -24,31 +24,22 @@ Commit `packages/api-client/openapi.json` and generated `src/schema.d.ts` with A
 
 ## Authentication/authorization
 
-The current implementation exposes `/api/v1/auth`: `GET /csrf`, `POST /register`, `POST /email-verifications/confirm`, `POST /email-verifications/resend`, `POST /login`, `POST /refresh`, `POST /logout`, and `GET /me`; registration accepts `CONTRIBUTOR` and `SME`. Registration returns `PENDING_EMAIL_VERIFICATION`, sends an OTP and issues no access/refresh cookies. Confirmation returns the updated account without cookies; the user signs in separately after all role gates pass. Login rejects pending/disabled accounts and refresh revokes a legacy session if its account can no longer sign in.
+The implementation exposes `/api/v1/auth`: `GET /csrf`, `POST /register`, `POST /login`, `POST /refresh`, `POST /logout`, and `GET /me`. Registration creates an active Contributor or SME account without sending email; the user signs in separately. Disabled accounts cannot sign in. Email verification, password reset, and CAPTCHA are deferred from this MVP.
 
-The target registration contract accepts `CONTRIBUTOR` and `SME` and uses this sequence:
+Registration accepts `CONTRIBUTOR` and `SME`; admin roles are provisioned internally. SME registration carries self-declared business identity data. Login and registration are rate-limited by the backend.
 
-1. `POST /api/v1/auth/register` creates a pending account and sends a six-digit email OTP; it does not issue access or refresh cookies. An SME registration also carries business identity data required by FR-USR-12.
-2. `POST /api/v1/auth/email-verifications/confirm` accepts the registered email and OTP. A correct, unexpired, unused code verifies the mailbox. A contributor may then receive a normal session; an SME must also satisfy the existing admin-approval rule before sign-in.
-3. `POST /api/v1/auth/email-verifications/resend` issues a new OTP after the resend cooldown and invalidates the previous code.
+Access and refresh JWTs are returned only as scoped `HttpOnly` cookies, never in JSON. Access expires after five minutes. Refresh expires after 24 hours, or seven days when `rememberDevice=true`, and rotates on use.
 
-OTP expires after a configurable duration (10 minutes by default), permits at most five failed confirmation attempts, is one-time, and is subject to resend/confirmation rate limits. Only a hash and lifecycle metadata are persisted; raw OTP values are never stored or logged. Confirmation failures use stable codes such as `OTP_INVALID`, `OTP_EXPIRED`, `OTP_ATTEMPTS_EXCEEDED`, and `OTP_RATE_LIMITED`. Resend always returns `202 Accepted` for unknown, verified, cooling-down, rate-limited and delivery-failure outcomes so it does not reveal whether an account exists.
-
-After email verification and any role-specific approval, access and refresh JWTs are returned only as scoped `HttpOnly` cookies, never in JSON. Access expires after five minutes. Refresh expires after 24 hours, or seven days when `rememberDevice=true`, and rotates on use.
-
-For SME registrations, successful OTP confirmation keeps business verification `PENDING`, changes account state to `EMAIL_VERIFIED`, and does not grant a full session. Admin-facing target endpoints list pending SME verifications and submit an approve or reject decision with a mandatory rejection reason. `users` owns the verification record and decision; `auth` queries its public application facade before issuing an SME session. Pending/rejected login attempts return stable `SME_NOT_APPROVED` information without credentials or sensitive evidence.
+SME registration keeps validated tax-code/website data as self-declared business identity. MVP has no admin business-approval gate. The optional `smeApprovalStatus` response field is deprecated historical data, never an authorization input.
 
 `POST /logout` is idempotent: it revokes the current refresh-session record when a valid refresh cookie exists, expires both authentication cookies using their original paths, and returns `204 No Content`. The access JWT remains stateless; the backend stores only the refresh-token fingerprint and revocation metadata, never the raw token.
-
-Unsafe API requests require the `X-CSRF-Token` value issued by `GET /auth/csrf`; the browser also sends its matching CSRF cookie. Browser calls use credentials and CORS permits credentials only for exact configured origins. Production cross-site cookies require `AUTH_COOKIE_SECURE=true` and `AUTH_COOKIE_SAME_SITE=None`.
-
 ## Contributor profile and CV target
 
 Implemented application endpoints:
 
 | Endpoint | Actor | Behavior |
 |---|---|---|
-| `POST /api/v1/applications` | Contributor | Applies to a `PUBLISHED` project with a cover letter (80-3000 characters after trimming). Server-side gate: `422 APPLICATION_NOT_ELIGIBLE` with `details.missing` (`ACCOUNT_INACTIVE`, `EMAIL_NOT_VERIFIED`, `PROFILE_INCOMPLETE`, `CV_NOT_READY`, `TIER_REQUIRED`), `requiredTier`, `currentTier`, `missingXp`; `409 APPLICATION_ALREADY_EXISTS` for a second active application; `409 PROJECT_NOT_OPEN` once the project started; `422 APPLICATION_COVER_LETTER_LENGTH` |
+| `POST /api/v1/applications` | Contributor | Applies to a `PUBLISHED` project with a cover letter (80-3000 characters after trimming). Server-side gate: `422 APPLICATION_NOT_ELIGIBLE` with `details.missing` (`ACCOUNT_INACTIVE`, `PROFILE_INCOMPLETE`, `CV_NOT_READY`, `TIER_REQUIRED`), `requiredTier`, `currentTier`, `missingXp`; `409 APPLICATION_ALREADY_EXISTS` for a second active application; `409 PROJECT_NOT_OPEN` once the project started; `422 APPLICATION_COVER_LETTER_LENGTH` |
 | `GET /api/v1/applications/me` | Contributor | Own applications, newest first, with project title, SME, budget, level and status |
 | `POST /api/v1/applications/{id}/withdraw` | Contributor | `SUBMITTED`/`SHORTLISTED` to `WITHDRAWN`; `409 APPLICATION_INVALID_TRANSITION` otherwise |
 | `GET /api/v1/sme/projects/{projectId}/applications` | Owning SME | Applicants ranked by skill match (FR-MAT-03), each with tier, XP, completed projects per level, self-declared profile and education, match explanation, CV metadata; withdrawn applications omitted; `contactEmail` only for the accepted applicant |
@@ -68,7 +59,7 @@ Implemented contributor endpoints (role `CONTRIBUTOR`, own data only):
 | `GET /api/v1/users/me/cv` | Current CV metadata or `404 CV_NOT_FOUND` |
 | `PUT /api/v1/users/me/cv` (multipart `file`) | Synchronous technical validation; READY CV on success, otherwise `422 CV_REJECTED_TECHNICAL` with `details.reason` (`EMPTY`, `TOO_LARGE`, `NOT_PDF`, `CORRUPTED`, `PASSWORD_PROTECTED`) and the current CV unchanged |
 | `GET /api/v1/users/me/cv/file` | The owner's PDF, `inline`, `no-store`, `nosniff` |
-| `GET /api/v1/users/me/readiness` | `accountActive`, `emailVerified`, `profileComplete`, `cvReady`, `ready` |
+| `GET /api/v1/users/me/readiness` | `accountActive`, ``, `profileComplete`, `cvReady`, `ready` |
 | `GET /api/v1/users/me/experience` | `totalXp`, `tier`, next-tier progress, `basicXpCap`, the tier/level policy and newest-first history with `xpAwarded`/`capped` |
 
 The target contract will add private CV upload/status/replace operations under `/api/v1/users/me/cv` and an application-readiness representation derived from account, profile and CV state. Contributors may browse projects while incomplete; `POST /applications` remains the authoritative enforcement point. A `READY` CV indicates only successful technical/security validation, not verified content. MVP accepts the PDF as multipart and stores it in Postgres; presigned uploads replace this once OQ-07 selects object storage.
@@ -103,3 +94,5 @@ Owner/admin responses (`ManagedProjectResponse`) include `submissionIssues`, the
 
 Preserve current routes/statuses/semantics. Prefer additive fields. Renames/removals/semantic changes require an ADR and versioning decision. Generated artifacts must reproduce in CI; Java source models are not shared with TypeScript.
 
+
+Login is limited to 10 requests per normalized email and 30 per source in 15 minutes; registration to 5 per source per hour. Denial returns `429 AUTH_RATE_LIMITED` and `Retry-After` seconds, exposed through CORS. Counters are bounded, process-local and reset on restart; a shared store is required before adding replicas.

@@ -44,7 +44,7 @@ class SmeProjectControllerTest {
     @BeforeEach
     void authenticateSme() {
         var principal = new AuthenticatedPrincipal(SME, "contact@coffeelab.vn", "The Coffee Lab", "SME",
-                AccountState.ACTIVE, true, "APPROVED");
+                AccountState.ACTIVE, "APPROVED");
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(principal, null));
     }
 

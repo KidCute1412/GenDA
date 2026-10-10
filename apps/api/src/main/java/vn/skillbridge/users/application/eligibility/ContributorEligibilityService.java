@@ -64,7 +64,7 @@ public class ContributorEligibilityService {
         ExperienceStanding standing = policy.evaluate(experience.findByContributorId(contributorId));
         ExperiencePolicy.TierRule required = policy.lowestTierAllowing(level);
         return new ApplicationEligibility(
-                new ApplicationReadiness(account.active(), account.emailVerified(), profileComplete, cvReady),
+                new ApplicationReadiness(account.active(), profileComplete, cvReady),
                 standing.tier().tier().name(), standing.totalXp(), required.tier().name(), required.minimumXp(),
                 standing.canSelfApply(level));
     }

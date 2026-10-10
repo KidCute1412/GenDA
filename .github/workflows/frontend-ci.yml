@@ -96,7 +96,7 @@ jobs:
       - name: Install Playwright Chromium
         run: pnpm --filter @genda/web exec playwright install --with-deps chromium
 
-      # Đăng nhập là API thật: e2e cần database + backend (profile demo seed sẵn tài khoản demo)
+      # Real auth with isolated PostgreSQL and explicit test-only accounts.
       - name: Set up Docker Compose
         uses: docker/setup-compose-action@v2
         with:
@@ -104,15 +104,15 @@ jobs:
 
       - name: Start backend
         run: |
-          cp .env.example .env
-          cp apps/api/.env.example apps/api/.env
-          docker compose up --build --wait --wait-timeout 300 database backend
+          docker compose -f compose.auth-test.yaml up --build --wait --wait-timeout 300
+          node scripts/setup-auth-e2e.mjs
 
       - name: Run Playwright tests
         run: pnpm --filter @genda/web test:e2e
         env:
-          NEXT_PUBLIC_API_URL: http://localhost:3001
-          API_INTERNAL_URL: http://localhost:3001
+          NEXT_PUBLIC_API_URL: http://localhost:3002
+          API_INTERNAL_URL: http://localhost:3002
+          E2E_API_URL: http://localhost:3002
 
       - name: Upload Playwright report
         if: failure()
@@ -126,5 +126,5 @@ jobs:
       - name: Backend logs and cleanup
         if: always()
         run: |
-          docker compose logs backend database || true
-          docker compose down || true
+          docker compose -f compose.auth-test.yaml logs backend database || true
+          docker compose -f compose.auth-test.yaml down || true

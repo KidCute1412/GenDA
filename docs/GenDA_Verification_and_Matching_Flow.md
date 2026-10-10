@@ -1,6 +1,6 @@
 # GenDA — Verification & Matching Flow
 
-> Trạng thái triển khai: actor identity là `CONTRIBUTOR`; account state và email OTP đã được triển khai. Registration tạo `PENDING_EMAIL_VERIFICATION`, gửi OTP 6 chữ số và không phát session. Confirm/resend, hash-only persistence, expiry, attempt limit, cooldown, source rate limit và UI nhập OTP đã hoạt động. SME sau OTP chỉ chuyển sang `EMAIL_VERIFIED`, không vượt qua gate duyệt doanh nghiệp.
+> Historical flow reference only: email OTP verification has been deferred from the MVP. Current registration creates an ACTIVE account; users sign in with email and password without OTP or SME approval. See docs/decisions/0004-defer-email-verification.md.
 
 ## Project Creation — Complexity & Budget Range Guard
 
@@ -318,4 +318,4 @@ AI Matching vẫn thuộc V2.0.
 
 ## 9. Trạng thái triển khai
 
-Đây là flow đích đã chốt cho tài liệu. Code hiện tại đã dùng role `CONTRIBUTOR`, account state chuẩn hóa, không còn student-verification gate, không cấp session khi đăng ký và đã hoàn thiện email OTP. Luồng SME tạo nháp → gửi duyệt → admin xuất bản hoặc trả về (kèm lý do, level đề xuất và audit) cùng khoảng ngân sách theo level đã được implement ở backend và frontend. Contributor profile (nền tảng, chuyên môn, kỹ năng), học vấn tự khai, CV PDF kiểm tra kỹ thuật đồng bộ, checklist sẵn sàng ứng tuyển và XP/hạng Đồng-Bạc-Vàng (suy ra từ sổ `contributor_experience_records`) đã được implement ở backend và frontend. Module applications đã có API: backend kiểm tra checklist chung và hạng theo level khi nhận đơn, SME xét ứng viên xếp theo độ khớp kỹ năng, rút gọn và chấp nhận đúng một người (các đơn còn lại tự `REJECTED`, dự án sang `IN_PROGRESS` trong cùng transaction). SME invitation cho `MEDIUM` chưa được implement. Sổ kinh nghiệm chỉ được ghi bởi use case hoàn tất dự án, chưa tồn tại; bản demo seed sẵn lịch sử cho ba tài khoản mẫu. Workflow admin xác minh SME hoàn chỉnh chưa được implement. Các batch tiếp theo vẫn phải cập nhật đồng bộ migration, backend, OpenAPI client, frontend routes/copy và tests; không đổi riêng một lớp.
+This historical flow document describes future and demo behavior; its OTP sections are superseded by ADR 0004. Current auth uses real registration and sign-in, while demo seed profiles are disabled in local, test and production runtime configuration.

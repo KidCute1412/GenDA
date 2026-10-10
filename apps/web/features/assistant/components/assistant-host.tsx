@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useDemoSession } from "../../auth/hooks/use-demo-session";
+import { useAuthSession } from "../../auth/hooks/use-auth-session";
 import { seedAssistantScenario, type AssistantScenario } from "../../demo-ledger/store";
 import { useDemoLedger } from "../../demo-ledger/use-demo-ledger";
 import { buildStudentInsights } from "../engine";
@@ -23,7 +23,7 @@ import { GenDialogue, type DialogueScript, type ScriptChoice } from "./gen-dialo
 import { GenPortrait } from "./gen-portrait";
 
 /** Trang xác thực là lúc người dùng đang nhập liệu, Gen không chen vào. */
-const QUIET_ROUTES = ["/login", "/register", "/verify-email", "/quen-mat-khau"];
+const QUIET_ROUTES = ["/login", "/register", "/quen-mat-khau"];
 /** Chờ trang vẽ xong rồi Gen mới bước ra, để lời nhắc không giành chỗ với nội dung đang tải. */
 const AUTO_OPEN_DELAY_MS = 1200;
 /** Menu của Gen liệt kê tối đa bốn việc (design.md 4.9.2 D: danh sách quá 5 mục phải đổi dạng). */
@@ -44,7 +44,7 @@ type OpenState = { mode: "menu" } | { mode: "insight"; insight: Insight };
  */
 export function AssistantHost() {
   const pathname = usePathname();
-  const { session, hydrated } = useDemoSession();
+  const { session, hydrated } = useAuthSession();
   const ledger = useDemoLedger();
   const user = session?.role === "CONTRIBUTOR" ? ledger.users.find((candidate) => candidate.email === session.email) : undefined;
   const userId = user?.id;

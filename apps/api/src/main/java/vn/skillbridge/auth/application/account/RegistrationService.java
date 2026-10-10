@@ -5,7 +5,6 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.skillbridge.auth.application.AuthException;
-import vn.skillbridge.auth.application.emailverification.EmailVerificationService;
 import vn.skillbridge.auth.domain.account.AccountState;
 import vn.skillbridge.auth.domain.account.AuthUser;
 import vn.skillbridge.auth.domain.account.RegistrationIdentity;
@@ -15,17 +14,13 @@ import vn.skillbridge.auth.domain.account.UserRole;
 public class RegistrationService {
     private final AuthUserRepository accounts;
     private final PasswordService passwords;
-    private final EmailVerificationService emailVerifications;
-
-    public RegistrationService(AuthUserRepository accounts, PasswordService passwords,
-            EmailVerificationService emailVerifications) {
+    public RegistrationService(AuthUserRepository accounts, PasswordService passwords) {
         this.accounts = accounts;
         this.passwords = passwords;
-        this.emailVerifications = emailVerifications;
     }
 
     @Transactional
-    public RegistrationResult register(RegistrationCommand command) {
+    public AuthUser register(RegistrationCommand command) {
         if (command.role() == null || command.role() == UserRole.ADMIN) {
             throw new AuthException("REGISTRATION_ROLE_INVALID", "Only CONTRIBUTOR and SME accounts can register");
         }
@@ -44,12 +39,10 @@ public class RegistrationService {
         }
 
         AuthUser user = new AuthUser(UUID.randomUUID(), email, passwords.hash(command.password()),
-                command.name().trim(), command.role(), false,
-                AccountState.PENDING_EMAIL_VERIFICATION,
-                command.role() == UserRole.SME ? "PENDING" : null);
+                command.name().trim(), command.role(),
+                AccountState.ACTIVE,
+                null);
         accounts.create(user, identity.taxCode(), identity.companyWebsite());
-        emailVerifications.issueInitial(user, command.requestSource());
-
-        return new RegistrationResult(user);
+        return user;
     }
 }
